@@ -54,7 +54,7 @@ const EditingLine: React.FC<EditingLineProps> = (
             autoFocus
             inputProps={browserInputProps(theme)}
             value={props.text}
-            // onBlur={props.onFinish}
+            onBlur={props.onFinish}
             onChange={forwardChange}
             onKeyPress={forwardEnter}
             fullWidth

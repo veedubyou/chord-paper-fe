@@ -16,11 +16,12 @@ import UnstyledRemoveIcon from "@material-ui/icons/Remove";
 
 import grey from "@material-ui/core/colors/grey";
 
-type OnChangeFn = (newValue: string) => void;
-
 interface LineProps {
+    id: string;
     text: string;
-    onChange?: OnChangeFn;
+    onChange?: (id: string, newValue: string) => void;
+    onAdd?: (id: string) => void;
+    onRemove?: (id: string) => void;
 }
 
 const iconColorStyle = {
@@ -36,19 +37,22 @@ const RemoveIcon = withStyles(iconColorStyle)(UnstyledRemoveIcon);
 const Button = withStyles((theme: Theme) => ({
     contained: {
         backgroundColor: theme.palette.primary.main,
+        "&:hover": {
+            backgroundColor: theme.palette.primary.dark,
+        },
     },
 }))(UnstyledButton);
 
-const Tooltip = withStyles((theme: Theme) => ({
+const Tooltip = withStyles({
     tooltip: {
-        backgroundColor: theme.palette.primary.main,
+        padding: 0,
     },
-}))(UnstyledTooltop);
+})(UnstyledTooltop);
 
 const HighlightableLine = withStyles((theme: Theme) => ({
     root: {
         "&:hover": {
-            color: theme.palette.primary.dark,
+            color: theme.palette.secondary.main,
             backgroundColor: grey[100],
         },
     },
@@ -65,20 +69,36 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         setEditing(false);
     };
 
+    const addHandler = () => {
+        if (props.onAdd) {
+            props.onAdd(props.id);
+        }
+    };
+
+    const removeHandler = () => {
+        if (props.onRemove) {
+            props.onRemove(props.id);
+        }
+    };
+
+    const changeHandler = (): ((newValue: string) => void) => {
+        return (newValue: string) => {
+            if (props.onChange) {
+                props.onChange(props.id, newValue);
+            }
+        };
+    };
+
     const hoverMenu = (): React.ReactElement => {
         return (
             <ButtonGroup variant="outlined">
-                <Button
-                    variant="contained"
-                    onClick={startEdit}
-                    disableElevation
-                >
+                <Button variant="contained" onClick={startEdit}>
                     <EditIcon />
                 </Button>
-                <Button variant="contained" disableElevation>
+                <Button variant="contained" onClick={addHandler}>
                     <AddIcon />
                 </Button>
-                <Button variant="contained" disableElevation>
+                <Button variant="contained" onClick={removeHandler}>
                     <RemoveIcon />
                 </Button>
             </ButtonGroup>
@@ -107,7 +127,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         elem = (
             <EditingLine
                 text={props.text}
-                onChange={props.onChange}
+                onChange={changeHandler()}
                 onFinish={finishEdit}
             />
         );
