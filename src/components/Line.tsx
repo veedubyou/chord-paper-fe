@@ -6,6 +6,7 @@ import {
     withStyles,
     Button as UnstyledButton,
     Theme,
+    Slide,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import EditingLine from "./EditingLine";
@@ -60,6 +61,7 @@ const HighlightableLine = withStyles((theme: Theme) => ({
 
 const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const [editing, setEditing] = useState(false);
+    const [removed, setRemoved] = useState(false);
 
     const startEdit = () => {
         setEditing(true);
@@ -76,9 +78,13 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     };
 
     const removeHandler = () => {
-        if (props.onRemove) {
-            props.onRemove(props.id);
-        }
+        setRemoved(true);
+
+        setTimeout(() => {
+            if (props.onRemove) {
+                props.onRemove(props.id);
+            }
+        }, 250);
     };
 
     const changeHandler = (): ((newValue: string) => void) => {
@@ -133,15 +139,19 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         );
     }
 
+    const yeetDirection = removed ? "up" : "down";
+
     return (
-        <Box
-            borderBottom={1}
-            borderColor="grey.50"
-            width="auto"
-            margin={"3rem"}
-        >
-            {elem}
-        </Box>
+        <Slide direction={yeetDirection} in={!removed}>
+            <Box
+                borderBottom={1}
+                borderColor="grey.50"
+                width="auto"
+                margin={"3rem"}
+            >
+                {elem}
+            </Box>
+        </Slide>
     );
 };
 

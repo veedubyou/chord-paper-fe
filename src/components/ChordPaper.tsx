@@ -76,7 +76,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
 
     return (
         <Paper elevation={0}>
-            {lines.map((line: ChordLyricLine) => (
+            {lines.map((line: ChordLyricLine, index: number) => (
                 <Line
                     id={line.id}
                     key={line.id}
@@ -84,6 +84,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                     onAdd={addLine}
                     onRemove={removeLine}
                     onChange={changeLine}
+                    data-testid={`line-${index}`}
                 ></Line>
             ))}
         </Paper>
