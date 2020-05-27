@@ -215,21 +215,43 @@ describe("Add action", () => {
 });
 
 describe("Remove action", () => {
-    it("removes the line", async () => {
-        const { findByTestId, queryByText } = render(basicChordPaper);
+    let findByTestId: (testID: string) => Promise<HTMLElement>;
+    let queryByText: (text: string) => HTMLElement | null;
+
+    let subject: () => Promise<void>;
+
+    beforeEach(async () => {
+        const rendered = render(basicChordPaper);
+        findByTestId = rendered.findByTestId;
+        queryByText = rendered.queryByText;
         const line = await findByTestId("Line-2-NoneditableLine");
         expect(line).toBeInTheDocument();
 
         expect(line).toHaveTextContent("Never gonna run around");
 
-        fireEvent.mouseOver(line);
+        subject = async () => {
+            fireEvent.mouseOver(line);
+            const removeButton = await findByTestId("Line-2-RemoveButton");
+            expect(removeButton).toBeInTheDocument();
+            fireEvent.click(removeButton);
+        };
+    });
 
-        const removeButton = await findByTestId("Line-2-RemoveButton");
-        expect(removeButton).toBeInTheDocument();
-        fireEvent.click(removeButton);
+    it("removes the line", async () => {
+        await subject();
+        await waitForElementToBeRemoved(() =>
+            queryByText("Never gonna run around")
+        );
+    });
+
+    it("shifts the next line up", async () => {
+        await subject();
 
         await waitForElementToBeRemoved(() =>
             queryByText("Never gonna run around")
         );
+
+        const line = await findByTestId("Line-2-NoneditableLine");
+        expect(line).toHaveTextContent("Never gonna make you cry");
     });
 });
