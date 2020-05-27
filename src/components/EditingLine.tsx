@@ -5,6 +5,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { withStyles } from "@material-ui/styles";
+import { DataTestID } from "./common/DataTestID";
 
 const FilledInput = withStyles((theme: Theme) => ({
     root: {
@@ -25,7 +26,7 @@ const browserInputProps = (theme: Theme) => {
     };
 };
 
-interface EditingLineProps {
+interface EditingLineProps extends DataTestID {
     text: string;
     onChange?: (newValue: string) => void;
     onFinish?: () => void;
@@ -49,15 +50,27 @@ const EditingLine: React.FC<EditingLineProps> = (
         }
     };
 
+    const innerTestID = (): string | undefined => {
+        if (!props["data-testid"]) {
+            return undefined;
+        }
+
+        return `${props["data-testid"]}-Inner`;
+    };
+
     return (
         <FilledInput
             autoFocus
-            inputProps={browserInputProps(theme)}
+            inputProps={{
+                "data-testid": innerTestID(),
+                ...browserInputProps(theme),
+            }}
             value={props.text}
             onBlur={props.onFinish}
             onChange={forwardChange}
             onKeyPress={forwardEnter}
             fullWidth
+            data-testid={props["data-testid"]}
         />
     );
 };

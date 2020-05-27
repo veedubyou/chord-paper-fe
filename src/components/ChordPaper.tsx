@@ -84,7 +84,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                     onAdd={addLine}
                     onRemove={removeLine}
                     onChange={changeLine}
-                    data-testid={`line-${index}`}
+                    data-testid={`Line-${index}`}
                 ></Line>
             ))}
         </Paper>

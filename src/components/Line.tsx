@@ -17,7 +17,9 @@ import UnstyledRemoveIcon from "@material-ui/icons/Remove";
 
 import grey from "@material-ui/core/colors/grey";
 
-interface LineProps {
+import { DataTestID } from "./common/DataTestID";
+
+interface LineProps extends DataTestID {
     id: string;
     text: string;
     onChange?: (id: string, newValue: string) => void;
@@ -87,6 +89,14 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         }, 250);
     };
 
+    const testID = (suffix: string): string | undefined => {
+        if (!props["data-testid"]) {
+            return undefined;
+        }
+
+        return `${props["data-testid"]}-${suffix}`;
+    };
+
     const changeHandler = (): ((newValue: string) => void) => {
         return (newValue: string) => {
             if (props.onChange) {
@@ -98,13 +108,25 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const hoverMenu = (): React.ReactElement => {
         return (
             <ButtonGroup variant="outlined">
-                <Button variant="contained" onClick={startEdit}>
+                <Button
+                    variant="contained"
+                    onClick={startEdit}
+                    data-testid={testID("EditButton")}
+                >
                     <EditIcon />
                 </Button>
-                <Button variant="contained" onClick={addHandler}>
+                <Button
+                    variant="contained"
+                    onClick={addHandler}
+                    data-testid={testID("AddButton")}
+                >
                     <AddIcon />
                 </Button>
-                <Button variant="contained" onClick={removeHandler}>
+                <Button
+                    variant="contained"
+                    onClick={removeHandler}
+                    data-testid={testID("RemoveButton")}
+                >
                     <RemoveIcon />
                 </Button>
             </ButtonGroup>
@@ -119,7 +141,11 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
 
         return (
             <Tooltip title={hoverMenu()} interactive>
-                <HighlightableLine variant="h5" noWrap>
+                <HighlightableLine
+                    variant="h5"
+                    noWrap
+                    data-testid={testID("NoneditableLine")}
+                >
                     {text}
                 </HighlightableLine>
             </Tooltip>
@@ -135,6 +161,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 text={props.text}
                 onChange={changeHandler()}
                 onFinish={finishEdit}
+                data-testid={testID("EditableLine")}
             />
         );
     }
