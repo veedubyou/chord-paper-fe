@@ -1,0 +1,19 @@
+name: PR Test
+
+on: [pull_request]
+
+jobs:
+    buildAndTest:
+        name: Test
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Install Dependencies
+              run: yarn
+
+            - name: Build
+              run: yarn build
+
+            - name: Test
+              run: yarn test --watchAll=false
