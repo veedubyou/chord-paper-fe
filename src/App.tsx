@@ -55,6 +55,6 @@ function App() {
             </RootPaper>
         </ThemeProvider>
     );
-}
+
 
 export default App;
