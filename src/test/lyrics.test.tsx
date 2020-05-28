@@ -5,6 +5,8 @@ import {
     waitForElementToBeRemoved,
     cleanup,
     findByTestId,
+    Matcher,
+    MatcherFunction,
 } from "@testing-library/react";
 
 import userEvent from "@testing-library/user-event";
@@ -43,13 +45,27 @@ const basicChordPaper = (
         <ChordPaper initialLyrics={lyrics} />
     </ThemeProvider>
 );
+const matchText: (textToMatch: string) => MatcherFunction = (
+    textToMatch: string
+): MatcherFunction => {
+    return (content: string, element: HTMLElement): boolean => {
+        const hasText = (element: Element) =>
+            element.textContent === textToMatch;
+        const nodeHasText = hasText(element);
+        const childrenDontHaveText = Array.from(element.children).every(
+            (child) => !hasText(child)
+        );
+
+        return nodeHasText && childrenDontHaveText;
+    };
+};
 
 describe("Rendering initial lyrics", () => {
     test("renders all initial lyric lines", () => {
         const { getByText } = render(basicChordPaper);
 
         lyrics.forEach((lyric: string) => {
-            const lineElement: HTMLElement = getByText(lyric);
+            const lineElement: HTMLElement = getByText(matchText(lyric));
             expect(lineElement).toBeInTheDocument();
         });
     });
@@ -57,7 +73,9 @@ describe("Rendering initial lyrics", () => {
     test("doesn't render an unspecified lyric line", () => {
         const { queryByText } = render(basicChordPaper);
 
-        const lineElement: HTMLElement | null = queryByText("And hurt you");
+        const lineElement: HTMLElement | null = queryByText(
+            matchText("And hurt you")
+        );
         expect(lineElement).toBeNull();
     });
 });
@@ -176,7 +194,7 @@ describe("Edit action", () => {
             charCode: 13,
         });
 
-        expect(await findByText(expectedLyric)).toBeInTheDocument();
+        expect(await findByText(matchText(expectedLyric))).toBeInTheDocument();
     });
 });
 
@@ -216,7 +234,7 @@ describe("Add action", () => {
 
 describe("Remove action", () => {
     let findByTestId: (testID: string) => Promise<HTMLElement>;
-    let queryByText: (text: string) => HTMLElement | null;
+    let queryByText: (matcher: Matcher) => HTMLElement | null;
 
     let subject: () => Promise<void>;
 
@@ -240,15 +258,14 @@ describe("Remove action", () => {
     it("removes the line", async () => {
         await subject();
         await waitForElementToBeRemoved(() =>
-            queryByText("Never gonna run around")
+            queryByText(matchText("Never gonna run around"))
         );
     });
 
     it("shifts the next line up", async () => {
         await subject();
-
         await waitForElementToBeRemoved(() =>
-            queryByText("Never gonna run around")
+            queryByText(matchText("Never gonna run around"))
         );
 
         const line = await findByTestId("Line-2-NoneditableLine");
