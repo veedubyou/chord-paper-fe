@@ -18,6 +18,7 @@ import UnstyledRemoveIcon from "@material-ui/icons/Remove";
 import grey from "@material-ui/core/colors/grey";
 
 import { DataTestID } from "./common/DataTestID";
+import { tokenize } from "../utils/lyric_tokenizer";
 
 interface LineProps extends DataTestID {
     id: string;
@@ -52,14 +53,21 @@ const Tooltip = withStyles({
     },
 })(UnstyledTooltop);
 
-const HighlightableLine = withStyles((theme: Theme) => ({
+const HighlightableText = withStyles((theme: Theme) => ({
     root: {
         "&:hover": {
             color: theme.palette.secondary.main,
-            backgroundColor: grey[100],
         },
     },
 }))(Typography);
+
+const HighlightableBox = withStyles({
+    root: {
+        "&:hover": {
+            backgroundColor: grey[100],
+        },
+    },
+})(Box);
 
 const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const [editing, setEditing] = useState(false);
@@ -79,6 +87,8 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         }
     };
 
+    const removalTime = 250;
+
     const removeHandler = () => {
         setRemoved(true);
 
@@ -86,7 +96,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
             if (props.onRemove) {
                 props.onRemove(props.id);
             }
-        }, 250);
+        }, removalTime);
     };
 
     const testID = (suffix: string): string | undefined => {
@@ -139,15 +149,23 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
             text = "\u00A0"; //white space to prevent the line being deflated
         }
 
+        let tokens = tokenize(text);
+
         return (
             <Tooltip title={hoverMenu()} interactive>
-                <HighlightableLine
-                    variant="h5"
-                    noWrap
-                    data-testid={testID("NoneditableLine")}
-                >
-                    {text}
-                </HighlightableLine>
+                <HighlightableBox data-testid={testID("NoneditableLine")}>
+                    {tokens.map((token: string, index: number) => (
+                        <HighlightableText
+                            key={`${token}-${index}`}
+                            variant="h5"
+                            noWrap
+                            display="inline"
+                            data-testid={testID(`Word-${index}`)}
+                        >
+                            {token}
+                        </HighlightableText>
+                    ))}
+                </HighlightableBox>
             </Tooltip>
         );
     };
@@ -169,7 +187,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const yeetDirection = removed ? "up" : "down";
 
     return (
-        <Slide direction={yeetDirection} in={!removed}>
+        <Slide direction={yeetDirection} in={!removed} timeout={removalTime}>
             <Box
                 borderBottom={1}
                 borderColor="grey.50"
