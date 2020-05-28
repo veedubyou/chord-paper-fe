@@ -18,6 +18,7 @@ import UnstyledRemoveIcon from "@material-ui/icons/Remove";
 import grey from "@material-ui/core/colors/grey";
 
 import { DataTestID } from "./common/DataTestID";
+import { tokenize, isWhitespace } from "../utils/util";
 
 interface LineProps extends DataTestID {
     id: string;
@@ -52,14 +53,30 @@ const Tooltip = withStyles({
     },
 })(UnstyledTooltop);
 
-const HighlightableLine = withStyles((theme: Theme) => ({
+const HighlightableWord = withStyles((theme: Theme) => ({
     root: {
         "&:hover": {
             color: theme.palette.secondary.main,
-            backgroundColor: grey[100],
         },
     },
 }))(Typography);
+
+const HighlightableSpace = withStyles((theme: Theme) => ({
+    root: {
+        whiteSpace: "pre",
+        "&:hover": {
+            backgroundColor: theme.palette.secondary.light,
+        },
+    },
+}))(Typography);
+
+const HighlightableBox = withStyles({
+    root: {
+        "&:hover": {
+            backgroundColor: grey[100],
+        },
+    },
+})(Box);
 
 const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const [editing, setEditing] = useState(false);
@@ -133,21 +150,51 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         );
     };
 
+    const componentsForLyricTokens = (
+        tokens: string[]
+    ): React.ReactElement[] => {
+        return tokens.map((token: string, index: number) => {
+            const props = {
+                key: `${token}-${index}`,
+                variant: "h5" as "h5",
+                display: "inline" as "inline",
+            };
+
+            if (isWhitespace(token)) {
+                return (
+                    <HighlightableSpace
+                        {...props}
+                        data-testid={testID(`Space-${index}`)}
+                    >
+                        {token}
+                    </HighlightableSpace>
+                );
+            } else {
+                return (
+                    <HighlightableWord
+                        {...props}
+                        data-testid={testID(`Word-${index}`)}
+                    >
+                        {token}
+                    </HighlightableWord>
+                );
+            }
+        });
+    };
+
     const nonEditableLine = (): React.ReactElement => {
         let text = props.text;
         if (text.trim() === "") {
             text = "\u00A0"; //white space to prevent the line being deflated
         }
 
+        const tokens = tokenize(text);
+
         return (
             <Tooltip title={hoverMenu()} interactive>
-                <HighlightableLine
-                    variant="h5"
-                    noWrap
-                    data-testid={testID("NoneditableLine")}
-                >
-                    {text}
-                </HighlightableLine>
+                <HighlightableBox data-testid={testID("NoneditableLine")}>
+                    {componentsForLyricTokens(tokens)}
+                </HighlightableBox>
             </Tooltip>
         );
     };
