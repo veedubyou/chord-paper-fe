@@ -96,6 +96,8 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         }
     };
 
+    const removalTime = 250;
+
     const removeHandler = () => {
         setRemoved(true);
 
@@ -103,7 +105,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
             if (props.onRemove) {
                 props.onRemove(props.id);
             }
-        }, 250);
+        }, removalTime);
     };
 
     const testID = (suffix: string): string | undefined => {
@@ -216,7 +218,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const yeetDirection = removed ? "up" : "down";
 
     return (
-        <Slide direction={yeetDirection} in={!removed}>
+        <Slide direction={yeetDirection} in={!removed} timeout={removalTime}>
             <Box
                 borderBottom={1}
                 borderColor="grey.50"
