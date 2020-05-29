@@ -112,9 +112,8 @@ const NonEditableLine: React.FC<NonEditableLineProps> = (
 
     const blocks: React.ReactElement[] = chordBlocks.map(
         (chordBlock: ChordBlock, index: number) => (
-            <Grid item>
+            <Grid item key={index}>
                 <Block
-                    key={index}
                     chordBlock={chordBlock}
                     data-testid={testID(`Block-${index}`)}
                 ></Block>
@@ -124,7 +123,7 @@ const NonEditableLine: React.FC<NonEditableLineProps> = (
 
     return (
         <Tooltip title={hoverMenu()} interactive>
-            <HighlightableBox data-testid={testID("NoneditableLine")}>
+            <HighlightableBox data-testid={props["data-testid"]}>
                 <Grid container>{blocks}</Grid>
             </HighlightableBox>
         </Tooltip>

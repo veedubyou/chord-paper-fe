@@ -11,7 +11,6 @@ interface BlockProps extends DataTestID {
 
 const HighlightableWord = withStyles((theme: Theme) => ({
     root: {
-        whiteSpace: "pre", //TODO
         "&:hover": {
             color: theme.palette.secondary.main,
         },
@@ -45,7 +44,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             key: index,
             variant: "h5" as "h5",
             display: "inline" as "inline",
-            "data-testid": testID(`Token-${index}`),
+            // "data-testid": testID(`Token-${index}`),
         };
 
         if (isWhitespace(lyric)) {
@@ -75,11 +74,15 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     return (
         <Grid container direction="column" component="span">
             <Grid item>
-                <Typography variant="h5" display="inline">
+                <Typography
+                    variant="h5"
+                    display="inline"
+                    data-testid={testID("Chord")}
+                >
                     {inflateIfEmpty(props.chordBlock.chord)}
                 </Typography>
             </Grid>
-            <Grid item>
+            <Grid item data-testid={testID("Lyric")}>
                 <>{lyricBlocks()}</>
             </Grid>
         </Grid>
