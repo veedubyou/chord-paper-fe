@@ -4,17 +4,15 @@ import {
     fireEvent,
     waitForElementToBeRemoved,
     cleanup,
-    findByTestId,
     Matcher,
-    MatcherFunction,
 } from "@testing-library/react";
 
 import userEvent from "@testing-library/user-event";
 
 import ChordPaper from "../components/ChordPaper";
-import { AssertionError } from "assert";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
-import { ChordSong } from "../common/ChordLyric";
+import { ChordSong } from "../common/ChordModels";
+import { matchLyric, lyricsInElement } from "./matcher";
 
 afterEach(cleanup);
 
@@ -23,6 +21,7 @@ beforeAll(() => {
     global.document.createRange = () => ({
         setStart: () => {},
         setEnd: () => {},
+        //@ts-ignore
         commonAncestorContainer: {
             nodeName: "BODY",
             ownerDocument: document,
@@ -50,63 +49,6 @@ const basicChordPaper = () => (
         <ChordPaper initialSong={song()} />
     </ThemeProvider>
 );
-// const matchText: (textToMatch: string) => MatcherFunction = (
-//     textToMatch: string
-// ): MatcherFunction => {
-//     return (content: string, element: HTMLElement): boolean => {
-//         const hasText = (element: Element) =>
-//             element.textContent === textToMatch;
-//         const nodeHasText = hasText(element);
-//         const childrenDontHaveText = Array.from(element.children).every(
-//             (child) => !hasText(child)
-//         );
-
-//         return nodeHasText && childrenDontHaveText;
-//     };
-// };
-
-const lyricsFromChildren = (element: Element): string | null => {
-    const testid = element.getAttribute("data-testid");
-    if (testid && testid.endsWith("-Lyric")) {
-        return element.textContent;
-    }
-
-    const childrenLyrics: string[] = [];
-    for (let i = 0; i < element.children.length; i++) {
-        const child = element.children.item(i);
-        if (child === null) {
-            continue;
-        }
-
-        const childLyric = lyricsFromChildren(child);
-        if (childLyric === null) {
-            continue;
-        }
-
-        childrenLyrics.push(childLyric);
-    }
-
-    if (childrenLyrics.length == 0) {
-        return null;
-    }
-
-    return childrenLyrics.join("");
-};
-
-const matchLyric: (lyricToMatch: string) => MatcherFunction = (
-    lyricToMatch: string
-): MatcherFunction => {
-    return (content: string, element: HTMLElement): boolean => {
-        const hasLyrics = (element: Element) =>
-            lyricsFromChildren(element) === lyricToMatch;
-        const elementHasLyrics = hasLyrics(element);
-        const childrenDontHaveLyrics = Array.from(element.children).every(
-            (child) => !hasLyrics(child)
-        );
-
-        return elementHasLyrics && childrenDontHaveLyrics;
-    };
-};
 
 describe("Rendering initial lyrics", () => {
     test("renders all initial lyric lines", () => {
@@ -283,7 +225,7 @@ describe("Add action", () => {
         const pushedLine = await findByTestId("Line-4-NoneditableLine");
         expect(pushedLine).toBeInTheDocument();
 
-        const lyrics = lyricsFromChildren(pushedLine);
+        const lyrics = lyricsInElement(pushedLine);
         expect(lyrics).toEqual("Never gonna make you cry");
     });
 });

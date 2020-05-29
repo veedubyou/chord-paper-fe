@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import ChordPaper from "./components/ChordPaper";
 import { tokenize } from "./utils/util";
-import { ChordSong, ChordLine, ChordBlock } from "./common/ChordLyric";
+import { ChordSong, ChordLine, ChordBlock } from "./common/ChordModels";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {

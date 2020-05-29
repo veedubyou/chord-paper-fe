@@ -2,8 +2,9 @@ import { Typography, withStyles, Theme, Grid } from "@material-ui/core";
 import React from "react";
 
 import { DataTestID, generateTestID } from "../common/DataTestID";
-import { isWhitespace, inflatingWhitespace, tokenize } from "../utils/util";
-import { ChordBlock } from "../common/ChordLyric";
+import { isWhitespace, inflateIfEmpty, tokenize } from "../utils/util";
+import { ChordBlock } from "../common/ChordModels";
+import ChordSymbol from "./ChordSymbol";
 
 interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
@@ -26,14 +27,6 @@ const HighlightableSpace = withStyles((theme: Theme) => ({
     },
 }))(Typography);
 
-const inflateIfEmpty = (value: string) => {
-    if (value.trim() === "") {
-        return inflatingWhitespace();
-    }
-
-    return value;
-};
-
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     const testID = (suffix: string): string => {
         return generateTestID(props, suffix);
@@ -44,7 +37,6 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             key: index,
             variant: "h5" as "h5",
             display: "inline" as "inline",
-            // "data-testid": testID(`Token-${index}`),
         };
 
         if (isWhitespace(lyric)) {
@@ -74,13 +66,9 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     return (
         <Grid container direction="column" component="span">
             <Grid item>
-                <Typography
-                    variant="h5"
-                    display="inline"
-                    data-testid={testID("Chord")}
-                >
-                    {inflateIfEmpty(props.chordBlock.chord)}
-                </Typography>
+                <ChordSymbol data-testid={testID("Chord")}>
+                    {props.chordBlock.chord}
+                </ChordSymbol>
             </Grid>
             <Grid item data-testid={testID("Lyric")}>
                 <>{lyricBlocks()}</>

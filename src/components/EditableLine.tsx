@@ -27,14 +27,14 @@ const browserInputProps = (theme: Theme) => {
 };
 
 interface EditableLineProps extends DataTestID {
-    text: string;
+    children: string;
     onFinish?: (newValue: string) => void;
 }
 
 const EditableLine: React.FC<EditableLineProps> = (
     props: EditableLineProps
 ): JSX.Element => {
-    const [value, setValue] = useState<string>(props.text);
+    const [value, setValue] = useState<string>(props.children);
     const theme = useTheme();
 
     const updateValue = (
@@ -75,7 +75,7 @@ const EditableLine: React.FC<EditableLineProps> = (
                 "data-testid": innerTestID(),
                 ...browserInputProps(theme),
             }}
-            defaultValue={props.text}
+            defaultValue={props.children}
             onBlur={finish}
             onChange={updateValue}
             onKeyPress={forwardEnter}

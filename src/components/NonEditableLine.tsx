@@ -12,7 +12,7 @@ import React from "react";
 import grey from "@material-ui/core/colors/grey";
 
 import { DataTestID, generateTestID } from "../common/DataTestID";
-import { ChordBlock, ChordLine } from "../common/ChordLyric";
+import { ChordBlock, ChordLine } from "../common/ChordModels";
 import Block from "./Block";
 
 import UnstyledEditIcon from "@material-ui/icons/Edit";

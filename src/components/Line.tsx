@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import EditableLine from "./EditableLine";
 
 import { DataTestID, generateTestID } from "../common/DataTestID";
-import { ChordBlock, ChordLine } from "../common/ChordLyric";
+import { ChordBlock, ChordLine } from "../common/ChordModels";
 import { IDable } from "../common/Collection";
 import NonEditableLine from "./NonEditableLine";
 
@@ -90,10 +90,11 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 </Grid>
                 <Grid item>
                     <EditableLine
-                        text={lyrics}
                         onFinish={finishEdit}
                         data-testid={testID("EditableLine")}
-                    />
+                    >
+                        {lyrics}
+                    </EditableLine>
                 </Grid>
             </Grid>
         );
