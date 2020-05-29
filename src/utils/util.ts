@@ -8,5 +8,9 @@ export const tokenize = (lineOfLyrics: string): string[] => {
 };
 
 export const isWhitespace = (s: string): boolean => {
-    return /\s/.test(s);
+    return /^\s+$/.test(s);
+};
+
+export const inflatingWhitespace = (): string => {
+    return "\u00A0";
 };

@@ -8,6 +8,8 @@ import {
     PaletteColorOptions,
 } from "@material-ui/core";
 import ChordPaper from "./components/ChordPaper";
+import { tokenize } from "./utils/util";
+import { ChordSong, ChordLine, ChordBlock } from "./common/ChordLyric";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
@@ -16,9 +18,6 @@ const RootPaper = withStyles((theme: Theme) => ({
         width: "max-content",
     },
 }))(Paper);
-
-const lorumIpsum =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In cursus turpis massa tincidunt dui ut ornare. Tempus urna et pharetra pharetra massa massa ultricies mi quis. Neque volutpat ac tincidunt vitae semper quis lectus nulla. Faucibus in ornare quam viverra orci sagittis eu. Sed augue lacus viverra vitae. Nisl condimentum id venenatis a. Praesent tristique magna sit amet purus gravida quis blandit turpis. Eget magna fermentum iaculis eu non diam. Vestibulum mattis ullamcorper velit sed ullamcorper morbi tincidunt.";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -46,12 +45,68 @@ const createTheme = (): Theme => {
 function App() {
     const theme: Theme = createTheme();
 
-    let sentences = lorumIpsum.split(".");
+    const lyrics = [
+        "We're no strangers to love",
+        "You know the rules and so do I",
+        "A full commitment's what I'm thinking of",
+        "You wouldn't get this from any other guy",
+        "I just wanna tell you how I'm feeling",
+        "Gotta make you understand",
+        "Never gonna give you up",
+        "Never gonna let you down",
+        "Never gonna run around and desert you",
+        "Never gonna make you cry",
+        "Never gonna say goodbye",
+        "Never gonna tell a lie and hurt you",
+    ];
+
+    const chords = ["A", "B7", "Cm", "D/C", "E7", "Fmaj7", "G"];
+
+    const randomChord = (): string => {
+        return chords[Math.floor(Math.random() * chords.length)];
+    };
+
+    const chunk = (arr: string, tokenSize: number): string[] => {
+        const tokens = tokenize(arr);
+        const results: string[] = [];
+
+        for (let i = 0; i < tokens.length; i += tokenSize) {
+            const subArr = tokens.slice(i, i + tokenSize);
+            results.push(subArr.join(""));
+        }
+
+        return results;
+    };
+
+    const assembleSong = (): ChordSong => {
+        const chordLines: ChordLine[] = lyrics.map((lyricLine: string) =>
+            assembleLine(lyricLine)
+        );
+
+        return new ChordSong(chordLines);
+    };
+
+    const assembleLine = (lyrics: string): ChordLine => {
+        const lyricChunks = chunk(lyrics, 4);
+
+        const chordBlocks: ChordBlock[] = lyricChunks.map(
+            (lyricChunk: string) => {
+                return new ChordBlock({
+                    chord: randomChord(),
+                    lyric: lyricChunk,
+                });
+            }
+        );
+
+        return new ChordLine(chordBlocks);
+    };
+
+    const song = assembleSong();
 
     return (
         <ThemeProvider theme={theme}>
             <RootPaper elevation={3}>
-                <ChordPaper initialLyrics={sentences}></ChordPaper>
+                <ChordPaper initialSong={song} />
             </RootPaper>
         </ThemeProvider>
     );

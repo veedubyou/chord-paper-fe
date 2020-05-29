@@ -14,6 +14,7 @@ import userEvent from "@testing-library/user-event";
 import ChordPaper from "../components/ChordPaper";
 import { AssertionError } from "assert";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
+import { ChordSong } from "../common/ChordLyric";
 
 afterEach(cleanup);
 
@@ -40,9 +41,13 @@ const lyrics: string[] = [
     //"And hurt you"
 ];
 
+const song = (): ChordSong => {
+    return ChordSong.fromLyricsLines(lyrics);
+};
+
 const basicChordPaper = (
     <ThemeProvider theme={createMuiTheme()}>
-        <ChordPaper initialLyrics={lyrics} />
+        <ChordPaper initialSong={song()} />
     </ThemeProvider>
 );
 const matchText: (textToMatch: string) => MatcherFunction = (
@@ -79,12 +84,6 @@ describe("Rendering initial lyrics", () => {
         expect(lineElement).toBeNull();
     });
 });
-
-function assert(condition: any, msg?: string): asserts condition {
-    if (!condition) {
-        throw new AssertionError({ message: msg });
-    }
-}
 
 describe("Hover Menu", () => {
     describe("Buttons show on hover", () => {
