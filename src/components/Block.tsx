@@ -2,7 +2,8 @@ import { Typography, withStyles, Theme, Grid } from "@material-ui/core";
 import React from "react";
 
 import { DataTestID, generateTestID } from "../common/DataTestID";
-import { isWhitespace, inflateIfEmpty, tokenize } from "../utils/util";
+import { isWhitespace, inflateIfEmpty } from "../common/Whitespace";
+import { tokenize } from "../common/LyricTokenizer";
 import { ChordBlock } from "../common/ChordModels";
 import ChordSymbol from "./ChordSymbol";
 

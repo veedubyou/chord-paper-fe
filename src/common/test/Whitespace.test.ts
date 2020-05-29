@@ -1,4 +1,4 @@
-import { isWhitespace } from "../util";
+import { isWhitespace } from "../Whitespace";
 
 fdescribe("isWhitespace", () => {
     test("normal space", () => {

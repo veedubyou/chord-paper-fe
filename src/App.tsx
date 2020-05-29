@@ -8,7 +8,7 @@ import {
     PaletteColorOptions,
 } from "@material-ui/core";
 import ChordPaper from "./components/ChordPaper";
-import { tokenize } from "./utils/util";
+import { tokenize } from "./common/LyricTokenizer";
 import { ChordSong, ChordLine, ChordBlock } from "./common/ChordModels";
 
 const RootPaper = withStyles((theme: Theme) => ({

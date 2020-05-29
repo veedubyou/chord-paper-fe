@@ -1,31 +1,45 @@
-import { MatcherFunction } from "@testing-library/react";
+import { MatcherFunction, within } from "@testing-library/react";
+import { SSL_OP_TLS_BLOCK_PADDING_BUG } from "constants";
 
-export const lyricsInElement = (element: Element): string | null => {
-    const testid = element.getAttribute("data-testid");
-    if (testid && testid.endsWith("-Lyric")) {
+// looks in all the descendents, finds all the qualifying elements
+// for each qualifying node, return its text content
+// and join all the children's text content together
+
+const mergeText = (
+    element: Element,
+    shouldScanText: (element: Element) => boolean
+): string | null => {
+    if (shouldScanText(element)) {
         return element.textContent;
     }
 
-    const childrenLyrics: string[] = [];
+    const childrenText: string[] = [];
     for (let i = 0; i < element.children.length; i++) {
         const child = element.children.item(i);
         if (child === null) {
             continue;
         }
 
-        const childLyric = lyricsInElement(child);
-        if (childLyric === null) {
+        const childText = mergeText(child, shouldScanText);
+        if (childText === null) {
             continue;
         }
 
-        childrenLyrics.push(childLyric);
+        childrenText.push(childText);
     }
 
-    if (childrenLyrics.length == 0) {
+    if (childrenText.length == 0) {
         return null;
     }
 
-    return childrenLyrics.join("");
+    return childrenText.join("");
+};
+
+export const lyricsInElement = (parentElement: Element): string | null => {
+    return mergeText(parentElement, (elem: Element): boolean => {
+        const testid = elem.getAttribute("data-testid");
+        return testid !== null && testid.endsWith("-Lyric");
+    });
 };
 
 export const matchLyric: (lyricToMatch: string) => MatcherFunction = (
@@ -41,4 +55,18 @@ export const matchLyric: (lyricToMatch: string) => MatcherFunction = (
 
         return elementHasLyrics && childrenDontHaveLyrics;
     };
+};
+
+export const expectChordAndLyric = async (
+    findByTestId: (testID: string) => Promise<HTMLElement>,
+    blockTestID: string,
+    chord: string,
+    lyric: string
+) => {
+    const parent = await findByTestId(blockTestID);
+    const chordElem = await within(parent).findByTestId(blockTestID + "-Chord");
+    const lyricElem = await within(parent).findByTestId(blockTestID + "-Lyric");
+
+    expect(chordElem).toHaveTextContent(chord, { normalizeWhitespace: true });
+    expect(lyricElem).toHaveTextContent(lyric, { normalizeWhitespace: true });
 };

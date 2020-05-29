@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography } from "@material-ui/core";
 import { DataTestID } from "../common/DataTestID";
-import { inflateIfEmpty } from "../utils/util";
+import { inflateIfEmpty } from "../common/Whitespace";
 import { withStyles } from "@material-ui/styles";
 
 const ChordTypography = withStyles({
@@ -24,7 +24,6 @@ const ChordSymbol: React.FC<ChordSymbolProps> = (
         }
 
         chord = chord + " ";
-        console.log(chord);
 
         return inflateIfEmpty(chord);
     };
