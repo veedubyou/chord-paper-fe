@@ -55,30 +55,30 @@ describe("Rendering initial chords", () => {
     test("renders the chords", async () => {
         const { findByTestId } = render(basicChordPaper());
 
-        expectChordAndLyric(
+        await expectChordAndLyric(
             findByTestId,
-            "Line-0-NoneditableLine-Block-0",
+            ["Line-0", "NoneditableLine", "Block-0"],
             "C",
-            "Fly me "
+            "Fly me"
         );
 
-        expectChordAndLyric(
+        await expectChordAndLyric(
             findByTestId,
-            "Line-0-NoneditableLine-Block-1",
+            ["Line-0", "NoneditableLine", "Block-1"],
             "D",
             "to the moon"
         );
 
-        expectChordAndLyric(
+        await expectChordAndLyric(
             findByTestId,
-            "Line-1-NoneditableLine-Block-0",
+            ["Line-1", "NoneditableLine", "Block-0"],
             "",
-            "And let me play "
+            "And let me play"
         );
 
-        expectChordAndLyric(
+        await expectChordAndLyric(
             findByTestId,
-            "Line-1-NoneditableLine-Block-1",
+            ["Line-1", "NoneditableLine", "Block-1"],
             "E",
             "among the stars"
         );

@@ -2,7 +2,7 @@ import { Box, Typography, Slide, Grid } from "@material-ui/core";
 import React, { useState } from "react";
 import EditableLine from "./EditableLine";
 
-import { DataTestID, generateTestID } from "../common/DataTestID";
+import { DataTestID } from "../common/DataTestID";
 import { ChordBlock, ChordLine } from "../common/ChordModels";
 import { IDable } from "../common/Collection";
 import NonEditableLine from "./NonEditableLine";
@@ -64,10 +64,6 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         }
     };
 
-    const testID = (suffix: string): string => {
-        return generateTestID(props, suffix);
-    };
-
     const nonEditableLine = (): React.ReactElement => {
         return (
             <NonEditableLine
@@ -75,7 +71,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 onAddButton={addHandler}
                 onRemoveButton={removeHandler}
                 onEditButton={startEdit}
-                data-testid={testID("NoneditableLine")}
+                data-testid={"NoneditableLine"}
             />
         );
     };
@@ -91,7 +87,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 <Grid item>
                     <EditableLine
                         onFinish={finishEdit}
-                        data-testid={testID("EditableLine")}
+                        data-testid={"EditableLine"}
                     >
                         {lyrics}
                     </EditableLine>
@@ -110,6 +106,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 borderColor="grey.50"
                 width="auto"
                 margin={"3rem"}
+                data-testid={props["data-testid"]}
             >
                 {elem}
             </Box>

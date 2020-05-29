@@ -1,7 +1,7 @@
 import { Typography, withStyles, Theme, Grid } from "@material-ui/core";
 import React from "react";
 
-import { DataTestID, generateTestID } from "../common/DataTestID";
+import { DataTestID } from "../common/DataTestID";
 import { isWhitespace, inflateIfEmpty } from "../common/Whitespace";
 import { tokenize } from "../common/LyricTokenizer";
 import { ChordBlock } from "../common/ChordModels";
@@ -29,10 +29,6 @@ const HighlightableSpace = withStyles((theme: Theme) => ({
 }))(Typography);
 
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
-    const testID = (suffix: string): string => {
-        return generateTestID(props, suffix);
-    };
-
     const lyricBlock = (lyric: string, index: number): React.ReactElement => {
         const typographyProps = {
             key: index,
@@ -65,13 +61,18 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     };
 
     return (
-        <Grid container direction="column" component="span">
+        <Grid
+            container
+            direction="column"
+            component="span"
+            data-testid={props["data-testid"]}
+        >
             <Grid item>
-                <ChordSymbol data-testid={testID("Chord")}>
+                <ChordSymbol data-testid="Chord">
                     {props.chordBlock.chord}
                 </ChordSymbol>
             </Grid>
-            <Grid item data-testid={testID("Lyric")}>
+            <Grid item data-testid="Lyric">
                 <>{lyricBlocks()}</>
             </Grid>
         </Grid>

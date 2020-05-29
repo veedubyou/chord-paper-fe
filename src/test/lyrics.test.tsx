@@ -12,7 +12,7 @@ import userEvent from "@testing-library/user-event";
 import ChordPaper from "../components/ChordPaper";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { ChordSong } from "../common/ChordModels";
-import { matchLyric, lyricsInElement } from "./matcher";
+import { matchLyric, lyricsInElement, findByTestIdChain } from "./matcher";
 
 afterEach(cleanup);
 
@@ -77,7 +77,10 @@ describe("Hover Menu", () => {
 
         beforeEach(async () => {
             findByTestId = render(basicChordPaper()).findByTestId;
-            const hoverLine = await findByTestId("Line-2-NoneditableLine");
+            const hoverLine = await findByTestIdChain(findByTestId, [
+                "Line-2",
+                "NoneditableLine",
+            ]);
             expect(hoverLine).toBeInTheDocument();
 
             subject = () => {
@@ -87,26 +90,20 @@ describe("Hover Menu", () => {
 
         it("shows the edit button", async () => {
             subject();
-            const editButton = await findByTestId(
-                "Line-2-NoneditableLine-EditButton"
-            );
+            const editButton = await findByTestId("EditButton");
             expect(editButton).toBeInTheDocument();
         });
 
         it("shows the add button", async () => {
             subject();
-            const editButton = await findByTestId(
-                "Line-2-NoneditableLine-AddButton"
-            );
-            expect(editButton).toBeInTheDocument();
+            const addButton = await findByTestId("AddButton");
+            expect(addButton).toBeInTheDocument();
         });
 
         it("shows the remove button", async () => {
             subject();
-            const editButton = await findByTestId(
-                "Line-2-NoneditableLine-RemoveButton"
-            );
-            expect(editButton).toBeInTheDocument();
+            const removeButton = await findByTestId("RemoveButton");
+            expect(removeButton).toBeInTheDocument();
         });
     });
 
@@ -120,20 +117,17 @@ describe("Hover Menu", () => {
 
             const findByTestId = rendered.findByTestId;
 
-            const hoverLine = await findByTestId("Line-2-NoneditableLine");
+            const hoverLine = await findByTestIdChain(findByTestId, [
+                "Line-2",
+                "NoneditableLine",
+            ]);
             expect(hoverLine).toBeInTheDocument();
             fireEvent.mouseOver(hoverLine);
 
             // need to wait for the element to appear before we can wait for the disappearance
-            expect(
-                await findByTestId("Line-2-NoneditableLine-EditButton")
-            ).toBeInTheDocument();
-            expect(
-                await findByTestId("Line-2-NoneditableLine-AddButton")
-            ).toBeInTheDocument();
-            expect(
-                await findByTestId("Line-2-NoneditableLine-RemoveButton")
-            ).toBeInTheDocument();
+            expect(await findByTestId("EditButton")).toBeInTheDocument();
+            expect(await findByTestId("AddButton")).toBeInTheDocument();
+            expect(await findByTestId("RemoveButton")).toBeInTheDocument();
 
             subject = () => {
                 fireEvent.mouseOut(hoverLine);
@@ -143,21 +137,21 @@ describe("Hover Menu", () => {
         it("hides the edit button", async () => {
             subject();
             await waitForElementToBeRemoved(() => {
-                return queryByTestId("Line-2-NoneditableLine-EditButton");
+                return queryByTestId("EditButton");
             });
         });
 
         it("hides the add button", async () => {
             subject();
             await waitForElementToBeRemoved(() => {
-                return queryByTestId("Line-2-NoneditableLine-AddButton");
+                return queryByTestId("AddButton");
             });
         });
 
         it("hides the remove button", async () => {
             subject();
             await waitForElementToBeRemoved(() => {
-                return queryByTestId("Line-2-NoneditableLine-RemoveButton");
+                return queryByTestId("RemoveButton");
             });
         });
     });
@@ -166,17 +160,21 @@ describe("Hover Menu", () => {
 describe("Edit action", () => {
     it("changes the text", async () => {
         const { findByTestId, findByText } = render(basicChordPaper());
-        const line = await findByTestId("Line-2-NoneditableLine");
+        const line = await findByTestIdChain(findByTestId, [
+            "Line-2",
+            "NoneditableLine",
+        ]);
         expect(line).toBeInTheDocument();
         fireEvent.mouseOver(line);
 
-        const editButton = await findByTestId(
-            "Line-2-NoneditableLine-EditButton"
-        );
+        const editButton = await findByTestId("EditButton");
         expect(editButton).toBeInTheDocument();
         fireEvent.click(editButton);
 
-        const inputElem = await findByTestId("Line-2-EditableLine-Inner");
+        const inputElem = await findByTestIdChain(findByTestId, [
+            "Line-2",
+            "EditableLine-Inner",
+        ]);
         expect(inputElem).toBeInTheDocument();
         userEvent.type(inputElem, " and desert you");
 
@@ -200,14 +198,15 @@ describe("Add action", () => {
 
     beforeEach(async () => {
         findByTestId = render(basicChordPaper()).findByTestId;
-        const line = await findByTestId("Line-2-NoneditableLine");
+        const line = await findByTestIdChain(findByTestId, [
+            "Line-2",
+            "NoneditableLine",
+        ]);
         expect(line).toBeInTheDocument();
 
         subject = async () => {
             fireEvent.mouseOver(line);
-            const addButton = await findByTestId(
-                "Line-2-NoneditableLine-AddButton"
-            );
+            const addButton = await findByTestId("AddButton");
             expect(addButton).toBeInTheDocument();
             fireEvent.click(addButton);
         };
@@ -215,14 +214,20 @@ describe("Add action", () => {
 
     it("adds a new empty line", async () => {
         await subject();
-        const newLine = await findByTestId("Line-3-NoneditableLine");
+        const newLine = await findByTestIdChain(findByTestId, [
+            "Line-3",
+            "NoneditableLine",
+        ]);
         expect(newLine).toBeInTheDocument();
         expect(newLine).toHaveTextContent("", { normalizeWhitespace: true });
     });
 
     it("pushes the next line down", async () => {
         await subject();
-        const pushedLine = await findByTestId("Line-4-NoneditableLine");
+        const pushedLine = await findByTestIdChain(findByTestId, [
+            "Line-4",
+            "NoneditableLine",
+        ]);
         expect(pushedLine).toBeInTheDocument();
 
         const lyrics = lyricsInElement(pushedLine);
@@ -240,16 +245,17 @@ describe("Remove action", () => {
         const rendered = render(basicChordPaper());
         findByTestId = rendered.findByTestId;
         queryByText = rendered.queryByText;
-        const line = await findByTestId("Line-2-NoneditableLine");
+        const line = await findByTestIdChain(findByTestId, [
+            "Line-2",
+            "NoneditableLine",
+        ]);
         expect(line).toBeInTheDocument();
 
         expect(line).toHaveTextContent("Never gonna run around");
 
         subject = async () => {
             fireEvent.mouseOver(line);
-            const removeButton = await findByTestId(
-                "Line-2-NoneditableLine-RemoveButton"
-            );
+            const removeButton = await findByTestId("RemoveButton");
             expect(removeButton).toBeInTheDocument();
             fireEvent.click(removeButton);
         };
@@ -268,7 +274,10 @@ describe("Remove action", () => {
             queryByText(matchLyric("Never gonna run around"))
         );
 
-        const line = await findByTestId("Line-2-NoneditableLine");
+        const line = await findByTestIdChain(findByTestId, [
+            "Line-2",
+            "NoneditableLine",
+        ]);
         expect(line).toHaveTextContent("Never gonna make you cry");
     });
 });

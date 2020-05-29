@@ -37,8 +37,7 @@ const mergeText = (
 
 export const lyricsInElement = (parentElement: Element): string | null => {
     return mergeText(parentElement, (elem: Element): boolean => {
-        const testid = elem.getAttribute("data-testid");
-        return testid !== null && testid.endsWith("-Lyric");
+        return elem.getAttribute("data-testid") === "Lyric";
     });
 };
 
@@ -57,15 +56,30 @@ export const matchLyric: (lyricToMatch: string) => MatcherFunction = (
     };
 };
 
+export const findByTestIdChain = async (
+    findByTestId: (testID: string) => Promise<HTMLElement>,
+    testIDChain: string[]
+): Promise<HTMLElement> => {
+    expect(testIDChain.length).toBeGreaterThanOrEqual(1);
+
+    let parent: HTMLElement = await findByTestId(testIDChain[0]);
+    for (let i = 1; i < testIDChain.length; i++) {
+        parent = await within(parent).findByTestId(testIDChain[i]);
+    }
+
+    return parent;
+};
+
 export const expectChordAndLyric = async (
     findByTestId: (testID: string) => Promise<HTMLElement>,
-    blockTestID: string,
+    testIDChain: string[],
     chord: string,
     lyric: string
 ) => {
-    const parent = await findByTestId(blockTestID);
-    const chordElem = await within(parent).findByTestId(blockTestID + "-Chord");
-    const lyricElem = await within(parent).findByTestId(blockTestID + "-Lyric");
+    const parent = await findByTestIdChain(findByTestId, testIDChain);
+
+    const chordElem = await within(parent).findByTestId("Chord");
+    const lyricElem = await within(parent).findByTestId("Lyric");
 
     expect(chordElem).toHaveTextContent(chord, { normalizeWhitespace: true });
     expect(lyricElem).toHaveTextContent(lyric, { normalizeWhitespace: true });

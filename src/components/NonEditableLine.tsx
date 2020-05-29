@@ -11,7 +11,7 @@ import React from "react";
 
 import grey from "@material-ui/core/colors/grey";
 
-import { DataTestID, generateTestID } from "../common/DataTestID";
+import { DataTestID } from "../common/DataTestID";
 import { ChordBlock, ChordLine } from "../common/ChordModels";
 import Block from "./Block";
 
@@ -68,10 +68,6 @@ interface NonEditableLineProps extends DataTestID {
 const NonEditableLine: React.FC<NonEditableLineProps> = (
     props: NonEditableLineProps
 ): JSX.Element => {
-    const testID = (suffix: string): string => {
-        return generateTestID(props, suffix);
-    };
-
     let chordBlocks: ChordBlock[] = props.chordLine.chordBlocks;
     if (chordBlocks.length === 0) {
         chordBlocks = [
@@ -88,21 +84,21 @@ const NonEditableLine: React.FC<NonEditableLineProps> = (
                 <Button
                     variant="contained"
                     onClick={props.onEditButton}
-                    data-testid={testID("EditButton")}
+                    data-testid={"EditButton"}
                 >
                     <EditIcon />
                 </Button>
                 <Button
                     variant="contained"
                     onClick={props.onAddButton}
-                    data-testid={testID("AddButton")}
+                    data-testid={"AddButton"}
                 >
                     <AddIcon />
                 </Button>
                 <Button
                     variant="contained"
                     onClick={props.onRemoveButton}
-                    data-testid={testID("RemoveButton")}
+                    data-testid={"RemoveButton"}
                 >
                     <RemoveIcon />
                 </Button>
@@ -115,7 +111,7 @@ const NonEditableLine: React.FC<NonEditableLineProps> = (
             <Grid item key={index}>
                 <Block
                     chordBlock={chordBlock}
-                    data-testid={testID(`Block-${index}`)}
+                    data-testid={`Block-${index}`}
                 ></Block>
             </Grid>
         )
