@@ -92,6 +92,27 @@ describe("lyric tokenizer", () => {
             const results = tokenize("Ne,ver gonna");
             expect(results).toEqual(["Ne", ",", "ver", " ", "gonna"]);
         });
+
+        test("apostrophes don't break the word", () => {
+            const results = tokenize(
+                "A full commitment's what I'm thinking of"
+            );
+            expect(results).toEqual([
+                "A",
+                " ",
+                "full",
+                " ",
+                "commitment's",
+                " ",
+                "what",
+                " ",
+                "I'm",
+                " ",
+                "thinking",
+                " ",
+                "of",
+            ]);
+        });
     });
 
     describe("unicode", () => {
