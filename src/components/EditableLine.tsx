@@ -3,9 +3,9 @@ import {
     useTheme,
     FilledInput as UnstyledFilledInput,
 } from "@material-ui/core";
-import React from "react";
+import React, { useState } from "react";
 import { withStyles } from "@material-ui/styles";
-import { DataTestID } from "./common/DataTestID";
+import { DataTestID } from "../common/DataTestID";
 
 const FilledInput = withStyles((theme: Theme) => ({
     root: {
@@ -26,27 +26,37 @@ const browserInputProps = (theme: Theme) => {
     };
 };
 
-interface EditingLineProps extends DataTestID {
-    text: string;
-    onChange?: (newValue: string) => void;
-    onFinish?: () => void;
+interface EditableLineProps extends DataTestID {
+    children: string;
+    onFinish?: (newValue: string) => void;
 }
 
-const EditingLine: React.FC<EditingLineProps> = (
-    props: EditingLineProps
+const EditableLine: React.FC<EditableLineProps> = (
+    props: EditableLineProps
 ): JSX.Element => {
+    const [value, setValue] = useState<string>(props.children);
     const theme = useTheme();
-    const forwardChange = (
+
+    const updateValue = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        if (props.onChange && event?.target?.value) {
-            props.onChange(event.target.value);
+        if (!event?.target?.value) {
+            console.error("No target value from FilledInput component");
+            return;
         }
+
+        setValue(event.target.value);
     };
 
     const forwardEnter = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        if (props.onFinish && event.key === "Enter") {
-            props.onFinish();
+        if (event.key === "Enter") {
+            finish();
+        }
+    };
+
+    const finish = () => {
+        if (props.onFinish) {
+            props.onFinish(value);
         }
     };
 
@@ -65,9 +75,9 @@ const EditingLine: React.FC<EditingLineProps> = (
                 "data-testid": innerTestID(),
                 ...browserInputProps(theme),
             }}
-            value={props.text}
-            onBlur={props.onFinish}
-            onChange={forwardChange}
+            defaultValue={props.children}
+            onBlur={finish}
+            onChange={updateValue}
             onKeyPress={forwardEnter}
             fullWidth
             data-testid={props["data-testid"]}
@@ -75,4 +85,4 @@ const EditingLine: React.FC<EditingLineProps> = (
     );
 };
 
-export default EditingLine;
+export default EditableLine;

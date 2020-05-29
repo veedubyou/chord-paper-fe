@@ -1,12 +1,20 @@
-import { isWhitespace } from "../util";
+import { isWhitespace } from "../Whitespace";
 
-describe("isWhitespace", () => {
+fdescribe("isWhitespace", () => {
     test("normal space", () => {
         expect(isWhitespace(" ")).toEqual(true);
     });
 
+    test("multiple whitespaces", () => {
+        expect(isWhitespace("    ")).toEqual(true);
+    });
+
     test("a character", () => {
         expect(isWhitespace("a")).toEqual(false);
+    });
+
+    test("not all whitespace", () => {
+        expect(isWhitespace("   a")).toEqual(false);
     });
 
     test("a tab", () => {

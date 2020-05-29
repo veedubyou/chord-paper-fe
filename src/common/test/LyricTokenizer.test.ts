@@ -1,4 +1,4 @@
-import { tokenize } from "../util";
+import { tokenize } from "../LyricTokenizer";
 
 describe("lyric tokenizer", () => {
     describe("whitespace", () => {

@@ -1,3 +1,3 @@
 export interface DataTestID {
-    "data-testid"?: string;
+    "data-testid": string;
 }
