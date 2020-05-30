@@ -18,6 +18,7 @@ import Block from "./Block";
 import UnstyledEditIcon from "@material-ui/icons/Edit";
 import UnstyledAddIcon from "@material-ui/icons/Add";
 import UnstyledRemoveIcon from "@material-ui/icons/Remove";
+import { IDable } from "../common/Collection";
 
 const iconColorStyle = {
     root: {
@@ -63,6 +64,7 @@ interface NonEditableLineProps extends DataTestID {
     onRemoveButton?: (
         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => void;
+    onChangeLine?: (id: IDable<"ChordLine">) => void;
 }
 
 const NonEditableLine: React.FC<NonEditableLineProps> = (
@@ -106,11 +108,20 @@ const NonEditableLine: React.FC<NonEditableLineProps> = (
         );
     };
 
+    const chordChangeHandler = (id: IDable<"ChordBlock">, newChord: string) => {
+        props.chordLine.setChord(id, newChord);
+
+        if (props.onChangeLine) {
+            props.onChangeLine(props.chordLine);
+        }
+    };
+
     const blocks: React.ReactElement[] = chordBlocks.map(
         (chordBlock: ChordBlock, index: number) => (
             <Grid item key={index}>
                 <Block
                     chordBlock={chordBlock}
+                    onChordChange={chordChangeHandler}
                     data-testid={`Block-${index}`}
                 ></Block>
             </Grid>

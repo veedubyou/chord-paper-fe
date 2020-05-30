@@ -13,6 +13,7 @@ import ChordPaper from "../components/ChordPaper";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { ChordSong } from "../common/ChordModels";
 import { matchLyric, lyricsInElement, findByTestIdChain } from "./matcher";
+import { enterKey } from "./userEvent";
 
 afterEach(cleanup);
 
@@ -173,7 +174,7 @@ describe("Edit action", () => {
 
         const inputElem = await findByTestIdChain(findByTestId, [
             "Line-2",
-            "EditableLine-Inner",
+            "InnerInput",
         ]);
         expect(inputElem).toBeInTheDocument();
         userEvent.type(inputElem, " and desert you");
@@ -182,11 +183,7 @@ describe("Edit action", () => {
 
         expect(inputElem).toHaveValue(expectedLyric);
 
-        fireEvent.keyPress(inputElem, {
-            key: "Enter",
-            code: 13,
-            charCode: 13,
-        });
+        enterKey(inputElem);
 
         expect(await findByText(matchLyric(expectedLyric))).toBeInTheDocument();
     });

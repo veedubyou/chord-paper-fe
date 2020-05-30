@@ -53,6 +53,43 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
         return lyricTokens.join("");
     }
 
+    replaceLyrics(newLyrics: string): void {
+        if (newLyrics === this.lyrics) {
+            return;
+        }
+
+        this.elements = [
+            new ChordBlock({
+                // TODO: feature next. chords are currently destructively wiped
+                // because anchoring information is lost between edits
+                chord: "",
+                lyric: newLyrics,
+            }),
+        ];
+    }
+
+    setChord(idable: IDable<"ChordBlock">, newChord: string): void {
+        const index = this.indexOf(idable.id);
+
+        this.elements[index].chord = newChord;
+
+        if (this.elements[index].chord === "") {
+            this.mergeBlocks(index);
+        }
+    }
+
+    // merge block at index with previous block
+    // merging lyrics and discarding chords
+    private mergeBlocks(index: number): void {
+        if (index === 0) {
+            return;
+        }
+
+        const prevBlock = this.elements[index - 1];
+        prevBlock.lyric += this.elements[index].lyric;
+        this.elements.splice(index, 1);
+    }
+
     clone(): ChordLine {
         const clone = new ChordLine(this.elements);
         clone.id = this.id;

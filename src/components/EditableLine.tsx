@@ -2,6 +2,7 @@ import {
     Theme,
     useTheme,
     FilledInput as UnstyledFilledInput,
+    InputBaseComponentProps,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import { withStyles } from "@material-ui/styles";
@@ -13,22 +14,29 @@ const FilledInput = withStyles((theme: Theme) => ({
     },
 }))(UnstyledFilledInput);
 
-const browserInputProps = (theme: Theme) => {
+const browserInputProps = (theme: Theme, width?: string) => {
     let padding: string | number = 0;
     if (theme?.typography?.h5?.padding) {
         padding = theme.typography.h5.padding;
     }
 
-    return {
+    const inputProps: InputBaseComponentProps = {
         style: {
             padding: padding,
         },
     };
+
+    if (width && inputProps.style) {
+        inputProps.style.width = width;
+    }
+
+    return inputProps;
 };
 
 interface EditableLineProps extends DataTestID {
     children: string;
     onFinish?: (newValue: string) => void;
+    width?: string;
 }
 
 const EditableLine: React.FC<EditableLineProps> = (
@@ -40,11 +48,6 @@ const EditableLine: React.FC<EditableLineProps> = (
     const updateValue = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        if (!event?.target?.value) {
-            console.error("No target value from FilledInput component");
-            return;
-        }
-
         setValue(event.target.value);
     };
 
@@ -60,20 +63,12 @@ const EditableLine: React.FC<EditableLineProps> = (
         }
     };
 
-    const innerTestID = (): string | undefined => {
-        if (!props["data-testid"]) {
-            return undefined;
-        }
-
-        return `${props["data-testid"]}-Inner`;
-    };
-
     return (
         <FilledInput
             autoFocus
             inputProps={{
-                "data-testid": innerTestID(),
-                ...browserInputProps(theme),
+                "data-testid": "InnerInput",
+                ...browserInputProps(theme, props.width),
             }}
             defaultValue={props.children}
             onBlur={finish}

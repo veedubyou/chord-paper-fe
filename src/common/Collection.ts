@@ -16,7 +16,7 @@ export abstract class Collection<T extends IDable<U>, U extends string> {
         }
     }
 
-    private indexOf(id: string): number {
+    protected indexOf(id: string): number {
         const index = this.elements.findIndex((elem: T) => elem.id === id);
 
         if (index < 0) {
@@ -28,10 +28,6 @@ export abstract class Collection<T extends IDable<U>, U extends string> {
 
     abstract clone(): Collection<T, U>;
 
-    push(newElem: T): void {
-        this.elements.push(newElem);
-    }
-
     // adds a element after the specified id
     addAfter(idable: IDable<U>, newElem: T): void {
         const indexOfBefore = this.indexOf(idable.id);
@@ -42,18 +38,5 @@ export abstract class Collection<T extends IDable<U>, U extends string> {
         const index = this.indexOf(idable.id);
         const removed = this.elements.splice(index, 1);
         return removed[0];
-    }
-
-    clear(): void {
-        this.elements = [];
-    }
-
-    modify(idable: IDable<U>, replacementElem: T): void {
-        if (idable.id !== replacementElem.id) {
-            throw new Error("Unexpected id mismatch");
-        }
-
-        const index = this.indexOf(idable.id);
-        this.elements[index] = replacementElem;
     }
 }
