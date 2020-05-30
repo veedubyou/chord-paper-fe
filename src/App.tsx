@@ -101,12 +101,26 @@ function App() {
         return new ChordLine(chordBlocks);
     };
 
-    const song = assembleSong();
+    // const song = assembleSong();
+    const song = (): ChordSong => {
+        const lines: ChordLine[] = [
+            new ChordLine([
+                new ChordBlock({ chord: "C", lyric: "Fly me " }),
+                new ChordBlock({ chord: "D", lyric: "to the moon" }),
+            ]),
+            new ChordLine([
+                new ChordBlock({ chord: "", lyric: "And let me play " }),
+                new ChordBlock({ chord: "E", lyric: "among the stars" }),
+            ]),
+        ];
+
+        return new ChordSong(lines);
+    };
 
     return (
         <ThemeProvider theme={theme}>
             <RootPaper elevation={3}>
-                <ChordPaper initialSong={song} />
+                <ChordPaper initialSong={song()} />
             </RootPaper>
         </ThemeProvider>
     );

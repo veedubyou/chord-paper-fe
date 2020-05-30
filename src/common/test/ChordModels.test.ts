@@ -38,6 +38,41 @@ describe("ChordLine", () => {
         );
         expect(line.chordBlocks[0].chord).toEqual("");
     });
+
+    test("replaceLyrics", () => {
+        c.replaceLyrics("We ARE strangers to love");
+        expect(c.chordBlocks).toHaveLength(1);
+        expect(c.chordBlocks[0].chord).toEqual("");
+        expect(c.chordBlocks[0].lyric).toEqual("We ARE strangers to love");
+    });
+
+    describe("setChord", () => {
+        describe("setting a chord to empty", () => {
+            test("first chord does not get merged", () => {
+                c.setChord(c.chordBlocks[0], "");
+                expect(c.chordBlocks[0].lyric).toEqual("We're no ");
+                expect(c.chordBlocks[0].chord).toEqual("");
+            });
+
+            test("subsequent chord does get merged", () => {
+                c.setChord(c.chordBlocks[1], "");
+                expect(c.chordBlocks[0].lyric).toEqual(
+                    "We're no strangers to "
+                );
+                expect(c.chordBlocks[0].chord).toEqual("A7");
+                expect(c.chordBlocks[1].lyric).toEqual("love");
+                expect(c.chordBlocks[1].chord).toEqual("Cdim");
+            });
+        });
+
+        describe("setting to a new chord", () => {
+            test("gets set", () => {
+                c.setChord(c.chordBlocks[1], "E7b9");
+                expect(c.chordBlocks[1].lyric).toEqual("strangers to ");
+                expect(c.chordBlocks[1].chord).toEqual("E7b9");
+            });
+        });
+    });
 });
 
 describe("Chord Song", () => {

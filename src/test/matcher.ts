@@ -69,12 +69,16 @@ export const findByTestIdChain = async (
     return parent;
 };
 
+let count = 0;
+
 export const expectChordAndLyric = async (
     findByTestId: (testID: string) => Promise<HTMLElement>,
     testIDChain: string[],
     chord: string,
     lyric: string
 ) => {
+    count += 1;
+    console.log(count);
     const parent = await findByTestIdChain(findByTestId, testIDChain);
 
     const chordElem = await within(parent).findByTestId("Chord");

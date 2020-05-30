@@ -25,19 +25,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const finishEdit = (newLyrics: string) => {
         setEditing(false);
 
-        const oldLyrics = props.chordLine.lyrics;
-
-        if (newLyrics !== oldLyrics) {
-            props.chordLine.clear();
-
-            const newChordBlock: ChordBlock = new ChordBlock({
-                // TODO: feature next. chords are currently destructively wiped
-                // because anchoring information is lost between edits
-                chord: "",
-                lyric: newLyrics,
-            });
-            props.chordLine.push(newChordBlock);
-        }
+        props.chordLine.replaceLyrics(newLyrics);
 
         if (props.onChangeLine) {
             props.onChangeLine(props.chordLine);
@@ -68,6 +56,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         return (
             <NonEditableLine
                 chordLine={props.chordLine}
+                onChangeLine={props.onChangeLine}
                 onAddButton={addHandler}
                 onRemoveButton={removeHandler}
                 onEditButton={startEdit}
