@@ -1,10 +1,5 @@
 import React from "react";
-import {
-    render,
-    cleanup,
-    waitFor,
-    waitForElement,
-} from "@testing-library/react";
+import { render, cleanup, waitFor } from "@testing-library/react";
 
 import userEvent from "@testing-library/user-event";
 
@@ -13,7 +8,6 @@ import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { ChordSong, ChordLine, ChordBlock } from "../common/ChordModels";
 import { expectChordAndLyric, findByTestIdChain } from "./matcher";
 import { backspaceKey, enterKey } from "./userEvent";
-import { act } from "react-dom/test-utils";
 
 afterEach(cleanup);
 
@@ -88,14 +82,14 @@ describe("Rendering initial chords", () => {
 describe("Changing the chord", () => {
     let findByTestId: (testID: string) => Promise<HTMLElement>;
     beforeEach(async () => {
-        // findByTestId = render(basicChordPaper()).findByTestId;
-        // const token = await findByTestIdChain(findByTestId, [
-        //     "Line-0",
-        //     "NoneditableLine",
-        //     "Block-1",
-        //     "Token-0",
-        // ]);
-        // userEvent.click(token);
+        findByTestId = render(basicChordPaper()).findByTestId;
+        const token = await findByTestIdChain(findByTestId, [
+            "Line-0",
+            "NoneditableLine",
+            "Block-1",
+            "Token-0",
+        ]);
+        userEvent.click(token);
     });
 
     test("it takes input and retains new chord changes", async () => {
@@ -104,7 +98,7 @@ describe("Changing the chord", () => {
             "NoneditableLine",
             "Block-1",
             "ChordEdit",
-            "ChordEdit-Inner",
+            "InnerInput",
         ]);
 
         backspaceKey(chordEdit);
@@ -119,53 +113,25 @@ describe("Changing the chord", () => {
         );
     });
 
-    fit("it gets merged with previous block when chords are cleared", async () => {
-        findByTestId = render(basicChordPaper()).findByTestId;
-
-        const token = await findByTestIdChain(findByTestId, [
-            "Line-0",
-            "NoneditableLine",
-            "Block-1",
-            "Token-0",
-        ]);
-
-        userEvent.click(token);
-
+    test.skip("it gets merged with previous block when chords are cleared", async () => {
         const chordEdit = await findByTestIdChain(findByTestId, [
             "Line-0",
             "NoneditableLine",
             "Block-1",
             "ChordEdit",
-            "ChordEdit-Inner",
+            "InnerInput",
         ]);
 
         backspaceKey(chordEdit);
         enterKey(chordEdit);
 
-        const block1 = await findByTestIdChain(findByTestId, [
-            "Line-0",
-            "NoneditableLine",
-            "Block-0",
-        ]);
-
-        console.log(block1.innerHTML);
-
-        const block2 = await findByTestIdChain(findByTestId, [
-            "Line-0",
-            "NoneditableLine",
-            "Block-1",
-        ]);
-
-        console.log(block2.innerHTML);
-
-        await waitForElement(
-            async () =>
-                await expectChordAndLyric(
-                    findByTestId,
-                    ["Line-0", "NoneditableLine", "Block-0"],
-                    "C",
-                    "Fly me to the moon"
-                )
-        );
+        await waitFor(() => {
+            expectChordAndLyric(
+                findByTestId,
+                ["Line-0", "NoneditableLine", "Block-0"],
+                "C",
+                "Fly me to the moon"
+            );
+        });
     });
 });

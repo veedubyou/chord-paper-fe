@@ -63,19 +63,11 @@ const EditableLine: React.FC<EditableLineProps> = (
         }
     };
 
-    const innerTestID = (): string | undefined => {
-        if (!props["data-testid"]) {
-            return undefined;
-        }
-
-        return `${props["data-testid"]}-Inner`;
-    };
-
     return (
         <FilledInput
             autoFocus
             inputProps={{
-                "data-testid": innerTestID(),
+                "data-testid": "InnerInput",
                 ...browserInputProps(theme, props.width),
             }}
             defaultValue={props.children}
