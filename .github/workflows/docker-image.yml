@@ -11,9 +11,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Login to DockerHub Registry
+      - name: Login to DockerHub
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
       - name: Build image
-        run: docker build . --file Dockerfile --tag chord-fe:$(date +%s)
+        run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/chord:$(date +%s)
       - name: Push image
-        run: docker push chord-fe:$(date +%s)
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:$(date +%s)
