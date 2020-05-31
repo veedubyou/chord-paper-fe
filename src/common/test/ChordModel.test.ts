@@ -1,4 +1,4 @@
-import { ChordBlock, ChordLine, ChordSong } from "../ChordModels";
+import { ChordBlock, ChordLine, ChordSong } from "../ChordModel";
 
 describe("ChordLine", () => {
     const testBlocks = (): ChordBlock[] => {
@@ -73,6 +73,8 @@ describe("ChordLine", () => {
             });
         });
     });
+
+    describe("splitBlock", () => {});
 });
 
 describe("Chord Song", () => {

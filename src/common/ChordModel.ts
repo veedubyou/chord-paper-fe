@@ -1,5 +1,6 @@
 import { Collection, IDable } from "./Collection";
 import shortid from "shortid";
+import { tokenize } from "./LyricTokenizer";
 
 interface ChordBlockConstructorParams {
     chord: string;
@@ -17,6 +18,32 @@ export class ChordBlock implements IDable<"ChordBlock"> {
         this.chord = chord;
         this.lyric = lyric;
         this.type = "ChordBlock";
+    }
+
+    get lyricTokens(): string[] {
+        return tokenize(this.lyric);
+    }
+
+    // splits a block, and returns the block before
+    // e.g.
+    // {id:"A", chord: "B7", lyric:"my dear we're"}
+    // splitBlock(4) =>
+    // {id:"B", chord: "B7", lyric:"my dear "}
+    // {id:"A", chord: "", "we're"}
+    split(splitIndex: number): ChordBlock {
+        const tokens = this.lyricTokens;
+        const prevBlockLyricTokens: string[] = tokens.slice(0, splitIndex);
+        const thisBlockLyricTokens: string[] = tokens.slice(splitIndex);
+
+        const prevBlock: ChordBlock = new ChordBlock({
+            chord: this.chord,
+            lyric: prevBlockLyricTokens.join(""),
+        });
+
+        this.chord = "";
+        this.lyric = thisBlockLyricTokens.join("");
+
+        return prevBlock;
     }
 }
 
@@ -88,6 +115,13 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
         const prevBlock = this.elements[index - 1];
         prevBlock.lyric += this.elements[index].lyric;
         this.elements.splice(index, 1);
+    }
+
+    splitBlock(idable: IDable<"ChordBlock">, splitIndex: number): void {
+        const index = this.indexOf(idable.id);
+        const block = this.elements[index];
+        const newPrevBlock = block.split(splitIndex);
+        this.elements.splice(index, 0, newPrevBlock);
     }
 
     clone(): ChordLine {

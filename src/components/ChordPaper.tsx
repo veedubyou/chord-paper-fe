@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Paper as UnstyledPaper, Theme, withStyles } from "@material-ui/core";
 import Line from "./Line";
-import { ChordLine, ChordSong } from "../common/ChordModels";
+import { ChordLine, ChordSong } from "../common/ChordModel";
 import { IDable } from "../common/Collection";
 
 const Paper = withStyles((theme: Theme) => ({

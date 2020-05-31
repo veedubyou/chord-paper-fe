@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event";
 
 import ChordPaper from "../components/ChordPaper";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
-import { ChordSong, ChordLine, ChordBlock } from "../common/ChordModels";
+import { ChordSong, ChordLine, ChordBlock } from "../common/ChordModel";
 import { expectChordAndLyric, findByTestIdChain } from "./matcher";
 import { enterKey } from "./userEvent";
 

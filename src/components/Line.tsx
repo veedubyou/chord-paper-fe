@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import EditableLine from "./EditableLine";
 
 import { DataTestID } from "../common/DataTestID";
-import { ChordLine } from "../common/ChordModels";
+import { ChordLine } from "../common/ChordModel";
 import { IDable } from "../common/Collection";
 import NonEditableLine from "./NonEditableLine";
 
