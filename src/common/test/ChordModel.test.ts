@@ -74,7 +74,21 @@ describe("ChordLine", () => {
         });
     });
 
-    describe("splitBlock", () => {});
+    describe("splitBlock", () => {
+        test("error if splitIndex is 0", () => {
+            expect(() => c.splitBlock(c.chordBlocks[0], 0)).toThrowError();
+        });
+
+        test("splits the block", () => {
+            c.splitBlock(c.chordBlocks[1], 1);
+
+            expect(c.chordBlocks[1].chord).toEqual("Bm");
+            expect(c.chordBlocks[1].lyric).toEqual("strangers");
+
+            expect(c.chordBlocks[2].chord).toEqual("");
+            expect(c.chordBlocks[2].lyric).toEqual(" to ");
+        });
+    });
 });
 
 describe("Chord Song", () => {
