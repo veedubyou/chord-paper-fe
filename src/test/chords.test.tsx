@@ -7,8 +7,7 @@ import ChordPaper from "../components/ChordPaper";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { ChordSong, ChordLine, ChordBlock } from "../common/ChordModels";
 import { expectChordAndLyric, findByTestIdChain } from "./matcher";
-import { backspaceKey, enterKey } from "./userEvent";
-import SelectInput from "@material-ui/core/Select/SelectInput";
+import { enterKey } from "./userEvent";
 
 afterEach(cleanup);
 
