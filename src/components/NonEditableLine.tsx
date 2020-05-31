@@ -12,7 +12,7 @@ import React from "react";
 import grey from "@material-ui/core/colors/grey";
 
 import { DataTestID } from "../common/DataTestID";
-import { ChordBlock, ChordLine } from "../common/ChordModels";
+import { ChordBlock, ChordLine } from "../common/ChordModel";
 import Block from "./Block";
 
 import UnstyledEditIcon from "@material-ui/icons/Edit";
@@ -116,12 +116,25 @@ const NonEditableLine: React.FC<NonEditableLineProps> = (
         }
     };
 
+    const blockSplitHandler = (
+        id: IDable<"ChordBlock">,
+        splitIndex: number
+    ) => {
+        props.chordLine.splitBlock(id, splitIndex);
+
+        if (props.onChangeLine) {
+            props.onChangeLine(props.chordLine);
+        }
+    };
+
     const blocks: React.ReactElement[] = chordBlocks.map(
         (chordBlock: ChordBlock, index: number) => (
-            <Grid item key={index}>
+            <Grid item key={chordBlock.id}>
                 <Block
+                    key={chordBlock.id}
                     chordBlock={chordBlock}
                     onChordChange={chordChangeHandler}
+                    onBlockSplit={blockSplitHandler}
                     data-testid={`Block-${index}`}
                 ></Block>
             </Grid>

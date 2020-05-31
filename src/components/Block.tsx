@@ -2,9 +2,8 @@ import { Typography, withStyles, Theme, Grid } from "@material-ui/core";
 import React, { useState } from "react";
 
 import { DataTestID } from "../common/DataTestID";
-import { isWhitespace, inflateIfEmpty } from "../common/Whitespace";
-import { tokenize } from "../common/LyricTokenizer";
-import { ChordBlock } from "../common/ChordModels";
+import { isWhitespace, inflatingWhitespace } from "../common/Whitespace";
+import { ChordBlock } from "../common/ChordModel";
 import ChordSymbol from "./ChordSymbol";
 import { IDable } from "../common/Collection";
 import EditableLine from "./EditableLine";
@@ -12,6 +11,7 @@ import EditableLine from "./EditableLine";
 interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
     onChordChange?: (id: IDable<"ChordBlock">, newChord: string) => void;
+    onBlockSplit?: (id: IDable<"ChordBlock">, splitIndex: number) => void;
 }
 
 const WordTarget = withStyles((theme: Theme) => ({
@@ -35,11 +35,23 @@ const SpaceTarget = withStyles((theme: Theme) => ({
 
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     const [editing, setEditing] = useState(false);
-    const lyric = inflateIfEmpty(props.chordBlock.lyric);
-    const lyricTokens = tokenize(lyric);
 
-    const clickHandler = () => {
-        setEditing(true);
+    let lyricTokens: string[] = props.chordBlock.lyricTokens;
+
+    if (lyricTokens.length === 0) {
+        lyricTokens = [inflatingWhitespace()];
+    }
+
+    const clickHandler = (tokenIndex: number): (() => void) => {
+        return () => {
+            // block splitting happens after the first token
+            // as first token is already aligned with the current chord
+            if (tokenIndex !== 0 && props.onBlockSplit) {
+                props.onBlockSplit(props.chordBlock, tokenIndex);
+            }
+
+            setEditing(true);
+        };
     };
 
     const lyricBlock = (lyric: string, index: number): React.ReactElement => {
@@ -47,7 +59,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             key: index,
             variant: "h5" as "h5",
             display: "inline" as "inline",
-            onClick: clickHandler,
+            onClick: clickHandler(index),
             "data-testid": `Token-${index}`,
         };
 
@@ -96,7 +108,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             component="span"
             data-testid={props["data-testid"]}
         >
-            <Grid item onClick={clickHandler}>
+            <Grid item onClick={() => setEditing(true)}>
                 {chordRow}
             </Grid>
             <Grid item data-testid="Lyric">

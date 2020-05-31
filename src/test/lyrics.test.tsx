@@ -11,7 +11,7 @@ import userEvent from "@testing-library/user-event";
 
 import ChordPaper from "../components/ChordPaper";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
-import { ChordSong } from "../common/ChordModels";
+import { ChordSong } from "../common/ChordModel";
 import { matchLyric, lyricsInElement, findByTestIdChain } from "./matcher";
 import { enterKey } from "./userEvent";
 
