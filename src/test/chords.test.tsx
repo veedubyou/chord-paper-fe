@@ -1,5 +1,5 @@
 import React from "react";
-import { render, cleanup, waitFor } from "@testing-library/react";
+import { render, cleanup, waitFor, fireEvent } from "@testing-library/react";
 
 import userEvent from "@testing-library/user-event";
 
@@ -7,7 +7,7 @@ import ChordPaper from "../components/ChordPaper";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { ChordSong, ChordLine, ChordBlock } from "../common/ChordModels";
 import { expectChordAndLyric, findByTestIdChain } from "./matcher";
-import { backspaceKey, enterKey } from "./userEvent";
+import { enterKey } from "./userEvent";
 
 afterEach(cleanup);
 
@@ -101,8 +101,9 @@ describe("Changing the chord", () => {
             "InnerInput",
         ]);
 
-        backspaceKey(chordEdit);
-        userEvent.type(chordEdit, "F7");
+        fireEvent.change(chordEdit, {
+            target: { value: "F7" },
+        });
         enterKey(chordEdit);
 
         await expectChordAndLyric(
@@ -113,7 +114,7 @@ describe("Changing the chord", () => {
         );
     });
 
-    test.skip("it gets merged with previous block when chords are cleared", async () => {
+    test("it gets merged with previous block when chords are cleared", async () => {
         const chordEdit = await findByTestIdChain(findByTestId, [
             "Line-0",
             "NoneditableLine",
@@ -122,7 +123,10 @@ describe("Changing the chord", () => {
             "InnerInput",
         ]);
 
-        backspaceKey(chordEdit);
+        fireEvent.change(chordEdit, {
+            target: { value: "" },
+        });
+
         enterKey(chordEdit);
 
         await waitFor(() => {
