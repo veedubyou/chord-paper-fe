@@ -2,11 +2,7 @@ import { Typography, withStyles, Theme, Grid } from "@material-ui/core";
 import React, { useState } from "react";
 
 import { DataTestID } from "../common/DataTestID";
-import {
-    isWhitespace,
-    inflateIfEmpty,
-    inflatingWhitespace,
-} from "../common/Whitespace";
+import { isWhitespace, inflatingWhitespace } from "../common/Whitespace";
 import { ChordBlock } from "../common/ChordModel";
 import ChordSymbol from "./ChordSymbol";
 import { IDable } from "../common/Collection";

@@ -31,7 +31,7 @@ export class ChordBlock implements IDable<"ChordBlock"> {
     // {id:"B", chord: "B7", lyric:"my dear "}
     // {id:"A", chord: "", "we're"}
     split(splitIndex: number): ChordBlock {
-        if (splitIndex == 0) {
+        if (splitIndex === 0) {
             throw new Error("Split index can't be zero");
         }
 
