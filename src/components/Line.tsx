@@ -12,6 +12,10 @@ interface LineProps extends DataTestID {
     onChangeLine?: (id: IDable<"ChordLine">) => void;
     onAddLine?: (id: IDable<"ChordLine">) => void;
     onRemoveLine?: (id: IDable<"ChordLine">) => void;
+    onPasteOverflow?: (
+        id: IDable<"ChordLine">,
+        overflowPasteContent: string[]
+    ) => void;
 }
 
 const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
@@ -52,6 +56,13 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         }
     };
 
+    const pasteOverflowHandler = (overflowContent: string[]) => {
+        if (props.onPasteOverflow) {
+            props.onPasteOverflow(props.chordLine, overflowContent);
+            setEditing(false);
+        }
+    };
+
     const nonEditableLine = (): React.ReactElement => {
         return (
             <NonEditableLine
@@ -76,6 +87,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 <Grid item>
                     <EditableLine
                         onFinish={finishEdit}
+                        onPasteOverflow={pasteOverflowHandler}
                         data-testid={"EditableLine"}
                     >
                         {lyrics}
@@ -94,7 +106,8 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 borderBottom={1}
                 borderColor="grey.50"
                 width="auto"
-                margin={"3rem"}
+                minWidth="20em"
+                margin="3rem"
                 data-testid={props["data-testid"]}
             >
                 {elem}

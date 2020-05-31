@@ -36,6 +36,7 @@ const browserInputProps = (theme: Theme, width?: string) => {
 interface EditableLineProps extends DataTestID {
     children: string;
     onFinish?: (newValue: string) => void;
+    onPasteOverflow?: (overflowContent: string[]) => void;
     width?: string;
 }
 
@@ -63,6 +64,24 @@ const EditableLine: React.FC<EditableLineProps> = (
         }
     };
 
+    const pasteHandler = (event: React.ClipboardEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        const payload = event.clipboardData.getData("text/plain");
+
+        if (payload === "") {
+            return;
+        }
+
+        const linesOfText: string[] = payload.split("\n");
+
+        const newValue = value + linesOfText[0];
+        setValue(newValue);
+
+        if (linesOfText.length > 1 && props.onPasteOverflow) {
+            props.onPasteOverflow(linesOfText.slice(1));
+        }
+    };
+
     return (
         <FilledInput
             autoFocus
@@ -71,9 +90,11 @@ const EditableLine: React.FC<EditableLineProps> = (
                 ...browserInputProps(theme, props.width),
             }}
             defaultValue={props.children}
+            value={value}
             onBlur={finish}
             onChange={updateValue}
             onKeyPress={forwardEnter}
+            onPaste={pasteHandler}
             fullWidth
             data-testid={props["data-testid"]}
         />
