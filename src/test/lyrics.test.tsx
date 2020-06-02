@@ -5,6 +5,9 @@ import {
     waitForElementToBeRemoved,
     cleanup,
     Matcher,
+    createEvent,
+    act,
+    waitFor,
 } from "@testing-library/react";
 
 import userEvent from "@testing-library/user-event";
@@ -12,7 +15,12 @@ import userEvent from "@testing-library/user-event";
 import ChordPaper from "../components/ChordPaper";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { ChordSong } from "../common/ChordModel";
-import { matchLyric, lyricsInElement, findByTestIdChain } from "./matcher";
+import {
+    matchLyric,
+    lyricsInElement,
+    findByTestIdChain,
+    expectChordAndLyric,
+} from "./matcher";
 import { enterKey } from "./userEvent";
 
 afterEach(cleanup);
@@ -41,15 +49,19 @@ const lyrics: string[] = [
     //"And hurt you"
 ];
 
-const song = (): ChordSong => {
-    return ChordSong.fromLyricsLines(lyrics);
+const basicChordPaper = () => {
+    return chordPaperFromLyrics(lyrics);
 };
 
-const basicChordPaper = () => (
-    <ThemeProvider theme={createMuiTheme()}>
-        <ChordPaper initialSong={song()} />
-    </ThemeProvider>
-);
+const chordPaperFromLyrics = (lyrics: string[]) => {
+    const song = ChordSong.fromLyricsLines(lyrics);
+
+    return (
+        <ThemeProvider theme={createMuiTheme()}>
+            <ChordPaper initialSong={song} />
+        </ThemeProvider>
+    );
+};
 
 describe("Rendering initial lyrics", () => {
     test("renders all initial lyric lines", () => {
@@ -276,5 +288,146 @@ describe("Remove action", () => {
             "NoneditableLine",
         ]);
         expect(line).toHaveTextContent("Never gonna make you cry");
+    });
+});
+
+describe("Pasting Lyrics", () => {
+    const pasteEvent = (textContent: string[]): Event => {
+        const event = new Event("paste", {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+        });
+
+        //@ts-ignore
+        event["clipboardData"] = {
+            getData: (pasteType: string) => textContent.join("\n"),
+        };
+
+        return event;
+    };
+
+    const startEdit = async (
+        findByTestId: (testID: string) => Promise<HTMLElement>,
+        testIDPath: string[]
+    ) => {
+        const line = await findByTestIdChain(findByTestId, testIDPath);
+        expect(line).toBeInTheDocument();
+        fireEvent.mouseOver(line);
+
+        const editButton = await findByTestId("EditButton");
+        expect(editButton).toBeInTheDocument();
+        fireEvent.click(editButton);
+    };
+
+    describe("into an empty line", () => {
+        let findByTestId: (testID: string) => Promise<HTMLElement>;
+
+        beforeEach(async () => {
+            const chordPaper = chordPaperFromLyrics(["", "123"]);
+            findByTestId = render(chordPaper).findByTestId;
+            await startEdit(findByTestId, ["Line-0", "NoneditableLine"]);
+        });
+
+        describe("pasting multiple lines", () => {
+            beforeEach(async () => {
+                const input = await findByTestIdChain(findByTestId, [
+                    "Line-0",
+                    "EditableLine",
+                    "InnerInput",
+                ]);
+
+                act(() => {
+                    input.dispatchEvent(pasteEvent(["ABC", "as easy as"]));
+                });
+            });
+
+            test("it pastes in the first line", async () => {
+                await expectChordAndLyric(
+                    findByTestId,
+                    ["Line-0", "NoneditableLine"],
+                    "",
+                    "ABC"
+                );
+            });
+
+            test("adds the other lines below the first line", async () => {
+                await expectChordAndLyric(
+                    findByTestId,
+                    ["Line-1", "NoneditableLine"],
+                    "",
+                    "as easy as"
+                );
+            });
+
+            test("it pushes down the second line", async () => {
+                await expectChordAndLyric(
+                    findByTestId,
+                    ["Line-2", "NoneditableLine"],
+                    "",
+                    "123"
+                );
+            });
+        });
+    });
+
+    describe("in the end of a line with some text", () => {
+        let findByTestId: (testID: string) => Promise<HTMLElement>;
+
+        beforeEach(async () => {
+            const chordPaper = chordPaperFromLyrics([
+                "AB",
+                "Are simple as do re mi",
+            ]);
+            findByTestId = render(chordPaper).findByTestId;
+            await startEdit(findByTestId, ["Line-0", "NoneditableLine"]);
+        });
+
+        describe("pasting multiple lines", () => {
+            beforeEach(async () => {
+                const input = await findByTestIdChain(findByTestId, [
+                    "Line-0",
+                    "EditableLine",
+                    "InnerInput",
+                ]);
+
+                act(() => {
+                    input.dispatchEvent(pasteEvent(["C", "as easy as", "123"]));
+                });
+            });
+            test("it pastes in the remainder of the first line", async () => {
+                await expectChordAndLyric(
+                    findByTestId,
+                    ["Line-0", "NoneditableLine"],
+                    "",
+                    "ABC"
+                );
+            });
+
+            test("adds the other lines below the first line", async () => {
+                await expectChordAndLyric(
+                    findByTestId,
+                    ["Line-1", "NoneditableLine"],
+                    "",
+                    "as easy as"
+                );
+
+                await expectChordAndLyric(
+                    findByTestId,
+                    ["Line-2", "NoneditableLine"],
+                    "",
+                    "123"
+                );
+            });
+
+            test("it pushes down the second line", async () => {
+                await expectChordAndLyric(
+                    findByTestId,
+                    ["Line-3", "NoneditableLine"],
+                    "",
+                    "Are simple as do re mi"
+                );
+            });
+        });
     });
 });

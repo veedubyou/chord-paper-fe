@@ -29,9 +29,9 @@ export abstract class Collection<T extends IDable<U>, U extends string> {
     abstract clone(): Collection<T, U>;
 
     // adds a element after the specified id
-    addAfter(idable: IDable<U>, newElem: T): void {
+    addAfter(idable: IDable<U>, ...newElem: T[]): void {
         const indexOfBefore = this.indexOf(idable.id);
-        this.elements.splice(indexOfBefore + 1, 0, newElem);
+        this.elements.splice(indexOfBefore + 1, 0, ...newElem);
     }
 
     remove(idable: IDable<U>): T {

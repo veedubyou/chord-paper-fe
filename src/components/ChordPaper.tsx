@@ -37,6 +37,17 @@ const ChordPaper: React.FC<ChordPaperProps> = (
         setSong(song.clone());
     };
 
+    const pasteOverflowFromLine = (
+        id: IDable<"ChordLine">,
+        overflowContent: string[]
+    ) => {
+        const newChordLines = overflowContent.map((newLyricLine: string) =>
+            ChordLine.fromLyrics(newLyricLine)
+        );
+        song.addAfter(id, ...newChordLines);
+        setSong(song.clone());
+    };
+
     return (
         <Paper elevation={0}>
             {song.chordLines.map((line: ChordLine, index: number) => {
@@ -47,6 +58,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                         onAddLine={addLine}
                         onRemoveLine={removeLine}
                         onChangeLine={changeLine}
+                        onPasteOverflow={pasteOverflowFromLine}
                         data-testid={`Line-${index}`}
                     />
                 );
