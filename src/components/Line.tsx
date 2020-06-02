@@ -71,7 +71,6 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 onAddButton={addHandler}
                 onRemoveButton={removeHandler}
                 onEditButton={startEdit}
-                data-testid={"NoneditableLine"}
             />
         );
     };
@@ -86,9 +85,9 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 </Grid>
                 <Grid item>
                     <EditableLine
+                        variant="h5"
                         onFinish={finishEdit}
                         onPasteOverflow={pasteOverflowHandler}
-                        data-testid={"EditableLine"}
                     >
                         {lyrics}
                     </EditableLine>
@@ -97,7 +96,9 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         );
     };
 
-    let elem: React.ReactElement = editing ? editableLine() : nonEditableLine();
+    const elem: React.ReactElement = editing
+        ? editableLine()
+        : nonEditableLine();
     const yeetDirection = removed ? "up" : "down";
 
     return (
@@ -106,7 +107,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 borderBottom={1}
                 borderColor="grey.50"
                 width="auto"
-                minWidth="20em"
+                minWidth="30em"
                 margin="3rem"
                 data-testid={props["data-testid"]}
             >

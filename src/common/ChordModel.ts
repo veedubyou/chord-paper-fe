@@ -135,7 +135,31 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
     }
 }
 
+interface SongMetadata {
+    title: string;
+    composedBy: string;
+    performedBy: string;
+    asHeardAt: string;
+}
+
 export class ChordSong extends Collection<ChordLine, "ChordLine"> {
+    metadata: SongMetadata;
+
+    constructor(elements?: ChordLine[], metadata?: SongMetadata) {
+        super(elements);
+
+        if (metadata !== undefined) {
+            this.metadata = metadata;
+        } else {
+            this.metadata = {
+                title: "",
+                composedBy: "",
+                performedBy: "",
+                asHeardAt: "",
+            };
+        }
+    }
+
     static fromLyricsLines(lyricLines: string[]): ChordSong {
         const chordLines: ChordLine[] = lyricLines.map((lyricLine: string) =>
             ChordLine.fromLyrics(lyricLine)
@@ -147,7 +171,39 @@ export class ChordSong extends Collection<ChordLine, "ChordLine"> {
         return this.elements;
     }
 
+    get title(): string {
+        return this.metadata.title;
+    }
+
+    set title(newTitle: string) {
+        this.metadata.title = newTitle;
+    }
+
+    get performedBy(): string {
+        return this.metadata.performedBy;
+    }
+
+    set performedBy(newPerformedBy: string) {
+        this.metadata.performedBy = newPerformedBy;
+    }
+
+    get composedBy(): string {
+        return this.metadata.composedBy;
+    }
+
+    set composedBy(newComposedBy: string) {
+        this.metadata.composedBy = newComposedBy;
+    }
+
+    get asHeardAt(): string {
+        return this.metadata.asHeardAt;
+    }
+
+    set asHeardAt(newAsHeardAt: string) {
+        this.metadata.asHeardAt = newAsHeardAt;
+    }
+
     clone(): ChordSong {
-        return new ChordSong(this.elements);
+        return new ChordSong(this.elements, this.metadata);
     }
 }

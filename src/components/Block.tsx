@@ -93,6 +93,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         chordRow = (
             <EditableLine
                 width="5em"
+                variant="h5"
                 onFinish={endEdit}
                 data-testid="ChordEdit"
             >
