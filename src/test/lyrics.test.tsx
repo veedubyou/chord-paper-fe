@@ -5,14 +5,11 @@ import {
     waitForElementToBeRemoved,
     cleanup,
     Matcher,
-    createEvent,
     act,
-    waitFor,
 } from "@testing-library/react";
 
 import userEvent from "@testing-library/user-event";
 
-import ChordPaperBody from "../components/ChordPaperBody";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { ChordSong } from "../common/ChordModel";
 import {
@@ -22,6 +19,7 @@ import {
     expectChordAndLyric,
 } from "./matcher";
 import { enterKey } from "./userEvent";
+import ChordPaper from "../components/ChordPaper";
 
 afterEach(cleanup);
 
@@ -58,7 +56,7 @@ const chordPaperFromLyrics = (lyrics: string[]) => {
 
     return (
         <ThemeProvider theme={createMuiTheme()}>
-            <ChordPaperBody song={song} />
+            <ChordPaper initialSong={song} />
         </ThemeProvider>
     );
 };

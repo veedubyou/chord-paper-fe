@@ -1,13 +1,13 @@
 import React from "react";
-import { render, cleanup, waitFor, fireEvent } from "@testing-library/react";
+import { render, cleanup, fireEvent } from "@testing-library/react";
 
 import userEvent from "@testing-library/user-event";
 
-import ChordPaperBody from "../components/ChordPaperBody";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { ChordSong, ChordLine, ChordBlock } from "../common/ChordModel";
 import { expectChordAndLyric, findByTestIdChain } from "./matcher";
 import { enterKey } from "./userEvent";
+import ChordPaper from "../components/ChordPaper";
 
 afterEach(cleanup);
 
@@ -41,7 +41,7 @@ const song = (): ChordSong => {
 
 const basicChordPaper = () => (
     <ThemeProvider theme={createMuiTheme()}>
-        <ChordPaperBody song={song()} />
+        <ChordPaper initialSong={song()} />
     </ThemeProvider>
 );
 
