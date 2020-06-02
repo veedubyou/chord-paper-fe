@@ -12,7 +12,7 @@ import {
 
 import userEvent from "@testing-library/user-event";
 
-import ChordPaper from "../components/ChordPaper";
+import ChordPaperBody from "../components/ChordPaperBody";
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { ChordSong } from "../common/ChordModel";
 import {
@@ -58,7 +58,7 @@ const chordPaperFromLyrics = (lyrics: string[]) => {
 
     return (
         <ThemeProvider theme={createMuiTheme()}>
-            <ChordPaper initialSong={song} />
+            <ChordPaperBody song={song} />
         </ThemeProvider>
     );
 };

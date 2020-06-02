@@ -33,8 +33,8 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
         notifySongChanged();
     };
 
-    const updateHeardAt = (newHeardAt: string) => {
-        props.song.asHeardAt = newHeardAt;
+    const updateHeardFrom = (newHeardFrom: string) => {
+        props.song.asHeardFrom = newHeardFrom;
         notifySongChanged();
     };
 
@@ -42,15 +42,15 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
         <Grid item xs={3} direction="column">
             <Grid item>
                 <Typography display="inline" variant="caption">
-                    As Heard At:{" "}
+                    As Heard From:{" "}
                 </Typography>
                 <EditableTypography
                     variant="caption"
                     placeholder="https://www.youtube.com/watch?v=dM9zwZCOmjM"
-                    onValueChange={updateHeardAt}
+                    onValueChange={updateHeardFrom}
                     data-testid="AsHeardAt"
                 >
-                    {props.song.asHeardAt}
+                    {props.song.asHeardFrom}
                 </EditableTypography>
             </Grid>
         </Grid>

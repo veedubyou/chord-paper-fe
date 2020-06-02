@@ -139,7 +139,7 @@ interface SongMetadata {
     title: string;
     composedBy: string;
     performedBy: string;
-    asHeardAt: string;
+    asHeardFrom: string;
 }
 
 export class ChordSong extends Collection<ChordLine, "ChordLine"> {
@@ -155,7 +155,7 @@ export class ChordSong extends Collection<ChordLine, "ChordLine"> {
                 title: "",
                 composedBy: "",
                 performedBy: "",
-                asHeardAt: "",
+                asHeardFrom: "",
             };
         }
     }
@@ -195,12 +195,12 @@ export class ChordSong extends Collection<ChordLine, "ChordLine"> {
         this.metadata.composedBy = newComposedBy;
     }
 
-    get asHeardAt(): string {
-        return this.metadata.asHeardAt;
+    get asHeardFrom(): string {
+        return this.metadata.asHeardFrom;
     }
 
-    set asHeardAt(newAsHeardAt: string) {
-        this.metadata.asHeardAt = newAsHeardAt;
+    set asHeardFrom(newAsHeardFrom: string) {
+        this.metadata.asHeardFrom = newAsHeardFrom;
     }
 
     clone(): ChordSong {
