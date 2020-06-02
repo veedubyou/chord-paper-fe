@@ -106,7 +106,7 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <RootPaper elevation={3}>
-                <ChordPaper initialSong={new ChordSong([new ChordLine()])} />
+                <ChordPaper initialSong={song)} />
             </RootPaper>
         </ThemeProvider>
     );
