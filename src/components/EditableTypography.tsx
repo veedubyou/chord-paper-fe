@@ -37,16 +37,23 @@ const EditableTypography: React.FC<EditableTypographyProps> = (
     };
 
     const nonEditableLine = (): React.ReactElement => {
+        const {
+            children,
+            placeholder,
+            onValueChange,
+            ...typographyProps
+        } = props;
+
         if (props.children === "" && props.placeholder !== undefined) {
             return (
-                <PlaceholderTypography {...props} onClick={startEdit}>
+                <PlaceholderTypography {...typographyProps} onClick={startEdit}>
                     {props.placeholder}
                 </PlaceholderTypography>
             );
         }
 
         return (
-            <Typography {...props} onClick={startEdit}>
+            <Typography {...typographyProps} onClick={startEdit}>
                 {inflateIfEmpty(props.children)}
             </Typography>
         );

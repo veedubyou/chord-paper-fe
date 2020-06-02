@@ -8,8 +8,6 @@ import {
     act,
 } from "@testing-library/react";
 
-import userEvent from "@testing-library/user-event";
-
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 import { ChordSong } from "../common/ChordModel";
 import {
@@ -170,7 +168,7 @@ describe("Hover Menu", () => {
 
 describe("Edit action", () => {
     it("changes the text", async () => {
-        const { findByTestId, findByText } = render(basicChordPaper());
+        const { findByTestId } = render(basicChordPaper());
         const line = await findByTestIdChain(findByTestId, [
             "Line-2",
             "NoneditableLine",
@@ -182,20 +180,29 @@ describe("Edit action", () => {
         expect(editButton).toBeInTheDocument();
         fireEvent.click(editButton);
 
-        const inputElem = await findByTestIdChain(findByTestId, [
-            "Line-2",
-            "InnerInput",
-        ]);
-        expect(inputElem).toBeInTheDocument();
-        userEvent.type(inputElem, " and desert you");
+        const findInputElem = async (): Promise<HTMLElement> => {
+            return findByTestIdChain(findByTestId, [
+                "Line-2",
+                "EditableLine",
+                "InnerInput",
+            ]);
+        };
 
-        const expectedLyric = "Never gonna run around and desert you";
+        expect(await findInputElem()).toBeInTheDocument();
 
-        expect(inputElem).toHaveValue(expectedLyric);
+        const newLyric = "Never gonna run around and desert you";
 
-        enterKey(inputElem);
+        fireEvent.change(await findInputElem(), {
+            target: { value: newLyric },
+        });
+        enterKey(await findInputElem());
 
-        expect(await findByText(matchLyric(expectedLyric))).toBeInTheDocument();
+        await expectChordAndLyric(
+            findByTestId,
+            ["Line-2", "NoneditableLine"],
+            "",
+            newLyric
+        );
     });
 });
 

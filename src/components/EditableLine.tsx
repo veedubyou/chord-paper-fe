@@ -29,7 +29,9 @@ const EditableLine: React.FC<EditableLineProps> = (
         setValue(event.target.value);
     };
 
-    const forwardEnter = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const forwardEnter = (
+        event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         if (event.key === "Enter") {
             finish(value);
         }
@@ -141,7 +143,7 @@ const EditableLine: React.FC<EditableLineProps> = (
             value={value}
             onBlur={blurHandler}
             onChange={updateValue}
-            onKeyPress={forwardEnter}
+            onKeyDown={forwardEnter}
             onPaste={pasteHandler}
             fullWidth
             data-testid="EditableLine"

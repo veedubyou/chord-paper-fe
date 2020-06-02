@@ -39,10 +39,10 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
     };
 
     const leftHeader = (
-        <Grid item xs={3} direction="column">
+        <Grid item container xs={3} direction="column">
             <Grid item>
                 <Typography display="inline" variant="caption">
-                    As Heard From:{" "}
+                    As heard from:{" "}
                 </Typography>
                 <EditableTypography
                     variant="caption"
@@ -73,9 +73,8 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
     const rightHeader = (
         <Grid item container xs={3} direction="column">
             <Grid item>
-                <Box alignContent=""></Box>
                 <Typography display="inline" variant="subtitle2">
-                    Composed By:{" "}
+                    Composed by:{" "}
                 </Typography>
 
                 <EditableTypography
@@ -89,7 +88,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
             </Grid>
             <Grid item>
                 <Typography display="inline" variant="subtitle2">
-                    Performed By:{" "}
+                    Performed by:{" "}
                 </Typography>
 
                 <EditableTypography
@@ -106,7 +105,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
 
     return (
         <Box
-            paddingTop={theme.spacing(1.5)}
+            paddingTop={theme.spacing(1)}
             paddingLeft={theme.spacing(0.5)}
             paddingRight={theme.spacing(0.5)}
             data-testid="Header"

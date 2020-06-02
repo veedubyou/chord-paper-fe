@@ -1,5 +1,10 @@
 import React from "react";
-import { Paper as UnstyledPaper, Theme, withStyles } from "@material-ui/core";
+import {
+    Paper as UnstyledPaper,
+    Theme,
+    withStyles,
+    Box,
+} from "@material-ui/core";
 import Line from "./Line";
 import { ChordLine, ChordSong } from "../common/ChordModel";
 import { IDable } from "../common/Collection";
