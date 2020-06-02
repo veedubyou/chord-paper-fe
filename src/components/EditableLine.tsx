@@ -44,6 +44,7 @@ const EditableLine: React.FC<EditableLineProps> = (
     props: EditableLineProps
 ): JSX.Element => {
     const [value, setValue] = useState<string>(props.children);
+    const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
     const theme = useTheme();
 
     const updateValue = (
@@ -54,18 +55,50 @@ const EditableLine: React.FC<EditableLineProps> = (
 
     const forwardEnter = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === "Enter") {
-            finish();
+            finish(value);
         }
     };
 
-    const finish = () => {
+    const finish = (newValue: string) => {
         if (props.onFinish) {
-            props.onFinish(value);
+            props.onFinish(newValue);
         }
+    };
+
+    const blurHandler = () => {
+        finish(value);
+    };
+
+    const composeMultilinePaste = (
+        pasteContent: string[]
+    ): [string, string[]] => {
+        let beforeSelectionStr: string;
+        let afterSelectionStr: string;
+        if (
+            inputRef.current === null ||
+            inputRef.current.selectionStart === null ||
+            inputRef.current.selectionEnd === null
+        ) {
+            beforeSelectionStr = value;
+            afterSelectionStr = "";
+        } else {
+            beforeSelectionStr = value.slice(
+                0,
+                inputRef.current.selectionStart
+            );
+            afterSelectionStr = value.slice(inputRef.current.selectionEnd);
+        }
+
+        const newValue = beforeSelectionStr + pasteContent[0];
+
+        const newPasteLines = pasteContent.slice(1);
+        const lastIndex = newPasteLines.length - 1;
+        newPasteLines[lastIndex] += afterSelectionStr;
+
+        return [newValue, newPasteLines];
     };
 
     const pasteHandler = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        event.preventDefault();
         const payload = event.clipboardData.getData("text/plain");
 
         if (payload === "") {
@@ -74,11 +107,16 @@ const EditableLine: React.FC<EditableLineProps> = (
 
         const linesOfText: string[] = payload.split("\n");
 
-        const newValue = value + linesOfText[0];
-        setValue(newValue);
+        if (linesOfText.length > 1 && props.onPasteOverflow !== undefined) {
+            event.preventDefault();
 
-        if (linesOfText.length > 1 && props.onPasteOverflow) {
-            props.onPasteOverflow(linesOfText.slice(1));
+            const [newValue, newPasteLines] = composeMultilinePaste(
+                linesOfText
+            );
+
+            setValue(newValue);
+            finish(newValue);
+            props.onPasteOverflow(newPasteLines);
         }
     };
 
@@ -89,9 +127,9 @@ const EditableLine: React.FC<EditableLineProps> = (
                 "data-testid": "InnerInput",
                 ...browserInputProps(theme, props.width),
             }}
-            defaultValue={props.children}
+            inputRef={inputRef}
             value={value}
-            onBlur={finish}
+            onBlur={blurHandler}
             onChange={updateValue}
             onKeyPress={forwardEnter}
             onPaste={pasteHandler}

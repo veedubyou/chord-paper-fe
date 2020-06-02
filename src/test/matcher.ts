@@ -1,4 +1,4 @@
-import { MatcherFunction, within } from "@testing-library/react";
+import { MatcherFunction, within, waitFor } from "@testing-library/react";
 
 // looks in all the descendents, finds all the qualifying elements
 // for each qualifying node, return its text content
@@ -69,6 +69,10 @@ export const findByTestIdChain = async (
     return parent;
 };
 
+function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export const expectChordAndLyric = async (
     findByTestId: (testID: string) => Promise<HTMLElement>,
     testIDChain: string[],
@@ -80,6 +84,14 @@ export const expectChordAndLyric = async (
     const chordElem = await within(parent).findByTestId("Chord");
     const lyricElem = await within(parent).findByTestId("Lyric");
 
-    expect(chordElem).toHaveTextContent(chord, { normalizeWhitespace: true });
-    expect(lyricElem).toHaveTextContent(lyric, { normalizeWhitespace: true });
+    await waitFor(() => {
+        expect(chordElem).toHaveTextContent(chord, {
+            normalizeWhitespace: true,
+        });
+    });
+    await waitFor(() =>
+        expect(lyricElem).toHaveTextContent(lyric, {
+            normalizeWhitespace: true,
+        })
+    );
 };
