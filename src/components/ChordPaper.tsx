@@ -3,6 +3,7 @@ import { Paper, Theme, withStyles } from "@material-ui/core";
 import ChordPaperBody from "./ChordPaperBody";
 import Header from "./Header";
 import { ChordSong } from "../common/ChordModel";
+import ChordPaperMenu from "./ChordPaperMenu";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
@@ -33,6 +34,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                 onSongChanged={songChangeHandler}
             />
             <ChordPaperBody song={song} onSongChanged={songChangeHandler} />
+            <ChordPaperMenu />
         </RootPaper>
     );
 };

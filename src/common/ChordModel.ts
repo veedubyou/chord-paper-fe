@@ -1,11 +1,19 @@
 import { Collection, IDable } from "./Collection";
 import shortid from "shortid";
 import { tokenize } from "./LyricTokenizer";
+import iots from "io-ts";
 
 interface ChordBlockConstructorParams {
     chord: string;
     lyric: string;
 }
+
+const ChordBlockInterface = iots.interface({
+    id: iots.string,
+    chord: iots.string,
+    lyric: iots.string,
+    type: iots.literal("ChordBlock"),
+});
 
 export class ChordBlock implements IDable<"ChordBlock"> {
     id: string;
@@ -205,5 +213,13 @@ export class ChordSong extends Collection<ChordLine, "ChordLine"> {
 
     clone(): ChordSong {
         return new ChordSong(this.elements, this.metadata);
+    }
+
+    serialize(): string {
+        return JSON.stringify(this);
+    }
+
+    static deserialize(serialised: string): ChordSong {
+        const jsonObj = JSON.parse(serialised);
     }
 }
