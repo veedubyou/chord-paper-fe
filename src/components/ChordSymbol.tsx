@@ -32,7 +32,7 @@ const ChordSymbol: React.FC<ChordSymbolProps> = (
     };
 
     return (
-        <ChordTypography variant="h5" display="inline" data-testid={"Chord"}>
+        <ChordTypography variant="h5" display="inline" data-testid="Chord">
             {formattedChord()}
         </ChordTypography>
     );
