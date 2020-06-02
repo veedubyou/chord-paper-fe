@@ -1,23 +1,13 @@
 import React from "react";
 import {
-    Paper,
     Theme,
-    withStyles,
     ThemeProvider,
     createMuiTheme,
     PaletteColorOptions,
 } from "@material-ui/core";
-import ChordPaper from "./components/ChordPaper";
 import { tokenize } from "./common/LyricTokenizer";
 import { ChordSong, ChordLine, ChordBlock } from "./common/ChordModel";
-
-const RootPaper = withStyles((theme: Theme) => ({
-    root: {
-        margin: theme.spacing(5),
-        minHeight: "750px",
-        width: "max-content",
-    },
-}))(Paper);
+import ChordPaper from "./components/ChordPaper";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -101,13 +91,9 @@ function App() {
         return new ChordLine(chordBlocks);
     };
 
-    const song = assembleSong();
-
     return (
         <ThemeProvider theme={theme}>
-            <RootPaper elevation={3}>
-                <ChordPaper initialSong={song} />
-            </RootPaper>
+            <ChordPaper initialSong={assembleSong()} />
         </ThemeProvider>
     );
 }

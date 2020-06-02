@@ -3,41 +3,17 @@ import {
     useTheme,
     FilledInput as UnstyledFilledInput,
     InputBaseComponentProps,
+    TypographyVariant,
 } from "@material-ui/core";
 import React, { useState } from "react";
 import { withStyles } from "@material-ui/styles";
-import { DataTestID } from "../common/DataTestID";
 
-const FilledInput = withStyles((theme: Theme) => ({
-    root: {
-        fontSize: theme.typography.h5.fontSize,
-    },
-}))(UnstyledFilledInput);
-
-const browserInputProps = (theme: Theme, width?: string) => {
-    let padding: string | number = 0;
-    if (theme?.typography?.h5?.padding) {
-        padding = theme.typography.h5.padding;
-    }
-
-    const inputProps: InputBaseComponentProps = {
-        style: {
-            padding: padding,
-        },
-    };
-
-    if (width && inputProps.style) {
-        inputProps.style.width = width;
-    }
-
-    return inputProps;
-};
-
-interface EditableLineProps extends DataTestID {
+interface EditableLineProps {
     children: string;
     onFinish?: (newValue: string) => void;
     onPasteOverflow?: (overflowContent: string[]) => void;
     width?: string;
+    variant?: TypographyVariant;
 }
 
 const EditableLine: React.FC<EditableLineProps> = (
@@ -53,7 +29,9 @@ const EditableLine: React.FC<EditableLineProps> = (
         setValue(event.target.value);
     };
 
-    const forwardEnter = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const forwardEnter = (
+        event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         if (event.key === "Enter") {
             finish(value);
         }
@@ -120,6 +98,40 @@ const EditableLine: React.FC<EditableLineProps> = (
         }
     };
 
+    const browserInputProps = (theme: Theme, width?: string) => {
+        let padding: string | number | undefined = 0;
+        if (
+            props.variant !== undefined &&
+            theme?.typography?.[props.variant]?.padding
+        ) {
+            padding = theme.typography[props.variant].padding;
+        }
+
+        const inputProps: InputBaseComponentProps = {
+            style: {
+                padding: padding,
+            },
+        };
+
+        if (width && inputProps.style) {
+            inputProps.style.width = width;
+        }
+
+        return inputProps;
+    };
+
+    const FilledInput = withStyles((theme: Theme) => {
+        if (props.variant === undefined) {
+            return { root: {} };
+        }
+
+        return {
+            root: {
+                fontSize: theme.typography[props.variant].fontSize,
+            },
+        };
+    })(UnstyledFilledInput);
+
     return (
         <FilledInput
             autoFocus
@@ -131,10 +143,10 @@ const EditableLine: React.FC<EditableLineProps> = (
             value={value}
             onBlur={blurHandler}
             onChange={updateValue}
-            onKeyPress={forwardEnter}
+            onKeyDown={forwardEnter}
             onPaste={pasteHandler}
             fullWidth
-            data-testid={props["data-testid"]}
+            data-testid="EditableLine"
         />
     );
 };

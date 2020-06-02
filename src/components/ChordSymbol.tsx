@@ -1,6 +1,5 @@
 import React from "react";
 import { Typography, Theme } from "@material-ui/core";
-import { DataTestID } from "../common/DataTestID";
 import { inflateIfEmpty } from "../common/Whitespace";
 import { withStyles } from "@material-ui/styles";
 
@@ -14,7 +13,7 @@ const ChordTypography = withStyles((theme: Theme) => ({
     },
 }))(Typography);
 
-interface ChordSymbolProps extends DataTestID {
+interface ChordSymbolProps {
     children: string;
 }
 
@@ -33,11 +32,7 @@ const ChordSymbol: React.FC<ChordSymbolProps> = (
     };
 
     return (
-        <ChordTypography
-            variant="h5"
-            display="inline"
-            data-testid={props["data-testid"]}
-        >
+        <ChordTypography variant="h5" display="inline" data-testid="Chord">
             {formattedChord()}
         </ChordTypography>
     );

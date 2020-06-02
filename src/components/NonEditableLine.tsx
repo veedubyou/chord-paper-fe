@@ -11,7 +11,6 @@ import React from "react";
 
 import grey from "@material-ui/core/colors/grey";
 
-import { DataTestID } from "../common/DataTestID";
 import { ChordBlock, ChordLine } from "../common/ChordModel";
 import Block from "./Block";
 
@@ -53,7 +52,7 @@ const HighlightableBox = withStyles({
     },
 })(Box);
 
-interface NonEditableLineProps extends DataTestID {
+interface NonEditableLineProps {
     chordLine: ChordLine;
     onEditButton?: (
         event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -143,7 +142,7 @@ const NonEditableLine: React.FC<NonEditableLineProps> = (
 
     return (
         <Tooltip title={hoverMenu()} interactive>
-            <HighlightableBox data-testid={props["data-testid"]}>
+            <HighlightableBox data-testid={"NoneditableLine"}>
                 <Grid container>{blocks}</Grid>
             </HighlightableBox>
         </Tooltip>

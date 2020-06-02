@@ -1,4 +1,4 @@
-import { Typography, withStyles, Theme, Grid } from "@material-ui/core";
+import { Typography, withStyles, Theme, Grid, Box } from "@material-ui/core";
 import React, { useState } from "react";
 
 import { DataTestID } from "../common/DataTestID";
@@ -84,20 +84,14 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
 
     let chordRow: React.ReactElement;
     if (!editing) {
-        chordRow = (
-            <ChordSymbol data-testid="Chord">
-                {props.chordBlock.chord}
-            </ChordSymbol>
-        );
+        chordRow = <ChordSymbol>{props.chordBlock.chord}</ChordSymbol>;
     } else {
         chordRow = (
-            <EditableLine
-                width="5em"
-                onFinish={endEdit}
-                data-testid="ChordEdit"
-            >
-                {props.chordBlock.chord}
-            </EditableLine>
+            <Box data-testid="ChordEdit">
+                <EditableLine width="5em" variant="h5" onFinish={endEdit}>
+                    {props.chordBlock.chord}
+                </EditableLine>
+            </Box>
         );
     }
 
