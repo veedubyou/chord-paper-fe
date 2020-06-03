@@ -18,5 +18,8 @@ jobs:
         run: echo "::set-output name=date::$(TZ='America/Vancouver' date +%Y%h%d-%H-%M)"
       - name: Build image
         run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/chord:release-${{ steps.date.outputs.date }}
-      - name: Push image
+      - name: Push image date labelled
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:release-${{ steps.date.outputs.date }}
+      - name: Push image latest
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:latest
+
