@@ -4,6 +4,7 @@ import {
     ThemeProvider,
     createMuiTheme,
     PaletteColorOptions,
+    Grid,
 } from "@material-ui/core";
 import { tokenize } from "./common/LyricTokenizer";
 import { ChordSong, ChordLine, ChordBlock } from "./common/ChordModel";
@@ -30,7 +31,8 @@ const createTheme = (): Theme => {
             secondary: purple,
         },
         typography: {
-            fontFamily: ["Roboto", "PoriChord"].join(","),
+            fontFamily: "Playfair",
+            fontWeightRegular: 500,
         },
     });
 };
@@ -53,7 +55,7 @@ function App() {
         "Never gonna tell a lie and hurt you",
     ];
 
-    const chords = ["A", "B7", "Cm", "D/C", "E7", "Fmaj7", "G"];
+    const chords = ["A", "Bb7", "Cm", "D/C#", "Em7", "Fmaj7", "G"];
 
     const randomChord = (): string => {
         return chords[Math.floor(Math.random() * chords.length)];
@@ -96,7 +98,11 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <ChordPaper initialSong={assembleSong()} />
+            <Grid container justify="center">
+                <Grid item>
+                    <ChordPaper initialSong={assembleSong()} />
+                </Grid>
+            </Grid>
         </ThemeProvider>
     );
 }
