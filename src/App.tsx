@@ -9,6 +9,7 @@ import {
 import { tokenize } from "./common/LyricTokenizer";
 import { ChordSong, ChordLine, ChordBlock } from "./common/ChordModel";
 import ChordPaper from "./components/ChordPaper";
+import { SnackbarProvider } from "notistack";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -98,11 +99,13 @@ function App() {
 
     return (
         <ThemeProvider theme={theme}>
-            <Grid container justify="center">
-                <Grid item>
-                    <ChordPaper initialSong={assembleSong()} />
+            <SnackbarProvider>
+                <Grid container justify="center">
+                    <Grid item>
+                        <ChordPaper initialSong={assembleSong()} />
+                    </Grid>
                 </Grid>
-            </Grid>
+            </SnackbarProvider>
         </ThemeProvider>
     );
 }

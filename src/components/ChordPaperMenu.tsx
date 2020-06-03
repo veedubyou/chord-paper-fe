@@ -9,6 +9,8 @@ import SaveIcon from "@material-ui/icons/Save";
 import FolderOpenIcon from "@material-ui/icons/FolderOpen";
 import React, { useState } from "react";
 import { ChordSong } from "../common/ChordModel";
+import { isLeft } from "fp-ts/lib/Either";
+import { useSnackbar } from "notistack";
 
 interface ChordPaperMenuProps {
     song: ChordSong;
@@ -27,6 +29,7 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     props: ChordPaperMenuProps
 ): JSX.Element => {
     const [open, setOpen] = useState(false);
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const openMenu = () => {
         setOpen(true);
@@ -54,31 +57,29 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
         const inputElem: HTMLInputElement = document.createElement("input");
         inputElem.type = "file";
         inputElem.addEventListener("change", () => {
-            console.log("Change listener");
             const fileList = inputElem.files;
             if (fileList === null) {
-                console.log("A");
                 return;
             }
 
             if (fileList.length > 1) {
-                console.log("B");
-                console.error(
-                    "Unexpected amount of files in a single file input"
+                enqueueSnackbar(
+                    "Multiple files selected, only one file expected",
+                    { variant: "error" }
                 );
                 return;
             }
 
             const file = fileList.item(0);
             if (file === null) {
-                console.log("C");
-                console.error("File is null somehow?");
+                enqueueSnackbar("Could not retrieve file from file dialog", {
+                    variant: "error",
+                });
                 return;
             }
 
             const fileReader = new FileReader();
             fileReader.onload = (ev: ProgressEvent<FileReader>) => {
-                console.log("Load listener");
                 if (
                     ev.target === null ||
                     ev.target.result === null ||
@@ -87,10 +88,19 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                     return;
                 }
 
-                const song = ChordSong.deserialize(ev.target.result);
+                const results = ChordSong.deserialize(ev.target.result);
+                if (isLeft(results)) {
+                    enqueueSnackbar(
+                        "Can't load file, Song file failed validation",
+                        {
+                            variant: "error",
+                        }
+                    );
+                    return;
+                }
 
                 if (props.onLoad) {
-                    props.onLoad(song);
+                    props.onLoad(results.right);
                 }
             };
 
