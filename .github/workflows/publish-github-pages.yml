@@ -1,0 +1,22 @@
+name: Publish to Github Pages
+
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    publish:
+        name: Publish master to Github Pages
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Install Dependencies
+              run: yarn
+
+            - name: Build
+              run: yarn build
+
+            - name: Deploy
+              run: yarn deploy
