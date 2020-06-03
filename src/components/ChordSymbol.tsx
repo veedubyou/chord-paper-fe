@@ -10,6 +10,7 @@ const ChordTypography = withStyles((theme: Theme) => ({
             color: theme.palette.secondary.main,
         },
         cursor: "pointer",
+        fontFamily: "PoriChord",
     },
 }))(Typography);
 
