@@ -29,6 +29,9 @@ const createTheme = (): Theme => {
             primary: lightBlue,
             secondary: purple,
         },
+        typography: {
+            fontFamily: ["Roboto", "PoriChord"].join(","),
+        },
     });
 };
 
