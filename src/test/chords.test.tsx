@@ -8,6 +8,7 @@ import { ChordSong, ChordLine, ChordBlock } from "../common/ChordModel";
 import { expectChordAndLyric, findByTestIdChain } from "./matcher";
 import { enterKey } from "./userEvent";
 import ChordPaper from "../components/ChordPaper";
+import { SnackbarProvider } from "notistack";
 
 afterEach(cleanup);
 
@@ -41,7 +42,9 @@ const song = (): ChordSong => {
 
 const basicChordPaper = () => (
     <ThemeProvider theme={createMuiTheme()}>
-        <ChordPaper initialSong={song()} />
+        <SnackbarProvider>
+            <ChordPaper initialSong={song()} />
+        </SnackbarProvider>
     </ThemeProvider>
 );
 

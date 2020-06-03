@@ -18,6 +18,7 @@ import {
 } from "./matcher";
 import { enterKey } from "./userEvent";
 import ChordPaper from "../components/ChordPaper";
+import { SnackbarProvider } from "notistack";
 
 afterEach(cleanup);
 
@@ -54,7 +55,9 @@ const chordPaperFromLyrics = (lyrics: string[]) => {
 
     return (
         <ThemeProvider theme={createMuiTheme()}>
-            <ChordPaper initialSong={song} />
+            <SnackbarProvider>
+                <ChordPaper initialSong={song} />
+            </SnackbarProvider>
         </ThemeProvider>
     );
 };

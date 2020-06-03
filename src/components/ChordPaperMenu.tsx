@@ -29,7 +29,7 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     props: ChordPaperMenuProps
 ): JSX.Element => {
     const [open, setOpen] = useState(false);
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
 
     const openMenu = () => {
         setOpen(true);
