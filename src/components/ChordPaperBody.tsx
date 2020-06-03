@@ -1,5 +1,10 @@
 import React from "react";
-import { Paper as UnstyledPaper, Theme, withStyles } from "@material-ui/core";
+import {
+    Paper as UnstyledPaper,
+    Theme,
+    withStyles,
+    Grid,
+} from "@material-ui/core";
 import Line from "./Line";
 import { ChordLine, ChordSong } from "../common/ChordModel";
 import { IDable } from "../common/Collection";
@@ -53,19 +58,25 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
 
     return (
         <Paper elevation={0}>
-            {props.song.chordLines.map((line: ChordLine, index: number) => {
-                return (
-                    <Line
-                        key={line.id}
-                        chordLine={line}
-                        onAddLine={addLine}
-                        onRemoveLine={removeLine}
-                        onChangeLine={changeLine}
-                        onPasteOverflow={pasteOverflowFromLine}
-                        data-testid={`Line-${index}`}
-                    />
-                );
-            })}
+            <Grid container justify="center">
+                <Grid item>
+                    {props.song.chordLines.map(
+                        (line: ChordLine, index: number) => {
+                            return (
+                                <Line
+                                    key={line.id}
+                                    chordLine={line}
+                                    onAddLine={addLine}
+                                    onRemoveLine={removeLine}
+                                    onChangeLine={changeLine}
+                                    onPasteOverflow={pasteOverflowFromLine}
+                                    data-testid={`Line-${index}`}
+                                />
+                            );
+                        }
+                    )}
+                </Grid>
+            </Grid>
         </Paper>
     );
 };

@@ -18,5 +18,8 @@ jobs:
             - name: Build
               run: yarn build
 
-            - name: Deploy
-              run: yarn deploy
+            - name: GitHub Pages action
+              uses: peaceiris/actions-gh-pages@v3.6.1
+              with:
+                  github_token: ${{ secrets.PAGES_TOKEN }}
+                  publish_dir: ./build
