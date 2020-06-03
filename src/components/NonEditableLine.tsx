@@ -44,13 +44,14 @@ const Tooltip = withStyles({
     },
 })(UnstyledTooltip);
 
-const HighlightableBox = withStyles({
+const HighlightableBox = withStyles((theme: Theme) => ({
     root: {
         "&:hover": {
             backgroundColor: grey[100],
         },
+        maxWidth: theme.spacing(92),
     },
-})(Box);
+}))(Box);
 
 interface NonEditableLineProps {
     chordLine: ChordLine;
@@ -81,7 +82,7 @@ const NonEditableLine: React.FC<NonEditableLineProps> = (
 
     const hoverMenu = (): React.ReactElement => {
         return (
-            <ButtonGroup variant="outlined">
+            <ButtonGroup variant="outlined" orientation="vertical">
                 <Button
                     variant="contained"
                     onClick={props.onEditButton}
@@ -141,7 +142,7 @@ const NonEditableLine: React.FC<NonEditableLineProps> = (
     );
 
     return (
-        <Tooltip title={hoverMenu()} interactive>
+        <Tooltip placement="right" title={hoverMenu()} interactive>
             <HighlightableBox data-testid={"NoneditableLine"}>
                 <Grid container>{blocks}</Grid>
             </HighlightableBox>

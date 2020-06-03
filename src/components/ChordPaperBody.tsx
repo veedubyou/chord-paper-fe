@@ -6,7 +6,7 @@ import { IDable } from "../common/Collection";
 
 const Paper = withStyles((theme: Theme) => ({
     root: {
-        padding: theme.spacing(5),
+        padding: theme.spacing(9.5),
         width: "max-content",
     },
 }))(UnstyledPaper);
