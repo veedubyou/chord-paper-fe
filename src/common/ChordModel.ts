@@ -1,11 +1,31 @@
 import { Collection, IDable } from "./Collection";
 import shortid from "shortid";
 import { tokenize } from "./LyricTokenizer";
+import * as iots from "io-ts";
+import { Either, right, left, isLeft, parseJSON } from "fp-ts/lib/Either";
 
 interface ChordBlockConstructorParams {
     chord: string;
     lyric: string;
 }
+
+const stringifyIgnoreID = (obj: unknown): string => {
+    return JSON.stringify(obj, (key: string, value: string) => {
+        if (key === "id") {
+            return undefined;
+        }
+
+        return value;
+    });
+};
+
+const ChordBlockValidator = iots.type({
+    chord: iots.string,
+    lyric: iots.string,
+    type: iots.literal("ChordBlock"),
+});
+
+type ChordBlockValidatedFields = iots.TypeOf<typeof ChordBlockValidator>;
 
 export class ChordBlock implements IDable<"ChordBlock"> {
     id: string;
@@ -18,6 +38,44 @@ export class ChordBlock implements IDable<"ChordBlock"> {
         this.chord = chord;
         this.lyric = lyric;
         this.type = "ChordBlock";
+    }
+
+    serialize(): string {
+        return stringifyIgnoreID(this);
+    }
+
+    static fromValidatedFields(
+        validatedFields: ChordBlockValidatedFields
+    ): ChordBlock {
+        return new ChordBlock({
+            chord: validatedFields.chord,
+            lyric: validatedFields.lyric,
+        });
+    }
+
+    static deserialize(jsonStr: string): Either<Error, ChordBlock> {
+        const result: Either<Error, unknown> = parseJSON(
+            jsonStr,
+            () => new Error("Failed to parse json string")
+        );
+
+        if (isLeft(result)) {
+            return result;
+        }
+
+        const jsonObj = result.right;
+        const validationResult = ChordBlockValidator.decode(jsonObj);
+
+        if (isLeft(validationResult)) {
+            return left(new Error("Invalid Chord Block object"));
+        }
+
+        return right(
+            new ChordBlock({
+                chord: validationResult.right.chord,
+                lyric: validationResult.right.lyric,
+            })
+        );
     }
 
     get lyricTokens(): string[] {
@@ -51,6 +109,12 @@ export class ChordBlock implements IDable<"ChordBlock"> {
     }
 }
 
+const ChordLineValidator = iots.type({
+    elements: iots.array(ChordBlockValidator),
+    type: iots.literal("ChordLine"),
+});
+type ChordLineValidatedFields = iots.TypeOf<typeof ChordLineValidator>;
+
 export class ChordLine extends Collection<ChordBlock, "ChordBlock">
     implements IDable<"ChordLine"> {
     id: string;
@@ -61,6 +125,42 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
 
         this.id = shortid.generate();
         this.type = "ChordLine";
+    }
+
+    static fromValidatedFields(
+        validatedFields: ChordLineValidatedFields
+    ): ChordLine {
+        const chordBlockElems: ChordBlock[] = validatedFields.elements.map(
+            (value: ChordBlockValidatedFields) => {
+                return ChordBlock.fromValidatedFields(value);
+            }
+        );
+
+        return new ChordLine(chordBlockElems);
+    }
+
+    serialize(): string {
+        return stringifyIgnoreID(this);
+    }
+
+    static deserialize(jsonStr: string): Either<Error, ChordLine> {
+        const result: Either<Error, unknown> = parseJSON(
+            jsonStr,
+            () => new Error("Failed to parse json string")
+        );
+
+        if (isLeft(result)) {
+            return result;
+        }
+
+        const jsonObj = result.right;
+        const validationResult = ChordLineValidator.decode(jsonObj);
+
+        if (isLeft(validationResult)) {
+            return left(new Error("Invalid Chord Line object"));
+        }
+
+        return right(this.fromValidatedFields(validationResult.right));
     }
 
     static fromLyrics(lyrics: string): ChordLine {
@@ -135,12 +235,20 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
     }
 }
 
-interface SongMetadata {
-    title: string;
-    composedBy: string;
-    performedBy: string;
-    asHeardFrom: string;
-}
+const SongMetadataValidator = iots.type({
+    title: iots.string,
+    composedBy: iots.string,
+    performedBy: iots.string,
+    asHeardFrom: iots.string,
+});
+
+type SongMetadata = iots.TypeOf<typeof SongMetadataValidator>;
+
+const ChordSongValidator = iots.type({
+    elements: iots.array(ChordLineValidator),
+    metadata: SongMetadataValidator,
+});
+type ChordSongValidatedFields = iots.TypeOf<typeof ChordSongValidator>;
 
 export class ChordSong extends Collection<ChordLine, "ChordLine"> {
     metadata: SongMetadata;
@@ -158,6 +266,41 @@ export class ChordSong extends Collection<ChordLine, "ChordLine"> {
                 asHeardFrom: "",
             };
         }
+    }
+
+    static fromValidatedFields(
+        validatedFields: ChordSongValidatedFields
+    ): ChordSong {
+        const chordLines: ChordLine[] = validatedFields.elements.map(
+            (chordLineValidatedFields: ChordLineValidatedFields) => {
+                return ChordLine.fromValidatedFields(chordLineValidatedFields);
+            }
+        );
+        return new ChordSong(chordLines, validatedFields.metadata);
+    }
+
+    serialize(): string {
+        return stringifyIgnoreID(this);
+    }
+
+    static deserialize(jsonStr: string): Either<Error, ChordSong> {
+        const result: Either<Error, unknown> = parseJSON(
+            jsonStr,
+            () => new Error("Failed to parse json string")
+        );
+
+        if (isLeft(result)) {
+            return result;
+        }
+
+        const jsonObj = result.right;
+        const validationResult = ChordSongValidator.decode(jsonObj);
+
+        if (isLeft(validationResult)) {
+            return left(new Error("Invalid Chord Song object"));
+        }
+
+        return right(this.fromValidatedFields(validationResult.right));
     }
 
     static fromLyricsLines(lyricLines: string[]): ChordSong {
