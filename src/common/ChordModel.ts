@@ -121,6 +121,10 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
     type: "ChordLine";
 
     constructor(elements?: ChordBlock[]) {
+        if (elements === undefined) {
+            elements = [new ChordBlock({ chord: "", lyric: "" })];
+        }
+
         super(elements);
 
         this.id = shortid.generate();
@@ -254,6 +258,10 @@ export class ChordSong extends Collection<ChordLine, "ChordLine"> {
     metadata: SongMetadata;
 
     constructor(elements?: ChordLine[], metadata?: SongMetadata) {
+        if (elements === undefined) {
+            elements = [new ChordLine()];
+        }
+
         super(elements);
 
         if (metadata !== undefined) {

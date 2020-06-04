@@ -7,6 +7,7 @@ import { withStyles } from "@material-ui/styles";
 import { Theme } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
 import FolderOpenIcon from "@material-ui/icons/FolderOpen";
+import NoteAddIcon from "@material-ui/icons/NoteAdd";
 import React, { useState } from "react";
 import { ChordSong } from "../common/ChordModel";
 import { isLeft } from "fp-ts/lib/Either";
@@ -15,6 +16,7 @@ import { useSnackbar } from "notistack";
 interface ChordPaperMenuProps {
     song: ChordSong;
     onLoad?: (loadedSong: ChordSong) => void;
+    onNewSong?: () => void;
 }
 
 const SpeedDial = withStyles((theme: Theme) => ({
@@ -53,59 +55,60 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
         URL.revokeObjectURL(objectURL);
     };
 
-    const loadAction = async () => {
-        const inputElem: HTMLInputElement = document.createElement("input");
-        inputElem.type = "file";
-        inputElem.addEventListener("change", () => {
-            const fileList = inputElem.files;
-            if (fileList === null) {
+    function pickFileHandler(this: HTMLInputElement) {
+        const fileList = this.files;
+        if (fileList === null) {
+            return;
+        }
+
+        if (fileList.length > 1) {
+            enqueueSnackbar("Multiple files selected, only one file expected", {
+                variant: "error",
+            });
+            return;
+        }
+
+        const file = fileList.item(0);
+        if (file === null) {
+            enqueueSnackbar("Could not retrieve file from file dialog", {
+                variant: "error",
+            });
+            return;
+        }
+
+        const fileReader = new FileReader();
+        fileReader.onload = (ev: ProgressEvent<FileReader>) => {
+            if (
+                ev.target === null ||
+                ev.target.result === null ||
+                ev.target.result instanceof ArrayBuffer
+            ) {
                 return;
             }
 
-            if (fileList.length > 1) {
+            const results = ChordSong.deserialize(ev.target.result);
+            if (isLeft(results)) {
                 enqueueSnackbar(
-                    "Multiple files selected, only one file expected",
-                    { variant: "error" }
+                    "Can't load file, Song file failed validation",
+                    {
+                        variant: "error",
+                    }
                 );
                 return;
             }
 
-            const file = fileList.item(0);
-            if (file === null) {
-                enqueueSnackbar("Could not retrieve file from file dialog", {
-                    variant: "error",
-                });
-                return;
+            if (props.onLoad) {
+                props.onLoad(results.right);
             }
+        };
 
-            const fileReader = new FileReader();
-            fileReader.onload = (ev: ProgressEvent<FileReader>) => {
-                if (
-                    ev.target === null ||
-                    ev.target.result === null ||
-                    ev.target.result instanceof ArrayBuffer
-                ) {
-                    return;
-                }
+        fileReader.readAsText(file);
+    }
 
-                const results = ChordSong.deserialize(ev.target.result);
-                if (isLeft(results)) {
-                    enqueueSnackbar(
-                        "Can't load file, Song file failed validation",
-                        {
-                            variant: "error",
-                        }
-                    );
-                    return;
-                }
-
-                if (props.onLoad) {
-                    props.onLoad(results.right);
-                }
-            };
-
-            fileReader.readAsText(file);
-        });
+    const loadAction = async () => {
+        const inputElem: HTMLInputElement = document.createElement("input");
+        inputElem.type = "file";
+        inputElem.addEventListener("change", pickFileHandler);
 
         inputElem.click();
     };
@@ -122,12 +125,17 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                 icon={<SaveIcon />}
                 tooltipTitle="Save"
                 onClick={saveAction}
-            ></SpeedDialAction>
+            />
             <SpeedDialAction
                 icon={<FolderOpenIcon />}
                 tooltipTitle="Load"
                 onClick={loadAction}
-            ></SpeedDialAction>
+            />
+            <SpeedDialAction
+                icon={<NoteAddIcon />}
+                tooltipTitle="New Song"
+                onClick={props.onNewSong}
+            />
         </SpeedDial>
     );
 };
