@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/chord-paper-fe/static/css/main.dddde6a1.chunk.css",
-    "main.js": "/chord-paper-fe/static/js/main.c9b3ce70.chunk.js",
-    "main.js.map": "/chord-paper-fe/static/js/main.c9b3ce70.chunk.js.map",
-    "runtime-main.js": "/chord-paper-fe/static/js/runtime-main.3f6cd68b.js",
-    "runtime-main.js.map": "/chord-paper-fe/static/js/runtime-main.3f6cd68b.js.map",
-    "static/js/2.8004f446.chunk.js": "/chord-paper-fe/static/js/2.8004f446.chunk.js",
-    "static/js/2.8004f446.chunk.js.map": "/chord-paper-fe/static/js/2.8004f446.chunk.js.map",
-    "index.html": "/chord-paper-fe/index.html",
-    "precache-manifest.e65adfb8331082c2ed53dcb67bda52ca.js": "/chord-paper-fe/precache-manifest.e65adfb8331082c2ed53dcb67bda52ca.js",
-    "service-worker.js": "/chord-paper-fe/service-worker.js",
-    "static/css/main.dddde6a1.chunk.css.map": "/chord-paper-fe/static/css/main.dddde6a1.chunk.css.map",
-    "static/js/2.8004f446.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.8004f446.chunk.js.LICENSE.txt",
-    "static/media/index.css": "/chord-paper-fe/static/media/PoriChord.3caa9627.woff2"
+    "main.css": "http://veedubyou.github.io/chord-paper-fe/static/css/main.17421ada.chunk.css",
+    "main.js": "http://veedubyou.github.io/chord-paper-fe/static/js/main.f47219c8.chunk.js",
+    "main.js.map": "http://veedubyou.github.io/chord-paper-fe/static/js/main.f47219c8.chunk.js.map",
+    "runtime-main.js": "http://veedubyou.github.io/chord-paper-fe/static/js/runtime-main.fb714d72.js",
+    "runtime-main.js.map": "http://veedubyou.github.io/chord-paper-fe/static/js/runtime-main.fb714d72.js.map",
+    "static/js/2.8004f446.chunk.js": "http://veedubyou.github.io/chord-paper-fe/static/js/2.8004f446.chunk.js",
+    "static/js/2.8004f446.chunk.js.map": "http://veedubyou.github.io/chord-paper-fe/static/js/2.8004f446.chunk.js.map",
+    "index.html": "http://veedubyou.github.io/chord-paper-fe/index.html",
+    "precache-manifest.c0a60a75c69dd516d7b09b92ce265d2b.js": "http://veedubyou.github.io/chord-paper-fe/precache-manifest.c0a60a75c69dd516d7b09b92ce265d2b.js",
+    "service-worker.js": "http://veedubyou.github.io/chord-paper-fe/service-worker.js",
+    "static/css/main.17421ada.chunk.css.map": "http://veedubyou.github.io/chord-paper-fe/static/css/main.17421ada.chunk.css.map",
+    "static/js/2.8004f446.chunk.js.LICENSE.txt": "http://veedubyou.github.io/chord-paper-fe/static/js/2.8004f446.chunk.js.LICENSE.txt",
+    "static/media/index.css": "http://veedubyou.github.io/chord-paper-fe/static/media/PoriChord.3caa9627.woff2"
   },
   "entrypoints": [
-    "static/js/runtime-main.3f6cd68b.js",
+    "static/js/runtime-main.fb714d72.js",
     "static/js/2.8004f446.chunk.js",
-    "static/css/main.dddde6a1.chunk.css",
-    "static/js/main.c9b3ce70.chunk.js"
+    "static/css/main.17421ada.chunk.css",
+    "static/js/main.f47219c8.chunk.js"
   ]
 }
