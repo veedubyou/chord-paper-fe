@@ -30,6 +30,10 @@ const ChordPaper: React.FC<ChordPaperProps> = (
         setSong(loadedSong.clone());
     };
 
+    const newSongHandler = () => {
+        setSong(new ChordSong());
+    };
+
     return (
         <RootPaper elevation={3}>
             <Header
@@ -38,7 +42,11 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                 onSongChanged={songChangeHandler}
             />
             <ChordPaperBody song={song} onSongChanged={songChangeHandler} />
-            <ChordPaperMenu song={song} onLoad={loadHandler} />
+            <ChordPaperMenu
+                song={song}
+                onLoad={loadHandler}
+                onNewSong={newSongHandler}
+            />
         </RootPaper>
     );
 };
