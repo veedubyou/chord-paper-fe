@@ -48,7 +48,11 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
         const objectURL = URL.createObjectURL(blob);
 
         const anchor = document.createElement("a");
+
         anchor.download = "chord_paper_song.json";
+        if (props.song.title !== "") {
+            anchor.download = props.song.title + ".json";
+        }
         anchor.href = objectURL;
         anchor.click();
 
