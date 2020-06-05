@@ -21,7 +21,7 @@ const EditableLine: React.FC<EditableLineProps> = (
 ): JSX.Element => {
     const [value, setValue] = useState<string>(props.children);
     const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
-    const theme = useTheme();
+    const theme: Theme = useTheme();
 
     const updateValue = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
