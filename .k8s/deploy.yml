@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chord-fe-deploy
+  labels:
+    app: chord-fe
+spec:
+  replicas: 25
+  selector: 
+    matchLabels:
+      app: chord-fe
+  template:
+    metadata:
+      labels:
+        app: chord-fe
+    spec:
+      containers:
+      - name: chord-fe
+        image: pw1124/chord:latest
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: regcred
