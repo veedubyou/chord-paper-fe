@@ -1,12 +1,12 @@
 import {
     Theme,
     useTheme,
-    FilledInput as UnstyledFilledInput,
     InputBaseComponentProps,
     TypographyVariant,
+    TextField,
 } from "@material-ui/core";
 import React, { useState } from "react";
-import { withStyles } from "@material-ui/styles";
+import { CSSProperties } from "@material-ui/styles";
 
 interface EditableLineProps {
     children: string;
@@ -29,9 +29,7 @@ const EditableLine: React.FC<EditableLineProps> = (
         setValue(event.target.value);
     };
 
-    const forwardEnter = (
-        event: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
+    const forwardEnter = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === "Enter") {
             finish(value);
         }
@@ -98,46 +96,37 @@ const EditableLine: React.FC<EditableLineProps> = (
         }
     };
 
-    const browserInputProps = (theme: Theme, width?: string) => {
-        let padding: string | number | undefined = 0;
-        if (
-            props.variant !== undefined &&
-            theme?.typography?.[props.variant]?.padding
-        ) {
-            padding = theme.typography[props.variant].padding;
+    const browserInputProps = () => {
+        let variant: CSSProperties | undefined = undefined;
+        if (props.variant !== undefined) {
+            variant = theme?.typography?.[props.variant];
         }
+
+        const padding: string | number | undefined =
+            variant?.padding !== undefined ? variant.padding : 0;
+        const fontSize: string | number | undefined = variant?.fontSize;
 
         const inputProps: InputBaseComponentProps = {
             style: {
                 padding: padding,
+                fontSize: fontSize,
             },
         };
 
-        if (width && inputProps.style) {
-            inputProps.style.width = width;
+        if (props.width !== undefined && inputProps.style) {
+            inputProps.style.width = props.width;
         }
 
         return inputProps;
     };
 
-    const FilledInput = withStyles((theme: Theme) => {
-        if (props.variant === undefined) {
-            return { root: {} };
-        }
-
-        return {
-            root: {
-                fontSize: theme.typography[props.variant].fontSize,
-            },
-        };
-    })(UnstyledFilledInput);
-
     return (
-        <FilledInput
+        <TextField
             autoFocus
+            variant="filled"
             inputProps={{
                 "data-testid": "InnerInput",
-                ...browserInputProps(theme, props.width),
+                ...browserInputProps(),
             }}
             inputRef={inputRef}
             value={value}
