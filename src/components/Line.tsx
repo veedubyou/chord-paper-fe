@@ -75,7 +75,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         );
     };
 
-    const editableLine = (): React.ReactElement => {
+    const editLyricsInput = (): React.ReactElement => {
         const lyrics = props.chordLine.lyrics;
 
         return (
@@ -93,10 +93,12 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
 
     let elem: React.ReactElement;
     if (editing) {
+        // using a css trick to overlay the lyrics edit input over
+        // the noneditable lyrics line so chords are still showing
         elem = (
             <>
-                {editableLine()}
                 {nonEditableLine()}
+                {editLyricsInput()}
             </>
         );
     } else {
