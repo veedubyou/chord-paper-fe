@@ -3858,6 +3858,11 @@ detect-port-alt@1.1.6:
     address "^1.0.1"
     debug "^2.6.0"
 
+diff-match-patch-typescript@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/diff-match-patch-typescript/-/diff-match-patch-typescript-1.0.7.tgz#a3dff73c806484450b7133a857d242ff409e8ce0"
+  integrity sha512-eOZn23mNiW1MqfLgPKFKeTj/+78ug7gDJSWLyeGxsp4GxWliAzokXQxs+3YwvgHH7EnSfqrFPu4tfSbBeUB5cg==
+
 diff-sequences@^24.9.0:
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-24.9.0.tgz#5715d6244e2aa65f48bba0bc972db0b0b11e95b5"

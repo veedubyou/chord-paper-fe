@@ -1,10 +1,10 @@
-import { Box, Typography, Slide, Grid } from "@material-ui/core";
+import { Box, Slide } from "@material-ui/core";
 import React, { useState } from "react";
 import EditableLine from "./EditableLine";
 
 import { DataTestID } from "../common/DataTestID";
-import { ChordLine } from "../common/ChordModel";
-import { IDable } from "../common/Collection";
+import { ChordLine } from "../common/ChordModel/ChordLine";
+import { IDable } from "../common/ChordModel/Collection";
 import NonEditableLine from "./NonEditableLine";
 
 interface LineProps extends DataTestID {
@@ -75,30 +75,36 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         );
     };
 
-    const editableLine = (): React.ReactElement => {
+    const editLyricsInput = (): React.ReactElement => {
         const lyrics = props.chordLine.lyrics;
 
         return (
-            <Grid container direction="column">
-                <Grid item>
-                    <Typography variant="h5">Chords Placeholder</Typography>
-                </Grid>
-                <Grid item>
-                    <EditableLine
-                        variant="h5"
-                        onFinish={finishEdit}
-                        onPasteOverflow={pasteOverflowHandler}
-                    >
-                        {lyrics}
-                    </EditableLine>
-                </Grid>
-            </Grid>
+            <Box position="absolute" left="0" bottom="2px" width="100%">
+                <EditableLine
+                    variant="h5"
+                    onFinish={finishEdit}
+                    onPasteOverflow={pasteOverflowHandler}
+                >
+                    {lyrics}
+                </EditableLine>
+            </Box>
         );
     };
 
-    const elem: React.ReactElement = editing
-        ? editableLine()
-        : nonEditableLine();
+    let elem: React.ReactElement;
+    if (editing) {
+        // using a css trick to overlay the lyrics edit input over
+        // the noneditable lyrics line so chords are still showing
+        elem = (
+            <>
+                {nonEditableLine()}
+                {editLyricsInput()}
+            </>
+        );
+    } else {
+        elem = nonEditableLine();
+    }
+
     const yeetDirection = removed ? "up" : "down";
 
     return (
@@ -109,6 +115,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 width="auto"
                 minWidth="30em"
                 margin="3rem"
+                position="relative"
                 data-testid={props["data-testid"]}
             >
                 {elem}

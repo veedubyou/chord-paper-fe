@@ -55,39 +55,55 @@ export const matchLyric: (lyricToMatch: string) => MatcherFunction = (
     };
 };
 
-export const findByTestIdChain = async (
-    findByTestId: (testID: string) => Promise<HTMLElement>,
-    testIDChain: string[]
-): Promise<HTMLElement> => {
-    expect(testIDChain.length).toBeGreaterThanOrEqual(1);
+export type FindByTestIdChainFn = (
+    ...testIDChain: string[]
+) => Promise<HTMLElement>;
 
-    let parent: HTMLElement = await findByTestId(testIDChain[0]);
-    for (let i = 1; i < testIDChain.length; i++) {
-        parent = await within(parent).findByTestId(testIDChain[i]);
-    }
+export const getFindByTestIdChain = (
+    findByTestId: (testID: string) => Promise<HTMLElement>
+): ((...testIDChain: string[]) => Promise<HTMLElement>) => {
+    return async (...testIDChain: string[]): Promise<HTMLElement> => {
+        expect(testIDChain.length).toBeGreaterThanOrEqual(1);
 
-    return parent;
+        let parent: HTMLElement = await findByTestId(testIDChain[0]);
+        for (let i = 1; i < testIDChain.length; i++) {
+            parent = await within(parent).findByTestId(testIDChain[i]);
+        }
+
+        return parent;
+    };
 };
 
-export const expectChordAndLyric = async (
-    findByTestId: (testID: string) => Promise<HTMLElement>,
-    testIDChain: string[],
+type FindByTestIdFn = (testID: string) => Promise<HTMLElement>;
+
+export type ExpectChordAndLyricFn = (
     chord: string,
-    lyric: string
-) => {
-    const parent = await findByTestIdChain(findByTestId, testIDChain);
+    lyric: string,
+    testIDChain: string[]
+) => Promise<void>;
 
-    const chordElem = await within(parent).findByTestId("Chord");
-    const lyricElem = await within(parent).findByTestId("Lyric");
+export const getExpectChordAndLyric = (
+    findByTestId: FindByTestIdFn
+): ExpectChordAndLyricFn => {
+    return async (
+        chord: string,
+        lyric: string,
+        testIDChain: string[]
+    ): Promise<void> => {
+        const parent = await getFindByTestIdChain(findByTestId)(...testIDChain);
 
-    await waitFor(() => {
-        expect(chordElem).toHaveTextContent(chord, {
-            normalizeWhitespace: true,
+        const chordElem = await within(parent).findByTestId("Chord");
+        const lyricElem = await within(parent).findByTestId("Lyric");
+
+        await waitFor(() => {
+            expect(chordElem).toHaveTextContent(chord, {
+                normalizeWhitespace: true,
+            });
         });
-    });
-    await waitFor(() =>
-        expect(lyricElem).toHaveTextContent(lyric, {
-            normalizeWhitespace: true,
-        })
-    );
+        await waitFor(() =>
+            expect(lyricElem).toHaveTextContent(lyric, {
+                normalizeWhitespace: false,
+            })
+        );
+    };
 };
