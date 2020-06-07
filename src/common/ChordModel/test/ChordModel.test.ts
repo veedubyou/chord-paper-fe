@@ -128,13 +128,6 @@ describe("ChordLine", () => {
         expect(line.chordBlocks[0].chord).toEqual("");
     });
 
-    test("replaceLyrics", () => {
-        c.replaceLyrics("We ARE strangers to love");
-        expect(c.chordBlocks).toHaveLength(1);
-        expect(c.chordBlocks[0].chord).toEqual("");
-        expect(c.chordBlocks[0].lyric).toEqual("We ARE strangers to love");
-    });
-
     describe("setChord", () => {
         describe("setting a chord to empty", () => {
             test("first chord does not get merged", () => {

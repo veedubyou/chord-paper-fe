@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import EditableLine from "./EditableLine";
 
 import { DataTestID } from "../common/DataTestID";
-import { ChordLine } from "../common/ChordModel";
+import { ChordLine } from "../common/ChordModel/ChordModel";
 import { IDable } from "../common/Collection";
 import NonEditableLine from "./NonEditableLine";
 
@@ -79,26 +79,47 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         const lyrics = props.chordLine.lyrics;
 
         return (
-            <Grid container direction="column">
-                <Grid item>
-                    <Typography variant="h5">Chords Placeholder</Typography>
-                </Grid>
-                <Grid item>
-                    <EditableLine
-                        variant="h5"
-                        onFinish={finishEdit}
-                        onPasteOverflow={pasteOverflowHandler}
-                    >
-                        {lyrics}
-                    </EditableLine>
-                </Grid>
-            </Grid>
+            <Box
+                position="absolute"
+                left="0"
+                bottom="2px"
+                zIndex="100"
+                width="100%"
+            >
+                <EditableLine
+                    variant="h5"
+                    onFinish={finishEdit}
+                    onPasteOverflow={pasteOverflowHandler}
+                >
+                    {lyrics}
+                </EditableLine>
+            </Box>
+
+            // <Grid container direction="column">
+            //     <Grid item>
+            //         <Typography variant="h5">Chords Placeholder</Typography>
+            //     </Grid>
+            //     <Grid item>
+
+            //             {lyrics}
+            //         </EditableLine>
+            //     </Grid>
+            // </Grid>
         );
     };
 
-    const elem: React.ReactElement = editing
-        ? editableLine()
-        : nonEditableLine();
+    let elem: React.ReactElement;
+    if (editing) {
+        elem = (
+            <>
+                {editableLine()}
+                {nonEditableLine()}
+            </>
+        );
+    } else {
+        elem = nonEditableLine();
+    }
+
     const yeetDirection = removed ? "up" : "down";
 
     return (
@@ -109,6 +130,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 width="auto"
                 minWidth="30em"
                 margin="3rem"
+                position="relative"
                 data-testid={props["data-testid"]}
             >
                 {elem}

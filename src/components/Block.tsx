@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 import { DataTestID } from "../common/DataTestID";
 import { isWhitespace, inflatingWhitespace } from "../common/Whitespace";
-import { ChordBlock } from "../common/ChordModel";
+import { ChordBlock } from "../common/ChordModel/ChordModel";
 import ChordSymbol from "./ChordSymbol";
 import { IDable } from "../common/Collection";
 import EditableLine from "./EditableLine";

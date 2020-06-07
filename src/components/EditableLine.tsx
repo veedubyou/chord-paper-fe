@@ -7,6 +7,7 @@ import {
 } from "@material-ui/core";
 import React, { useState } from "react";
 import { CSSProperties } from "@material-ui/styles";
+import grey from "@material-ui/core/colors/grey";
 
 interface EditableLineProps {
     children: string;
@@ -110,6 +111,8 @@ const EditableLine: React.FC<EditableLineProps> = (
             style: {
                 padding: padding,
                 fontSize: fontSize,
+                opacity: 1,
+                background: grey[100],
             },
         };
 

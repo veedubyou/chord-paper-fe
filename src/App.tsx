@@ -7,7 +7,11 @@ import {
     Grid,
 } from "@material-ui/core";
 import { tokenize } from "./common/LyricTokenizer";
-import { ChordSong, ChordLine, ChordBlock } from "./common/ChordModel";
+import {
+    ChordSong,
+    ChordLine,
+    ChordBlock,
+} from "./common/ChordModel/ChordModel";
 import ChordPaper from "./components/ChordPaper";
 import { SnackbarProvider } from "notistack";
 

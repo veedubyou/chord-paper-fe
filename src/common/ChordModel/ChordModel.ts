@@ -1,8 +1,9 @@
-import { Collection, IDable } from "./Collection";
+import { Collection, IDable } from "../Collection";
 import shortid from "shortid";
-import { tokenize } from "./LyricTokenizer";
+import { tokenize } from "../LyricTokenizer";
 import * as iots from "io-ts";
 import { Either, right, left, isLeft, parseJSON } from "fp-ts/lib/Either";
+import { replaceChordLineLyrics } from "./ChordLinePatcher";
 
 interface ChordBlockConstructorParams {
     chord: string;
@@ -193,14 +194,7 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
             return;
         }
 
-        this.elements = [
-            new ChordBlock({
-                // TODO: feature next. chords are currently destructively wiped
-                // because anchoring information is lost between edits
-                chord: "",
-                lyric: newLyrics,
-            }),
-        ];
+        replaceChordLineLyrics(this, newLyrics);
     }
 
     setChord(idable: IDable<"ChordBlock">, newChord: string): void {
