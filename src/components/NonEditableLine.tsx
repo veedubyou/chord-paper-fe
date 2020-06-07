@@ -11,13 +11,14 @@ import React from "react";
 
 import grey from "@material-ui/core/colors/grey";
 
-import { ChordBlock, ChordLine } from "../common/ChordModel/ChordModel";
 import Block from "./Block";
 
 import UnstyledEditIcon from "@material-ui/icons/Edit";
 import UnstyledAddIcon from "@material-ui/icons/Add";
 import UnstyledRemoveIcon from "@material-ui/icons/Remove";
-import { IDable } from "../common/Collection";
+import { IDable } from "../common/ChordModel/Collection";
+import { ChordBlock } from "../common/ChordModel/ChordBlock";
+import { ChordLine } from "../common/ChordModel/ChordLine";
 
 const iconColorStyle = {
     root: {

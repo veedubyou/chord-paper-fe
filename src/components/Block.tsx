@@ -3,10 +3,10 @@ import React, { useState } from "react";
 
 import { DataTestID } from "../common/DataTestID";
 import { isWhitespace, inflatingWhitespace } from "../common/Whitespace";
-import { ChordBlock } from "../common/ChordModel/ChordModel";
 import ChordSymbol from "./ChordSymbol";
-import { IDable } from "../common/Collection";
+import { IDable } from "../common/ChordModel/Collection";
 import EditableLine from "./EditableLine";
+import { ChordBlock } from "../common/ChordModel/ChordBlock";
 
 interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;

@@ -6,8 +6,9 @@ import {
     Grid,
 } from "@material-ui/core";
 import Line from "./Line";
-import { ChordLine, ChordSong } from "../common/ChordModel/ChordModel";
-import { IDable } from "../common/Collection";
+import { IDable } from "../common/ChordModel/Collection";
+import { ChordSong } from "../common/ChordModel/ChordSong";
+import { ChordLine } from "../common/ChordModel/ChordLine";
 
 const Paper = withStyles((theme: Theme) => ({
     root: {

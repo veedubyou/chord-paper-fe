@@ -9,7 +9,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import FolderOpenIcon from "@material-ui/icons/FolderOpen";
 import NoteAddIcon from "@material-ui/icons/NoteAdd";
 import React, { useState } from "react";
-import { ChordSong } from "../common/ChordModel/ChordModel";
+import { ChordSong } from "../common/ChordModel/ChordSong";
 import { isLeft } from "fp-ts/lib/Either";
 import { useSnackbar } from "notistack";
 

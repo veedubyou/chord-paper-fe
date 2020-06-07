@@ -1,10 +1,10 @@
-import { Box, Typography, Slide, Grid } from "@material-ui/core";
+import { Box, Slide } from "@material-ui/core";
 import React, { useState } from "react";
 import EditableLine from "./EditableLine";
 
 import { DataTestID } from "../common/DataTestID";
-import { ChordLine } from "../common/ChordModel/ChordModel";
-import { IDable } from "../common/Collection";
+import { ChordLine } from "../common/ChordModel/ChordLine";
+import { IDable } from "../common/ChordModel/Collection";
 import NonEditableLine from "./NonEditableLine";
 
 interface LineProps extends DataTestID {

@@ -1,4 +1,5 @@
-import { ChordLine, ChordBlock } from "./ChordModel";
+import { ChordLine } from "./ChordLine";
+import { ChordBlock } from "./ChordBlock";
 import { DiffMatchPatch, DiffOperation } from "diff-match-patch-typescript";
 
 const differ: DiffMatchPatch = (() => {

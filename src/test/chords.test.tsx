@@ -9,11 +9,7 @@ import {
 import userEvent from "@testing-library/user-event";
 
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
-import {
-    ChordSong,
-    ChordLine,
-    ChordBlock,
-} from "../common/ChordModel/ChordModel";
+
 import {
     getExpectChordAndLyric,
     getFindByTestIdChain,
@@ -23,6 +19,9 @@ import {
 import { enterKey } from "./userEvent";
 import ChordPaper from "../components/ChordPaper";
 import { SnackbarProvider } from "notistack";
+import { ChordSong } from "../common/ChordModel/ChordSong";
+import { ChordLine } from "../common/ChordModel/ChordLine";
+import { ChordBlock } from "../common/ChordModel/ChordBlock";
 
 afterEach(cleanup);
 
