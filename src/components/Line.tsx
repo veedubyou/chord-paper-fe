@@ -79,13 +79,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         const lyrics = props.chordLine.lyrics;
 
         return (
-            <Box
-                position="absolute"
-                left="0"
-                bottom="2px"
-                zIndex="100"
-                width="100%"
-            >
+            <Box position="absolute" left="0" bottom="2px" width="100%">
                 <EditableLine
                     variant="h5"
                     onFinish={finishEdit}
@@ -94,17 +88,6 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                     {lyrics}
                 </EditableLine>
             </Box>
-
-            // <Grid container direction="column">
-            //     <Grid item>
-            //         <Typography variant="h5">Chords Placeholder</Typography>
-            //     </Grid>
-            //     <Grid item>
-
-            //             {lyrics}
-            //         </EditableLine>
-            //     </Grid>
-            // </Grid>
         );
     };
 
