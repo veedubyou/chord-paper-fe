@@ -87,11 +87,17 @@ class ChordLineIterator {
         }
 
         if (this.prependLyrics !== "") {
-            this.chordLine.elements.splice(
-                0,
-                0,
-                new ChordBlock({ chord: "", lyric: this.prependLyrics })
-            );
+            const firstBlock = this.chordLine.elements[0];
+            // merge if first block has no chords anyway
+            if (firstBlock.chord === "") {
+                firstBlock.lyric = this.prependLyrics + firstBlock.lyric;
+            } else {
+                this.chordLine.elements.splice(
+                    0,
+                    0,
+                    new ChordBlock({ chord: "", lyric: this.prependLyrics })
+                );
+            }
         }
     }
 }
