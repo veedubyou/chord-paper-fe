@@ -2,7 +2,6 @@
     "name": "chord-paper-fe",
     "version": "0.1.0",
     "private": true,
-    "homepage": "http://veedubyou.github.io/chord-paper-fe",
     "dependencies": {
         "@material-ui/core": "^4.9.14",
         "@material-ui/icons": "^4.9.1",
@@ -16,8 +15,8 @@
         "@types/react": "^16.9.0",
         "@types/react-dom": "^16.9.0",
         "@types/shortid": "^0.0.29",
+        "diff-match-patch-typescript": "^1.0.7",
         "fp-ts": "^2.6.2",
-        "gh-pages": "^3.0.0",
         "io-ts": "^2.2.4",
         "notistack": "^0.9.16",
         "react": "^16.13.1",
@@ -31,8 +30,7 @@
         "build": "react-scripts build",
         "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
         "eject": "react-scripts eject",
-        "predeploy": "yarn build",
-        "deploy": "gh-pages -d build"
+        "build-github-pages": "PUBLIC_URL=/chord-paper-fe yarn build"
     },
     "eslintConfig": {
         "extends": "react-app"

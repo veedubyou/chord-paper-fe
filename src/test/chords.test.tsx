@@ -1,14 +1,27 @@
 import React from "react";
-import { render, cleanup, fireEvent } from "@testing-library/react";
+import {
+    render,
+    cleanup,
+    fireEvent,
+    findByTestId,
+} from "@testing-library/react";
 
 import userEvent from "@testing-library/user-event";
 
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
-import { ChordSong, ChordLine, ChordBlock } from "../common/ChordModel";
-import { expectChordAndLyric, findByTestIdChain } from "./matcher";
+
+import {
+    getExpectChordAndLyric,
+    getFindByTestIdChain,
+    FindByTestIdChainFn,
+    ExpectChordAndLyricFn,
+} from "./matcher";
 import { enterKey } from "./userEvent";
 import ChordPaper from "../components/ChordPaper";
 import { SnackbarProvider } from "notistack";
+import { ChordSong } from "../common/ChordModel/ChordSong";
+import { ChordLine } from "../common/ChordModel/ChordLine";
+import { ChordBlock } from "../common/ChordModel/ChordBlock";
 
 afterEach(cleanup);
 
@@ -51,81 +64,80 @@ const basicChordPaper = () => (
 describe("Rendering initial chords", () => {
     test("renders the chords", async () => {
         const { findByTestId } = render(basicChordPaper());
+        const expectChordAndLyric = getExpectChordAndLyric(findByTestId);
 
-        await expectChordAndLyric(
-            findByTestId,
-            ["Line-0", "NoneditableLine", "Block-0"],
-            "C",
-            "Fly me"
-        );
+        await expectChordAndLyric("C", "Fly me", [
+            "Line-0",
+            "NoneditableLine",
+            "Block-0",
+        ]);
 
-        await expectChordAndLyric(
-            findByTestId,
-            ["Line-0", "NoneditableLine", "Block-1"],
-            "D",
-            "to the moon"
-        );
+        await expectChordAndLyric("D", "to the moon", [
+            "Line-0",
+            "NoneditableLine",
+            "Block-1",
+        ]);
 
-        await expectChordAndLyric(
-            findByTestId,
-            ["Line-1", "NoneditableLine", "Block-0"],
-            "",
-            "And let me play"
-        );
+        await expectChordAndLyric("", "And let me play", [
+            "Line-1",
+            "NoneditableLine",
+            "Block-0",
+        ]);
 
-        await expectChordAndLyric(
-            findByTestId,
-            ["Line-1", "NoneditableLine", "Block-1"],
-            "E",
-            "among the stars"
-        );
+        await expectChordAndLyric("E", "among the stars", [
+            "Line-1",
+            "NoneditableLine",
+            "Block-1",
+        ]);
     });
 });
 
 describe("Changing the chord", () => {
-    let findByTestId: (testID: string) => Promise<HTMLElement>;
+    let findByTestIdChain: FindByTestIdChainFn;
+    let expectChordAndLyric: ExpectChordAndLyricFn;
     beforeEach(async () => {
-        findByTestId = render(basicChordPaper()).findByTestId;
-        const token = await findByTestIdChain(findByTestId, [
+        const { findByTestId } = render(basicChordPaper());
+        findByTestIdChain = getFindByTestIdChain(findByTestId);
+        expectChordAndLyric = getExpectChordAndLyric(findByTestId);
+        const token = await findByTestIdChain(
             "Line-0",
             "NoneditableLine",
             "Block-1",
-            "Token-0",
-        ]);
+            "Token-0"
+        );
         userEvent.click(token);
     });
 
     test("it takes input and retains new chord changes", async () => {
         const chordEdit = async () =>
-            await findByTestIdChain(findByTestId, [
+            await findByTestIdChain(
                 "Line-0",
                 "NoneditableLine",
                 "Block-1",
                 "ChordEdit",
-                "InnerInput",
-            ]);
+                "InnerInput"
+            );
 
         fireEvent.change(await chordEdit(), {
             target: { value: "F7" },
         });
         enterKey(await chordEdit());
 
-        await expectChordAndLyric(
-            findByTestId,
-            ["Line-0", "NoneditableLine", "Block-1"],
-            "F7",
-            "to the moon"
-        );
+        await expectChordAndLyric("F7", "to the moon", [
+            "Line-0",
+            "NoneditableLine",
+            "Block-1",
+        ]);
     });
 
     test("it gets merged with previous block when chords are cleared", async () => {
-        const chordEdit = await findByTestIdChain(findByTestId, [
+        const chordEdit = await findByTestIdChain(
             "Line-0",
             "NoneditableLine",
             "Block-1",
             "ChordEdit",
-            "InnerInput",
-        ]);
+            "InnerInput"
+        );
 
         fireEvent.change(chordEdit, {
             target: { value: "" },
@@ -133,38 +145,41 @@ describe("Changing the chord", () => {
 
         enterKey(chordEdit);
 
-        expectChordAndLyric(
-            findByTestId,
-            ["Line-0", "NoneditableLine", "Block-0"],
-            "C",
-            "Fly me to the moon"
-        );
+        expectChordAndLyric("C", "Fly me to the moon", [
+            "Line-0",
+            "NoneditableLine",
+            "Block-0",
+        ]);
     });
 });
 
 describe("inserting a chord", () => {
-    let findByTestId: (testID: string) => Promise<HTMLElement>;
     let chordEdit: () => Promise<HTMLElement>;
 
-    beforeEach(async () => {
-        findByTestId = render(basicChordPaper()).findByTestId;
+    let findByTestIdChain: FindByTestIdChainFn;
+    let expectChordAndLyric: ExpectChordAndLyricFn;
 
-        const token = await findByTestIdChain(findByTestId, [
+    beforeEach(async () => {
+        const { findByTestId } = render(basicChordPaper());
+        findByTestIdChain = getFindByTestIdChain(findByTestId);
+        expectChordAndLyric = getExpectChordAndLyric(findByTestId);
+
+        const token = await findByTestIdChain(
             "Line-0",
             "NoneditableLine",
             "Block-1",
-            "Token-2",
-        ]);
+            "Token-2"
+        );
         userEvent.click(token);
 
         chordEdit = async () =>
-            await findByTestIdChain(findByTestId, [
+            await findByTestIdChain(
                 "Line-0",
                 "NoneditableLine",
                 "Block-2", // the block should be split, so the chord happens on the next block
                 "ChordEdit",
-                "InnerInput",
-            ]);
+                "InnerInput"
+            );
     });
 
     test("it splits the block", async () => {
@@ -174,19 +189,17 @@ describe("inserting a chord", () => {
 
         enterKey(await chordEdit());
 
-        await expectChordAndLyric(
-            findByTestId,
-            ["Line-0", "NoneditableLine", "Block-1"],
-            "D",
-            "to"
-        );
+        await expectChordAndLyric("D", "to", [
+            "Line-0",
+            "NoneditableLine",
+            "Block-1",
+        ]);
 
-        await expectChordAndLyric(
-            findByTestId,
-            ["Line-0", "NoneditableLine", "Block-2"],
-            "Am7",
-            "the moon"
-        );
+        await expectChordAndLyric("Am7", "the moon", [
+            "Line-0",
+            "NoneditableLine",
+            "Block-2",
+        ]);
     });
 
     test("it makes no changes if no input after all", async () => {
@@ -196,11 +209,10 @@ describe("inserting a chord", () => {
 
         enterKey(await chordEdit());
 
-        await expectChordAndLyric(
-            findByTestId,
-            ["Line-0", "NoneditableLine", "Block-1"],
-            "D",
-            "to the moon"
-        );
+        await expectChordAndLyric("D", "to the moon", [
+            "Line-0",
+            "NoneditableLine",
+            "Block-1",
+        ]);
     });
 });

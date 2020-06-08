@@ -5,6 +5,16 @@ export interface IDable<T extends string> {
     type: T;
 }
 
+export const stringifyIgnoreID = (obj: unknown): string => {
+    return JSON.stringify(obj, (key: string, value: string) => {
+        if (key === "id") {
+            return undefined;
+        }
+
+        return value;
+    });
+};
+
 export abstract class Collection<T extends IDable<U>, U extends string> {
     elements: T[];
 

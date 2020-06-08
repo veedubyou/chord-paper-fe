@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { Paper, Theme, withStyles } from "@material-ui/core";
 import ChordPaperBody from "./ChordPaperBody";
 import Header from "./Header";
-import { ChordSong } from "../common/ChordModel";
 import ChordPaperMenu from "./ChordPaperMenu";
+import { ChordSong } from "../common/ChordModel/ChordSong";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
@@ -30,6 +30,10 @@ const ChordPaper: React.FC<ChordPaperProps> = (
         setSong(loadedSong.clone());
     };
 
+    const newSongHandler = () => {
+        setSong(new ChordSong());
+    };
+
     return (
         <RootPaper elevation={3}>
             <Header
@@ -38,7 +42,11 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                 onSongChanged={songChangeHandler}
             />
             <ChordPaperBody song={song} onSongChanged={songChangeHandler} />
-            <ChordPaperMenu song={song} onLoad={loadHandler} />
+            <ChordPaperMenu
+                song={song}
+                onLoad={loadHandler}
+                onNewSong={newSongHandler}
+            />
         </RootPaper>
     );
 };
