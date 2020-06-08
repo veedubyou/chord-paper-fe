@@ -96,23 +96,49 @@ describe("ChordLinePatcher", () => {
             });
         });
 
-        test("adding a word in the beginning of the line", () => {
-            replaceChordLineLyrics(
-                chordLine,
-                "Verse: It's your fault really that I'm in trouble"
-            );
+        describe("adding a word in the beginning of the line", () => {
+            test("with a chord at the beginning", () => {
+                replaceChordLineLyrics(
+                    chordLine,
+                    "Verse: It's your fault that I'm in trouble"
+                );
 
-            expect(chordLine.elements[0]).toMatchObject({
-                chord: "",
-                lyric: "Verse: ",
+                expect(chordLine.elements[0]).toMatchObject({
+                    chord: "",
+                    lyric: "Verse: ",
+                });
+                expect(chordLine.elements[1]).toMatchObject({
+                    chord: "F",
+                    lyric: "It's your fault ",
+                });
+                expect(chordLine.elements[2]).toMatchObject({
+                    chord: "C",
+                    lyric: "that I'm in trouble",
+                });
             });
-            expect(chordLine.elements[1]).toMatchObject({
-                chord: "F",
-                lyric: "It's your fault really ",
-            });
-            expect(chordLine.elements[2]).toMatchObject({
-                chord: "C",
-                lyric: "that I'm in trouble",
+
+            test("with no chord at the beginning", () => {
+                chordLine = new ChordLine([
+                    new ChordBlock({ chord: "", lyric: "It's your fault " }),
+                    new ChordBlock({
+                        chord: "C",
+                        lyric: "that I'm in trouble",
+                    }),
+                ]);
+
+                replaceChordLineLyrics(
+                    chordLine,
+                    "Verse: It's your fault that I'm in trouble"
+                );
+
+                expect(chordLine.elements[0]).toMatchObject({
+                    chord: "",
+                    lyric: "Verse: It's your fault ",
+                });
+                expect(chordLine.elements[1]).toMatchObject({
+                    chord: "C",
+                    lyric: "that I'm in trouble",
+                });
             });
         });
     });
