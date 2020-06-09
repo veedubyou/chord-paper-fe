@@ -1,5 +1,5 @@
 import * as iots from "io-ts";
-import { Collection, stringifyIgnoreID } from "./Collection";
+import { Collection, stringifyIgnoreID, IDable } from "./Collection";
 import { Either, right, left, isLeft, parseJSON } from "fp-ts/lib/Either";
 import {
     ChordLineValidator,
@@ -124,5 +124,30 @@ export class ChordSong extends Collection<ChordLine, "ChordLine"> {
 
     clone(): ChordSong {
         return new ChordSong(this.elements, this.metadata);
+    }
+
+    mergeLineWithPrevious(idable: IDable<"ChordLine">): boolean {
+        const index = this.indexOf(idable.id);
+        // no previous line to merge with, just bail
+        if (index === 0) {
+            return false;
+        }
+
+        // the user experience usually would like a space between lines when they're merged
+        // e.g.
+        // Never Gonna
+        // Give You Up
+        // =>
+        // Never GonnaGive You Up is awkward
+        const prevLine = this.chordLines[index - 1];
+        const lastBlockIndex = prevLine.chordBlocks.length - 1;
+        prevLine.chordBlocks[lastBlockIndex].lyric += " ";
+
+        const currLine = this.chordLines[index];
+        prevLine.chordBlocks.push(...currLine.chordBlocks);
+
+        this.chordLines.splice(index, 1);
+
+        return true;
     }
 }

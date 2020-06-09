@@ -51,6 +51,17 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         notifySongChanged();
     };
 
+    const mergeWithPreviousLine = (id: IDable<"ChordLine">): boolean => {
+        const didMerge = props.song.mergeLineWithPrevious(id);
+
+        if (didMerge) {
+            notifySongChanged();
+            return true;
+        }
+
+        return false;
+    };
+
     const notifySongChanged = () => {
         if (props.onSongChanged) {
             props.onSongChanged(props.song);
@@ -71,6 +82,9 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
                                     onRemoveLine={removeLine}
                                     onChangeLine={changeLine}
                                     onPasteOverflow={pasteOverflowFromLine}
+                                    onMergeWithPreviousLine={
+                                        mergeWithPreviousLine
+                                    }
                                     data-testid={`Line-${index}`}
                                 />
                             );
