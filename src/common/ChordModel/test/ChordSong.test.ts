@@ -119,4 +119,52 @@ describe("Chord Song", () => {
             "You wouldn't get this from any other guy"
         );
     });
+
+    describe("mergeLineWithPrevious", () => {
+        test("merging first line is no-op", () => {
+            const firstLine = c.chordLines[0];
+            const didMerge = c.mergeLineWithPrevious(firstLine);
+
+            expect(didMerge).toEqual(false);
+            expect(c.elements).toMatchObject([
+                {
+                    elements: [
+                        { chord: "A7", lyric: "We're no " },
+                        { chord: "Bm", lyric: "strangers to " },
+                        { chord: "Cdim", lyric: "love" },
+                    ],
+                },
+                {
+                    elements: [
+                        {
+                            chord: "D7b9#11",
+                            lyric: "You know the rules ",
+                        },
+                        { chord: "Eb9", lyric: "and so do I" },
+                    ],
+                },
+            ]);
+        });
+
+        test("merging subsequent lines into the first", () => {
+            const secondLine = c.chordLines[1];
+            const didMerge = c.mergeLineWithPrevious(secondLine);
+            expect(didMerge).toEqual(true);
+
+            expect(c.elements).toMatchObject([
+                {
+                    elements: [
+                        { chord: "A7", lyric: "We're no " },
+                        { chord: "Bm", lyric: "strangers to " },
+                        { chord: "Cdim", lyric: "love " },
+                        {
+                            chord: "D7b9#11",
+                            lyric: "You know the rules ",
+                        },
+                        { chord: "Eb9", lyric: "and so do I" },
+                    ],
+                },
+            ]);
+        });
+    });
 });

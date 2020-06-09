@@ -99,24 +99,8 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
 
     setChord(idable: IDable<"ChordBlock">, newChord: string): void {
         const index = this.indexOf(idable.id);
-
         this.elements[index].chord = newChord;
-
-        if (this.elements[index].chord === "") {
-            this.mergeBlocks(index);
-        }
-    }
-
-    // merge block at index with previous block
-    // merging lyrics and discarding chords
-    private mergeBlocks(index: number): void {
-        if (index === 0) {
-            return;
-        }
-
-        const prevBlock = this.elements[index - 1];
-        prevBlock.lyric += this.elements[index].lyric;
-        this.elements.splice(index, 1);
+        this.normalizeBlocks();
     }
 
     splitBlock(idable: IDable<"ChordBlock">, splitIndex: number): void {
@@ -124,6 +108,27 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
         const block = this.elements[index];
         const newPrevBlock = block.split(splitIndex);
         this.elements.splice(index, 0, newPrevBlock);
+    }
+
+    // passes through every block to ensure that blocks without chords exist (except for the first)
+    normalizeBlocks(): void {
+        const newBlocks: ChordBlock[] = [];
+
+        for (let i = 0; i < this.elements.length; i++) {
+            const block = this.elements[i];
+
+            if (block.chord === "" && newBlocks.length > 0) {
+                const lastIndex = newBlocks.length - 1;
+                newBlocks[lastIndex].lyric += block.lyric;
+            } else {
+                newBlocks.push(block);
+            }
+        }
+
+        // avoid rejiggering the data if it's a no-op
+        if (newBlocks.length !== this.elements.length) {
+            this.elements = newBlocks;
+        }
     }
 
     clone(): ChordLine {

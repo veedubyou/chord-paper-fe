@@ -12,6 +12,7 @@ import grey from "@material-ui/core/colors/grey";
 interface EditableLineProps {
     children: string;
     onFinish?: (newValue: string) => void;
+    onSpecialBackspace?: () => void;
     onPasteOverflow?: (overflowContent: string[]) => void;
     width?: string;
     variant?: TypographyVariant;
@@ -30,9 +31,24 @@ const EditableLine: React.FC<EditableLineProps> = (
         setValue(event.target.value);
     };
 
-    const forwardEnter = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         if (event.key === "Enter") {
             finish(value);
+            return;
+        }
+
+        const specialBackspace: boolean =
+            event.key === "Backspace" && (event.metaKey || event.ctrlKey);
+        const selectionAtBeginning: boolean =
+            inputRef.current?.selectionStart === 0 &&
+            inputRef.current?.selectionEnd === 0;
+
+        if (
+            specialBackspace &&
+            selectionAtBeginning &&
+            props.onSpecialBackspace
+        ) {
+            props.onSpecialBackspace();
         }
     };
 
@@ -135,7 +151,7 @@ const EditableLine: React.FC<EditableLineProps> = (
             value={value}
             onBlur={blurHandler}
             onChange={updateValue}
-            onKeyDown={forwardEnter}
+            onKeyDown={keyDownHandler}
             onPaste={pasteHandler}
             fullWidth
             data-testid="EditableLine"

@@ -16,6 +16,7 @@ interface LineProps extends DataTestID {
         id: IDable<"ChordLine">,
         overflowPasteContent: string[]
     ) => void;
+    onMergeWithPreviousLine?: (id: IDable<"ChordLine">) => boolean;
 }
 
 const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
@@ -63,6 +64,17 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         }
     };
 
+    const specialBackspaceHandler = () => {
+        if (props.onMergeWithPreviousLine) {
+            const handledAndStopEditing = props.onMergeWithPreviousLine(
+                props.chordLine
+            );
+            if (handledAndStopEditing) {
+                setEditing(false);
+            }
+        }
+    };
+
     const nonEditableLine = (): React.ReactElement => {
         return (
             <NonEditableLine
@@ -84,6 +96,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                     variant="h5"
                     onFinish={finishEdit}
                     onPasteOverflow={pasteOverflowHandler}
+                    onSpecialBackspace={specialBackspaceHandler}
                 >
                     {lyrics}
                 </EditableLine>
