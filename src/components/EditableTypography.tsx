@@ -1,6 +1,6 @@
 import { Box, Typography, TypographyProps, Theme } from "@material-ui/core";
 import React, { useState } from "react";
-import EditableLine from "./EditableLine";
+import TextInput from "./TextInput";
 
 import { DataTestID } from "../common/DataTestID";
 import { inflateIfEmpty } from "../common/Whitespace";
@@ -65,13 +65,13 @@ const EditableTypography: React.FC<EditableTypographyProps> = (
         }
 
         return (
-            <EditableLine
+            <TextInput
                 variant={props.variant}
                 onFinish={finishEdit}
                 data-testid={"EditableLine"}
             >
                 {props.children}
-            </EditableLine>
+            </TextInput>
         );
     };
 

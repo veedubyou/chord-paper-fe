@@ -1,11 +1,11 @@
 import { Box, Slide, Theme } from "@material-ui/core";
 import React, { useState } from "react";
-import EditableLine from "./EditableLine";
+import TextInput from "./TextInput";
 
 import { DataTestID } from "../common/DataTestID";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { IDable } from "../common/ChordModel/Collection";
-import NonEditableLine from "./NonEditableLine";
+import ChordEditLine from "./ChordEditLine";
 import { useTheme } from "@material-ui/styles";
 
 interface LineProps extends DataTestID {
@@ -83,7 +83,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
 
     const nonEditableLine = (): React.ReactElement => {
         return (
-            <NonEditableLine
+            <ChordEditLine
                 chordLine={props.chordLine}
                 onChangeLine={props.onChangeLine}
                 onAdd={addHandler}
@@ -98,14 +98,14 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
 
         return (
             <Box position="absolute" left="0" bottom="2px" width="100%">
-                <EditableLine
+                <TextInput
                     variant="h5"
                     onFinish={finishEdit}
                     onPasteOverflow={pasteOverflowHandler}
                     onSpecialBackspace={specialBackspaceHandler}
                 >
                     {lyrics}
-                </EditableLine>
+                </TextInput>
             </Box>
         );
     };

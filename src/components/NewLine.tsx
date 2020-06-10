@@ -1,6 +1,5 @@
 import React from "react";
 import {
-    Typography,
     Theme,
     Grid,
     Tooltip as UnstyledTooltip,
@@ -8,10 +7,7 @@ import {
     Button,
 } from "@material-ui/core";
 import { useTheme, withStyles } from "@material-ui/styles";
-import EditableTypography from "./EditableTypography";
-import { ChordSong } from "../common/ChordModel/ChordSong";
 import UnstyledAddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import { ChordLine } from "../common/ChordModel/ChordLine";
 import { DataTestID } from "../common/DataTestID";
 
 const HighlightableGrid = withStyles({
@@ -26,6 +22,7 @@ const Tooltip = withStyles({
     tooltip: {
         padding: 0,
         background: "transparent",
+        margin: 0,
     },
 })(UnstyledTooltip);
 

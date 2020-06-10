@@ -1,8 +1,6 @@
 import {
     Box,
     withStyles,
-    Grid,
-    ButtonGroup,
     Theme,
     Button as UnstyledButton,
     Tooltip as UnstyledTooltip,
@@ -15,9 +13,6 @@ import red from "@material-ui/core/colors/red";
 import Block from "./Block";
 
 import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
-import UnstyledEditIcon from "@material-ui/icons/Edit";
-import UnstyledAddIcon from "@material-ui/icons/Add";
-import UnstyledRemoveIcon from "@material-ui/icons/Remove";
 import { IDable } from "../common/ChordModel/Collection";
 import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
@@ -29,9 +24,6 @@ const iconColorStyle = {
 };
 
 const BackspaceIcon = withStyles(iconColorStyle)(UnstyledBackspaceIcon);
-const EditIcon = withStyles(iconColorStyle)(UnstyledEditIcon);
-const AddIcon = withStyles(iconColorStyle)(UnstyledAddIcon);
-const RemoveIcon = withStyles(iconColorStyle)(UnstyledRemoveIcon);
 
 const Button = withStyles((theme: Theme) => ({
     contained: {
@@ -46,6 +38,7 @@ const Tooltip = withStyles({
     tooltip: {
         padding: 0,
         background: "transparent",
+        margin: 0,
     },
 })(UnstyledTooltip);
 
@@ -54,11 +47,10 @@ const HighlightableBox = withStyles((theme: Theme) => ({
         "&:hover": {
             backgroundColor: grey[100],
         },
-        // maxWidth: theme.spacing(92),
     },
 }))(Box);
 
-interface NonEditableLineProps {
+interface ChordEditLineProps {
     chordLine: ChordLine;
     onEdit?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     onAdd?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
@@ -66,8 +58,8 @@ interface NonEditableLineProps {
     onChangeLine?: (id: IDable<"ChordLine">) => void;
 }
 
-const NonEditableLine: React.FC<NonEditableLineProps> = (
-    props: NonEditableLineProps
+const ChordEditLine: React.FC<ChordEditLineProps> = (
+    props: ChordEditLineProps
 ): JSX.Element => {
     let chordBlocks: ChordBlock[] = props.chordLine.chordBlocks;
     if (chordBlocks.length === 0) {
@@ -130,4 +122,4 @@ const NonEditableLine: React.FC<NonEditableLineProps> = (
     );
 };
 
-export default NonEditableLine;
+export default ChordEditLine;

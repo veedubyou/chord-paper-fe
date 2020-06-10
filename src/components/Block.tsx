@@ -5,7 +5,7 @@ import { DataTestID } from "../common/DataTestID";
 import { isWhitespace, inflatingWhitespace } from "../common/Whitespace";
 import ChordSymbol from "./ChordSymbol";
 import { IDable } from "../common/ChordModel/Collection";
-import EditableLine from "./EditableLine";
+import TextInput from "./TextInput";
 import { ChordBlock } from "../common/ChordModel/ChordBlock";
 
 interface BlockProps extends DataTestID {
@@ -91,9 +91,9 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     } else {
         chordRow = (
             <Box data-testid="ChordEdit">
-                <EditableLine width="5em" variant="h5" onFinish={endEdit}>
+                <TextInput width="5em" variant="h5" onFinish={endEdit}>
                     {props.chordBlock.chord}
-                </EditableLine>
+                </TextInput>
             </Box>
         );
     }
