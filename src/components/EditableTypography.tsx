@@ -1,4 +1,4 @@
-import { Box, Typography, TypographyProps, Theme } from "@material-ui/core";
+import { Box, Typography, TypographyProps } from "@material-ui/core";
 import React, { useState } from "react";
 import TextInput from "./TextInput";
 

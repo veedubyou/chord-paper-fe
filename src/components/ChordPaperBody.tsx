@@ -1,15 +1,9 @@
 import React from "react";
-import {
-    Paper as UnstyledPaper,
-    Theme,
-    withStyles,
-    Grid,
-} from "@material-ui/core";
+import { Paper as UnstyledPaper, withStyles, Grid } from "@material-ui/core";
 import Line from "./Line";
 import { IDable } from "../common/ChordModel/Collection";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { ChordLine } from "../common/ChordModel/ChordLine";
-import { useTheme } from "@material-ui/styles";
 import NewLine from "./NewLine";
 
 const Paper = withStyles({
@@ -26,8 +20,6 @@ interface ChordPaperBodyProps {
 const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     props: ChordPaperBodyProps
 ): React.ReactElement => {
-    const theme: Theme = useTheme();
-
     const addLineToTop = () => {
         const newLine: ChordLine = new ChordLine();
         props.song.addBeginning(newLine);

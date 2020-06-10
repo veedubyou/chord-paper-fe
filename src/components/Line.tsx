@@ -1,4 +1,4 @@
-import { Box, Slide, Theme } from "@material-ui/core";
+import { Box, Slide } from "@material-ui/core";
 import React, { useState } from "react";
 import TextInput from "./TextInput";
 
@@ -6,7 +6,6 @@ import { DataTestID } from "../common/DataTestID";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { IDable } from "../common/ChordModel/Collection";
 import ChordEditLine from "./ChordEditLine";
-import { useTheme } from "@material-ui/styles";
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
@@ -23,7 +22,6 @@ interface LineProps extends DataTestID {
 const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const [editing, setEditing] = useState(false);
     const [removed, setRemoved] = useState(false);
-    const theme: Theme = useTheme();
 
     const startEdit = () => {
         setEditing(true);
