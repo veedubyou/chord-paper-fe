@@ -129,7 +129,6 @@ const TextInput: React.FC<TextInputProps> = (
                 fontSize: fontSize,
                 opacity: 1,
                 background: grey[100],
-                tabSize: "60px",
             },
         };
 
