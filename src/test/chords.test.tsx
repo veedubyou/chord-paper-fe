@@ -105,7 +105,11 @@ describe("Changing the chord", () => {
             "Block-1",
             "Token-0"
         );
-        userEvent.click(token);
+
+        fireEvent.mouseOver(token);
+        const editButton = await findByTestId("ChordEditButton");
+        expect(editButton).toBeInTheDocument();
+        fireEvent.click(editButton);
     });
 
     test("it takes input and retains new chord changes", async () => {
@@ -170,7 +174,11 @@ describe("inserting a chord", () => {
             "Block-1",
             "Token-2"
         );
-        userEvent.click(token);
+
+        fireEvent.mouseOver(token);
+        const editButton = await findByTestId("ChordEditButton");
+        expect(editButton).toBeInTheDocument();
+        fireEvent.click(editButton);
 
         chordEdit = async () =>
             await findByTestIdChain(
