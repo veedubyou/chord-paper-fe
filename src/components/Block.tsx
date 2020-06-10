@@ -132,7 +132,11 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
 
     let chordRow: React.ReactElement;
     if (!editing) {
-        chordRow = <ChordSymbol>{props.chordBlock.chord}</ChordSymbol>;
+        chordRow = (
+            <Box onClick={clickHandler(0)}>
+                <ChordSymbol>{props.chordBlock.chord}</ChordSymbol>
+            </Box>
+        );
     } else {
         chordRow = (
             <Box data-testid="ChordEdit">
