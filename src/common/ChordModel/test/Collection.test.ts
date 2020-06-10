@@ -48,4 +48,14 @@ describe("Collection", () => {
             new Item("3", "c"),
         ]);
     });
+
+    test("addBeginning", () => {
+        c.addBeginning(new Item("4", "d"));
+        expect(c.elements).toEqual([
+            new Item("4", "d"),
+            new Item("1", "a"),
+            new Item("2", "b"),
+            new Item("3", "c"),
+        ]);
+    });
 });
