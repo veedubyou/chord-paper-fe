@@ -42,8 +42,10 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         lyricTokens = [inflatingWhitespace()];
     }
 
-    const clickHandler = (tokenIndex: number): (() => void) => {
-        return () => {
+    const clickHandler = (
+        tokenIndex: number
+    ): ((event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void) => {
+        return (event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
             // block splitting happens after the first token
             // as first token is already aligned with the current chord
             if (tokenIndex !== 0 && props.onBlockSplit) {
@@ -51,6 +53,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             }
 
             setEditing(true);
+            event.stopPropagation();
         };
     };
 
@@ -96,19 +99,19 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     }
 
     return (
-        <Grid
-            container
-            direction="column"
-            component="span"
-            data-testid={props["data-testid"]}
-        >
-            <Grid item onClick={() => setEditing(true)}>
-                {chordRow}
+        <Box display="inline-block">
+            <Grid
+                container
+                direction="column"
+                component="span"
+                data-testid={props["data-testid"]}
+            >
+                <Grid item>{chordRow}</Grid>
+                <Grid item data-testid="Lyric">
+                    <>{lyricBlocks}</>
+                </Grid>
             </Grid>
-            <Grid item data-testid="Lyric">
-                <>{lyricBlocks}</>
-            </Grid>
-        </Grid>
+        </Box>
     );
 };
 

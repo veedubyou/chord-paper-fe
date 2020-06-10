@@ -101,95 +101,6 @@ describe("Rendering initial lyrics", () => {
     });
 });
 
-describe("Hover Menu", () => {
-    describe("Buttons show on hover", () => {
-        let findByTestIdChain: FindByTestIdChainFn;
-        let subject: () => void;
-
-        beforeEach(async () => {
-            const { findByTestId } = render(basicChordPaper());
-            findByTestIdChain = getFindByTestIdChain(findByTestId);
-            const hoverLine = await findByTestIdChain(
-                "Line-2",
-                "NoneditableLine"
-            );
-            expect(hoverLine).toBeInTheDocument();
-
-            subject = () => {
-                fireEvent.mouseOver(hoverLine);
-            };
-        });
-
-        it("shows the edit button", async () => {
-            subject();
-            const editButton = await findByTestIdChain("EditButton");
-            expect(editButton).toBeInTheDocument();
-        });
-
-        it("shows the add button", async () => {
-            subject();
-            const addButton = await findByTestIdChain("AddButton");
-            expect(addButton).toBeInTheDocument();
-        });
-
-        it("shows the remove button", async () => {
-            subject();
-            const removeButton = await findByTestIdChain("RemoveButton");
-            expect(removeButton).toBeInTheDocument();
-        });
-    });
-
-    describe("Buttons hide when not hovered", () => {
-        let queryByTestId: (testID: string) => HTMLElement | null;
-        let subject: () => void;
-
-        beforeEach(async () => {
-            const rendered = render(basicChordPaper());
-            queryByTestId = rendered.queryByTestId;
-
-            const findByTestId = rendered.findByTestId;
-            const findByTestIdChain = getFindByTestIdChain(findByTestId);
-
-            const hoverLine = await findByTestIdChain(
-                "Line-2",
-                "NoneditableLine"
-            );
-            expect(hoverLine).toBeInTheDocument();
-            fireEvent.mouseOver(hoverLine);
-
-            // need to wait for the element to appear before we can wait for the disappearance
-            expect(await findByTestId("EditButton")).toBeInTheDocument();
-            expect(await findByTestId("AddButton")).toBeInTheDocument();
-            expect(await findByTestId("RemoveButton")).toBeInTheDocument();
-
-            subject = () => {
-                fireEvent.mouseOut(hoverLine);
-            };
-        });
-
-        it("hides the edit button", async () => {
-            subject();
-            await waitForElementToBeRemoved(() => {
-                return queryByTestId("EditButton");
-            });
-        });
-
-        it("hides the add button", async () => {
-            subject();
-            await waitForElementToBeRemoved(() => {
-                return queryByTestId("AddButton");
-            });
-        });
-
-        it("hides the remove button", async () => {
-            subject();
-            await waitForElementToBeRemoved(() => {
-                return queryByTestId("RemoveButton");
-            });
-        });
-    });
-});
-
 describe("Plain text edit action", () => {
     let findByTestIdChain: FindByTestIdChainFn;
     let expectChordAndLyric: ExpectChordAndLyricFn;
@@ -198,10 +109,7 @@ describe("Plain text edit action", () => {
         const line = await findByTestIdChain("Line-0", "NoneditableLine");
         expect(line).toBeInTheDocument();
         fireEvent.mouseOver(line);
-
-        const editButton = await findByTestIdChain("EditButton");
-        expect(editButton).toBeInTheDocument();
-        fireEvent.click(editButton);
+        fireEvent.click(line);
     };
 
     const changeLyric = async (newLyric: string) => {
@@ -284,9 +192,7 @@ describe("Edit action with chords", () => {
         expect(line).toBeInTheDocument();
         fireEvent.mouseOver(line);
 
-        const editButton = await findByTestIdChain("EditButton");
-        expect(editButton).toBeInTheDocument();
-        fireEvent.click(editButton);
+        fireEvent.click(line);
     });
 
     const changeLyric = async (newLyric: string) => {
@@ -519,7 +425,7 @@ describe("Add action", () => {
 
         findByTestIdChain = getFindByTestIdChain(findByTestId);
 
-        const line = await findByTestIdChain("Line-2", "NoneditableLine");
+        const line = await findByTestIdChain("NewLine-2");
         expect(line).toBeInTheDocument();
 
         subject = async () => {
@@ -613,10 +519,7 @@ describe("Pasting Lyrics", () => {
         const line = await findByTestIdChain(...testIDPath);
         expect(line).toBeInTheDocument();
         fireEvent.mouseOver(line);
-
-        const editButton = await findByTestIdChain("EditButton");
-        expect(editButton).toBeInTheDocument();
-        fireEvent.click(editButton);
+        fireEvent.click(line);
     };
 
     describe("into an empty line", () => {

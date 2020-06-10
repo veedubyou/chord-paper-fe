@@ -20,3 +20,11 @@ code {
     font-display: swap;
     src: url("./assets/fonts/PoriChord.woff2") format("woff2");
 }
+
+@font-face {
+    font-family: "Merriweather";
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url("./assets/fonts/Merriweather-Regular.woff2") format("woff2");
+}

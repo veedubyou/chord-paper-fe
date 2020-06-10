@@ -9,13 +9,14 @@ import Line from "./Line";
 import { IDable } from "../common/ChordModel/Collection";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { ChordLine } from "../common/ChordModel/ChordLine";
+import { useTheme } from "@material-ui/styles";
+import NewLine from "./NewLine";
 
-const Paper = withStyles((theme: Theme) => ({
+const Paper = withStyles({
     root: {
-        padding: theme.spacing(9.5),
-        width: "max-content",
+        width: "auto",
     },
-}))(UnstyledPaper);
+})(UnstyledPaper);
 
 interface ChordPaperBodyProps {
     song: ChordSong;
@@ -25,6 +26,14 @@ interface ChordPaperBodyProps {
 const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     props: ChordPaperBodyProps
 ): React.ReactElement => {
+    const theme: Theme = useTheme();
+
+    const addLineToTop = () => {
+        const newLine: ChordLine = new ChordLine();
+        props.song.addBeginning(newLine);
+        notifySongChanged();
+    };
+
     const addLine = (id: IDable<"ChordLine">) => {
         const newLine: ChordLine = new ChordLine();
         props.song.addAfter(id, newLine);
@@ -68,29 +77,53 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         }
     };
 
+    const lines = () => {
+        const lines = props.song.chordLines.flatMap(
+            (line: ChordLine, index: number) => {
+                const addLineBelow = () => {
+                    addLine(line);
+                };
+
+                return [
+                    <Line
+                        key={line.id}
+                        chordLine={line}
+                        onAddLine={addLine}
+                        onRemoveLine={removeLine}
+                        onChangeLine={changeLine}
+                        onPasteOverflow={pasteOverflowFromLine}
+                        onMergeWithPreviousLine={mergeWithPreviousLine}
+                        data-testid={`Line-${index}`}
+                    />,
+                    <NewLine
+                        key={"NewLine-" + line.id}
+                        onAdd={addLineBelow}
+                        data-testid={`NewLine-${index}`}
+                    />,
+                ];
+            }
+        );
+
+        const firstNewLine = (
+            <NewLine
+                key={"NewLine-Top"}
+                onAdd={addLineToTop}
+                data-testid={"NewLine-Top"}
+            />
+        );
+        lines.splice(0, 0, firstNewLine);
+
+        return lines;
+    };
+
     return (
         <Paper elevation={0}>
-            <Grid container justify="center">
-                <Grid item>
-                    {props.song.chordLines.map(
-                        (line: ChordLine, index: number) => {
-                            return (
-                                <Line
-                                    key={line.id}
-                                    chordLine={line}
-                                    onAddLine={addLine}
-                                    onRemoveLine={removeLine}
-                                    onChangeLine={changeLine}
-                                    onPasteOverflow={pasteOverflowFromLine}
-                                    onMergeWithPreviousLine={
-                                        mergeWithPreviousLine
-                                    }
-                                    data-testid={`Line-${index}`}
-                                />
-                            );
-                        }
-                    )}
+            <Grid container>
+                <Grid item xs={1}></Grid>
+                <Grid item xs={10}>
+                    {lines()}
                 </Grid>
+                <Grid item xs={1}></Grid>
             </Grid>
         </Paper>
     );

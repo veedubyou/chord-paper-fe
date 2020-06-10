@@ -44,6 +44,10 @@ export abstract class Collection<T extends IDable<U>, U extends string> {
         this.elements.splice(indexOfBefore + 1, 0, ...newElem);
     }
 
+    addBeginning(...newElem: T[]): void {
+        this.elements.splice(0, 0, ...newElem);
+    }
+
     remove(idable: IDable<U>): T {
         const index = this.indexOf(idable.id);
         const removed = this.elements.splice(index, 1);

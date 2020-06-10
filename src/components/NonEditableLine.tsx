@@ -10,9 +10,11 @@ import {
 import React from "react";
 
 import grey from "@material-ui/core/colors/grey";
+import red from "@material-ui/core/colors/red";
 
 import Block from "./Block";
 
+import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
 import UnstyledEditIcon from "@material-ui/icons/Edit";
 import UnstyledAddIcon from "@material-ui/icons/Add";
 import UnstyledRemoveIcon from "@material-ui/icons/Remove";
@@ -22,17 +24,18 @@ import { ChordLine } from "../common/ChordModel/ChordLine";
 
 const iconColorStyle = {
     root: {
-        color: "white",
+        color: red[300],
     },
 };
 
+const BackspaceIcon = withStyles(iconColorStyle)(UnstyledBackspaceIcon);
 const EditIcon = withStyles(iconColorStyle)(UnstyledEditIcon);
 const AddIcon = withStyles(iconColorStyle)(UnstyledAddIcon);
 const RemoveIcon = withStyles(iconColorStyle)(UnstyledRemoveIcon);
 
 const Button = withStyles((theme: Theme) => ({
     contained: {
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: "transparent",
         "&:hover": {
             backgroundColor: theme.palette.primary.dark,
         },
@@ -42,6 +45,7 @@ const Button = withStyles((theme: Theme) => ({
 const Tooltip = withStyles({
     tooltip: {
         padding: 0,
+        background: "transparent",
     },
 })(UnstyledTooltip);
 
@@ -50,21 +54,15 @@ const HighlightableBox = withStyles((theme: Theme) => ({
         "&:hover": {
             backgroundColor: grey[100],
         },
-        maxWidth: theme.spacing(92),
+        // maxWidth: theme.spacing(92),
     },
 }))(Box);
 
 interface NonEditableLineProps {
     chordLine: ChordLine;
-    onEditButton?: (
-        event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-    ) => void;
-    onAddButton?: (
-        event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-    ) => void;
-    onRemoveButton?: (
-        event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-    ) => void;
+    onEdit?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+    onAdd?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
+    onRemove?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     onChangeLine?: (id: IDable<"ChordLine">) => void;
 }
 
@@ -83,29 +81,9 @@ const NonEditableLine: React.FC<NonEditableLineProps> = (
 
     const hoverMenu = (): React.ReactElement => {
         return (
-            <ButtonGroup variant="outlined" orientation="vertical">
-                <Button
-                    variant="contained"
-                    onClick={props.onEditButton}
-                    data-testid={"EditButton"}
-                >
-                    <EditIcon />
-                </Button>
-                <Button
-                    variant="contained"
-                    onClick={props.onAddButton}
-                    data-testid={"AddButton"}
-                >
-                    <AddIcon />
-                </Button>
-                <Button
-                    variant="contained"
-                    onClick={props.onRemoveButton}
-                    data-testid={"RemoveButton"}
-                >
-                    <RemoveIcon />
-                </Button>
-            </ButtonGroup>
+            <Button onClick={props.onRemove} data-testid={"RemoveButton"}>
+                <BackspaceIcon />
+            </Button>
         );
     };
 
@@ -130,22 +108,23 @@ const NonEditableLine: React.FC<NonEditableLineProps> = (
 
     const blocks: React.ReactElement[] = chordBlocks.map(
         (chordBlock: ChordBlock, index: number) => (
-            <Grid item key={chordBlock.id}>
-                <Block
-                    key={chordBlock.id}
-                    chordBlock={chordBlock}
-                    onChordChange={chordChangeHandler}
-                    onBlockSplit={blockSplitHandler}
-                    data-testid={`Block-${index}`}
-                ></Block>
-            </Grid>
+            <Block
+                key={chordBlock.id}
+                chordBlock={chordBlock}
+                onChordChange={chordChangeHandler}
+                onBlockSplit={blockSplitHandler}
+                data-testid={`Block-${index}`}
+            ></Block>
         )
     );
 
     return (
         <Tooltip placement="right" title={hoverMenu()} interactive>
-            <HighlightableBox data-testid={"NoneditableLine"}>
-                <Grid container>{blocks}</Grid>
+            <HighlightableBox
+                data-testid={"NoneditableLine"}
+                onClick={props.onEdit}
+            >
+                {blocks}
             </HighlightableBox>
         </Tooltip>
     );

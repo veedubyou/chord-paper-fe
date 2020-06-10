@@ -1,4 +1,4 @@
-import { Box, Slide } from "@material-ui/core";
+import { Box, Slide, Theme } from "@material-ui/core";
 import React, { useState } from "react";
 import EditableLine from "./EditableLine";
 
@@ -6,6 +6,7 @@ import { DataTestID } from "../common/DataTestID";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { IDable } from "../common/ChordModel/Collection";
 import NonEditableLine from "./NonEditableLine";
+import { useTheme } from "@material-ui/styles";
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
@@ -22,6 +23,7 @@ interface LineProps extends DataTestID {
 const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const [editing, setEditing] = useState(false);
     const [removed, setRemoved] = useState(false);
+    const theme: Theme = useTheme();
 
     const startEdit = () => {
         setEditing(true);
@@ -46,6 +48,10 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const removalTime = 250;
 
     const removeHandler = () => {
+        if (removed) {
+            return;
+        }
+
         setRemoved(true);
 
         if (props.onRemoveLine) {
@@ -80,9 +86,9 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
             <NonEditableLine
                 chordLine={props.chordLine}
                 onChangeLine={props.onChangeLine}
-                onAddButton={addHandler}
-                onRemoveButton={removeHandler}
-                onEditButton={startEdit}
+                onAdd={addHandler}
+                onRemove={removeHandler}
+                onEdit={startEdit}
             />
         );
     };
@@ -125,9 +131,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
             <Box
                 borderBottom={1}
                 borderColor="grey.50"
-                width="auto"
-                minWidth="30em"
-                margin="3rem"
+                width="100%"
                 position="relative"
                 data-testid={props["data-testid"]}
             >

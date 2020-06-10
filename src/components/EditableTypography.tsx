@@ -14,11 +14,11 @@ interface EditableTypographyProps extends DataTestID, TypographyProps {
     placeholder?: string;
 }
 
-const PlaceholderTypography = withStyles((theme: Theme) => ({
+const PlaceholderTypography = withStyles({
     root: {
-        color: grey[200],
+        color: grey[400],
     },
-}))(Typography);
+})(Typography);
 
 const EditableTypography: React.FC<EditableTypographyProps> = (
     props: EditableTypographyProps

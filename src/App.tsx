@@ -9,6 +9,8 @@ import {
 import ChordPaper from "./components/ChordPaper";
 import { SnackbarProvider } from "notistack";
 import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
+import { withStyles } from "@material-ui/styles";
+import WoodBackground from "./assets/img/wood.png";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -31,11 +33,17 @@ const createTheme = (): Theme => {
             secondary: purple,
         },
         typography: {
-            fontFamily: "Playfair",
-            fontWeightRegular: 500,
+            fontFamily: `"Merriweather", serif`,
+            fontWeightRegular: 300,
         },
     });
 };
+
+const AppLayout = withStyles({
+    root: {
+        backgroundImage: `url(${WoodBackground})`,
+    },
+})(Grid);
 
 function App() {
     const theme: Theme = createTheme();
@@ -43,11 +51,11 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <SnackbarProvider>
-                <Grid container justify="center">
+                <AppLayout container justify="center">
                     <Grid item>
                         <ChordPaper initialSong={NeverGonnaGiveYouUp()} />
                     </Grid>
-                </Grid>
+                </AppLayout>
             </SnackbarProvider>
         </ThemeProvider>
     );
