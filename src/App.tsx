@@ -10,7 +10,10 @@ import ChordPaper from "./components/ChordPaper";
 import { SnackbarProvider } from "notistack";
 import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
 import { withStyles } from "@material-ui/styles";
-import WoodBackground from "./assets/img/wood.png";
+import WoodBackground from "./assets/img/symphony.png";
+import SideMenu from "./components/SideMenu";
+import { BrowserRouter, Switch, Route } from "react-router-dom";
+import About from "./components/About";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -42,20 +45,33 @@ const createTheme = (): Theme => {
 const AppLayout = withStyles({
     root: {
         backgroundImage: `url(${WoodBackground})`,
+        minHeight: "100vh",
     },
 })(Grid);
 
 function App() {
     const theme: Theme = createTheme();
 
+    const routeSwitches = (
+        <Switch>
+            <Route exact path="/">
+                <ChordPaper initialSong={NeverGonnaGiveYouUp()} />
+            </Route>
+            <Route exact path="/about">
+                <About />
+            </Route>
+        </Switch>
+    );
+
     return (
         <ThemeProvider theme={theme}>
             <SnackbarProvider>
-                <AppLayout container justify="center">
-                    <Grid item>
-                        <ChordPaper initialSong={NeverGonnaGiveYouUp()} />
-                    </Grid>
-                </AppLayout>
+                <BrowserRouter>
+                    <SideMenu />
+                    <AppLayout container justify="center">
+                        <Grid item>{routeSwitches}</Grid>
+                    </AppLayout>
+                </BrowserRouter>
             </SnackbarProvider>
         </ThemeProvider>
     );
