@@ -36,7 +36,7 @@ const createTheme = (): Theme => {
             secondary: purple,
         },
         typography: {
-            fontFamily: `"Merriweather", serif`,
+            fontFamily: "Merriweather",
             fontWeightRegular: 300,
         },
     });
@@ -52,6 +52,8 @@ const AppLayout = withStyles({
 function App() {
     const theme: Theme = createTheme();
 
+    const basePath = process.env.PUBLIC_URL;
+
     const routeSwitches = (
         <Switch>
             <Route exact path="/">
@@ -66,7 +68,7 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <SnackbarProvider>
-                <BrowserRouter>
+                <BrowserRouter basename={basePath}>
                     <SideMenu />
                     <AppLayout container justify="center">
                         <Grid item>{routeSwitches}</Grid>
