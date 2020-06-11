@@ -42,7 +42,7 @@ const SideMenu = () => {
             <TitleName variant="h5">Chord Paper</TitleName>
             <Divider />
             <List>
-                <Link to="" style={linkStyle} data-testid="Menu-HomeButton">
+                <Link to="/" style={linkStyle} data-testid="Menu-HomeButton">
                     <ListItem key="Music" button>
                         <MusicNoteIcon />
                         <ListItemText
@@ -53,7 +53,7 @@ const SideMenu = () => {
                 </Link>
 
                 <Link
-                    to="about"
+                    to="/about"
                     style={linkStyle}
                     data-testid="Menu-AboutButton"
                 >
