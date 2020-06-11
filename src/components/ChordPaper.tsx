@@ -35,7 +35,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
     };
 
     return (
-        <RootPaper elevation={3}>
+        <RootPaper elevation={3} data-testid="ChordPaper">
             <Header
                 data-testid={"Header"}
                 song={song}
