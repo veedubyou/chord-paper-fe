@@ -11,7 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import PetsIcon from "@material-ui/icons/Pets";
-import { withStyles, useTheme } from "@material-ui/styles";
+import { withStyles } from "@material-ui/styles";
 import grey from "@material-ui/core/colors/grey";
 
 const TitleName = withStyles((theme: Theme) => ({
@@ -28,7 +28,6 @@ const ListItem = withStyles((theme: Theme) => ({
 }))(UnstyledListItem);
 
 const SideMenu = () => {
-    const theme: Theme = useTheme();
     const typographyProps = {
         variant: "h6" as "h6",
     };
