@@ -1,22 +1,18 @@
 import {
-    Typography,
+    Typography as UnstyledTypography,
     withStyles,
     Theme,
     Grid,
     Box,
-    Tooltip as UnstyledTooltip,
-    Button,
 } from "@material-ui/core";
 import React, { useState } from "react";
 
 import { DataTestID } from "../common/DataTestID";
-import { isWhitespace, inflatingWhitespace } from "../common/Whitespace";
+import { inflatingWhitespace } from "../common/Whitespace";
 import ChordSymbol from "./ChordSymbol";
 import { IDable } from "../common/ChordModel/Collection";
 import TextInput from "./TextInput";
 import { ChordBlock } from "../common/ChordModel/ChordBlock";
-import { fade } from "@material-ui/core/styles/colorManipulator";
-import UnstyledMusicNoteRoundedIcon from "@material-ui/icons/MusicNoteRounded";
 
 interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
@@ -24,38 +20,38 @@ interface BlockProps extends DataTestID {
     onBlockSplit?: (id: IDable<"ChordBlock">, splitIndex: number) => void;
 }
 
-const MusicNoteRoundedIcon = withStyles({
-    root: {
-        color: "white",
-    },
-})(UnstyledMusicNoteRoundedIcon);
-
-const Tooltip = withStyles((theme: Theme) => ({
-    tooltip: {
-        padding: 0,
-        background: fade(theme.palette.secondary.light, 0.9),
-        margin: 0,
-    },
-}))(UnstyledTooltip);
-
-const WordTarget = withStyles((theme: Theme) => ({
-    root: {
-        "&:hover": {
-            color: theme.palette.primary.main,
-        },
-        cursor: "pointer",
-    },
-}))(Typography);
-
-const SpaceTarget = withStyles((theme: Theme) => ({
+const ChordInsertOutline = withStyles((theme: Theme) => ({
     root: {
         whiteSpace: "pre",
-        "&:hover": {
-            backgroundColor: theme.palette.primary.light,
-        },
+        color: "transparent",
         cursor: "pointer",
+        userSelect: "none",
+        position: "absolute",
+        left: 0,
+        top: 0,
+        transform: "translate(0%, -115%)",
+        "&:hover": {
+            borderStyle: "solid",
+            borderColor: theme.palette.primary.main,
+            borderRadius: "0.3em",
+            borderWidth: "0.075em",
+        },
     },
-}))(Typography);
+}))(UnstyledTypography);
+
+const Typography = withStyles({
+    root: {
+        whiteSpace: "pre",
+    },
+})(UnstyledTypography);
+
+const HighlightableBox = withStyles((theme: Theme) => ({
+    root: {
+        "&:hover": {
+            color: theme.palette.primary.dark,
+        },
+    },
+}))(Box);
 
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     const [editing, setEditing] = useState(false);
@@ -68,10 +64,10 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
 
     const clickHandler: (
         tokenIndex: number
-    ) => (event: React.MouseEvent<HTMLButtonElement>) => void = (
+    ) => (event: React.MouseEvent<HTMLDivElement>) => void = (
         tokenIndex: number
     ) => {
-        return (event: React.MouseEvent<HTMLButtonElement>) => {
+        return (event: React.MouseEvent<HTMLDivElement>) => {
             // block splitting happens after the first token
             // as first token is already aligned with the current chord
             if (tokenIndex !== 0 && props.onBlockSplit) {
@@ -83,43 +79,51 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         };
     };
 
-    const lyricBlock = (lyric: string, index: number): React.ReactElement => {
+    const lyricBlock = (
+        lyric: string,
+        index: number,
+        blockHasChord: boolean
+    ): React.ReactElement => {
         const typographyProps = {
             variant: "h5" as "h5",
             display: "inline" as "inline",
-            "data-testid": `Token-${index}`,
         };
 
-        const chordButton = (
-            <Button onClick={clickHandler(index)} data-testid="ChordEditButton">
-                <MusicNoteRoundedIcon />
-            </Button>
+        const lyricBlock = (
+            <Typography {...typographyProps} data-testid={`Token-${index}`}>
+                {lyric}
+            </Typography>
         );
 
-        let lyricBlock: React.ReactElement;
-        if (isWhitespace(lyric)) {
-            lyricBlock = (
-                <SpaceTarget {...typographyProps}>{lyric}</SpaceTarget>
+        let hiddenTarget: React.ReactElement | null = null;
+
+        if (!blockHasChord || index !== 0) {
+            hiddenTarget = (
+                <ChordInsertOutline
+                    {...typographyProps}
+                    onClick={clickHandler(index)}
+                    data-testid="ChordEditButton"
+                >
+                    {lyric}
+                </ChordInsertOutline>
             );
-        } else {
-            lyricBlock = <WordTarget {...typographyProps}>{lyric}</WordTarget>;
         }
 
         return (
-            <Tooltip
+            <Box
                 key={index}
-                title={chordButton}
-                placement="top-start"
-                disableFocusListener={true}
-                interactive
+                position="relative"
+                display="inline"
+                data-testid={`TokenBox-${index}`}
             >
                 {lyricBlock}
-            </Tooltip>
+                {hiddenTarget}
+            </Box>
         );
     };
 
     const lyricBlocks = lyricTokens.map((lyricToken: string, index: number) =>
-        lyricBlock(lyricToken, index)
+        lyricBlock(lyricToken, index, props.chordBlock.chord !== "")
     );
 
     const endEdit = (newChord: string) => {
@@ -133,9 +137,9 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     let chordRow: React.ReactElement;
     if (!editing) {
         chordRow = (
-            <Box onClick={clickHandler(0)}>
+            <HighlightableBox onClick={clickHandler(0)}>
                 <ChordSymbol>{props.chordBlock.chord}</ChordSymbol>
-            </Box>
+            </HighlightableBox>
         );
     } else {
         chordRow = (
@@ -157,7 +161,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             >
                 <Grid item>{chordRow}</Grid>
                 <Grid item data-testid="Lyric">
-                    <>{lyricBlocks}</>
+                    {lyricBlocks}
                 </Grid>
             </Grid>
         </Box>

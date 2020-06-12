@@ -213,7 +213,7 @@ describe("Edit action with chords", () => {
         test("it doesn't change anything", async () => {
             await changeLyric("It's your fault that I'm in trouble");
 
-            await expectChordAndLyric("F", "It's your fault", [
+            await expectChordAndLyric("F", "It's your fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -231,7 +231,7 @@ describe("Edit action with chords", () => {
         test("replacing a word at the beginning of the block", async () => {
             await changeLyric("It's your fault so I'm in trouble");
 
-            await expectChordAndLyric("F", "It's your fault", [
+            await expectChordAndLyric("F", "It's your fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -247,7 +247,7 @@ describe("Edit action with chords", () => {
         test("insertions deletions and replacements everywhere", async () => {
             await changeLyric("Not really my fault that I am trooble");
 
-            await expectChordAndLyric("F", "Not really my fault", [
+            await expectChordAndLyric("F", "Not really my fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -265,7 +265,7 @@ describe("Edit action with chords", () => {
         test("adding a word in the middle of the block", async () => {
             await changeLyric("It's really your fault that I'm in trouble");
 
-            await expectChordAndLyric("F", "It's really your fault", [
+            await expectChordAndLyric("F", "It's really your fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -281,7 +281,7 @@ describe("Edit action with chords", () => {
         test("adding a word in the end of the block", async () => {
             await changeLyric("It's your fault really that I'm in trouble");
 
-            await expectChordAndLyric("F", "It's your fault really", [
+            await expectChordAndLyric("F", "It's your fault really ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -297,13 +297,13 @@ describe("Edit action with chords", () => {
         test("adding a word in the beginning of the line", async () => {
             await changeLyric("Verse: It's your fault that I'm in trouble");
 
-            await expectChordAndLyric("", "Verse:", [
+            await expectChordAndLyric("", "Verse: ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
             ]);
 
-            await expectChordAndLyric("F", "It's your fault", [
+            await expectChordAndLyric("F", "It's your fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-1",
@@ -321,7 +321,7 @@ describe("Edit action with chords", () => {
         test("removing a word from the middle", async () => {
             await changeLyric("It's your that I'm in trouble");
 
-            await expectChordAndLyric("F", "It's your", [
+            await expectChordAndLyric("F", "It's your ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -337,7 +337,7 @@ describe("Edit action with chords", () => {
         test("removing a word from the end", async () => {
             await changeLyric("It's your fault that I'm in");
 
-            await expectChordAndLyric("F", "It's your fault", [
+            await expectChordAndLyric("F", "It's your fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -353,7 +353,7 @@ describe("Edit action with chords", () => {
         test("removing a word from the beginning", async () => {
             await changeLyric("your fault that I'm in trouble");
 
-            await expectChordAndLyric("F", "your fault", [
+            await expectChordAndLyric("F", "your fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -369,7 +369,7 @@ describe("Edit action with chords", () => {
         test("removing random characters everywhere", async () => {
             await changeLyric("It your fut hat I'm trouble");
 
-            await expectChordAndLyric("F", "It your fut", [
+            await expectChordAndLyric("F", "It your fut ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -468,7 +468,8 @@ describe("Remove action", () => {
         const line = await findByTestIdChain("Line-2", "NoneditableLine");
         expect(line).toBeInTheDocument();
 
-        expect(line).toHaveTextContent("Never gonna run around");
+        const lyrics = lyricsInElement(line);
+        expect(lyrics).toEqual("Never gonna run around");
 
         subject = async () => {
             fireEvent.mouseOver(line);
@@ -492,7 +493,8 @@ describe("Remove action", () => {
         );
 
         const line = await findByTestIdChain("Line-2", "NoneditableLine");
-        expect(line).toHaveTextContent("Never gonna make you cry");
+        const lyrics = lyricsInElement(line);
+        expect(lyrics).toEqual("Never gonna make you cry");
     });
 });
 
