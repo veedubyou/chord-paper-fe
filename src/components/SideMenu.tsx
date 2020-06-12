@@ -20,9 +20,9 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { withStyles } from "@material-ui/styles";
 import grey from "@material-ui/core/colors/grey";
 import {
-    allExercises,
-    Exercise,
-} from "../components/tutorial/exercises/Exercises";
+    allExerciseRoutes,
+    ExerciseRoute,
+} from "../components/tutorial/exercises/Tutorial";
 
 const TitleName = withStyles((theme: Theme) => ({
     root: {
@@ -48,18 +48,20 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
     };
 
     const tutorialMenu = () => {
-        const exerciseLinks = allExercises.map((exercise: Exercise) => {
-            return (
-                <Link to={exercise.route} style={linkStyle}>
-                    <ListItem button>
-                        <ListItemText inset primary={exercise.title} />
-                    </ListItem>
-                </Link>
-            );
-        });
+        const exerciseLinks = allExerciseRoutes().map(
+            (exerciseRoute: ExerciseRoute) => {
+                return (
+                    <Link to={exerciseRoute.route} style={linkStyle}>
+                        <ListItem button>
+                            <ListItemText inset primary={exerciseRoute.title} />
+                        </ListItem>
+                    </Link>
+                );
+            }
+        );
 
         return (
-            <Link to="/learn" style={linkStyle} data-testid="Menu-LearnButton">
+            <>
                 <ListItem key="Learn" button onClick={learnClickHandler}>
                     <ListItemIcon>
                         <FreeBreakfastIcon />
@@ -73,7 +75,7 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
                 <Collapse in={learnSubmenuOpen} timeout="auto">
                     <List>{exerciseLinks}</List>
                 </Collapse>
-            </Link>
+            </>
         );
     };
 

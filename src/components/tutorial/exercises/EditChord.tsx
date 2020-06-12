@@ -27,8 +27,8 @@ const EditChord: React.FC<{}> = (): JSX.Element => {
     ]);
 
     return (
-        <ExerciseBox>
-            <Typography variant="h6">Editing Chords</Typography>
+        <>
+            {/* <Typography variant="h6">Editing Chords</Typography>
             <LineBreak />
             <Typography>
                 Click on a chord to change it. Let's change the chord above{" "}
@@ -37,9 +37,9 @@ const EditChord: React.FC<{}> = (): JSX.Element => {
                 <ChordTypography display="inline">B7</ChordTypography>
             </Typography>
             <LineBreak />
-            <Typography>Try it!</Typography>
-            <Playground initialSong={initialSong} expectedSong={expectedSong} />
-        </ExerciseBox>
+            <Typography>Try it!</Typography> */}
+            {/* <Playground initialSong={initialSong} expectedSong={expectedSong} /> */}
+        </>
     );
 };
 

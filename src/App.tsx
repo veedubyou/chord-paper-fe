@@ -14,7 +14,7 @@ import WoodBackground from "./assets/img/symphony.png";
 import SideMenu from "./components/SideMenu";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import About from "./components/about/About";
-import Tutorial from "./components/tutorial/Tutorial";
+import { TutorialSwitches } from "./components/tutorial/exercises/Tutorial";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -60,9 +60,7 @@ function App() {
             <Route exact path="/">
                 <ChordPaper initialSong={NeverGonnaGiveYouUp()} />
             </Route>
-            <Route exact path="/learn">
-                <Tutorial />
-            </Route>
+            {TutorialSwitches()}
             <Route exact path="/about">
                 <About />
             </Route>
