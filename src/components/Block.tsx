@@ -20,6 +20,13 @@ interface BlockProps extends DataTestID {
     onBlockSplit?: (id: IDable<"ChordBlock">, splitIndex: number) => void;
 }
 
+const chordOutline = (theme: Theme) => ({
+    borderStyle: "solid",
+    borderColor: theme.palette.primary.main,
+    borderRadius: "0.3em",
+    borderWidth: "0.075em",
+});
+
 const ChordInsertOutline = withStyles((theme: Theme) => ({
     root: {
         whiteSpace: "pre",
@@ -30,12 +37,7 @@ const ChordInsertOutline = withStyles((theme: Theme) => ({
         left: 0,
         top: 0,
         transform: "translate(0%, -115%)",
-        "&:hover": {
-            borderStyle: "solid",
-            borderColor: theme.palette.primary.main,
-            borderRadius: "0.3em",
-            borderWidth: "0.075em",
-        },
+        "&:hover": chordOutline(theme),
     },
 }))(UnstyledTypography);
 
@@ -50,6 +52,7 @@ const HighlightableBox = withStyles((theme: Theme) => ({
         "&:hover": {
             color: theme.palette.primary.dark,
         },
+        "&:hover .MuiTypography-root": chordOutline(theme),
     },
 }))(Box);
 

@@ -6,7 +6,6 @@ import { withStyles } from "@material-ui/styles";
 const ChordTypography = withStyles((theme: Theme) => ({
     root: {
         whiteSpace: "pre",
-
         cursor: "pointer",
         fontFamily: "PoriChord",
     },
