@@ -35,7 +35,7 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
             <Typography>Let's change the lyrics to:</Typography>
             <LyricsTypography>Why do birds suddenly ap-pear?</LyricsTypography>
             <Typography>
-                And leave a space after the{" "}
+                And add a space after the{" "}
                 <LyricsTypography display="inline">?</LyricsTypography>
             </Typography>
             <Typography>
@@ -47,7 +47,8 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
                 And then, also add{" "}
                 <ChordTypography display="inline">B7</ChordTypography> to the
                 space after{" "}
-                <LyricsTypography display="inline">?</LyricsTypography>
+                <LyricsTypography display="inline">?</LyricsTypography> (this
+                can be tricky due to the spacing. work in progress)
             </Typography>
             <LineBreak />
             <Typography>Try it!</Typography>

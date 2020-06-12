@@ -27,9 +27,9 @@ const EditChord: React.FC<{}> = (): JSX.Element => {
             <LineBreak />
             <Typography>
                 Click on a chord to change it. Let's change the chord above{" "}
-                <LyricsTypography display="inline">"appear"</LyricsTypography>{" "}
+                <LyricsTypography display="inline">appear</LyricsTypography>{" "}
                 from <ChordTypography display="inline">Bm</ChordTypography> to{" "}
-                <ChordTypography display="inline">B7</ChordTypography>
+                <ChordTypography display="inline">B7</ChordTypography>.
             </Typography>
             <LineBreak />
             <Typography>Try it!</Typography>

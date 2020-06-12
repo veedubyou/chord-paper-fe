@@ -46,7 +46,7 @@ const MergeLine: React.FC<{}> = (): JSX.Element => {
             <Typography>
                 Sometimes the lyrics that we paste in is not the division we
                 want. Let's merge the two lines. Click into the second line,
-                move the cursor to the beginning, and press
+                move the cursor to the beginning of the line, and press
             </Typography>
             <Typography>
                 (CTRL+Backspace : Windows | CMD+Backspace : Mac)

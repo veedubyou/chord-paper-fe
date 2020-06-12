@@ -30,7 +30,7 @@ const RemoveChord: React.FC<{}> = (): JSX.Element => {
             <Typography>
                 Simply remove all the chord text when editing to clear the
                 chord. Let's remove the{" "}
-                <ChordTypography display="inline">B7</ChordTypography>
+                <ChordTypography display="inline">B7</ChordTypography>.
             </Typography>
             <LineBreak />
             <Typography>Try it!</Typography>

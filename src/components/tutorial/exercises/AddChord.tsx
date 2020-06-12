@@ -34,7 +34,8 @@ const AddChord: React.FC<{}> = (): JSX.Element => {
                 Add a chord by hovering above a word, and clicking the outlined
                 box. Let's add{" "}
                 <ChordTypography display="inline">B7</ChordTypography> back
-                above <LyricsTypography>appear</LyricsTypography>
+                above{" "}
+                <LyricsTypography display="inline">appear</LyricsTypography>.
             </Typography>
             <LineBreak />
             <Typography>Try it!</Typography>
