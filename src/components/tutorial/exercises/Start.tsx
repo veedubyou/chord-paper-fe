@@ -1,6 +1,5 @@
+import { Typography } from "@material-ui/core";
 import React from "react";
-import { Typography, Theme } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
 import { LineBreak } from "./Common";
 
 const Header = () => {
@@ -13,8 +12,10 @@ const Preamble = () => {
             <Typography>
                 Chord Paper aims to be as intuitive and handy as possible, but
                 there could still be features that you don't know about
-                immediately. Let's walk through the basics together!
+                immediately. Let's walk through the basics together by making
+                some changes to chords and lyrics!
             </Typography>
+            <LineBreak />
             <Typography>
                 Since Chord Paper is still in early stages, some of these could
                 change in the future.

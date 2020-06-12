@@ -1,33 +1,19 @@
-import React from "react";
-import {
-    Paper,
-    Typography,
-    Theme,
-    Grid,
-    Box,
-    Fab as UnstyledFab,
-} from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
-import { inflatingWhitespace } from "../../../common/Whitespace";
-import Playground from "./Playground";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { ChordLine } from "../../../common/ChordModel/ChordLine";
-import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
-import { LineBreak } from "./Common";
-import EditChord from "./EditChord";
+import { Fab as UnstyledFab, Paper, Theme } from "@material-ui/core";
 import UnstyledPlayArrowIcon from "@material-ui/icons/PlayArrow";
-import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
-
-import RemoveChord from "./RemoveChord";
-import AddChord from "./AddChord";
-import EditLyrics from "./EditLyrics";
-import ChordPositioning from "./ChordPositioning";
-import AddLine from "./AddLine";
-import RemoveLine from "./RemoveLine";
-import PasteLyrics from "./PasteLyrics";
-import MergeLine from "./MergeLine";
-import Starting from "./Start";
+import { withStyles } from "@material-ui/styles";
+import React from "react";
+import { Link, Route } from "react-router-dom";
 import ErrorPage from "../../ErrorPage";
+import AddChord from "./AddChord";
+import AddLine from "./AddLine";
+import ChordPositioning from "./ChordPositioning";
+import EditChord from "./EditChord";
+import EditLyrics from "./EditLyrics";
+import MergeLine from "./MergeLine";
+import PasteLyrics from "./PasteLyrics";
+import RemoveChord from "./RemoveChord";
+import RemoveLine from "./RemoveLine";
+import Starting from "./Start";
 
 type ExerciseEntry = {
     title: string;
@@ -108,10 +94,11 @@ const PlayArrowIcon = withStyles({
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
-        margin: theme.spacing(5),
+        marginTop: theme.spacing(5),
+        marginBottom: theme.spacing(5),
         padding: theme.spacing(5),
         minHeight: theme.spacing(46),
-        minWidth: theme.spacing(92),
+        width: theme.spacing(92),
         position: "relative",
     },
 }))(Paper);
@@ -123,26 +110,6 @@ const Fab = withStyles((theme: Theme) => ({
         right: theme.spacing(2),
     },
 }))(UnstyledFab);
-
-const Header = () => {
-    return <Typography variant="h5">Learning Chord Paper</Typography>;
-};
-
-const Preamble = () => {
-    return (
-        <>
-            <Typography>
-                Chord Paper aims to be as intuitive and handy as possible, but
-                there could still be features that you don't know about
-                immediately. Let's walk through the basics together!
-            </Typography>
-            <Typography>
-                Since Chord Paper is still in early stages, some of these could
-                change in the future.
-            </Typography>
-        </>
-    );
-};
 
 interface TutorialProps {
     route: string;
@@ -187,15 +154,9 @@ const Tutorial: React.FC<TutorialProps> = (
     }
 
     return (
-        <Grid container data-testid="Tutorial">
-            <Grid item xs={3}></Grid>
-            <Grid item xs={6}>
-                <RootPaper>
-                    <exerciseEntry.component />
-                    {nextButton}
-                </RootPaper>
-            </Grid>
-            <Grid item xs={3}></Grid>
-        </Grid>
+        <RootPaper>
+            <exerciseEntry.component />
+            {nextButton}
+        </RootPaper>
     );
 };

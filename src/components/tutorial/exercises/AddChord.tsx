@@ -4,12 +4,7 @@ import Playground from "./Playground";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { ChordLine } from "../../../common/ChordModel/ChordLine";
 import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
-import {
-    ExerciseBox,
-    LineBreak,
-    LyricsTypography,
-    ChordTypography,
-} from "./Common";
+import { LineBreak, LyricsTypography, ChordTypography } from "./Common";
 
 const AddChord: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong([
@@ -32,19 +27,19 @@ const AddChord: React.FC<{}> = (): JSX.Element => {
     ]);
 
     return (
-        <ExerciseBox>
+        <>
             <Typography variant="h6">Adding Chords</Typography>
             <LineBreak />
             <Typography>
-                Add a chord by hovering over a word, and clicking the music
-                note. Let's add{" "}
+                Add a chord by hovering above a word, and clicking the outlined
+                box. Let's add{" "}
                 <ChordTypography display="inline">B7</ChordTypography> back
                 above <LyricsTypography>appear</LyricsTypography>
             </Typography>
             <LineBreak />
             <Typography>Try it!</Typography>
             <Playground initialSong={initialSong} expectedSong={expectedSong} />
-        </ExerciseBox>
+        </>
     );
 };
 

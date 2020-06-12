@@ -1,15 +1,10 @@
-import React from "react";
 import { Typography } from "@material-ui/core";
-import Playground from "./Playground";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { ChordLine } from "../../../common/ChordModel/ChordLine";
+import React from "react";
 import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
-import {
-    ExerciseBox,
-    LineBreak,
-    LyricsTypography,
-    ChordTypography,
-} from "./Common";
+import { ChordLine } from "../../../common/ChordModel/ChordLine";
+import { ChordSong } from "../../../common/ChordModel/ChordSong";
+import { LineBreak } from "./Common";
+import Playground from "./Playground";
 
 const MergeLine: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong([
@@ -45,7 +40,7 @@ const MergeLine: React.FC<{}> = (): JSX.Element => {
     ]);
 
     return (
-        <ExerciseBox>
+        <>
             <Typography variant="h6">Merging Lines</Typography>
             <LineBreak />
             <Typography>
@@ -59,7 +54,7 @@ const MergeLine: React.FC<{}> = (): JSX.Element => {
             <LineBreak />
             <Typography>Try it!</Typography>
             <Playground initialSong={initialSong} expectedSong={expectedSong} />
-        </ExerciseBox>
+        </>
     );
 };
 
