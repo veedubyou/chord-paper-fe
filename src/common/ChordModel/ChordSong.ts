@@ -6,6 +6,7 @@ import {
     ChordLineValidatedFields,
     ChordLine,
 } from "./ChordLine";
+import lodash from "lodash";
 
 const SongMetadataValidator = iots.type({
     title: iots.string,
@@ -145,9 +146,39 @@ export class ChordSong extends Collection<ChordLine, "ChordLine"> {
 
         const currLine = this.chordLines[index];
         prevLine.chordBlocks.push(...currLine.chordBlocks);
+        prevLine.normalizeBlocks();
 
         this.chordLines.splice(index, 1);
 
         return true;
+    }
+
+    contentEquals(other: ChordSong): boolean {
+        if (this.chordLines.length !== other.chordLines.length) {
+            return false;
+        }
+
+        if (!lodash.isEqual(this.metadata, other.metadata)) {
+            return false;
+        }
+
+        const reducer = (
+            isEqual: boolean,
+            value: ChordLine,
+            index: number
+        ): boolean => {
+            if (!isEqual) {
+                return false;
+            }
+
+            const otherLine = other.chordLines[index];
+            if (!value.contentEquals(otherLine)) {
+                return false;
+            }
+
+            return true;
+        };
+
+        return this.chordLines.reduce(reducer, true);
     }
 }

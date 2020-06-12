@@ -167,4 +167,160 @@ describe("Chord Song", () => {
             ]);
         });
     });
+
+    describe("contentEquals", () => {
+        describe("with content", () => {
+            let original: ChordSong;
+            beforeEach(() => {
+                original = new ChordSong(
+                    [
+                        new ChordLine([
+                            new ChordBlock({ chord: "A7", lyric: "We're no " }),
+                            new ChordBlock({
+                                chord: "Bm",
+                                lyric: "strangers to ",
+                            }),
+                            new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                        ]),
+                        new ChordLine([
+                            new ChordBlock({
+                                chord: "D7b9#11",
+                                lyric: "You know the rules ",
+                            }),
+                            new ChordBlock({
+                                chord: "Eb9",
+                                lyric: "and so do I",
+                            }),
+                        ]),
+                    ],
+                    {
+                        title: "Never Gonna Give You Up",
+                        composedBy: "Stock Watchman",
+                        performedBy: "Rick Astley",
+                        asHeardFrom: "every time someone rickrolls me",
+                    }
+                );
+            });
+
+            test("passes if the same", () => {
+                const other = new ChordSong(
+                    [
+                        new ChordLine([
+                            new ChordBlock({ chord: "A7", lyric: "We're no " }),
+                            new ChordBlock({
+                                chord: "Bm",
+                                lyric: "strangers to ",
+                            }),
+                            new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                        ]),
+                        new ChordLine([
+                            new ChordBlock({
+                                chord: "D7b9#11",
+                                lyric: "You know the rules ",
+                            }),
+                            new ChordBlock({
+                                chord: "Eb9",
+                                lyric: "and so do I",
+                            }),
+                        ]),
+                    ],
+                    {
+                        title: "Never Gonna Give You Up",
+                        composedBy: "Stock Watchman",
+                        performedBy: "Rick Astley",
+                        asHeardFrom: "every time someone rickrolls me",
+                    }
+                );
+
+                expect(original.contentEquals(other)).toEqual(true);
+            });
+
+            test("fails if any blocks are different", () => {
+                const other = new ChordSong(
+                    [
+                        new ChordLine([
+                            new ChordBlock({ chord: "Am", lyric: "We're no " }),
+                            new ChordBlock({
+                                chord: "Bm",
+                                lyric: "strangers to ",
+                            }),
+                            new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                        ]),
+                        new ChordLine([
+                            new ChordBlock({
+                                chord: "D7b9#11",
+                                lyric: "You know the rules ",
+                            }),
+                            new ChordBlock({
+                                chord: "Eb9",
+                                lyric: "and so do I",
+                            }),
+                        ]),
+                    ],
+                    {
+                        title: "Never Gonna Give You Up",
+                        composedBy: "Stock Watchman",
+                        performedBy: "Rick Astley",
+                        asHeardFrom: "every time someone rickrolls me",
+                    }
+                );
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+
+            test("fails if any lines are out of order", () => {
+                const other = new ChordSong(
+                    [
+                        new ChordLine([
+                            new ChordBlock({
+                                chord: "D7b9#11",
+                                lyric: "You know the rules ",
+                            }),
+                            new ChordBlock({
+                                chord: "Eb9",
+                                lyric: "and so do I",
+                            }),
+                        ]),
+                        new ChordLine([
+                            new ChordBlock({ chord: "A7", lyric: "We're no " }),
+                            new ChordBlock({
+                                chord: "Bm",
+                                lyric: "strangers to ",
+                            }),
+                            new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                        ]),
+                    ],
+                    {
+                        title: "Never Gonna Give You Up",
+                        composedBy: "Stock Watchman",
+                        performedBy: "Rick Astley",
+                        asHeardFrom: "every time someone rickrolls me",
+                    }
+                );
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+        });
+
+        describe("without content", () => {
+            let original: ChordSong;
+            beforeEach(() => {
+                original = new ChordSong();
+            });
+            test("passes if the same", () => {
+                const other = new ChordSong();
+                expect(original.contentEquals(other)).toEqual(true);
+            });
+
+            test("fails there's content", () => {
+                const other = new ChordSong([
+                    new ChordLine([
+                        new ChordBlock({
+                            chord: "Am",
+                            lyric: "",
+                        }),
+                    ]),
+                ]);
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+        });
+    });
 });
