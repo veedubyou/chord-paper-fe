@@ -6,9 +6,7 @@ import { withStyles } from "@material-ui/styles";
 const ChordTypography = withStyles((theme: Theme) => ({
     root: {
         whiteSpace: "pre",
-        "&:hover": {
-            color: theme.palette.secondary.main,
-        },
+
         cursor: "pointer",
         fontFamily: "PoriChord",
     },
@@ -33,7 +31,11 @@ const ChordSymbol: React.FC<ChordSymbolProps> = (
     };
 
     return (
-        <ChordTypography variant="h5" display="inline" data-testid="Chord">
+        <ChordTypography
+            variant="h5"
+            display="inline"
+            data-testid="ChordSymbol"
+        >
             {formattedChord()}
         </ChordTypography>
     );

@@ -35,7 +35,7 @@ const Divider = withStyles({
 
 const AddCircleOutlineIcon = withStyles((theme: Theme) => ({
     root: {
-        color: theme.palette.primary.main,
+        color: theme.palette.secondary.light,
     },
 }))(UnstyledAddCircleOutlineIcon);
 
