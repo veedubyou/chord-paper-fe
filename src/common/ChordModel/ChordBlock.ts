@@ -97,4 +97,8 @@ export class ChordBlock implements IDable<"ChordBlock"> {
 
         return prevBlock;
     }
+
+    contentEquals(other: ChordBlock): boolean {
+        return this.chord === other.chord && this.lyric === other.lyric;
+    }
 }
