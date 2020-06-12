@@ -11,9 +11,9 @@ const Preamble = () => {
         <>
             <Typography>
                 Chord Paper aims to be as intuitive and handy as possible, but
-                there could still be features that you don't know about
-                immediately. Let's walk through the basics together by making
-                some changes to chords and lyrics!
+                there could still be features that aren't obvious as we work out
+                the kinks. Let's walk through the basics together by making some
+                changes to chords and lyrics!
             </Typography>
             <LineBreak />
             <Typography>
