@@ -5,8 +5,8 @@ import {
     withStyles,
     Badge as UnstyledBadge,
 } from "@material-ui/core";
-import ChordPaperBody from "../ChordPaperBody";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
+import ChordPaperBody from "../../ChordPaperBody";
+import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import UnstyledCheckCircleIcon from "@material-ui/icons/CheckCircle";
 import green from "@material-ui/core/colors/green";
 
