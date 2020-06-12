@@ -12,7 +12,7 @@ import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
 import { withStyles } from "@material-ui/styles";
 import WoodBackground from "./assets/img/symphony.png";
 import SideMenu from "./components/SideMenu";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { HashRouter, Switch, Route } from "react-router-dom";
 import About from "./components/about/About";
 import { TutorialSwitches } from "./components/tutorial/Tutorial";
 
@@ -70,12 +70,12 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <SnackbarProvider>
-                <BrowserRouter basename={basePath}>
+                <HashRouter basename={basePath}>
                     <SideMenu />
                     <AppLayout container justify="center">
                         <Grid item>{routeSwitches}</Grid>
                     </AppLayout>
-                </BrowserRouter>
+                </HashRouter>
             </SnackbarProvider>
         </ThemeProvider>
     );
