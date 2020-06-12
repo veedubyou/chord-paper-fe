@@ -78,7 +78,9 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
 
     return (
         <Drawer variant="permanent" anchor="left">
-            <TitleName variant="h5">Chord Paper</TitleName>
+            <Link to="/" style={linkStyle} data-testid="Menu-TitleButton">
+                <TitleName variant="h5">Chord Paper</TitleName>
+            </Link>
             <Divider />
             <List>
                 <Link to="/" style={linkStyle} data-testid="Menu-HomeButton">
