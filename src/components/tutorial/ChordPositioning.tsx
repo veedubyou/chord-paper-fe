@@ -32,6 +32,8 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
                 notation, we can do this by breaking up lyrics and annotating
                 spaces.
             </Typography>
+            <LineBreak />
+
             <Typography>Let's change the lyrics to:</Typography>
             <LyricsTypography>Why do birds suddenly ap-pear?</LyricsTypography>
             <Typography>
@@ -41,7 +43,7 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
             <Typography>
                 Then add{" "}
                 <ChordTypography display="inline">B7sus4</ChordTypography> to{" "}
-                <LyricsTypography display="inline">"pear"</LyricsTypography>
+                <LyricsTypography display="inline">pear</LyricsTypography>
             </Typography>
             <Typography>
                 And then, also add{" "}
