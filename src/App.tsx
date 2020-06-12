@@ -53,8 +53,6 @@ const AppLayout = withStyles({
 function App() {
     const theme: Theme = createTheme();
 
-    const basePath = process.env.PUBLIC_URL;
-
     const routeSwitches = (
         <Switch>
             <Route exact path="/">
@@ -70,7 +68,7 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <SnackbarProvider>
-                <HashRouter basename={basePath}>
+                <HashRouter>
                     <SideMenu />
                     <AppLayout container justify="center">
                         <Grid item>{routeSwitches}</Grid>
