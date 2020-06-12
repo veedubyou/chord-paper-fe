@@ -13,7 +13,8 @@ import { withStyles } from "@material-ui/styles";
 import WoodBackground from "./assets/img/symphony.png";
 import SideMenu from "./components/SideMenu";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import About from "./components/About";
+import About from "./components/about/About";
+import Tutorial from "./components/tutorial/Tutorial";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -58,6 +59,9 @@ function App() {
         <Switch>
             <Route exact path="/">
                 <ChordPaper initialSong={NeverGonnaGiveYouUp()} />
+            </Route>
+            <Route exact path="/learn">
+                <Tutorial />
             </Route>
             <Route exact path="/about">
                 <About />

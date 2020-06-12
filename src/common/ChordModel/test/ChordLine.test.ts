@@ -117,4 +117,65 @@ describe("ChordLine", () => {
             expect(c.chordBlocks[2].lyric).toEqual(" to ");
         });
     });
+
+    describe("contentEquals", () => {
+        describe("with content", () => {
+            let original: ChordLine;
+            beforeEach(() => {
+                original = new ChordLine([
+                    new ChordBlock({ chord: "A7", lyric: "We're no " }),
+                    new ChordBlock({ chord: "Bm", lyric: "strangers to " }),
+                    new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                ]);
+            });
+
+            test("passes if the same", () => {
+                const other = new ChordLine([
+                    new ChordBlock({ chord: "A7", lyric: "We're no " }),
+                    new ChordBlock({ chord: "Bm", lyric: "strangers to " }),
+                    new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                ]);
+                expect(original.contentEquals(other)).toEqual(true);
+            });
+
+            test("fails if any blocks are different", () => {
+                const other = new ChordLine([
+                    new ChordBlock({ chord: "A7", lyric: "We're no " }),
+                    new ChordBlock({ chord: "Bm7", lyric: "strangers to " }),
+                    new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                ]);
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+
+            test("fails any blocks are out of order different", () => {
+                const other = new ChordLine([
+                    new ChordBlock({ chord: "A7", lyric: "We're no " }),
+                    new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                    new ChordBlock({ chord: "Bm", lyric: "strangers to " }),
+                ]);
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+        });
+
+        describe("without content", () => {
+            let original: ChordLine;
+            beforeEach(() => {
+                original = new ChordLine();
+            });
+            test("passes if the same", () => {
+                const other = new ChordLine();
+                expect(original.contentEquals(other)).toEqual(true);
+            });
+
+            test("fails there's content", () => {
+                const other = new ChordLine([
+                    new ChordBlock({
+                        chord: "Am",
+                        lyric: "",
+                    }),
+                ]);
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+        });
+    });
 });

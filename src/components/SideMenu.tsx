@@ -11,6 +11,8 @@ import {
 import { Link } from "react-router-dom";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import PetsIcon from "@material-ui/icons/Pets";
+import FreeBreakfastIcon from "@material-ui/icons/FreeBreakfast";
+
 import { withStyles } from "@material-ui/styles";
 import grey from "@material-ui/core/colors/grey";
 
@@ -51,7 +53,19 @@ const SideMenu = () => {
                         />
                     </ListItem>
                 </Link>
-
+                <Link
+                    to="learn"
+                    style={linkStyle}
+                    data-testid="Menu-LearnButton"
+                >
+                    <ListItem key="Learn" button>
+                        <FreeBreakfastIcon />
+                        <ListItemText
+                            primary="Learn"
+                            primaryTypographyProps={typographyProps}
+                        />
+                    </ListItem>
+                </Link>
                 <Link
                     to="/about"
                     style={linkStyle}

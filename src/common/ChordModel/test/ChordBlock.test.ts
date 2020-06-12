@@ -6,7 +6,6 @@ describe("ChordBlock", () => {
         const testBlock = (): ChordBlock => {
             return new ChordBlock({ chord: "A7", lyric: "We're no " });
         };
-
         const failBlock = (): ChordBlock => {
             expect(false).toEqual(true);
             return new ChordBlock({ chord: "", lyric: "" });
@@ -51,6 +50,75 @@ describe("ChordBlock", () => {
                     `{"chord":"A7","type":"ChordBlock"}`
                 );
                 expect(isLeft(result)).toEqual(true);
+            });
+        });
+    });
+
+    describe("contentEquals", () => {
+        describe("with content", () => {
+            let original: ChordBlock;
+            beforeEach(() => {
+                original = new ChordBlock({
+                    chord: "A7",
+                    lyric: "Twinkle twinkle little star",
+                });
+            });
+
+            test("passes if the same", () => {
+                const other = new ChordBlock({
+                    chord: "A7",
+                    lyric: "Twinkle twinkle little star",
+                });
+                expect(original.contentEquals(other)).toEqual(true);
+            });
+
+            test("fails if chords different", () => {
+                const other = new ChordBlock({
+                    chord: "Am",
+                    lyric: "Twinkle twinkle little star",
+                });
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+
+            test("fails if lyrics different", () => {
+                const other = new ChordBlock({
+                    chord: "A7",
+                    lyric: "Twinkle twinkle little planet",
+                });
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+        });
+
+        describe("without content", () => {
+            let original: ChordBlock;
+            beforeEach(() => {
+                original = new ChordBlock({
+                    chord: "",
+                    lyric: "",
+                });
+            });
+            test("passes if the same", () => {
+                const other = new ChordBlock({
+                    chord: "",
+                    lyric: "",
+                });
+                expect(original.contentEquals(other)).toEqual(true);
+            });
+
+            test("fails if chords different", () => {
+                const other = new ChordBlock({
+                    chord: "Am",
+                    lyric: "",
+                });
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+
+            test("fails if lyrics different", () => {
+                const other = new ChordBlock({
+                    chord: "",
+                    lyric: "Twinkle twinkle little planet",
+                });
+                expect(original.contentEquals(other)).toEqual(false);
             });
         });
     });

@@ -1,7 +1,7 @@
 import React from "react";
 import { Paper, Typography, Theme, Grid } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
-import { inflatingWhitespace } from "../common/Whitespace";
+import { inflatingWhitespace } from "../../common/Whitespace";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {

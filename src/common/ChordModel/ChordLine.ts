@@ -136,4 +136,29 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
         clone.id = this.id;
         return clone;
     }
+
+    contentEquals(other: ChordLine): boolean {
+        if (this.chordBlocks.length !== other.chordBlocks.length) {
+            return false;
+        }
+
+        const reducer = (
+            isEqual: boolean,
+            value: ChordBlock,
+            index: number
+        ): boolean => {
+            if (!isEqual) {
+                return false;
+            }
+
+            const otherBlock = other.chordBlocks[index];
+            if (!value.contentEquals(otherBlock)) {
+                return false;
+            }
+
+            return true;
+        };
+
+        return this.chordBlocks.reduce(reducer, true);
+    }
 }
