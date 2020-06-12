@@ -14,7 +14,7 @@ import WoodBackground from "./assets/img/symphony.png";
 import SideMenu from "./components/SideMenu";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import About from "./components/about/About";
-import { TutorialSwitches } from "./components/tutorial/exercises/Tutorial";
+import { TutorialSwitches } from "./components/tutorial/Tutorial";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {

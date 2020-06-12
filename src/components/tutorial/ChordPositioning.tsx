@@ -1,9 +1,9 @@
 import React from "react";
 import { Typography } from "@material-ui/core";
 import Playground from "./Playground";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { ChordLine } from "../../../common/ChordModel/ChordLine";
-import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
+import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { ChordLine } from "../../common/ChordModel/ChordLine";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { LineBreak, LyricsTypography, ChordTypography } from "./Common";
 
 const ChordPositioning: React.FC<{}> = (): JSX.Element => {

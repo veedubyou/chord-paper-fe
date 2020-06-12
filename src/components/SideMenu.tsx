@@ -19,10 +19,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import { withStyles } from "@material-ui/styles";
 import grey from "@material-ui/core/colors/grey";
-import {
-    allExerciseRoutes,
-    ExerciseRoute,
-} from "../components/tutorial/exercises/Tutorial";
+import { allExerciseRoutes, ExerciseRoute } from "./tutorial/Tutorial";
 
 const TitleName = withStyles((theme: Theme) => ({
     root: {

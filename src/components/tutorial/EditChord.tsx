@@ -1,8 +1,8 @@
 import { Typography } from "@material-ui/core";
 import React from "react";
-import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
-import { ChordLine } from "../../../common/ChordModel/ChordLine";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
+import { ChordLine } from "../../common/ChordModel/ChordLine";
+import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { ChordTypography, LineBreak, LyricsTypography } from "./Common";
 import Playground from "./Playground";
 
