@@ -35,7 +35,7 @@ const AddLine: React.FC<{}> = (): JSX.Element => {
                 line, and clicking the gray line or the add icon to the right.
             </Typography>
             <Typography>Let's add a line, and change the lyrics to:</Typography>
-            <LyricsTypography>Why do birds suddenly appear?</LyricsTypography>
+            <LyricsTypography>Why do birds suddenly ap-pear?</LyricsTypography>
             <LyricsTypography>Every time you are near</LyricsTypography>
             <LineBreak />
             <Typography>Try it!</Typography>

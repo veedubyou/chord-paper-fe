@@ -98,7 +98,9 @@ const TextInput: React.FC<TextInputProps> = (
             return;
         }
 
-        const linesOfText: string[] = payload.split("\n");
+        // handling both Windows + Mac
+        let linesOfText: string[] = payload.split("\r\n");
+        linesOfText = linesOfText.flatMap((line: string) => line.split("\n"));
 
         if (linesOfText.length > 1 && props.onPasteOverflow !== undefined) {
             event.preventDefault();
