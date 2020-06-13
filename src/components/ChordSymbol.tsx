@@ -31,7 +31,7 @@ const ChordSymbol: React.FC<ChordSymbolProps> = (
 
     return (
         <ChordTypography
-            variant="h5"
+            variant="subtitle1"
             display="inline"
             data-testid="ChordSymbol"
         >

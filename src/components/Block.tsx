@@ -47,7 +47,15 @@ const Typography = withStyles({
     },
 })(UnstyledTypography);
 
-const HighlightableBox = withStyles((theme: Theme) => ({
+const HighlightableTokenBox = withStyles((theme: Theme) => ({
+    root: {
+        "&:hover .Lyric": {
+            color: theme.palette.primary.main,
+        },
+    },
+}))(Box);
+
+const HighlightableChordBox = withStyles((theme: Theme) => ({
     root: {
         "&:hover": {
             color: theme.palette.primary.dark,
@@ -56,8 +64,17 @@ const HighlightableBox = withStyles((theme: Theme) => ({
     },
 }))(Box);
 
+const HighlightableBlockBox = withStyles((theme: Theme) => ({
+    root: {
+        "&:hover .HighlightLyric": {
+            color: theme.palette.primary.main,
+        },
+    },
+}))(Box);
+
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     const [editing, setEditing] = useState(false);
+    const [hoveringOverChord, setHoveringOverChord] = useState(false);
 
     let lyricTokens: string[] = props.chordBlock.lyricTokens;
 
@@ -88,19 +105,28 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         blockHasChord: boolean
     ): React.ReactElement => {
         const typographyProps = {
-            variant: "h5" as "h5",
+            variant: "h6" as "h6",
             display: "inline" as "inline",
         };
 
+        const styleFirstToken = blockHasChord && index === 0;
+
+        const lyricClass =
+            styleFirstToken && hoveringOverChord ? "HighlightLyric" : "Lyric";
+
         const lyricBlock = (
-            <Typography {...typographyProps} data-testid={`Token-${index}`}>
+            <Typography
+                {...typographyProps}
+                className={lyricClass}
+                data-testid={`Token-${index}`}
+            >
                 {lyric}
             </Typography>
         );
 
         let hiddenTarget: React.ReactElement | null = null;
 
-        if (!blockHasChord || index !== 0) {
+        if (!styleFirstToken) {
             hiddenTarget = (
                 <ChordInsertOutline
                     {...typographyProps}
@@ -113,7 +139,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         }
 
         return (
-            <Box
+            <HighlightableTokenBox
                 key={index}
                 position="relative"
                 display="inline"
@@ -121,7 +147,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             >
                 {lyricBlock}
                 {hiddenTarget}
-            </Box>
+            </HighlightableTokenBox>
         );
     };
 
@@ -140,9 +166,13 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     let chordRow: React.ReactElement;
     if (!editing) {
         chordRow = (
-            <HighlightableBox onClick={clickHandler(0)}>
+            <HighlightableChordBox
+                onClick={clickHandler(0)}
+                onMouseOver={() => setHoveringOverChord(true)}
+                onMouseOut={() => setHoveringOverChord(false)}
+            >
                 <ChordSymbol>{props.chordBlock.chord}</ChordSymbol>
-            </HighlightableBox>
+            </HighlightableChordBox>
         );
     } else {
         chordRow = (
@@ -155,7 +185,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     }
 
     return (
-        <Box display="inline-block">
+        <HighlightableBlockBox display="inline-block">
             <Grid
                 container
                 direction="column"
@@ -167,7 +197,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                     {lyricBlocks}
                 </Grid>
             </Grid>
-        </Box>
+        </HighlightableBlockBox>
     );
 };
 
