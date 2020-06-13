@@ -55,11 +55,11 @@ function App() {
 
     const routeSwitches = (
         <Switch>
-            <Route exact path="/">
+            <Route key="/" exact path="/">
                 <ChordPaper initialSong={NeverGonnaGiveYouUp()} />
             </Route>
             {TutorialSwitches()}
-            <Route exact path="/about">
+            <Route key="/about" exact path="/about">
                 <About />
             </Route>
         </Switch>

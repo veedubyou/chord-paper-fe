@@ -48,7 +48,11 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
         const exerciseLinks = allExerciseRoutes().map(
             (exerciseRoute: ExerciseRoute) => {
                 return (
-                    <Link to={exerciseRoute.route} style={linkStyle}>
+                    <Link
+                        key={exerciseRoute.route}
+                        to={exerciseRoute.route}
+                        style={linkStyle}
+                    >
                         <ListItem button>
                             <ListItemText inset primary={exerciseRoute.title} />
                         </ListItem>
@@ -83,7 +87,12 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
             </Link>
             <Divider />
             <List>
-                <Link to="/" style={linkStyle} data-testid="Menu-HomeButton">
+                <Link
+                    key="/"
+                    to="/"
+                    style={linkStyle}
+                    data-testid="Menu-HomeButton"
+                >
                     <ListItem key="Music" button>
                         <ListItemIcon>
                             <MusicNoteIcon />
@@ -96,6 +105,7 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
                 </Link>
                 {tutorialMenu()}
                 <Link
+                    key="/about"
                     to="/about"
                     style={linkStyle}
                     data-testid="Menu-AboutButton"
