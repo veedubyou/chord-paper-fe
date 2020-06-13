@@ -8,7 +8,7 @@ import {
 import React, { useState } from "react";
 
 import { DataTestID } from "../common/DataTestID";
-import { inflatingWhitespace } from "../common/Whitespace";
+import { inflatingWhitespace, isWhitespace } from "../common/Whitespace";
 import ChordSymbol from "./ChordSymbol";
 import { IDable } from "../common/ChordModel/Collection";
 import TextInput from "./TextInput";
@@ -52,6 +52,9 @@ const HighlightableTokenBox = withStyles((theme: Theme) => ({
         "&:hover .Lyric": {
             color: theme.palette.primary.main,
         },
+        "&:hover .Space": {
+            backgroundColor: theme.palette.primary.main,
+        },
     },
 }))(Box);
 
@@ -68,6 +71,9 @@ const HighlightableBlockBox = withStyles((theme: Theme) => ({
     root: {
         "&:hover .HighlightLyric": {
             color: theme.palette.primary.main,
+        },
+        "&:hover .HighlightSpace": {
+            backgroundColor: theme.palette.primary.main,
         },
     },
 }))(Box);
@@ -111,8 +117,20 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
 
         const styleFirstToken = blockHasChord && index === 0;
 
-        const lyricClass =
-            styleFirstToken && hoveringOverChord ? "HighlightLyric" : "Lyric";
+        let lyricClass: string;
+        if (styleFirstToken && hoveringOverChord) {
+            if (isWhitespace(lyric)) {
+                lyricClass = "HighlightSpace";
+            } else {
+                lyricClass = "HighlightLyric";
+            }
+        } else {
+            if (isWhitespace(lyric)) {
+                lyricClass = "Space";
+            } else {
+                lyricClass = "Lyric";
+            }
+        }
 
         const lyricBlock = (
             <Typography
