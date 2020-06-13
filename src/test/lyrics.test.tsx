@@ -499,16 +499,20 @@ describe("Remove action", () => {
 });
 
 describe("Pasting Lyrics", () => {
-    const pasteEvent = (textContent: string[]): Event => {
+    const pasteEvent = (
+        textContent: string[],
+        carriageReturn: boolean
+    ): Event => {
         const event = new Event("paste", {
             bubbles: true,
             cancelable: true,
             composed: true,
         });
 
+        const joinChar = carriageReturn ? "\r\n" : "\n";
         //@ts-ignore
         event["clipboardData"] = {
-            getData: (pasteType: string) => textContent.join("\n"),
+            getData: (pasteType: string) => textContent.join(joinChar),
         };
 
         return event;
@@ -537,46 +541,56 @@ describe("Pasting Lyrics", () => {
             await startEdit(findByTestIdChain, "Line-0", "NoneditableLine");
         });
 
-        describe("pasting multiple lines", () => {
-            beforeEach(async () => {
-                const inputElemFn = async () =>
-                    await findByTestIdChain(
+        const pasteMultipleLinesTests = (carriageReturn: boolean) => {
+            describe("pasting multiple lines", () => {
+                beforeEach(async () => {
+                    const inputElemFn = async () =>
+                        await findByTestIdChain(
+                            "Line-0",
+                            "EditableLine",
+                            "InnerInput"
+                        );
+
+                    fireEvent.change(await inputElemFn(), {
+                        target: { value: "" },
+                    });
+
+                    await act(async () => {
+                        (await inputElemFn()).dispatchEvent(
+                            pasteEvent(["ABC", "as easy as"], carriageReturn)
+                        );
+                    });
+                });
+
+                test("it pastes in the first line", async () => {
+                    await expectChordAndLyric("", "ABC", [
                         "Line-0",
-                        "EditableLine",
-                        "InnerInput"
-                    );
-
-                fireEvent.change(await inputElemFn(), {
-                    target: { value: "" },
+                        "NoneditableLine",
+                    ]);
                 });
 
-                await act(async () => {
-                    (await inputElemFn()).dispatchEvent(
-                        pasteEvent(["ABC", "as easy as"])
-                    );
+                test("adds the other lines below the first line", async () => {
+                    await expectChordAndLyric("", "as easy as", [
+                        "Line-1",
+                        "NoneditableLine",
+                    ]);
+                });
+
+                test("it pushes down the second line", async () => {
+                    await expectChordAndLyric("", "123", [
+                        "Line-2",
+                        "NoneditableLine",
+                    ]);
                 });
             });
+        };
 
-            test("it pastes in the first line", async () => {
-                await expectChordAndLyric("", "ABC", [
-                    "Line-0",
-                    "NoneditableLine",
-                ]);
-            });
+        describe("for mac", () => {
+            pasteMultipleLinesTests(false);
+        });
 
-            test("adds the other lines below the first line", async () => {
-                await expectChordAndLyric("", "as easy as", [
-                    "Line-1",
-                    "NoneditableLine",
-                ]);
-            });
-
-            test("it pushes down the second line", async () => {
-                await expectChordAndLyric("", "123", [
-                    "Line-2",
-                    "NoneditableLine",
-                ]);
-            });
+        describe("for windows", () => {
+            pasteMultipleLinesTests(true);
         });
     });
 
