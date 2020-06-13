@@ -117,7 +117,7 @@ interface TutorialProps {
 
 export const TutorialSwitches = (): React.ReactElement[] => {
     return allExercises.map((exerciseEntry: ExerciseEntry) => (
-        <Route exact path={exerciseEntry.route}>
+        <Route key={exerciseEntry.route} exact path={exerciseEntry.route}>
             <Tutorial route={exerciseEntry.route} />
         </Route>
     ));

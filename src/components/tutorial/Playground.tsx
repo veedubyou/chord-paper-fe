@@ -29,7 +29,6 @@ const Playground: React.FC<PlaygroundProps> = (
     const [finish, setFinish] = useState(false);
 
     const songChangeHandler = (updatedSong: ChordSong) => {
-        console.log(updatedSong);
         setSong(updatedSong.clone());
         checkExpected(updatedSong);
     };
