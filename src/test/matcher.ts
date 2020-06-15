@@ -36,7 +36,12 @@ const mergeText = (
 
 export const lyricsInElement = (parentElement: Element): string | null => {
     return mergeText(parentElement, (elem: Element): boolean => {
-        return elem.getAttribute("data-testid") === "Lyric";
+        const testID = elem.getAttribute("data-testid");
+        if (testID === null) {
+            return false;
+        }
+
+        return testID.startsWith("Token-");
     });
 };
 
@@ -86,24 +91,23 @@ export const getExpectChordAndLyric = (
     findByTestId: FindByTestIdFn
 ): ExpectChordAndLyricFn => {
     return async (
-        chord: string,
-        lyric: string,
+        expectedChord: string,
+        expectedLyrics: string,
         testIDChain: string[]
     ): Promise<void> => {
         const parent = await getFindByTestIdChain(findByTestId)(...testIDChain);
 
-        const chordElem = await within(parent).findByTestId("Chord");
+        const chordElem = await within(parent).findByTestId("ChordSymbol");
         const lyricElem = await within(parent).findByTestId("Lyric");
 
         await waitFor(() => {
-            expect(chordElem).toHaveTextContent(chord, {
+            expect(chordElem).toHaveTextContent(expectedChord, {
                 normalizeWhitespace: true,
             });
         });
-        await waitFor(() =>
-            expect(lyricElem).toHaveTextContent(lyric, {
-                normalizeWhitespace: false,
-            })
-        );
+        await waitFor(() => {
+            const lyrics = lyricsInElement(lyricElem);
+            expect(lyrics).toEqual(expectedLyrics);
+        });
     };
 };

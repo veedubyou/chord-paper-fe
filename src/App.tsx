@@ -9,6 +9,12 @@ import {
 import ChordPaper from "./components/ChordPaper";
 import { SnackbarProvider } from "notistack";
 import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
+import { withStyles } from "@material-ui/styles";
+import WoodBackground from "./assets/img/symphony.png";
+import SideMenu from "./components/SideMenu";
+import { HashRouter, Switch, Route } from "react-router-dom";
+import About from "./components/about/About";
+import { TutorialSwitches } from "./components/tutorial/Tutorial";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -31,23 +37,43 @@ const createTheme = (): Theme => {
             secondary: purple,
         },
         typography: {
-            fontFamily: "Playfair",
-            fontWeightRegular: 500,
+            fontFamily: "Merriweather",
+            fontWeightRegular: 300,
         },
     });
 };
 
+const AppLayout = withStyles({
+    root: {
+        backgroundImage: `url(${WoodBackground})`,
+        minHeight: "100vh",
+    },
+})(Grid);
+
 function App() {
     const theme: Theme = createTheme();
+
+    const routeSwitches = (
+        <Switch>
+            <Route key="/" exact path="/">
+                <ChordPaper initialSong={NeverGonnaGiveYouUp()} />
+            </Route>
+            {TutorialSwitches()}
+            <Route key="/about" exact path="/about">
+                <About />
+            </Route>
+        </Switch>
+    );
 
     return (
         <ThemeProvider theme={theme}>
             <SnackbarProvider>
-                <Grid container justify="center">
-                    <Grid item>
-                        <ChordPaper initialSong={NeverGonnaGiveYouUp()} />
-                    </Grid>
-                </Grid>
+                <HashRouter>
+                    <SideMenu />
+                    <AppLayout container justify="center">
+                        <Grid item>{routeSwitches}</Grid>
+                    </AppLayout>
+                </HashRouter>
             </SnackbarProvider>
         </ThemeProvider>
     );

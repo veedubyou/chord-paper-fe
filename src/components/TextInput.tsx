@@ -9,7 +9,7 @@ import React, { useState } from "react";
 import { CSSProperties } from "@material-ui/styles";
 import grey from "@material-ui/core/colors/grey";
 
-interface EditableLineProps {
+interface TextInputProps {
     children: string;
     onFinish?: (newValue: string) => void;
     onSpecialBackspace?: () => void;
@@ -18,8 +18,8 @@ interface EditableLineProps {
     variant?: TypographyVariant;
 }
 
-const EditableLine: React.FC<EditableLineProps> = (
-    props: EditableLineProps
+const TextInput: React.FC<TextInputProps> = (
+    props: TextInputProps
 ): JSX.Element => {
     const [value, setValue] = useState<string>(props.children);
     const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
@@ -98,7 +98,9 @@ const EditableLine: React.FC<EditableLineProps> = (
             return;
         }
 
-        const linesOfText: string[] = payload.split("\n");
+        // handling both Windows + Mac
+        let linesOfText: string[] = payload.split("\r\n");
+        linesOfText = linesOfText.flatMap((line: string) => line.split("\n"));
 
         if (linesOfText.length > 1 && props.onPasteOverflow !== undefined) {
             event.preventDefault();
@@ -159,4 +161,4 @@ const EditableLine: React.FC<EditableLineProps> = (
     );
 };
 
-export default EditableLine;
+export default TextInput;

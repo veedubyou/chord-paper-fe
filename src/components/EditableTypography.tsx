@@ -1,6 +1,6 @@
-import { Box, Typography, TypographyProps, Theme } from "@material-ui/core";
+import { Box, Typography, TypographyProps } from "@material-ui/core";
 import React, { useState } from "react";
-import EditableLine from "./EditableLine";
+import TextInput from "./TextInput";
 
 import { DataTestID } from "../common/DataTestID";
 import { inflateIfEmpty } from "../common/Whitespace";
@@ -14,11 +14,11 @@ interface EditableTypographyProps extends DataTestID, TypographyProps {
     placeholder?: string;
 }
 
-const PlaceholderTypography = withStyles((theme: Theme) => ({
+const PlaceholderTypography = withStyles({
     root: {
-        color: grey[200],
+        color: grey[400],
     },
-}))(Typography);
+})(Typography);
 
 const EditableTypography: React.FC<EditableTypographyProps> = (
     props: EditableTypographyProps
@@ -65,13 +65,13 @@ const EditableTypography: React.FC<EditableTypographyProps> = (
         }
 
         return (
-            <EditableLine
+            <TextInput
                 variant={props.variant}
                 onFinish={finishEdit}
                 data-testid={"EditableLine"}
             >
                 {props.children}
-            </EditableLine>
+            </TextInput>
         );
     };
 

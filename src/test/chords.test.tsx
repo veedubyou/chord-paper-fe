@@ -1,12 +1,5 @@
 import React from "react";
-import {
-    render,
-    cleanup,
-    fireEvent,
-    findByTestId,
-} from "@testing-library/react";
-
-import userEvent from "@testing-library/user-event";
+import { render, cleanup, fireEvent, within } from "@testing-library/react";
 
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 
@@ -66,7 +59,7 @@ describe("Rendering initial chords", () => {
         const { findByTestId } = render(basicChordPaper());
         const expectChordAndLyric = getExpectChordAndLyric(findByTestId);
 
-        await expectChordAndLyric("C", "Fly me", [
+        await expectChordAndLyric("C", "Fly me ", [
             "Line-0",
             "NoneditableLine",
             "Block-0",
@@ -78,7 +71,7 @@ describe("Rendering initial chords", () => {
             "Block-1",
         ]);
 
-        await expectChordAndLyric("", "And let me play", [
+        await expectChordAndLyric("", "And let me play ", [
             "Line-1",
             "NoneditableLine",
             "Block-0",
@@ -99,13 +92,15 @@ describe("Changing the chord", () => {
         const { findByTestId } = render(basicChordPaper());
         findByTestIdChain = getFindByTestIdChain(findByTestId);
         expectChordAndLyric = getExpectChordAndLyric(findByTestId);
-        const token = await findByTestIdChain(
+        const chordSymbol = await findByTestIdChain(
             "Line-0",
             "NoneditableLine",
             "Block-1",
-            "Token-0"
+            "ChordSymbol"
         );
-        userEvent.click(token);
+
+        expect(chordSymbol).toBeInTheDocument();
+        fireEvent.click(chordSymbol);
     });
 
     test("it takes input and retains new chord changes", async () => {
@@ -164,13 +159,16 @@ describe("inserting a chord", () => {
         findByTestIdChain = getFindByTestIdChain(findByTestId);
         expectChordAndLyric = getExpectChordAndLyric(findByTestId);
 
-        const token = await findByTestIdChain(
+        const editButton = await findByTestIdChain(
             "Line-0",
             "NoneditableLine",
             "Block-1",
-            "Token-2"
+            "TokenBox-2",
+            "ChordEditButton"
         );
-        userEvent.click(token);
+
+        expect(editButton).toBeInTheDocument();
+        fireEvent.click(editButton);
 
         chordEdit = async () =>
             await findByTestIdChain(
@@ -189,7 +187,7 @@ describe("inserting a chord", () => {
 
         enterKey(await chordEdit());
 
-        await expectChordAndLyric("D", "to", [
+        await expectChordAndLyric("D", "to ", [
             "Line-0",
             "NoneditableLine",
             "Block-1",

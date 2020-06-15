@@ -1,11 +1,11 @@
 import { Box, Slide } from "@material-ui/core";
 import React, { useState } from "react";
-import EditableLine from "./EditableLine";
+import TextInput from "./TextInput";
 
 import { DataTestID } from "../common/DataTestID";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { IDable } from "../common/ChordModel/Collection";
-import NonEditableLine from "./NonEditableLine";
+import ChordEditLine from "./ChordEditLine";
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
@@ -46,6 +46,10 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const removalTime = 250;
 
     const removeHandler = () => {
+        if (removed) {
+            return;
+        }
+
         setRemoved(true);
 
         if (props.onRemoveLine) {
@@ -77,12 +81,12 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
 
     const nonEditableLine = (): React.ReactElement => {
         return (
-            <NonEditableLine
+            <ChordEditLine
                 chordLine={props.chordLine}
                 onChangeLine={props.onChangeLine}
-                onAddButton={addHandler}
-                onRemoveButton={removeHandler}
-                onEditButton={startEdit}
+                onAdd={addHandler}
+                onRemove={removeHandler}
+                onEdit={startEdit}
             />
         );
     };
@@ -92,14 +96,14 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
 
         return (
             <Box position="absolute" left="0" bottom="2px" width="100%">
-                <EditableLine
+                <TextInput
                     variant="h5"
                     onFinish={finishEdit}
                     onPasteOverflow={pasteOverflowHandler}
                     onSpecialBackspace={specialBackspaceHandler}
                 >
                     {lyrics}
-                </EditableLine>
+                </TextInput>
             </Box>
         );
     };
@@ -125,9 +129,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
             <Box
                 borderBottom={1}
                 borderColor="grey.50"
-                width="auto"
-                minWidth="30em"
-                margin="3rem"
+                width="100%"
                 position="relative"
                 data-testid={props["data-testid"]}
             >

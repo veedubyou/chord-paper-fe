@@ -8,8 +8,8 @@ import { ChordSong } from "../common/ChordModel/ChordSong";
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
         margin: theme.spacing(5),
-        minHeight: "750px",
-        width: "max-content",
+        minHeight: theme.spacing(92),
+        minWidth: theme.spacing(92),
     },
 }))(Paper);
 
@@ -35,7 +35,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
     };
 
     return (
-        <RootPaper elevation={3}>
+        <RootPaper elevation={3} data-testid="ChordPaper">
             <Header
                 data-testid={"Header"}
                 song={song}

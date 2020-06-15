@@ -101,95 +101,6 @@ describe("Rendering initial lyrics", () => {
     });
 });
 
-describe("Hover Menu", () => {
-    describe("Buttons show on hover", () => {
-        let findByTestIdChain: FindByTestIdChainFn;
-        let subject: () => void;
-
-        beforeEach(async () => {
-            const { findByTestId } = render(basicChordPaper());
-            findByTestIdChain = getFindByTestIdChain(findByTestId);
-            const hoverLine = await findByTestIdChain(
-                "Line-2",
-                "NoneditableLine"
-            );
-            expect(hoverLine).toBeInTheDocument();
-
-            subject = () => {
-                fireEvent.mouseOver(hoverLine);
-            };
-        });
-
-        it("shows the edit button", async () => {
-            subject();
-            const editButton = await findByTestIdChain("EditButton");
-            expect(editButton).toBeInTheDocument();
-        });
-
-        it("shows the add button", async () => {
-            subject();
-            const addButton = await findByTestIdChain("AddButton");
-            expect(addButton).toBeInTheDocument();
-        });
-
-        it("shows the remove button", async () => {
-            subject();
-            const removeButton = await findByTestIdChain("RemoveButton");
-            expect(removeButton).toBeInTheDocument();
-        });
-    });
-
-    describe("Buttons hide when not hovered", () => {
-        let queryByTestId: (testID: string) => HTMLElement | null;
-        let subject: () => void;
-
-        beforeEach(async () => {
-            const rendered = render(basicChordPaper());
-            queryByTestId = rendered.queryByTestId;
-
-            const findByTestId = rendered.findByTestId;
-            const findByTestIdChain = getFindByTestIdChain(findByTestId);
-
-            const hoverLine = await findByTestIdChain(
-                "Line-2",
-                "NoneditableLine"
-            );
-            expect(hoverLine).toBeInTheDocument();
-            fireEvent.mouseOver(hoverLine);
-
-            // need to wait for the element to appear before we can wait for the disappearance
-            expect(await findByTestId("EditButton")).toBeInTheDocument();
-            expect(await findByTestId("AddButton")).toBeInTheDocument();
-            expect(await findByTestId("RemoveButton")).toBeInTheDocument();
-
-            subject = () => {
-                fireEvent.mouseOut(hoverLine);
-            };
-        });
-
-        it("hides the edit button", async () => {
-            subject();
-            await waitForElementToBeRemoved(() => {
-                return queryByTestId("EditButton");
-            });
-        });
-
-        it("hides the add button", async () => {
-            subject();
-            await waitForElementToBeRemoved(() => {
-                return queryByTestId("AddButton");
-            });
-        });
-
-        it("hides the remove button", async () => {
-            subject();
-            await waitForElementToBeRemoved(() => {
-                return queryByTestId("RemoveButton");
-            });
-        });
-    });
-});
-
 describe("Plain text edit action", () => {
     let findByTestIdChain: FindByTestIdChainFn;
     let expectChordAndLyric: ExpectChordAndLyricFn;
@@ -198,10 +109,7 @@ describe("Plain text edit action", () => {
         const line = await findByTestIdChain("Line-0", "NoneditableLine");
         expect(line).toBeInTheDocument();
         fireEvent.mouseOver(line);
-
-        const editButton = await findByTestIdChain("EditButton");
-        expect(editButton).toBeInTheDocument();
-        fireEvent.click(editButton);
+        fireEvent.click(line);
     };
 
     const changeLyric = async (newLyric: string) => {
@@ -284,9 +192,7 @@ describe("Edit action with chords", () => {
         expect(line).toBeInTheDocument();
         fireEvent.mouseOver(line);
 
-        const editButton = await findByTestIdChain("EditButton");
-        expect(editButton).toBeInTheDocument();
-        fireEvent.click(editButton);
+        fireEvent.click(line);
     });
 
     const changeLyric = async (newLyric: string) => {
@@ -307,7 +213,7 @@ describe("Edit action with chords", () => {
         test("it doesn't change anything", async () => {
             await changeLyric("It's your fault that I'm in trouble");
 
-            await expectChordAndLyric("F", "It's your fault", [
+            await expectChordAndLyric("F", "It's your fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -325,7 +231,7 @@ describe("Edit action with chords", () => {
         test("replacing a word at the beginning of the block", async () => {
             await changeLyric("It's your fault so I'm in trouble");
 
-            await expectChordAndLyric("F", "It's your fault", [
+            await expectChordAndLyric("F", "It's your fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -341,7 +247,7 @@ describe("Edit action with chords", () => {
         test("insertions deletions and replacements everywhere", async () => {
             await changeLyric("Not really my fault that I am trooble");
 
-            await expectChordAndLyric("F", "Not really my fault", [
+            await expectChordAndLyric("F", "Not really my fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -359,7 +265,7 @@ describe("Edit action with chords", () => {
         test("adding a word in the middle of the block", async () => {
             await changeLyric("It's really your fault that I'm in trouble");
 
-            await expectChordAndLyric("F", "It's really your fault", [
+            await expectChordAndLyric("F", "It's really your fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -375,7 +281,7 @@ describe("Edit action with chords", () => {
         test("adding a word in the end of the block", async () => {
             await changeLyric("It's your fault really that I'm in trouble");
 
-            await expectChordAndLyric("F", "It's your fault really", [
+            await expectChordAndLyric("F", "It's your fault really ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -391,13 +297,13 @@ describe("Edit action with chords", () => {
         test("adding a word in the beginning of the line", async () => {
             await changeLyric("Verse: It's your fault that I'm in trouble");
 
-            await expectChordAndLyric("", "Verse:", [
+            await expectChordAndLyric("", "Verse: ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
             ]);
 
-            await expectChordAndLyric("F", "It's your fault", [
+            await expectChordAndLyric("F", "It's your fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-1",
@@ -415,7 +321,7 @@ describe("Edit action with chords", () => {
         test("removing a word from the middle", async () => {
             await changeLyric("It's your that I'm in trouble");
 
-            await expectChordAndLyric("F", "It's your", [
+            await expectChordAndLyric("F", "It's your ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -431,7 +337,7 @@ describe("Edit action with chords", () => {
         test("removing a word from the end", async () => {
             await changeLyric("It's your fault that I'm in");
 
-            await expectChordAndLyric("F", "It's your fault", [
+            await expectChordAndLyric("F", "It's your fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -447,7 +353,7 @@ describe("Edit action with chords", () => {
         test("removing a word from the beginning", async () => {
             await changeLyric("your fault that I'm in trouble");
 
-            await expectChordAndLyric("F", "your fault", [
+            await expectChordAndLyric("F", "your fault ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -463,7 +369,7 @@ describe("Edit action with chords", () => {
         test("removing random characters everywhere", async () => {
             await changeLyric("It your fut hat I'm trouble");
 
-            await expectChordAndLyric("F", "It your fut", [
+            await expectChordAndLyric("F", "It your fut ", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -519,7 +425,7 @@ describe("Add action", () => {
 
         findByTestIdChain = getFindByTestIdChain(findByTestId);
 
-        const line = await findByTestIdChain("Line-2", "NoneditableLine");
+        const line = await findByTestIdChain("NewLine-2");
         expect(line).toBeInTheDocument();
 
         subject = async () => {
@@ -562,7 +468,8 @@ describe("Remove action", () => {
         const line = await findByTestIdChain("Line-2", "NoneditableLine");
         expect(line).toBeInTheDocument();
 
-        expect(line).toHaveTextContent("Never gonna run around");
+        const lyrics = lyricsInElement(line);
+        expect(lyrics).toEqual("Never gonna run around");
 
         subject = async () => {
             fireEvent.mouseOver(line);
@@ -586,21 +493,26 @@ describe("Remove action", () => {
         );
 
         const line = await findByTestIdChain("Line-2", "NoneditableLine");
-        expect(line).toHaveTextContent("Never gonna make you cry");
+        const lyrics = lyricsInElement(line);
+        expect(lyrics).toEqual("Never gonna make you cry");
     });
 });
 
 describe("Pasting Lyrics", () => {
-    const pasteEvent = (textContent: string[]): Event => {
+    const pasteEvent = (
+        textContent: string[],
+        carriageReturn: boolean
+    ): Event => {
         const event = new Event("paste", {
             bubbles: true,
             cancelable: true,
             composed: true,
         });
 
+        const joinChar = carriageReturn ? "\r\n" : "\n";
         //@ts-ignore
         event["clipboardData"] = {
-            getData: (pasteType: string) => textContent.join("\n"),
+            getData: (pasteType: string) => textContent.join(joinChar),
         };
 
         return event;
@@ -613,10 +525,7 @@ describe("Pasting Lyrics", () => {
         const line = await findByTestIdChain(...testIDPath);
         expect(line).toBeInTheDocument();
         fireEvent.mouseOver(line);
-
-        const editButton = await findByTestIdChain("EditButton");
-        expect(editButton).toBeInTheDocument();
-        fireEvent.click(editButton);
+        fireEvent.click(line);
     };
 
     describe("into an empty line", () => {
@@ -632,46 +541,56 @@ describe("Pasting Lyrics", () => {
             await startEdit(findByTestIdChain, "Line-0", "NoneditableLine");
         });
 
-        describe("pasting multiple lines", () => {
-            beforeEach(async () => {
-                const inputElemFn = async () =>
-                    await findByTestIdChain(
+        const pasteMultipleLinesTests = (carriageReturn: boolean) => {
+            describe("pasting multiple lines", () => {
+                beforeEach(async () => {
+                    const inputElemFn = async () =>
+                        await findByTestIdChain(
+                            "Line-0",
+                            "EditableLine",
+                            "InnerInput"
+                        );
+
+                    fireEvent.change(await inputElemFn(), {
+                        target: { value: "" },
+                    });
+
+                    await act(async () => {
+                        (await inputElemFn()).dispatchEvent(
+                            pasteEvent(["ABC", "as easy as"], carriageReturn)
+                        );
+                    });
+                });
+
+                test("it pastes in the first line", async () => {
+                    await expectChordAndLyric("", "ABC", [
                         "Line-0",
-                        "EditableLine",
-                        "InnerInput"
-                    );
-
-                fireEvent.change(await inputElemFn(), {
-                    target: { value: "" },
+                        "NoneditableLine",
+                    ]);
                 });
 
-                await act(async () => {
-                    (await inputElemFn()).dispatchEvent(
-                        pasteEvent(["ABC", "as easy as"])
-                    );
+                test("adds the other lines below the first line", async () => {
+                    await expectChordAndLyric("", "as easy as", [
+                        "Line-1",
+                        "NoneditableLine",
+                    ]);
+                });
+
+                test("it pushes down the second line", async () => {
+                    await expectChordAndLyric("", "123", [
+                        "Line-2",
+                        "NoneditableLine",
+                    ]);
                 });
             });
+        };
 
-            test("it pastes in the first line", async () => {
-                await expectChordAndLyric("", "ABC", [
-                    "Line-0",
-                    "NoneditableLine",
-                ]);
-            });
+        describe("for mac", () => {
+            pasteMultipleLinesTests(false);
+        });
 
-            test("adds the other lines below the first line", async () => {
-                await expectChordAndLyric("", "as easy as", [
-                    "Line-1",
-                    "NoneditableLine",
-                ]);
-            });
-
-            test("it pushes down the second line", async () => {
-                await expectChordAndLyric("", "123", [
-                    "Line-2",
-                    "NoneditableLine",
-                ]);
-            });
+        describe("for windows", () => {
+            pasteMultipleLinesTests(true);
         });
     });
 
