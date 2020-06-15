@@ -10,8 +10,15 @@ jobs:
         name: Publish master to Github Pages
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v2
+            # Checkout with history (to get git describe output properly)
+            - name: Checkout
+              uses: actions/checkout@v2
+              with:
+                fetch-depth: 0
 
+            - name: Update GIT-VERSION-FILE
+              run: bash git-version.sh
+            
             - name: Install Dependencies
               run: yarn
 
