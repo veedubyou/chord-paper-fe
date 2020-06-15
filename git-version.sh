@@ -1,5 +1,14 @@
 #!/bin/sh
 
+# This file creates/updates 2 files: 1) ./GIT-VERSION-FILE, for use by
+# Github Action Workflows for docker deployment, and 2) ./src/GIT-VERSION-FILE.js,
+# for use inside the app itself (maybe refactorable later).  It generates a
+# version number based on `git describe` and writes it into the above files.
+# Keep in mind that these files are only changed during the docker build process;
+# they exist in the repo with a placeholder string to prevent errors locally.
+# Therefore, this script shouldn't even be run in dev, unless you feel like
+# dirtying the repo.
+
 GVF=./src/GIT-VERSION-FILE.js
 DEF_VER=v2.27.0
 GVF2=GIT-VERSION-FILE
