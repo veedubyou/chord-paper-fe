@@ -6,6 +6,7 @@ import { DataTestID } from "../common/DataTestID";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { IDable } from "../common/ChordModel/Collection";
 import ChordEditLine from "./ChordEditLine";
+import { lyricTypographyVariant } from "./Lyric";
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
@@ -97,7 +98,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         return (
             <Box position="absolute" left="0" bottom="2px" width="100%">
                 <TextInput
-                    variant="h5"
+                    variant={lyricTypographyVariant}
                     onFinish={finishEdit}
                     onPasteOverflow={pasteOverflowHandler}
                     onSpecialBackspace={specialBackspaceHandler}

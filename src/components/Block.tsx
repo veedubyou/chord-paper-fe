@@ -1,18 +1,18 @@
 import {
+    Box,
+    Grid,
+    Theme,
     Typography as UnstyledTypography,
     withStyles,
-    Theme,
-    Grid,
-    Box,
 } from "@material-ui/core";
 import React, { useState } from "react";
-
+import { ChordBlock } from "../common/ChordModel/ChordBlock";
+import { IDable } from "../common/ChordModel/Collection";
 import { DataTestID } from "../common/DataTestID";
 import { inflatingWhitespace, isWhitespace } from "../common/Whitespace";
 import ChordSymbol from "./ChordSymbol";
-import { IDable } from "../common/ChordModel/Collection";
 import TextInput from "./TextInput";
-import { ChordBlock } from "../common/ChordModel/ChordBlock";
+import { lyricTypographyVariant, HighlightableTokenBox } from "./Lyric";
 
 interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
@@ -46,17 +46,6 @@ const Typography = withStyles({
         whiteSpace: "pre",
     },
 })(UnstyledTypography);
-
-const HighlightableTokenBox = withStyles((theme: Theme) => ({
-    root: {
-        "&:hover .Lyric": {
-            color: theme.palette.primary.main,
-        },
-        "&:hover .Space": {
-            backgroundColor: theme.palette.primary.main,
-        },
-    },
-}))(Box);
 
 const HighlightableChordBox = withStyles((theme: Theme) => ({
     root: {
@@ -111,7 +100,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         blockHasChord: boolean
     ): React.ReactElement => {
         const typographyProps = {
-            variant: "h6" as "h6",
+            variant: lyricTypographyVariant,
             display: "inline" as "inline",
         };
 
@@ -195,7 +184,11 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     } else {
         chordRow = (
             <Box data-testid="ChordEdit">
-                <TextInput width="5em" variant="h5" onFinish={endEdit}>
+                <TextInput
+                    width="5em"
+                    variant={lyricTypographyVariant}
+                    onFinish={endEdit}
+                >
                     {props.chordBlock.chord}
                 </TextInput>
             </Box>
