@@ -10,22 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      # Checkout with history (to get git describe output properly)
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      # Run script, updates the GIT-VERSION-FILE with version number
+      - name: Update GIT-VERSION-FILE
+        run: bash git-version.sh
+      - name: Get version tag from GIT-VERSION-FILE
+        run: echo "::set-env name=gitver::$(cat GIT-VERSION-FILE)"
       - name: Login to DockerHub
         run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-      - name: Get current date
-        run: echo "::set-env name=date::$(TZ='America/Vancouver' date +%Y%h%d-%H-%M)"
-      - name: Push Tag
-        uses: anothrNick/github-tag-action@1.22.0
-        env: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CUSTOM_TAG: release-${{ env.date }}
-      - name: Build image w/date label
-        run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/chord:release-${{ env.date }}
+      - name: Build image w/version
+        run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/chord:${{ env.gitver }}
       - name: Build image latest
         run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/chord:latest
-      - name: Push image w/date label
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:release-${{ env.date }}
+      - name: Push image w/version
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:${{ env.gitver }}
       - name: Push image latest
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:latest
 
