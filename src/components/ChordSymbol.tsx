@@ -2,6 +2,7 @@ import React from "react";
 import { Typography, Theme } from "@material-ui/core";
 import { inflateIfEmpty } from "../common/Whitespace";
 import { withStyles } from "@material-ui/styles";
+import { lyricTypographyVariant } from "./Lyric";
 
 const ChordTypography = withStyles((theme: Theme) => ({
     root: {
@@ -31,7 +32,7 @@ const ChordSymbol: React.FC<ChordSymbolProps> = (
 
     return (
         <ChordTypography
-            variant="subtitle1"
+            variant={lyricTypographyVariant} // keep chords and lyrics the same size
             display="inline"
             data-testid="ChordSymbol"
         >
