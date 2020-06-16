@@ -9,9 +9,8 @@
 # Therefore, this script shouldn't even be run in dev, unless you feel like
 # dirtying the repo.
 
-GVF=./src/GIT-VERSION-FILE.js
+GVF=GIT-VERSION-FILE
 DEF_VER=v2.27.0
-GVF2=GIT-VERSION-FILE
 
 LF='
 '
@@ -46,6 +45,5 @@ else
 fi
 test "$VN" = "$VC" || {
         echo >&2 "$VN"
-        echo "const version='$VN'; export default version;" >$GVF
-        echo "$VN" > $GVF2
+        echo "$VN" > $GVF
 }

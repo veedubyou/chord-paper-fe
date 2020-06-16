@@ -15,6 +15,7 @@ import SideMenu from "./components/SideMenu";
 import { HashRouter, Switch, Route } from "react-router-dom";
 import About from "./components/about/About";
 import { TutorialSwitches } from "./components/tutorial/Tutorial";
+import Version from "./components/Version";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -72,6 +73,7 @@ function App() {
                     <SideMenu />
                     <AppLayout container justify="center">
                         <Grid item>{routeSwitches}</Grid>
+                        <Version/>
                     </AppLayout>
                 </HashRouter>
             </SnackbarProvider>

@@ -2,7 +2,6 @@ import React from "react";
 import { Paper, Typography, Theme, Grid } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import { inflatingWhitespace } from "../../common/Whitespace";
-import version from "../../GIT-VERSION-FILE.js"
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
@@ -35,8 +34,6 @@ const About: React.FC<{}> = (): JSX.Element => {
                         of your musical time on playing and listening, and less
                         on formatting.
                     </Typography>
-                    <Typography>{inflatingWhitespace()}</Typography>
-                    <Typography>Version: {version}</Typography>
                 </RootPaper>
             </Grid>
             <Grid item xs={3}></Grid>
