@@ -19,11 +19,14 @@ jobs:
             - name: Update GIT-VERSION-FILE
               run: bash git-version.sh
             
+            - name: Get version tag from GIT-VERSION-FILE
+              run: echo "::set-env name=gitver::$(cat GIT-VERSION-FILE)"
+
             - name: Install Dependencies
               run: yarn
 
             - name: Build
-              run: yarn build-github-pages
+              run: REACT_APP_VERSION=${{ env.gitver }} yarn build-github-pages
 
             - name: GitHub Pages action
               uses: peaceiris/actions-gh-pages@v3.6.1
