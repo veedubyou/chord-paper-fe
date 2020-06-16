@@ -12,7 +12,7 @@ import { DataTestID } from "../common/DataTestID";
 import { inflatingWhitespace, isWhitespace } from "../common/Whitespace";
 import ChordSymbol from "./ChordSymbol";
 import TextInput from "./TextInput";
-import { lyricTypographyVariant, HighlightableTokenBox } from "./Lyric";
+import { lyricTypographyVariant, HighlightableTokenBox } from "./LyricToken";
 
 interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
