@@ -1,21 +1,22 @@
 import React from "react";
 import { Typography, Theme } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
+import grey from "@material-ui/core/colors/grey";
 
-const AbsoluteTypography = withStyles((theme: Theme) => ({
-  root: {
-    position: "absolute",
-    right: 0,
-    color: "grey",
-    "font-size": "1.5vh",
-  },
+const PaddedTypography = withStyles((theme: Theme) => ({
+    root: {
+        position: "absolute",
+        top: 0,
+        right: 0,
+        padding: theme.spacing(1),
+        color: grey[600],
+    },
 }))(Typography);
 
 const Version: React.FC<{}> = (): JSX.Element => {
-    return (
-        <AbsoluteTypography>{ process.env.REACT_APP_VERSION ?? "dev-build" }</AbsoluteTypography>
-    );
+    const version: string = process.env.REACT_APP_VERSION ?? "dev-build";
+
+    return <PaddedTypography variant="subtitle2">{version}</PaddedTypography>;
 };
 
 export default Version;
-
