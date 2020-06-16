@@ -1,24 +1,24 @@
 {
   "files": {
     "main.css": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css",
-    "main.js": "/chord-paper-fe/static/js/main.205a2c31.chunk.js",
-    "main.js.map": "/chord-paper-fe/static/js/main.205a2c31.chunk.js.map",
+    "main.js": "/chord-paper-fe/static/js/main.ce7368d7.chunk.js",
+    "main.js.map": "/chord-paper-fe/static/js/main.ce7368d7.chunk.js.map",
     "runtime-main.js": "/chord-paper-fe/static/js/runtime-main.3f6cd68b.js",
     "runtime-main.js.map": "/chord-paper-fe/static/js/runtime-main.3f6cd68b.js.map",
-    "static/js/2.f4ab2c6e.chunk.js": "/chord-paper-fe/static/js/2.f4ab2c6e.chunk.js",
-    "static/js/2.f4ab2c6e.chunk.js.map": "/chord-paper-fe/static/js/2.f4ab2c6e.chunk.js.map",
+    "static/js/2.cd50a167.chunk.js": "/chord-paper-fe/static/js/2.cd50a167.chunk.js",
+    "static/js/2.cd50a167.chunk.js.map": "/chord-paper-fe/static/js/2.cd50a167.chunk.js.map",
     "index.html": "/chord-paper-fe/index.html",
-    "precache-manifest.7b6629ba8baf7acc3def7485a2b74feb.js": "/chord-paper-fe/precache-manifest.7b6629ba8baf7acc3def7485a2b74feb.js",
+    "precache-manifest.6bbaa835f544ee197d64d0894e3b428b.js": "/chord-paper-fe/precache-manifest.6bbaa835f544ee197d64d0894e3b428b.js",
     "service-worker.js": "/chord-paper-fe/service-worker.js",
     "static/css/main.bea93a8b.chunk.css.map": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css.map",
-    "static/js/2.f4ab2c6e.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.f4ab2c6e.chunk.js.LICENSE.txt",
+    "static/js/2.cd50a167.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.cd50a167.chunk.js.LICENSE.txt",
     "static/media/index.css": "/chord-paper-fe/static/media/PoriChord.3caa9627.woff2",
     "static/media/symphony.png": "/chord-paper-fe/static/media/symphony.4ca23f9c.png"
   },
   "entrypoints": [
     "static/js/runtime-main.3f6cd68b.js",
-    "static/js/2.f4ab2c6e.chunk.js",
+    "static/js/2.cd50a167.chunk.js",
     "static/css/main.bea93a8b.chunk.css",
-    "static/js/main.205a2c31.chunk.js"
+    "static/js/main.ce7368d7.chunk.js"
   ]
 }
