@@ -2,7 +2,7 @@ import React from "react";
 import { Typography, Theme } from "@material-ui/core";
 import { inflateIfEmpty } from "../common/Whitespace";
 import { withStyles } from "@material-ui/styles";
-import { lyricTypographyVariant } from "./Lyric";
+import { lyricTypographyVariant } from "./LyricToken";
 
 const ChordTypography = withStyles((theme: Theme) => ({
     root: {

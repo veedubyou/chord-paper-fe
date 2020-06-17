@@ -16,6 +16,7 @@ import { HashRouter, Switch, Route } from "react-router-dom";
 import About from "./components/about/About";
 import { TutorialSwitches } from "./components/tutorial/Tutorial";
 import Version from "./components/Version";
+import { ChordSong } from "./common/ChordModel/ChordSong";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -57,6 +58,9 @@ function App() {
     const routeSwitches = (
         <Switch>
             <Route key="/" exact path="/">
+                <ChordPaper initialSong={new ChordSong()} />
+            </Route>
+            <Route key="/demo" exact path="/demo">
                 <ChordPaper initialSong={NeverGonnaGiveYouUp()} />
             </Route>
             {TutorialSwitches()}
@@ -75,6 +79,7 @@ function App() {
                         <Grid item>{routeSwitches}</Grid>
                         <Version/>
                     </AppLayout>
+                    <Version />
                 </HashRouter>
             </SnackbarProvider>
         </ThemeProvider>

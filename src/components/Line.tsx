@@ -6,7 +6,7 @@ import { DataTestID } from "../common/DataTestID";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { IDable } from "../common/ChordModel/Collection";
 import ChordEditLine from "./ChordEditLine";
-import { lyricTypographyVariant } from "./Lyric";
+import { lyricTypographyVariant } from "./LyricToken";
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
