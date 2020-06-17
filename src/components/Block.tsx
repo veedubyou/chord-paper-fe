@@ -1,18 +1,16 @@
-import {
-    Box,
-    Grid,
-    Theme,
-    Typography as UnstyledTypography,
-    withStyles,
-} from "@material-ui/core";
+import { Box, Grid, Theme, withStyles } from "@material-ui/core";
 import React, { useState } from "react";
 import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { IDable } from "../common/ChordModel/Collection";
 import { DataTestID } from "../common/DataTestID";
-import { inflatingWhitespace, isWhitespace } from "../common/Whitespace";
+import { inflatingWhitespace } from "../common/Whitespace";
 import ChordSymbol from "./ChordSymbol";
 import TextInput from "./TextInput";
-import { lyricTypographyVariant, HighlightableTokenBox } from "./Lyric";
+import LyricToken, {
+    lyricTypographyVariant,
+    chordOutline,
+    ChordOutlineBox,
+} from "./LyricToken";
 
 interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
@@ -20,56 +18,20 @@ interface BlockProps extends DataTestID {
     onBlockSplit?: (id: IDable<"ChordBlock">, splitIndex: number) => void;
 }
 
-const chordOutline = (theme: Theme) => ({
-    borderStyle: "solid",
-    borderColor: theme.palette.primary.main,
-    borderRadius: "0.3em",
-    borderWidth: "0.075em",
-});
-
-const ChordInsertOutline = withStyles((theme: Theme) => ({
-    root: {
-        whiteSpace: "pre",
-        color: "transparent",
-        cursor: "pointer",
-        userSelect: "none",
-        position: "absolute",
-        left: 0,
-        top: 0,
-        transform: "translate(0%, -115%)",
-        "&:hover": chordOutline(theme),
-    },
-}))(UnstyledTypography);
-
-const Typography = withStyles({
-    root: {
-        whiteSpace: "pre",
-    },
-})(UnstyledTypography);
-
 const HighlightableChordBox = withStyles((theme: Theme) => ({
     root: {
-        "&:hover": {
+        "&:hover .MuiTypography-root": {
+            ...chordOutline(theme),
             color: theme.palette.primary.dark,
-        },
-        "&:hover .MuiTypography-root": chordOutline(theme),
-    },
-}))(Box);
-
-const HighlightableBlockBox = withStyles((theme: Theme) => ({
-    root: {
-        "&:hover .HighlightLyric": {
-            color: theme.palette.primary.main,
-        },
-        "&:hover .HighlightSpace": {
-            backgroundColor: theme.palette.primary.main,
         },
     },
 }))(Box);
 
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     const [editing, setEditing] = useState(false);
-    const [hoveringOverChord, setHoveringOverChord] = useState(false);
+    const [highlightTokenIndex, setHighlightTokenIndex] = useState<
+        number | null
+    >(null);
 
     let lyricTokens: string[] = props.chordBlock.lyricTokens;
 
@@ -77,12 +39,29 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         lyricTokens = [inflatingWhitespace()];
     }
 
+    const highlight = (index: number) => {
+        if (index === highlightTokenIndex) {
+            return;
+        }
+
+        setHighlightTokenIndex(index);
+    };
+
+    const unhighlight = (index: number) => {
+        // don't misfire and unhighlight a different token
+        if (index !== highlightTokenIndex) {
+            return;
+        }
+
+        setHighlightTokenIndex(null);
+    };
+
     const clickHandler: (
         tokenIndex: number
-    ) => (event: React.MouseEvent<HTMLDivElement>) => void = (
+    ) => (event: React.MouseEvent<HTMLSpanElement>) => void = (
         tokenIndex: number
     ) => {
-        return (event: React.MouseEvent<HTMLDivElement>) => {
+        return (event: React.MouseEvent<HTMLSpanElement>) => {
             // block splitting happens after the first token
             // as first token is already aligned with the current chord
             if (tokenIndex !== 0 && props.onBlockSplit) {
@@ -94,72 +73,55 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         };
     };
 
-    const lyricBlock = (
-        lyric: string,
-        index: number,
-        blockHasChord: boolean
-    ): React.ReactElement => {
-        const typographyProps = {
-            variant: lyricTypographyVariant,
-            display: "inline" as "inline",
-        };
+    // render a transparent target if there's no chord
+    // if there is a chord, allow the chord component to render its own outline box
+    const renderTransparentTargetForFirstToken =
+        props.chordBlock.chord === "" && !editing;
 
-        const styleFirstToken = blockHasChord && index === 0;
-
-        let lyricClass: string;
-        if (styleFirstToken && hoveringOverChord) {
-            if (isWhitespace(lyric)) {
-                lyricClass = "HighlightSpace";
-            } else {
-                lyricClass = "HighlightLyric";
-            }
-        } else {
-            if (isWhitespace(lyric)) {
-                lyricClass = "Space";
-            } else {
-                lyricClass = "Lyric";
-            }
-        }
+    const lyricBlock = (lyric: string, index: number): React.ReactElement => {
+        const highlightLyric = highlightTokenIndex === index;
 
         const lyricBlock = (
-            <Typography
-                {...typographyProps}
-                className={lyricClass}
+            <LyricToken
+                highlight={highlightLyric}
                 data-testid={`Token-${index}`}
             >
                 {lyric}
-            </Typography>
+            </LyricToken>
         );
 
-        let hiddenTarget: React.ReactElement | null = null;
+        let transparentTarget: React.ReactElement | null = null;
 
-        if (!styleFirstToken) {
-            hiddenTarget = (
-                <ChordInsertOutline
-                    {...typographyProps}
+        // first token may be skipped because it's handled by the focusable elem on the chord row
+        // hovering over that will give a better outlining because it will outline the chord that exists
+        // rather than the width of the lyrics
+        if (index > 0 || renderTransparentTargetForFirstToken) {
+            transparentTarget = (
+                <ChordOutlineBox
+                    onMouseOver={() => highlight(index)}
+                    onMouseOut={() => unhighlight(index)}
                     onClick={clickHandler(index)}
-                    data-testid="ChordEditButton"
                 >
                     {lyric}
-                </ChordInsertOutline>
+                </ChordOutlineBox>
             );
         }
 
         return (
-            <HighlightableTokenBox
+            <Box
                 key={index}
                 position="relative"
                 display="inline"
                 data-testid={`TokenBox-${index}`}
             >
                 {lyricBlock}
-                {hiddenTarget}
-            </HighlightableTokenBox>
+                {transparentTarget}
+            </Box>
         );
     };
 
     const lyricBlocks = lyricTokens.map((lyricToken: string, index: number) =>
-        lyricBlock(lyricToken, index, props.chordBlock.chord !== "")
+        lyricBlock(lyricToken, index)
     );
 
     const endEdit = (newChord: string) => {
@@ -170,45 +132,50 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         setEditing(false);
     };
 
-    let chordRow: React.ReactElement;
-    if (!editing) {
-        chordRow = (
+    const chordRow = (): JSX.Element => {
+        if (editing) {
+            return (
+                <Box data-testid="ChordEdit">
+                    <TextInput
+                        width="5em"
+                        variant={lyricTypographyVariant}
+                        onFinish={endEdit}
+                    >
+                        {props.chordBlock.chord}
+                    </TextInput>
+                </Box>
+            );
+        }
+
+        if (renderTransparentTargetForFirstToken) {
+            return <ChordSymbol>{props.chordBlock.chord}</ChordSymbol>;
+        }
+
+        return (
             <HighlightableChordBox
                 onClick={clickHandler(0)}
-                onMouseOver={() => setHoveringOverChord(true)}
-                onMouseOut={() => setHoveringOverChord(false)}
+                onMouseOver={() => highlight(0)}
+                onMouseOut={() => unhighlight(0)}
             >
                 <ChordSymbol>{props.chordBlock.chord}</ChordSymbol>
             </HighlightableChordBox>
         );
-    } else {
-        chordRow = (
-            <Box data-testid="ChordEdit">
-                <TextInput
-                    width="5em"
-                    variant={lyricTypographyVariant}
-                    onFinish={endEdit}
-                >
-                    {props.chordBlock.chord}
-                </TextInput>
-            </Box>
-        );
-    }
+    };
 
     return (
-        <HighlightableBlockBox display="inline-block">
+        <Box display="inline-block">
             <Grid
                 container
                 direction="column"
                 component="span"
                 data-testid={props["data-testid"]}
             >
-                <Grid item>{chordRow}</Grid>
+                <Grid item>{chordRow()}</Grid>
                 <Grid item data-testid="Lyric">
                     {lyricBlocks}
                 </Grid>
             </Grid>
-        </HighlightableBlockBox>
+        </Box>
     );
 };
 
