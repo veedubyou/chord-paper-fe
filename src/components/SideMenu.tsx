@@ -14,6 +14,8 @@ import { Link } from "react-router-dom";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import PetsIcon from "@material-ui/icons/Pets";
 import FreeBreakfastIcon from "@material-ui/icons/FreeBreakfast";
+import StoreIcon from "@material-ui/icons/Store";
+
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
@@ -93,12 +95,28 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
                     style={linkStyle}
                     data-testid="Menu-HomeButton"
                 >
-                    <ListItem key="Music" button>
+                    <ListItem key="Song" button>
                         <ListItemIcon>
                             <MusicNoteIcon />
                         </ListItemIcon>
                         <ListItemText
-                            primary="Music"
+                            primary="Song"
+                            primaryTypographyProps={typographyProps}
+                        />
+                    </ListItem>
+                </Link>
+                <Link
+                    key="/demo"
+                    to="/demo"
+                    style={linkStyle}
+                    data-testid="Menu-DemoButton"
+                >
+                    <ListItem key="Demo" button>
+                        <ListItemIcon>
+                            <StoreIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                            primary="Demo"
                             primaryTypographyProps={typographyProps}
                         />
                     </ListItem>
