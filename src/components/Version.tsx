@@ -1,7 +1,6 @@
 import React from "react";
 import { Typography, Theme } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
-
 import grey from "@material-ui/core/colors/grey";
 
 const PaddedTypography = withStyles((theme: Theme) => ({

@@ -77,7 +77,6 @@ function App() {
                     <SideMenu />
                     <AppLayout container justify="center">
                         <Grid item>{routeSwitches}</Grid>
-                        <Version/>
                     </AppLayout>
                     <Version />
                 </HashRouter>
