@@ -21,3 +21,11 @@ spec:
         - containerPort: 80
       imagePullSecrets:
       - name: regcred
+
+# to create `regcred`, you need a dockerhub account,
+# and then run: `kubectl create secret generic regcred \
+#                  --from-file=.dockerconfigjson=[path/to/.docker/config.json] \
+#                  --type=kubernetes.io/dockerconfigjson`
+#
+# you can then inspect it by: `kubectl get secret regcred \
+#                                --output="jsonpath={.data.\.dockerconfigjson}" | base64 –decode
