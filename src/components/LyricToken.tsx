@@ -1,66 +1,105 @@
-import { Box, Theme, withStyles, Typography } from "@material-ui/core";
+import React from "react";
+import { Theme, withStyles, Typography } from "@material-ui/core";
 import { TypographyProps } from "@material-ui/core";
 import { DataTestID } from "../common/DataTestID";
 import { isWhitespace } from "../common/Whitespace";
 
 export const lyricTypographyVariant: "h6" = "h6";
 
-const SpaceTypography = withStyles((theme: Theme) => ({
+export const chordOutline = (theme: Theme) => ({
+    borderStyle: "solid",
+    borderColor: theme.palette.primary.main,
+    borderRadius: "0.3em",
+    borderWidth: "0.075em",
+});
+
+const LyricTypography = withStyles((theme: Theme) => ({
     root: {
-        ".ChordHovered": {
-            backgroundColor: theme.palette.primary.main,
-        },
+        whiteSpace: "pre",
         wordSpacing: ".15em",
     },
 }))(Typography);
 
-const WordTypography = withStyles((theme: Theme) => ({
+const ChordOutlineTypography = withStyles((theme: Theme) => ({
     root: {
-        ".ChordHovered": {
-            color: theme.palette.primary.main,
-        },
+        color: "transparent",
+        cursor: "pointer",
+        userSelect: "none",
+        position: "absolute",
+        left: 0,
+        top: 0,
+        transform: "translate(0%, -115%)",
+        "&:hover": chordOutline(theme),
     },
-}))(Typography);
+}))(LyricTypography);
 
-export const HighlightableTokenBox = withStyles((theme: Theme) => ({
+const lyricTypographyProps = {
+    variant: lyricTypographyVariant,
+    display: "inline" as "inline",
+};
+
+const HighlightedSpaceTypography = withStyles((theme: Theme) => ({
     root: {
-        "&:hover .Space": {
-            backgroundColor: theme.palette.primary.main,
-        },
-        "&:hover .Lyric": {
-            color: theme.palette.primary.main,
-        },
-        wordSpacing: ".15em",
+        backgroundColor: theme.palette.primary.main,
     },
-}))(Box);
+}))(LyricTypography);
 
-interface LyricTokenProps
-    extends Omit<TypographyProps, "variant" | "display">,
-        DataTestID {
+const HighlightedWordTypography = withStyles((theme: Theme) => ({
+    root: {
+        color: theme.palette.primary.main,
+    },
+}))(LyricTypography);
+
+interface ChordOutlineBoxProps {
     children: string;
+    onMouseOver?: (event: React.MouseEvent<HTMLSpanElement>) => void;
+    onMouseOut?: (event: React.MouseEvent<HTMLSpanElement>) => void;
+    onClick?: (event: React.MouseEvent<HTMLSpanElement>) => void;
+}
+
+export const ChordOutlineBox: React.FC<ChordOutlineBoxProps> = (
+    props: ChordOutlineBoxProps
+): JSX.Element => {
+    return (
+        <ChordOutlineTypography
+            onClick={props.onClick}
+            onMouseOver={props.onMouseOver}
+            onMouseOut={props.onMouseOut}
+            {...lyricTypographyProps}
+            data-testid="ChordEditButton"
+        >
+            {props.children}
+        </ChordOutlineTypography>
+    );
+};
+
+interface LyricTokenProps extends DataTestID {
+    children: string;
+    highlight?: boolean;
 }
 
 const LyricToken: React.FC<LyricTokenProps> = (
     props: LyricTokenProps
 ): JSX.Element => {
-    const typographyProps = {
-        variant: lyricTypographyVariant,
-        display: "inline" as "inline",
-    };
+    let TypographyComponent: React.ComponentType<TypographyProps>;
+    if (props.highlight === true) {
+        if (isWhitespace(props.children)) {
+            TypographyComponent = HighlightedSpaceTypography;
+        } else {
+            TypographyComponent = HighlightedWordTypography;
+        }
+    } else {
+        TypographyComponent = LyricTypography;
+    }
 
-    const TypographyComponent = isWhitespace(props.children)
-        ? SpaceTypography
-        : WordTypography;
-
-    const styleFirstToken = blockHasChord && index === 0;
-
-    const lyricBlock = (
-        <Typography
-            {...typographyProps}
-            className={lyricClass}
-            data-testid={`Token-${index}`}
+    return (
+        <TypographyComponent
+            {...lyricTypographyProps}
+            data-testid={props["data-testid"]}
         >
-            {lyric}
-        </Typography>
+            {props.children}
+        </TypographyComponent>
     );
 };
+
+export default LyricToken;
