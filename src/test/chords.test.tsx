@@ -96,7 +96,8 @@ describe("Changing the chord", () => {
             "Line-0",
             "NoneditableLine",
             "Block-1",
-            "ChordSymbol"
+            "TokenBox-0",
+            "ChordEditButton"
         );
 
         expect(chordSymbol).toBeInTheDocument();
