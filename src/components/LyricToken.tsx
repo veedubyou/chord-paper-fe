@@ -3,15 +3,9 @@ import { Theme, withStyles, Typography } from "@material-ui/core";
 import { TypographyProps } from "@material-ui/core";
 import { DataTestID } from "../common/DataTestID";
 import { isWhitespace } from "../common/Whitespace";
+import { outline } from "./Outline";
 
 export const lyricTypographyVariant: "h6" = "h6";
-
-export const chordOutline = (theme: Theme) => ({
-    borderStyle: "solid",
-    borderColor: theme.palette.primary.main,
-    borderRadius: "0.3em",
-    borderWidth: "0.075em",
-});
 
 const LyricTypography = withStyles((theme: Theme) => ({
     root: {
@@ -20,7 +14,7 @@ const LyricTypography = withStyles((theme: Theme) => ({
     },
 }))(Typography);
 
-const ChordOutlineTypography = withStyles((theme: Theme) => ({
+const InvisibleTypography = withStyles({
     root: {
         color: "transparent",
         cursor: "pointer",
@@ -29,9 +23,14 @@ const ChordOutlineTypography = withStyles((theme: Theme) => ({
         left: 0,
         top: 0,
         transform: "translate(0%, -115%)",
-        "&:hover": chordOutline(theme),
     },
-}))(LyricTypography);
+})(LyricTypography);
+
+const OutlineTypography = withStyles((theme: Theme) => ({
+    root: {
+        "&:hover": outline(theme),
+    },
+}))(InvisibleTypography);
 
 const lyricTypographyProps = {
     variant: lyricTypographyVariant,
@@ -50,18 +49,29 @@ const HighlightedWordTypography = withStyles((theme: Theme) => ({
     },
 }))(LyricTypography);
 
-interface ChordOutlineBoxProps {
+interface ChordTargetBoxProps {
     children: string;
+    highlightable?: boolean;
     onMouseOver?: (event: React.MouseEvent<HTMLSpanElement>) => void;
     onMouseOut?: (event: React.MouseEvent<HTMLSpanElement>) => void;
     onClick?: (event: React.MouseEvent<HTMLSpanElement>) => void;
 }
 
-export const ChordOutlineBox: React.FC<ChordOutlineBoxProps> = (
-    props: ChordOutlineBoxProps
+export const ChordTargetBox: React.FC<ChordTargetBoxProps> = (
+    props: ChordTargetBoxProps
 ): JSX.Element => {
+    const typographyComponent = (): React.ComponentType<TypographyProps> => {
+        if (props.highlightable === true) {
+            return OutlineTypography;
+        }
+
+        return InvisibleTypography;
+    };
+
+    const TypographyComponent = typographyComponent();
+
     return (
-        <ChordOutlineTypography
+        <TypographyComponent
             onClick={props.onClick}
             onMouseOver={props.onMouseOver}
             onMouseOut={props.onMouseOut}
@@ -69,7 +79,7 @@ export const ChordOutlineBox: React.FC<ChordOutlineBoxProps> = (
             data-testid="ChordEditButton"
         >
             {props.children}
-        </ChordOutlineTypography>
+        </TypographyComponent>
     );
 };
 
@@ -81,16 +91,19 @@ interface LyricTokenProps extends DataTestID {
 const LyricToken: React.FC<LyricTokenProps> = (
     props: LyricTokenProps
 ): JSX.Element => {
-    let TypographyComponent: React.ComponentType<TypographyProps>;
-    if (props.highlight === true) {
-        if (isWhitespace(props.children)) {
-            TypographyComponent = HighlightedSpaceTypography;
-        } else {
-            TypographyComponent = HighlightedWordTypography;
+    const typographyComponent = (): React.ComponentType<TypographyProps> => {
+        if (props.highlight !== true) {
+            return LyricTypography;
         }
-    } else {
-        TypographyComponent = LyricTypography;
-    }
+
+        if (isWhitespace(props.children)) {
+            return HighlightedSpaceTypography;
+        }
+
+        return HighlightedWordTypography;
+    };
+
+    const TypographyComponent = typographyComponent();
 
     return (
         <TypographyComponent

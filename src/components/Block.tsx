@@ -1,4 +1,4 @@
-import { Box, Grid, Theme, withStyles } from "@material-ui/core";
+import { Box, Grid } from "@material-ui/core";
 import React, { useState } from "react";
 import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { IDable } from "../common/ChordModel/Collection";
@@ -8,8 +8,7 @@ import ChordSymbol from "./ChordSymbol";
 import TextInput from "./TextInput";
 import LyricToken, {
     lyricTypographyVariant,
-    chordOutline,
-    ChordOutlineBox,
+    ChordTargetBox,
 } from "./LyricToken";
 
 interface BlockProps extends DataTestID {
@@ -17,15 +16,6 @@ interface BlockProps extends DataTestID {
     onChordChange?: (id: IDable<"ChordBlock">, newChord: string) => void;
     onBlockSplit?: (id: IDable<"ChordBlock">, splitIndex: number) => void;
 }
-
-const HighlightableChordBox = withStyles((theme: Theme) => ({
-    root: {
-        "&:hover .MuiTypography-root": {
-            ...chordOutline(theme),
-            color: theme.palette.primary.dark,
-        },
-    },
-}))(Box);
 
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     const [editing, setEditing] = useState(false);
@@ -73,9 +63,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         };
     };
 
-    // render a transparent target if there's no chord
-    // if there is a chord, allow the chord component to render its own outline box
-    const renderTransparentTargetForFirstToken =
+    const renderOutlinedTargetForFirstToken: boolean =
         props.chordBlock.chord === "" && !editing;
 
     const lyricBlock = (lyric: string, index: number): React.ReactElement => {
@@ -90,22 +78,23 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             </LyricToken>
         );
 
-        let transparentTarget: React.ReactElement | null = null;
+        // every above lyric target above after the first should get its own highlightable outline chord target box
+        // the first one will depend if it has a chord above it.
+        // if it does not, then treat it the same as all other tokens
+        // if it does, then don't let it be highlightable, defer it to the chord row for highlighting
+        const targetHighlightable =
+            index > 0 || renderOutlinedTargetForFirstToken;
 
-        // first token may be skipped because it's handled by the focusable elem on the chord row
-        // hovering over that will give a better outlining because it will outline the chord that exists
-        // rather than the width of the lyrics
-        if (index > 0 || renderTransparentTargetForFirstToken) {
-            transparentTarget = (
-                <ChordOutlineBox
-                    onMouseOver={() => highlight(index)}
-                    onMouseOut={() => unhighlight(index)}
-                    onClick={clickHandler(index)}
-                >
-                    {lyric}
-                </ChordOutlineBox>
-            );
-        }
+        const invisibleTarget = (
+            <ChordTargetBox
+                highlightable={targetHighlightable}
+                onMouseOver={() => highlight(index)}
+                onMouseOut={() => unhighlight(index)}
+                onClick={clickHandler(index)}
+            >
+                {lyric}
+            </ChordTargetBox>
+        );
 
         return (
             <Box
@@ -115,7 +104,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                 data-testid={`TokenBox-${index}`}
             >
                 {lyricBlock}
-                {transparentTarget}
+                {invisibleTarget}
             </Box>
         );
     };
@@ -147,18 +136,14 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             );
         }
 
-        if (renderTransparentTargetForFirstToken) {
+        if (renderOutlinedTargetForFirstToken) {
             return <ChordSymbol>{props.chordBlock.chord}</ChordSymbol>;
         }
 
         return (
-            <HighlightableChordBox
-                onClick={clickHandler(0)}
-                onMouseOver={() => highlight(0)}
-                onMouseOut={() => unhighlight(0)}
-            >
-                <ChordSymbol>{props.chordBlock.chord}</ChordSymbol>
-            </HighlightableChordBox>
+            <ChordSymbol highlight={highlightTokenIndex === 0}>
+                {props.chordBlock.chord}
+            </ChordSymbol>
         );
     };
 
