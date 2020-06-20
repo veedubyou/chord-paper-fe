@@ -5,6 +5,8 @@ import { IDable } from "../common/ChordModel/Collection";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import NewLine from "./NewLine";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const Paper = withStyles({
     root: {
@@ -109,15 +111,17 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     };
 
     return (
-        <Paper elevation={0}>
-            <Grid container>
-                <Grid item xs={1}></Grid>
-                <Grid item xs={10}>
-                    {lines()}
+        <DndProvider backend={HTML5Backend}>
+            <Paper elevation={0}>
+                <Grid container>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={10}>
+                        {lines()}
+                    </Grid>
+                    <Grid item xs={1}></Grid>
                 </Grid>
-                <Grid item xs={1}></Grid>
-            </Grid>
-        </Paper>
+            </Paper>
+        </DndProvider>
     );
 };
 
