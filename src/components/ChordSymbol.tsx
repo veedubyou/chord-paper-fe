@@ -19,7 +19,7 @@ const ChordTypography = withStyles((theme: Theme) => ({
     },
 }))(Typography);
 
-interface ChordSymbolProps {
+export interface ChordSymbolProps {
     children: string;
     className?: string;
 }
@@ -27,15 +27,6 @@ interface ChordSymbolProps {
 const ChordSymbol: React.FC<ChordSymbolProps> = (
     props: ChordSymbolProps
 ): JSX.Element => {
-    const [{ dropped }, dragRef] = useDrag({
-        item: NewDNDChord(props.children),
-        collect: (monitor: DragSourceMonitor) => ({
-            dropped: monitor.didDrop(),
-        }),
-    });
-
-    console.log("ChordSymbol dropped", dropped);
-
     const formattedChord = (): string => {
         let chord = props.children;
         if (chord.endsWith(" ")) {
@@ -48,16 +39,14 @@ const ChordSymbol: React.FC<ChordSymbolProps> = (
     };
 
     return (
-        <RootRef rootRef={dragRef}>
-            <ChordTypography
-                variant={lyricTypographyVariant} // keep chords and lyrics the same size
-                display="inline"
-                data-testid="ChordSymbol"
-                className={props.className}
-            >
-                {formattedChord()}
-            </ChordTypography>
-        </RootRef>
+        <ChordTypography
+            variant={lyricTypographyVariant} // keep chords and lyrics the same size
+            display="inline"
+            data-testid="ChordSymbol"
+            className={props.className}
+        >
+            {formattedChord()}
+        </ChordTypography>
     );
 };
 

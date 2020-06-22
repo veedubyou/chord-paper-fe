@@ -2,42 +2,41 @@ import { Box, RootRef, Theme } from "@material-ui/core";
 import React, { useState } from "react";
 import LyricToken, { ChordTargetBox, ChordTargetBoxProps } from "./LyricToken";
 import { useDrop, DropTargetMonitor } from "react-dnd";
-import { DNDChordType } from "./DNDChord";
+import { DNDChordType, DNDChord } from "./DNDChord";
 import { withStyles } from "@material-ui/styles";
 import {
     withChordLyricStyle,
     chordSymbolClassName,
     chordTargetClassName,
     firstTokenClassName,
+    withHighlightedChordLyricStyle,
 } from "./HighlightChordLyricStyle";
 import clsx from "clsx";
 
 interface TokenProps {
     children: string;
     index: number;
+    onDropped?: (newChord: string) => void;
     invisibleTarget?: { onClick: ChordTargetBoxProps["onClick"] };
 }
 
 const Token: React.FC<TokenProps> = (props: TokenProps): JSX.Element => {
-    const [draggedOver, setDraggedOver] = useState(false);
-
-    const [{ isOver, canDrop, item }, dropRef] = useDrop({
+    const [{ isOver }, dropRef] = useDrop<DNDChord, DNDChord, any>({
         accept: DNDChordType,
-        drop: () => console.log("dropped"),
+        drop: (droppedItem: DNDChord) => {
+            if (!droppedItem.handled && props.onDropped) {
+                props.onDropped(droppedItem.chord);
+            }
+            return droppedItem;
+        },
         collect: (monitor: DropTargetMonitor) => ({
             isOver: monitor.isOver(),
-            canDrop: monitor.canDrop(),
-            item: monitor.getItem(),
         }),
     });
 
     const invisibleTarget = (): JSX.Element | null => {
         if (props.invisibleTarget === undefined) {
             return null;
-        }
-
-        if (draggedOver) {
-            return <ChordTargetBox>{props.children}</ChordTargetBox>;
         }
 
         return (
@@ -50,8 +49,6 @@ const Token: React.FC<TokenProps> = (props: TokenProps): JSX.Element => {
         );
     };
 
-    console.log(item !== null ? item.chord : null);
-
     //TODO
     const className: string | undefined =
         props.index === 0 ? firstTokenClassName : undefined;
@@ -62,7 +59,9 @@ const Token: React.FC<TokenProps> = (props: TokenProps): JSX.Element => {
         </LyricToken>
     );
 
-    const NewBox = withChordLyricStyle()(Box);
+    const NewBox = isOver
+        ? withHighlightedChordLyricStyle()(Box)
+        : withChordLyricStyle()(Box);
 
     //TODO
     return (
@@ -71,8 +70,6 @@ const Token: React.FC<TokenProps> = (props: TokenProps): JSX.Element => {
                 key={props.index}
                 position="relative"
                 display="inline"
-                onDragEnter={() => setDraggedOver(true)}
-                onDragExit={() => setDraggedOver(false)}
                 data-testid={`TokenBox-${props.index}`}
             >
                 {invisibleTarget()}

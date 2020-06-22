@@ -22,6 +22,8 @@ interface ChordPaperBodyProps {
 const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     props: ChordPaperBodyProps
 ): React.ReactElement => {
+    console.log("RERENDER");
+
     const addLineToTop = () => {
         const newLine: ChordLine = new ChordLine();
         props.song.addBeginning(newLine);

@@ -60,7 +60,42 @@ interface HighlightChordLyricStyleOptions {
     customChordSymbolClassSelector?: string;
 }
 
-export const chordLyricStyle = (options?: HighlightChordLyricStyleOptions) => {
+const withCustomLyricSelector = (
+    selector: string,
+    options?: HighlightChordLyricStyleOptions
+): string => {
+    if (options?.customLyricClassSelector === undefined) {
+        return selector;
+    }
+
+    return `${selector}.${options.customLyricClassSelector}`;
+};
+
+const withCustomChordTargetSelector = (
+    selector: string,
+    options?: HighlightChordLyricStyleOptions
+): string => {
+    if (options?.customChordTargetClassSelector === undefined) {
+        return selector;
+    }
+
+    return `${selector}.${options.customChordTargetClassSelector}`;
+};
+
+const withCustomChordSymbolSelector = (
+    selector: string,
+    options?: HighlightChordLyricStyleOptions
+): string => {
+    if (options?.customChordSymbolClassSelector === undefined) {
+        return selector;
+    }
+
+    return `${selector}.${options.customChordSymbolClassSelector}`;
+};
+
+export const highlightedChordLyricStyle = (
+    options?: HighlightChordLyricStyleOptions
+) => {
     return (theme: Theme) => {
         const highlightedSpace = highlightedSpaceStyle(theme);
         const highlightedWord = highlightedWordStyle(theme);
@@ -73,39 +108,63 @@ export const chordLyricStyle = (options?: HighlightChordLyricStyleOptions) => {
             ...customOutlineStyles,
         };
 
-        const withCustomLyricSelector = (selector: string): string => {
-            if (options?.customLyricClassSelector === undefined) {
-                return selector;
-            }
+        const spaceClassSelector = withCustomLyricSelector(
+            `.${spaceClassName}`,
+            options
+        );
+        const wordClassSelector = withCustomLyricSelector(
+            `.${wordClassName}`,
+            options
+        );
+        const chordTargetSelector = withCustomChordTargetSelector(
+            `.${chordTargetClassName}`,
+            options
+        );
+        const chordSymbolSelector = withCustomChordSymbolSelector(
+            `.${chordSymbolClassName}`,
+            options
+        );
 
-            return `${selector}.${options.customLyricClassSelector}`;
+        return {
+            root: {
+                [`& ${spaceClassSelector}`]: highlightedSpace,
+                [`& ${wordClassSelector}`]: highlightedWord,
+                [`& ${chordSymbolSelector}`]: outline,
+            },
         };
+    };
+};
 
-        const withCustomChordTargetSelector = (selector: string): string => {
-            if (options?.customChordTargetClassSelector === undefined) {
-                return selector;
-            }
+export const highlightableChordLyricStyle = (
+    options?: HighlightChordLyricStyleOptions
+) => {
+    return (theme: Theme) => {
+        const highlightedSpace = highlightedSpaceStyle(theme);
+        const highlightedWord = highlightedWordStyle(theme);
 
-            return `${selector}.${options.customChordTargetClassSelector}`;
-        };
+        const customOutlineStyles: CSSProperties | undefined =
+            options?.outline !== undefined ? options.outline(theme) : undefined;
 
-        const withCustomChordSymbolSelector = (selector: string): string => {
-            if (options?.customChordSymbolClassSelector === undefined) {
-                return selector;
-            }
-
-            return `${selector}.${options.customChordSymbolClassSelector}`;
+        const outline = {
+            ...outlineStyle(theme),
+            ...customOutlineStyles,
         };
 
         const spaceClassSelector = withCustomLyricSelector(
-            `.${spaceClassName}`
+            `.${spaceClassName}`,
+            options
         );
-        const wordClassSelector = withCustomLyricSelector(`.${wordClassName}`);
+        const wordClassSelector = withCustomLyricSelector(
+            `.${wordClassName}`,
+            options
+        );
         const chordTargetSelector = withCustomChordTargetSelector(
-            `.${chordTargetClassName}`
+            `.${chordTargetClassName}`,
+            options
         );
         const chordSymbolSelector = withCustomChordSymbolSelector(
-            `.${chordSymbolClassName}`
+            `.${chordSymbolClassName}`,
+            options
         );
 
         return {
@@ -125,4 +184,8 @@ export const chordLyricStyle = (options?: HighlightChordLyricStyleOptions) => {
 
 export const withChordLyricStyle = (
     options?: HighlightChordLyricStyleOptions
-) => withStyles(chordLyricStyle(options));
+) => withStyles(highlightableChordLyricStyle(options));
+
+export const withHighlightedChordLyricStyle = (
+    options?: HighlightChordLyricStyleOptions
+) => withStyles(highlightedChordLyricStyle(options));

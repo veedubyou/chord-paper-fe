@@ -15,6 +15,7 @@ import {
     chordTargetClassName,
 } from "./HighlightChordLyricStyle";
 import clsx from "clsx";
+import DraggableChordSymbol from "./DraggableChordSymbol";
 const chordSymbolClassName = "ChordSymbol";
 
 interface BlockProps extends DataTestID {
@@ -52,6 +53,32 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     const invisibleTargetForFirstToken: boolean =
         props.chordBlock.chord === "" && !editing;
 
+    const dropHandler = (index: number) => {
+        return (newChord: string) => {
+            if (index !== 0 && props.onBlockSplit) {
+                props.onBlockSplit(props.chordBlock, index);
+            }
+            if (props.onChordChange) {
+                props.onChordChange(props.chordBlock, newChord);
+            }
+        };
+    };
+
+    const endEdit = (newChord: string) => {
+        if (props.onChordChange) {
+            props.onChordChange(props.chordBlock, newChord);
+        }
+
+        setEditing(false);
+    };
+
+    const handleDragged = () => {
+        console.log("Dragged", props.chordBlock);
+        if (props.onChordChange) {
+            props.onChordChange(props.chordBlock, "");
+        }
+    };
+
     const lyricBlock = (lyric: string, index: number): React.ReactElement => {
         // every above lyric target above after the first should get its own highlightable outline chord target box
         // the first one will depend if it has a chord above it.
@@ -70,6 +97,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                 key={index}
                 index={index}
                 invisibleTarget={invisibleTargetOption}
+                onDropped={dropHandler(index)}
             >
                 {lyric}
             </Token>
@@ -79,14 +107,6 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     const lyricBlocks = lyricTokens.map((lyricToken: string, index: number) =>
         lyricBlock(lyricToken, index)
     );
-
-    const endEdit = (newChord: string) => {
-        if (props.onChordChange) {
-            props.onChordChange(props.chordBlock, newChord);
-        }
-
-        setEditing(false);
-    };
 
     const blockChordSymbolClassName = "BlockChordSymbol";
     const blockChordTargetClassName = "BlockChordTarget";
@@ -107,14 +127,16 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         }
 
         return (
-            <ChordSymbol
+            <DraggableChordSymbol
+                chordBlockID={props.chordBlock}
+                onDragged={handleDragged}
                 className={clsx(
                     chordSymbolClassName,
                     blockChordSymbolClassName
                 )}
             >
                 {props.chordBlock.chord}
-            </ChordSymbol>
+            </DraggableChordSymbol>
         );
     };
 

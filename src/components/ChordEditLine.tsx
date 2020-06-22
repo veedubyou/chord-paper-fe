@@ -80,6 +80,8 @@ const ChordEditLine: React.FC<ChordEditLineProps> = (
     };
 
     const chordChangeHandler = (id: IDable<"ChordBlock">, newChord: string) => {
+        console.log("Change handler", props.chordLine);
+
         props.chordLine.setChord(id, newChord);
 
         if (props.onChangeLine) {
