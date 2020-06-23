@@ -38,26 +38,8 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
         notifySongChanged();
     };
 
-    const leftHeader = (
-        <Grid item container xs={3} direction="column">
-            <Grid item>
-                <Typography display="inline" variant="caption">
-                    As heard from:{" "}
-                </Typography>
-                <EditableTypography
-                    variant="caption"
-                    placeholder="https://www.youtube.com/watch?v=dM9zwZCOmjM"
-                    onValueChange={updateHeardFrom}
-                    data-testid="AsHeardAt"
-                >
-                    {props.song.asHeardFrom}
-                </EditableTypography>
-            </Grid>
-        </Grid>
-    );
-
-    const midHeader = (
-        <Grid item xs={6}>
+    const title = (
+        <Box paddingBottom={theme.spacing(0.5)}>
             <EditableTypography
                 variant="h4"
                 align="center"
@@ -67,38 +49,58 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
             >
                 {props.song.title}
             </EditableTypography>
-        </Grid>
+        </Box>
     );
 
-    const rightHeader = (
-        <Grid item container xs={3} direction="column">
-            <Grid item>
-                <Typography display="inline" variant="subtitle2">
-                    Composed by:{" "}
-                </Typography>
+    const details = (
+        <Grid container justify="center">
+            <Grid container item xs={4} justify="center">
+                <Grid item>
+                    <Typography display="block" variant="caption">
+                        Composed by:{" "}
+                    </Typography>
 
-                <EditableTypography
-                    variant="subtitle2"
-                    placeholder="Stock Waterman"
-                    onValueChange={updateComposeHandler}
-                    data-testid="ComposedBy"
-                >
-                    {props.song.composedBy}
-                </EditableTypography>
+                    <EditableTypography
+                        display="block"
+                        variant="caption"
+                        placeholder="Stock Waterman"
+                        onValueChange={updateComposeHandler}
+                        data-testid="ComposedBy"
+                    >
+                        {props.song.composedBy}
+                    </EditableTypography>
+                </Grid>
             </Grid>
-            <Grid item>
-                <Typography display="inline" variant="subtitle2">
-                    Performed by:{" "}
-                </Typography>
+            <Grid container item xs={4} justify="center">
+                <Grid item>
+                    <Typography display="inline" variant="caption">
+                        Performed by:{" "}
+                    </Typography>
 
-                <EditableTypography
-                    variant="subtitle2"
-                    placeholder="Rick Astley"
-                    onValueChange={updatePerformerHandler}
-                    data-testid="PerformedBy"
-                >
-                    {props.song.performedBy}
-                </EditableTypography>
+                    <EditableTypography
+                        variant="caption"
+                        placeholder="Rick Astley"
+                        onValueChange={updatePerformerHandler}
+                        data-testid="PerformedBy"
+                    >
+                        {props.song.performedBy}
+                    </EditableTypography>
+                </Grid>
+            </Grid>
+            <Grid container item xs={4} justify="center">
+                <Grid item>
+                    <Typography display="inline" variant="caption">
+                        As heard from:{" "}
+                    </Typography>
+                    <EditableTypography
+                        variant="caption"
+                        placeholder="https://www.youtube.com/watch?v=dM9zwZCOmjM"
+                        onValueChange={updateHeardFrom}
+                        data-testid="AsHeardAt"
+                    >
+                        {props.song.asHeardFrom}
+                    </EditableTypography>
+                </Grid>
             </Grid>
         </Grid>
     );
@@ -110,11 +112,8 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
             paddingRight={theme.spacing(0.5)}
             data-testid="Header"
         >
-            <Grid container>
-                {leftHeader}
-                {midHeader}
-                {rightHeader}
-            </Grid>
+            {title}
+            {details}
         </Box>
     );
 };
