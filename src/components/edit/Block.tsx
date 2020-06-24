@@ -143,17 +143,12 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
               }
             : undefined;
 
-        const hoverableClassName =
-            index > 0 ? normalTokenStyle.hoverable.root : undefined;
-        const dragOverClassName =
-            index > 0 ? normalTokenStyle.dragOver.root : undefined;
-
         return (
             <ChordDroppable
                 key={index}
                 onDropped={dropHandler(index)}
-                hoverableClassName={hoverableClassName}
-                dragOverClassName={dragOverClassName}
+                hoverableClassName={normalTokenStyle.hoverable.root}
+                dragOverClassName={normalTokenStyle.dragOver.root}
             >
                 <Token index={index} invisibleTarget={invisibleTargetOption}>
                     {lyric}
