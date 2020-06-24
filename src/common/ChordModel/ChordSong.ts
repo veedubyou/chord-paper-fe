@@ -7,6 +7,7 @@ import {
     ChordLine,
 } from "./ChordLine";
 import lodash from "lodash";
+import { ChordBlock } from "./ChordBlock";
 
 const SongMetadataValidator = iots.type({
     title: iots.string,
@@ -180,5 +181,18 @@ export class ChordSong extends Collection<ChordLine, "ChordLine"> {
         };
 
         return this.chordLines.reduce(reducer, true);
+    }
+
+    findLineAndBlock(blockID: IDable<"ChordBlock">): [ChordLine, ChordBlock] {
+        for (const line of this.chordLines) {
+            const block: ChordBlock | undefined = line.chordBlocks.find(
+                (block: ChordBlock) => block.id === blockID.id
+            );
+            if (block !== undefined) {
+                return [line, block];
+            }
+        }
+
+        throw new Error("BlockID can't be found in the entire song");
     }
 }

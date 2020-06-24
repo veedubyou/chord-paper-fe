@@ -7,6 +7,7 @@ import { ChordLine } from "../common/ChordModel/ChordLine";
 import { IDable } from "../common/ChordModel/Collection";
 import ChordEditLine from "./ChordEditLine";
 import { lyricTypographyVariant } from "./LyricToken";
+import { BlockProps } from "./Block";
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
@@ -18,6 +19,7 @@ interface LineProps extends DataTestID {
         overflowPasteContent: string[]
     ) => void;
     onMergeWithPreviousLine?: (id: IDable<"ChordLine">) => boolean;
+    onChordDragAndDrop?: BlockProps["onChordDragAndDrop"];
 }
 
 const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
@@ -85,6 +87,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
             <ChordEditLine
                 chordLine={props.chordLine}
                 onChangeLine={props.onChangeLine}
+                onChordDragAndDrop={props.onChordDragAndDrop}
                 onAdd={addHandler}
                 onRemove={removeHandler}
                 onEdit={startEdit}

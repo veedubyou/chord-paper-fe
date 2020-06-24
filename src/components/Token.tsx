@@ -12,22 +12,29 @@ import {
     withHighlightedChordLyricStyle,
 } from "./HighlightChordLyricStyle";
 import clsx from "clsx";
+import { IDable } from "../common/ChordModel/Collection";
 
 interface TokenProps {
     children: string;
     index: number;
-    onDropped?: (newChord: string) => void;
+    onDropped?: (newChord: string, sourceBlockID: IDable<"ChordBlock">) => void;
     invisibleTarget?: { onClick: ChordTargetBoxProps["onClick"] };
 }
 
+const HighlightedBox = withHighlightedChordLyricStyle()(Box);
+const HoverHighlightBox = withChordLyricStyle()(Box);
+
 const Token: React.FC<TokenProps> = (props: TokenProps): JSX.Element => {
+    // console.log("token render");
     const [{ isOver }, dropRef] = useDrop<DNDChord, DNDChord, any>({
         accept: DNDChordType,
-        drop: (droppedItem: DNDChord) => {
-            if (!droppedItem.handled && props.onDropped) {
-                props.onDropped(droppedItem.chord);
+        drop: (droppedChord: DNDChord) => {
+            console.log("dropped");
+            if (!droppedChord.handled && props.onDropped) {
+                droppedChord.handled = true;
+                props.onDropped(droppedChord.chord, droppedChord.sourceBlockID);
             }
-            return droppedItem;
+            return droppedChord;
         },
         collect: (monitor: DropTargetMonitor) => ({
             isOver: monitor.isOver(),
@@ -59,14 +66,12 @@ const Token: React.FC<TokenProps> = (props: TokenProps): JSX.Element => {
         </LyricToken>
     );
 
-    const NewBox = isOver
-        ? withHighlightedChordLyricStyle()(Box)
-        : withChordLyricStyle()(Box);
+    const StyledBox = isOver ? HighlightedBox : HoverHighlightBox;
 
     //TODO
     return (
         <RootRef rootRef={dropRef}>
-            <NewBox
+            <StyledBox
                 key={props.index}
                 position="relative"
                 display="inline"
@@ -74,7 +79,7 @@ const Token: React.FC<TokenProps> = (props: TokenProps): JSX.Element => {
             >
                 {invisibleTarget()}
                 {lyricBlock}
-            </NewBox>
+            </StyledBox>
         </RootRef>
     );
 };

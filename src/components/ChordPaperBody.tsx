@@ -5,8 +5,7 @@ import { IDable } from "../common/ChordModel/Collection";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import NewLine from "./NewLine";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import withDndContext from "with-dnd-context";
 
 const Paper = withStyles({
     root: {
@@ -73,6 +72,31 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         }
     };
 
+    const chordDragAndDropHandler = (
+        destinationBlockID: IDable<"ChordBlock">,
+        splitIndex: number,
+        newChord: string,
+        sourceBlockID: IDable<"ChordBlock">
+    ) => {
+        const [sourceLine, sourceBlock] = props.song.findLineAndBlock(
+            sourceBlockID
+        );
+        sourceBlock.chord = "";
+        sourceLine.normalizeBlocks();
+
+        const [destinationLine, destinationBlock] = props.song.findLineAndBlock(
+            destinationBlockID
+        );
+        if (splitIndex !== 0) {
+            destinationLine.splitBlock(destinationBlockID, splitIndex);
+        }
+
+        destinationBlock.chord = newChord;
+        destinationLine.normalizeBlocks();
+
+        notifySongChanged();
+    };
+
     const lines = () => {
         const lines = props.song.chordLines.flatMap(
             (line: ChordLine, index: number) => {
@@ -89,6 +113,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
                         onChangeLine={changeLine}
                         onPasteOverflow={pasteOverflowFromLine}
                         onMergeWithPreviousLine={mergeWithPreviousLine}
+                        onChordDragAndDrop={chordDragAndDropHandler}
                         data-testid={`Line-${index}`}
                     />,
                     <NewLine
@@ -113,17 +138,15 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     };
 
     return (
-        <DndProvider backend={HTML5Backend}>
-            <Paper elevation={0}>
-                <Grid container>
-                    <Grid item xs={1}></Grid>
-                    <Grid item xs={10}>
-                        {lines()}
-                    </Grid>
-                    <Grid item xs={1}></Grid>
+        <Paper elevation={0}>
+            <Grid container>
+                <Grid item xs={1}></Grid>
+                <Grid item xs={10}>
+                    {lines()}
                 </Grid>
-            </Paper>
-        </DndProvider>
+                <Grid item xs={1}></Grid>
+            </Grid>
+        </Paper>
     );
 };
 

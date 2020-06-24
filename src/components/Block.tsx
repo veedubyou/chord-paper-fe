@@ -1,25 +1,41 @@
 import { Box, Grid, Theme } from "@material-ui/core";
+import clsx from "clsx";
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { IDable } from "../common/ChordModel/Collection";
 import { DataTestID } from "../common/DataTestID";
 import { inflatingWhitespace } from "../common/Whitespace";
-import ChordSymbol from "./ChordSymbol";
+import DraggableChordSymbol from "./DraggableChordSymbol";
+import {
+    chordTargetClassName,
+    firstTokenClassName,
+    withChordLyricStyle,
+} from "./HighlightChordLyricStyle";
 import { lyricTypographyVariant } from "./LyricToken";
 import TextInput from "./TextInput";
 import Token from "./Token";
-import { withStyles } from "@material-ui/styles";
-import {
-    withChordLyricStyle,
-    firstTokenClassName,
-    chordTargetClassName,
-} from "./HighlightChordLyricStyle";
-import clsx from "clsx";
-import DraggableChordSymbol from "./DraggableChordSymbol";
 const chordSymbolClassName = "ChordSymbol";
 
-interface BlockProps extends DataTestID {
+const blockChordSymbolClassName = "BlockChordSymbol";
+const blockChordTargetClassName = "BlockChordTarget";
+const HighlightableGrid = withChordLyricStyle({
+    outline: (theme: Theme) => ({
+        color: theme.palette.primary.dark,
+    }),
+    customLyricClassSelector: firstTokenClassName,
+    customChordSymbolClassSelector: blockChordSymbolClassName,
+    customChordTargetClassSelector: blockChordTargetClassName,
+})(Grid);
+
+export interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
+    onChordDragAndDrop?: (
+        destinationBlockID: IDable<"ChordBlock">,
+        splitIndex: number,
+        newChord: string,
+        sourceBlockID: IDable<"ChordBlock">
+    ) => void;
     onChordChange?: (id: IDable<"ChordBlock">, newChord: string) => void;
     onBlockSplit?: (id: IDable<"ChordBlock">, splitIndex: number) => void;
 }
@@ -53,13 +69,15 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     const invisibleTargetForFirstToken: boolean =
         props.chordBlock.chord === "" && !editing;
 
-    const dropHandler = (index: number) => {
-        return (newChord: string) => {
-            if (index !== 0 && props.onBlockSplit) {
-                props.onBlockSplit(props.chordBlock, index);
-            }
-            if (props.onChordChange) {
-                props.onChordChange(props.chordBlock, newChord);
+    const dropHandler = (tokenIndex: number) => {
+        return (newChord: string, sourceBlockID: IDable<"ChordBlock">) => {
+            if (props.onChordDragAndDrop) {
+                props.onChordDragAndDrop(
+                    props.chordBlock,
+                    tokenIndex,
+                    newChord,
+                    sourceBlockID
+                );
             }
         };
     };
@@ -108,9 +126,6 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         lyricBlock(lyricToken, index)
     );
 
-    const blockChordSymbolClassName = "BlockChordSymbol";
-    const blockChordTargetClassName = "BlockChordTarget";
-
     const chordRow = (): JSX.Element => {
         if (editing) {
             return (
@@ -140,18 +155,9 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         );
     };
 
-    const NewGrid = withChordLyricStyle({
-        outline: (theme: Theme) => ({
-            color: theme.palette.primary.dark,
-        }),
-        customLyricClassSelector: firstTokenClassName,
-        customChordSymbolClassSelector: blockChordSymbolClassName,
-        customChordTargetClassSelector: blockChordTargetClassName,
-    })(Grid);
-
     return (
         <Box display="inline-block">
-            <NewGrid
+            <HighlightableGrid
                 container
                 direction="column"
                 data-testid={props["data-testid"]}
@@ -169,7 +175,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                 <Grid item data-testid="Lyric">
                     {lyricBlocks}
                 </Grid>
-            </NewGrid>
+            </HighlightableGrid>
         </Box>
     );
 };

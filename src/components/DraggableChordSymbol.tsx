@@ -13,32 +13,13 @@ interface DraggableChordSymbolProps extends ChordSymbolProps {
 const DraggableChordSymbol: React.FC<DraggableChordSymbolProps> = (
     props: DraggableChordSymbolProps
 ): JSX.Element => {
-    const [{ dropped, dndChord }, dragRef] = useDrag({
+    const [, dragRef] = useDrag({
         item: NewDNDChord(props.chordBlockID, props.children),
         collect: (monitor: DragSourceMonitor) => ({
             dropped: monitor.didDrop(),
             dndChord: monitor.getItem() as DNDChord | null,
         }),
     });
-
-    const shouldHandleChordDrop = (dndChord: DNDChord | null): boolean => {
-        if (dndChord === null) {
-            return false;
-        }
-
-        return (
-            dndChord.sourceBlockID === props.chordBlockID && !dndChord.handled
-        );
-    };
-
-    if (dropped && shouldHandleChordDrop(dndChord)) {
-        dndChord!.handled = true;
-
-        console.log("DROPPED FOR", props.chordBlockID, props.children);
-        if (props.onDragged) {
-            props.onDragged();
-        }
-    }
 
     return (
         <RootRef rootRef={dragRef}>

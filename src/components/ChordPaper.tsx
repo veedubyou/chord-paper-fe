@@ -4,6 +4,8 @@ import ChordPaperBody from "./ChordPaperBody";
 import Header from "./Header";
 import ChordPaperMenu from "./ChordPaperMenu";
 import { ChordSong } from "../common/ChordModel/ChordSong";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
