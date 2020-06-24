@@ -44,14 +44,14 @@ const allExercises: ExerciseEntry[] = [
         component: RemoveChord,
     },
     {
-        title: "Drag and Drop Chords",
-        route: "/learn/drag_and_drop_chord",
-        component: DragAndDropChord,
-    },
-    {
         title: "Add a Chord",
         route: "/learn/add_chord",
         component: AddChord,
+    },
+    {
+        title: "Drag and Drop Chords",
+        route: "/learn/drag_and_drop_chord",
+        component: DragAndDropChord,
     },
     {
         title: "Edit Lyrics",
