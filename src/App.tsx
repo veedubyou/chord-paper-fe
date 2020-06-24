@@ -6,7 +6,7 @@ import {
     PaletteColorOptions,
     Grid,
 } from "@material-ui/core";
-import ChordPaper from "./components/ChordPaper";
+import ChordPaper from "./components/edit/ChordPaper";
 import { SnackbarProvider } from "notistack";
 import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
 import { withStyles } from "@material-ui/styles";
@@ -14,7 +14,7 @@ import WoodBackground from "./assets/img/symphony.png";
 import SideMenu from "./components/SideMenu";
 import { HashRouter, Switch, Route } from "react-router-dom";
 import About from "./components/about/About";
-import { TutorialSwitches } from "./components/tutorial/Tutorial";
+import { TutorialSwitches } from "./components/Tutorial";
 import Version from "./components/Version";
 import { ChordSong } from "./common/ChordModel/ChordSong";
 

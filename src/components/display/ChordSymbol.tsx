@@ -1,15 +1,8 @@
-import React from "react";
-import {
-    Typography,
-    Theme,
-    StyledComponentProps,
-    RootRef,
-} from "@material-ui/core";
-import { inflateIfEmpty } from "../common/Whitespace";
+import { Theme, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
-import { lyricTypographyVariant, ChordTargetBox } from "./LyricToken";
-import { useDrag, DragSourceMonitor } from "react-dnd";
-import { NewDNDChord } from "./DNDChord";
+import React from "react";
+import { inflateIfEmpty } from "../../common/Whitespace";
+import { lyricTypographyVariant } from "./Lyric";
 
 const ChordTypography = withStyles((theme: Theme) => ({
     root: {

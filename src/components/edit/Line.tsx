@@ -2,11 +2,11 @@ import { Box, Slide } from "@material-ui/core";
 import React, { useState } from "react";
 import TextInput from "./TextInput";
 
-import { DataTestID } from "../common/DataTestID";
-import { ChordLine } from "../common/ChordModel/ChordLine";
-import { IDable } from "../common/ChordModel/Collection";
+import { DataTestID } from "../../common/DataTestID";
+import { ChordLine } from "../../common/ChordModel/ChordLine";
+import { IDable } from "../../common/ChordModel/Collection";
 import ChordEditLine from "./ChordEditLine";
-import { lyricTypographyVariant } from "./LyricToken";
+import { lyricTypographyVariant } from "../display/Lyric";
 import { BlockProps } from "./Block";
 
 interface LineProps extends DataTestID {

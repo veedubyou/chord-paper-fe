@@ -8,7 +8,7 @@ import {
 } from "@material-ui/core";
 import { useTheme, withStyles } from "@material-ui/styles";
 import UnstyledAddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import { DataTestID } from "../common/DataTestID";
+import { DataTestID } from "../../common/DataTestID";
 
 const HighlightableGrid = withStyles({
     root: {

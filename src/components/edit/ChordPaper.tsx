@@ -1,11 +1,9 @@
-import React, { useState } from "react";
 import { Paper, Theme, withStyles } from "@material-ui/core";
+import React, { useState } from "react";
+import { ChordSong } from "../../common/ChordModel/ChordSong";
 import ChordPaperBody from "./ChordPaperBody";
-import Header from "./Header";
 import ChordPaperMenu from "./ChordPaperMenu";
-import { ChordSong } from "../common/ChordModel/ChordSong";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import Header from "./Header";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {

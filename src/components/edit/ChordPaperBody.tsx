@@ -1,11 +1,11 @@
 import React from "react";
 import { Paper as UnstyledPaper, withStyles, Grid } from "@material-ui/core";
 import Line from "./Line";
-import { IDable } from "../common/ChordModel/Collection";
-import { ChordSong } from "../common/ChordModel/ChordSong";
-import { ChordLine } from "../common/ChordModel/ChordLine";
+import { IDable } from "../../common/ChordModel/Collection";
+import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { ChordLine } from "../../common/ChordModel/ChordLine";
 import NewLine from "./NewLine";
-import withDndContext from "with-dnd-context";
+import DragAndDrop from "./DragAndDrop";
 
 const Paper = withStyles({
     root: {
@@ -21,8 +21,6 @@ interface ChordPaperBodyProps {
 const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     props: ChordPaperBodyProps
 ): React.ReactElement => {
-    console.log("RERENDER");
-
     const addLineToTop = () => {
         const newLine: ChordLine = new ChordLine();
         props.song.addBeginning(newLine);
@@ -82,7 +80,6 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
             sourceBlockID
         );
         sourceBlock.chord = "";
-        sourceLine.normalizeBlocks();
 
         const [destinationLine, destinationBlock] = props.song.findLineAndBlock(
             destinationBlockID
@@ -92,6 +89,8 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         }
 
         destinationBlock.chord = newChord;
+
+        sourceLine.normalizeBlocks();
         destinationLine.normalizeBlocks();
 
         notifySongChanged();
@@ -138,15 +137,17 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     };
 
     return (
-        <Paper elevation={0}>
-            <Grid container>
-                <Grid item xs={1}></Grid>
-                <Grid item xs={10}>
-                    {lines()}
+        <DragAndDrop>
+            <Paper elevation={0}>
+                <Grid container>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={10}>
+                        {lines()}
+                    </Grid>
+                    <Grid item xs={1}></Grid>
                 </Grid>
-                <Grid item xs={1}></Grid>
-            </Grid>
-        </Paper>
+            </Paper>
+        </DragAndDrop>
     );
 };
 

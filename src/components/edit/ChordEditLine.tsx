@@ -13,9 +13,9 @@ import red from "@material-ui/core/colors/red";
 import Block, { BlockProps } from "./Block";
 
 import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
-import { IDable } from "../common/ChordModel/Collection";
-import { ChordBlock } from "../common/ChordModel/ChordBlock";
-import { ChordLine } from "../common/ChordModel/ChordLine";
+import { IDable } from "../../common/ChordModel/Collection";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
+import { ChordLine } from "../../common/ChordModel/ChordLine";
 
 const iconColorStyle = {
     root: {
@@ -81,8 +81,6 @@ const ChordEditLine: React.FC<ChordEditLineProps> = (
     };
 
     const chordChangeHandler = (id: IDable<"ChordBlock">, newChord: string) => {
-        console.log("Change handler", props.chordLine);
-
         props.chordLine.setChord(id, newChord);
 
         if (props.onChangeLine) {

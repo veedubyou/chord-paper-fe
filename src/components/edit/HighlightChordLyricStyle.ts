@@ -1,4 +1,4 @@
-import { Theme, withStyles } from "@material-ui/core";
+import { Theme } from "@material-ui/core";
 import { CSSProperties } from "@material-ui/styles";
 
 export const spaceClassName = "LyricTokenSpace";
@@ -21,39 +21,9 @@ const outlineStyle = (theme: Theme): CSSProperties => ({
     borderColor: theme.palette.primary.main,
     borderRadius: "0.3em",
     borderWidth: "0.075em",
-    // color: theme.palette.primary.dark,
 });
 
-// const ChordGridItem = withStyles((theme: Theme) => {
-//     const chordSymbolOnHover = `&:hover .${chordSymbolClassName}`;
-//     const firstWordOnHover = `&:hover ~ * .${firstTokenClassName}.${wordClassName}`;
-//     const firstSpaceOnHover = `&:hover ~ * .${firstTokenClassName}.${spaceClassName}`;
-
-//     return {
-//         root: {
-//             [chordSymbolOnHover]: {
-//                 ...outline(theme),
-//                 color: theme.palette.primary.dark,
-//             },
-//             [firstWordOnHover]: highlightedWordStyle(theme),
-//             [firstSpaceOnHover]: highlightedSpaceStyle(theme),
-//         },
-//     };
-// })(Grid);
-
-// const HighlightBox = withStyles((theme: Theme) => {
-//     const spaceWhenHover = `& :hover ~ .${spaceClassName}`;
-//     const wordWhenHover = `& :hover ~ .${wordClassName}`;
-
-//     return {
-//         root: {
-//             [spaceWhenHover]: highlightedSpaceStyle(theme),
-//             [wordWhenHover]: highlightedWordStyle(theme),
-//         },
-//     };
-// })(Box);
-
-interface HighlightChordLyricStyleOptions {
+export interface HighlightChordLyricStyleOptions {
     outline?: (theme: Theme) => CSSProperties;
     customLyricClassSelector?: string;
     customChordTargetClassSelector?: string;
@@ -93,7 +63,7 @@ const withCustomChordSymbolSelector = (
     return `${selector}.${options.customChordSymbolClassSelector}`;
 };
 
-export const highlightedChordLyricStyle = (
+export const dragOverChordLyricStyle = (
     options?: HighlightChordLyricStyleOptions
 ) => {
     return (theme: Theme) => {
@@ -116,10 +86,7 @@ export const highlightedChordLyricStyle = (
             `.${wordClassName}`,
             options
         );
-        const chordTargetSelector = withCustomChordTargetSelector(
-            `.${chordTargetClassName}`,
-            options
-        );
+
         const chordSymbolSelector = withCustomChordSymbolSelector(
             `.${chordSymbolClassName}`,
             options
@@ -135,7 +102,7 @@ export const highlightedChordLyricStyle = (
     };
 };
 
-export const highlightableChordLyricStyle = (
+export const hoverChordLyricStyle = (
     options?: HighlightChordLyricStyleOptions
 ) => {
     return (theme: Theme) => {
@@ -182,10 +149,10 @@ export const highlightableChordLyricStyle = (
     };
 };
 
-export const withChordLyricStyle = (
-    options?: HighlightChordLyricStyleOptions
-) => withStyles(highlightableChordLyricStyle(options));
+// export const withChordLyricStyle = (
+//     options?: HighlightChordLyricStyleOptions
+// ) => withStyles(hoverChordLyricStyle(options));
 
-export const withHighlightedChordLyricStyle = (
-    options?: HighlightChordLyricStyleOptions
-) => withStyles(highlightedChordLyricStyle(options));
+// export const withHighlightedChordLyricStyle = (
+//     options?: HighlightChordLyricStyleOptions
+// ) => withStyles(dragOverChordLyricStyle(options));

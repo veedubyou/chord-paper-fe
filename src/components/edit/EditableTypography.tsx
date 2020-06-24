@@ -2,8 +2,8 @@ import { Box, Typography, TypographyProps } from "@material-ui/core";
 import React, { useState } from "react";
 import TextInput from "./TextInput";
 
-import { DataTestID } from "../common/DataTestID";
-import { inflateIfEmpty } from "../common/Whitespace";
+import { DataTestID } from "../../common/DataTestID";
+import { inflateIfEmpty } from "../../common/Whitespace";
 import { withStyles } from "@material-ui/styles";
 
 import grey from "@material-ui/core/colors/grey";

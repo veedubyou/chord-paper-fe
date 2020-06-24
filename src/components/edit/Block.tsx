@@ -1,32 +1,56 @@
-import { Box, Grid, Theme } from "@material-ui/core";
+import { Box, Grid, makeStyles, Theme } from "@material-ui/core";
+import red from "@material-ui/core/colors/red";
 import clsx from "clsx";
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
-import { ChordBlock } from "../common/ChordModel/ChordBlock";
-import { IDable } from "../common/ChordModel/Collection";
-import { DataTestID } from "../common/DataTestID";
-import { inflatingWhitespace } from "../common/Whitespace";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
+import { IDable } from "../../common/ChordModel/Collection";
+import { DataTestID } from "../../common/DataTestID";
+import { inflatingWhitespace } from "../../common/Whitespace";
+import ChordDroppable from "./ChordDroppable";
 import DraggableChordSymbol from "./DraggableChordSymbol";
 import {
     chordTargetClassName,
+    dragOverChordLyricStyle,
     firstTokenClassName,
-    withChordLyricStyle,
+    hoverChordLyricStyle,
 } from "./HighlightChordLyricStyle";
-import { lyricTypographyVariant } from "./LyricToken";
+import { lyricTypographyVariant } from "../display/Lyric";
 import TextInput from "./TextInput";
 import Token from "./Token";
+
 const chordSymbolClassName = "ChordSymbol";
 
 const blockChordSymbolClassName = "BlockChordSymbol";
 const blockChordTargetClassName = "BlockChordTarget";
-const HighlightableGrid = withChordLyricStyle({
-    outline: (theme: Theme) => ({
-        color: theme.palette.primary.dark,
-    }),
-    customLyricClassSelector: firstTokenClassName,
-    customChordSymbolClassSelector: blockChordSymbolClassName,
-    customChordTargetClassSelector: blockChordTargetClassName,
-})(Grid);
+
+const useFirstTokenStyle = {
+    dragOver: makeStyles(
+        dragOverChordLyricStyle({
+            outline: (theme: Theme) => ({
+                borderColor: red[300],
+                color: red[300],
+            }),
+            customLyricClassSelector: firstTokenClassName,
+            customChordSymbolClassSelector: blockChordSymbolClassName,
+            customChordTargetClassSelector: blockChordTargetClassName,
+        })
+    ),
+    hoverable: makeStyles(
+        hoverChordLyricStyle({
+            outline: (theme: Theme) => ({
+                color: theme.palette.primary.dark,
+            }),
+            customLyricClassSelector: firstTokenClassName,
+            customChordSymbolClassSelector: blockChordSymbolClassName,
+            customChordTargetClassSelector: blockChordTargetClassName,
+        })
+    ),
+};
+
+const useNormalTokenStyle = {
+    dragOver: makeStyles(dragOverChordLyricStyle()),
+    hoverable: makeStyles(hoverChordLyricStyle()),
+};
 
 export interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
@@ -49,6 +73,19 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         lyricTokens = [inflatingWhitespace()];
     }
 
+    const firstTokenStyle = {
+        hoverable: useFirstTokenStyle.hoverable(),
+        dragOver: useFirstTokenStyle.dragOver(),
+    };
+
+    const normalTokenStyle = {
+        hoverable: useNormalTokenStyle.hoverable(),
+        dragOver: useNormalTokenStyle.dragOver(),
+    };
+
+    const invisibleTargetForFirstToken: boolean =
+        props.chordBlock.chord === "" && !editing;
+
     const clickHandler: (
         tokenIndex: number
     ) => (event: React.MouseEvent<HTMLSpanElement>) => void = (
@@ -66,8 +103,11 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         };
     };
 
-    const invisibleTargetForFirstToken: boolean =
-        props.chordBlock.chord === "" && !editing;
+    const handleDragged = () => {
+        if (props.onChordChange) {
+            props.onChordChange(props.chordBlock, "");
+        }
+    };
 
     const dropHandler = (tokenIndex: number) => {
         return (newChord: string, sourceBlockID: IDable<"ChordBlock">) => {
@@ -90,13 +130,6 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         setEditing(false);
     };
 
-    const handleDragged = () => {
-        console.log("Dragged", props.chordBlock);
-        if (props.onChordChange) {
-            props.onChordChange(props.chordBlock, "");
-        }
-    };
-
     const lyricBlock = (lyric: string, index: number): React.ReactElement => {
         // every above lyric target above after the first should get its own highlightable outline chord target box
         // the first one will depend if it has a chord above it.
@@ -110,15 +143,22 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
               }
             : undefined;
 
+        const hoverableClassName =
+            index > 0 ? normalTokenStyle.hoverable.root : undefined;
+        const dragOverClassName =
+            index > 0 ? normalTokenStyle.dragOver.root : undefined;
+
         return (
-            <Token
+            <ChordDroppable
                 key={index}
-                index={index}
-                invisibleTarget={invisibleTargetOption}
                 onDropped={dropHandler(index)}
+                hoverableClassName={hoverableClassName}
+                dragOverClassName={dragOverClassName}
             >
-                {lyric}
-            </Token>
+                <Token index={index} invisibleTarget={invisibleTargetOption}>
+                    {lyric}
+                </Token>
+            </ChordDroppable>
         );
     };
 
@@ -157,25 +197,31 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
 
     return (
         <Box display="inline-block">
-            <HighlightableGrid
-                container
-                direction="column"
-                data-testid={props["data-testid"]}
+            <ChordDroppable
+                onDropped={dropHandler(0)}
+                hoverableClassName={firstTokenStyle.hoverable.root}
+                dragOverClassName={firstTokenStyle.dragOver.root}
             >
                 <Grid
-                    className={clsx(
-                        chordTargetClassName,
-                        blockChordTargetClassName
-                    )}
-                    onClick={clickHandler(0)}
-                    item
+                    container
+                    direction="column"
+                    data-testid={props["data-testid"]}
                 >
-                    {chordRow()}
+                    <Grid
+                        className={clsx(
+                            chordTargetClassName,
+                            blockChordTargetClassName
+                        )}
+                        onClick={clickHandler(0)}
+                        item
+                    >
+                        {chordRow()}
+                    </Grid>
+                    <Grid item data-testid="Lyric">
+                        {lyricBlocks}
+                    </Grid>
                 </Grid>
-                <Grid item data-testid="Lyric">
-                    {lyricBlocks}
-                </Grid>
-            </HighlightableGrid>
+            </ChordDroppable>
         </Box>
     );
 };
