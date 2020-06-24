@@ -1,36 +1,73 @@
-import React, { useState } from "react";
 import {
-    Drawer,
+    Collapse,
     Divider,
+    Drawer,
+    Grid,
     List,
     ListItem,
-    ListItemText,
-    Typography,
-    Theme,
-    Collapse,
     ListItemIcon,
+    ListItemText,
+    Paper,
+    Theme,
+    Typography,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
-import MusicNoteIcon from "@material-ui/icons/MusicNote";
-import PetsIcon from "@material-ui/icons/Pets";
-import FreeBreakfastIcon from "@material-ui/icons/FreeBreakfast";
-import StoreIcon from "@material-ui/icons/Store";
-
+import grey from "@material-ui/core/colors/grey";
+import UnstyledCloseIcon from "@material-ui/icons/Close";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-
+import FreeBreakfastIcon from "@material-ui/icons/FreeBreakfast";
+import UnstyledMenuIcon from "@material-ui/icons/Menu";
+import MusicNoteIcon from "@material-ui/icons/MusicNote";
+import PetsIcon from "@material-ui/icons/Pets";
+import StoreIcon from "@material-ui/icons/Store";
 import { withStyles } from "@material-ui/styles";
-import grey from "@material-ui/core/colors/grey";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { allExerciseRoutes, ExerciseRoute } from "./Tutorial";
+
+const withPointerStyle = withStyles({
+    root: {
+        cursor: "pointer",
+    },
+});
+
+const MenuIcon = withPointerStyle(UnstyledMenuIcon);
+const CloseIcon = withPointerStyle(UnstyledCloseIcon);
+
+const VerticalGridItem = withStyles({
+    root: {
+        maxWidth: "none",
+    },
+})(Grid);
+
+const TitleGrid = withStyles((theme: Theme) => ({
+    root: {
+        padding: theme.spacing(3),
+    },
+}))(Grid);
 
 const TitleName = withStyles((theme: Theme) => ({
     root: {
-        padding: theme.spacing(3),
         color: grey[600],
     },
 }))(Typography);
 
+const CollapsedMenuSurface = withStyles({
+    root: {
+        minWidth: "24px",
+        height: "100vh",
+    },
+})(Paper);
+
+const FullHeightGrid = withStyles({
+    root: {
+        height: "100%",
+        width: "100%",
+    },
+})(Grid);
+
 const SideMenu: React.FC<{}> = (): JSX.Element => {
+    const [open, setOpen] = useState(false);
     const [learnSubmenuOpen, setLearnSubMenuOpen] = useState(false);
 
     const typographyProps = {
@@ -40,6 +77,29 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
     const linkStyle = {
         textDecoration: "none",
         color: "inherit",
+    };
+
+    const collapsedMenu = () => {
+        return (
+            <Grid container>
+                <Grid item xs={6}>
+                    <CollapsedMenuSurface>
+                        <FullHeightGrid
+                            container
+                            direction="column"
+                            alignContent="center"
+                        >
+                            <VerticalGridItem item xs={1}></VerticalGridItem>
+                            <VerticalGridItem item xs={1}>
+                                <MenuIcon onClick={() => setOpen(true)} />
+                            </VerticalGridItem>
+                            <VerticalGridItem item xs={10}></VerticalGridItem>
+                        </FullHeightGrid>
+                    </CollapsedMenuSurface>
+                </Grid>
+                <Grid item xs={6}></Grid>
+            </Grid>
+        );
     };
 
     const learnClickHandler = () => {
@@ -83,63 +143,84 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
     };
 
     return (
-        <Drawer variant="permanent" anchor="left">
-            <Link to="/" style={linkStyle} data-testid="Menu-TitleButton">
-                <TitleName variant="h5">Chord Paper</TitleName>
-            </Link>
-            <Divider />
-            <List>
-                <Link
-                    key="/"
-                    to="/"
-                    style={linkStyle}
-                    data-testid="Menu-HomeButton"
+        <>
+            {collapsedMenu()}
+            <Drawer variant="persistent" open={open} anchor="left">
+                <TitleGrid
+                    container
+                    alignItems="center"
+                    justify="space-between"
                 >
-                    <ListItem key="Song" button>
-                        <ListItemIcon>
-                            <MusicNoteIcon />
-                        </ListItemIcon>
-                        <ListItemText
-                            primary="Song"
-                            primaryTypographyProps={typographyProps}
-                        />
-                    </ListItem>
-                </Link>
-                <Link
-                    key="/demo"
-                    to="/demo"
-                    style={linkStyle}
-                    data-testid="Menu-DemoButton"
-                >
-                    <ListItem key="Demo" button>
-                        <ListItemIcon>
-                            <StoreIcon />
-                        </ListItemIcon>
-                        <ListItemText
-                            primary="Demo"
-                            primaryTypographyProps={typographyProps}
-                        />
-                    </ListItem>
-                </Link>
-                {tutorialMenu()}
-                <Link
-                    key="/about"
-                    to="/about"
-                    style={linkStyle}
-                    data-testid="Menu-AboutButton"
-                >
-                    <ListItem key="About" button>
-                        <ListItemIcon>
-                            <PetsIcon />
-                        </ListItemIcon>
-                        <ListItemText
-                            primary="About"
-                            primaryTypographyProps={typographyProps}
-                        />
-                    </ListItem>
-                </Link>
-            </List>
-        </Drawer>
+                    <Grid item>
+                        <Link
+                            to="/"
+                            style={linkStyle}
+                            data-testid="Menu-TitleButton"
+                        >
+                            <TitleName variant="h5" display="inline">
+                                Chord Paper
+                            </TitleName>
+                        </Link>
+                    </Grid>
+                    <Grid item>
+                        <CloseIcon onClick={() => setOpen(false)} />
+                    </Grid>
+                </TitleGrid>
+
+                <Divider />
+                <List>
+                    <Link
+                        key="/"
+                        to="/"
+                        style={linkStyle}
+                        data-testid="Menu-HomeButton"
+                    >
+                        <ListItem key="Song" button>
+                            <ListItemIcon>
+                                <MusicNoteIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary="Song"
+                                primaryTypographyProps={typographyProps}
+                            />
+                        </ListItem>
+                    </Link>
+                    <Link
+                        key="/demo"
+                        to="/demo"
+                        style={linkStyle}
+                        data-testid="Menu-DemoButton"
+                    >
+                        <ListItem key="Demo" button>
+                            <ListItemIcon>
+                                <StoreIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary="Demo"
+                                primaryTypographyProps={typographyProps}
+                            />
+                        </ListItem>
+                    </Link>
+                    {tutorialMenu()}
+                    <Link
+                        key="/about"
+                        to="/about"
+                        style={linkStyle}
+                        data-testid="Menu-AboutButton"
+                    >
+                        <ListItem key="About" button>
+                            <ListItemIcon>
+                                <PetsIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary="About"
+                                primaryTypographyProps={typographyProps}
+                            />
+                        </ListItem>
+                    </Link>
+                </List>
+            </Drawer>
+        </>
     );
 };
 
