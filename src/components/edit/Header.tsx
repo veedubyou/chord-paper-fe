@@ -1,8 +1,8 @@
-import React from "react";
-import { Typography, Theme, Grid, Box } from "@material-ui/core";
+import { Box, Grid, Theme, Typography } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
+import React from "react";
+import { ChordSong } from "../../common/ChordModel/ChordSong";
 import EditableTypography from "./EditableTypography";
-import { ChordSong } from "../common/ChordModel/ChordSong";
 
 interface HeaderProps {
     song: ChordSong;

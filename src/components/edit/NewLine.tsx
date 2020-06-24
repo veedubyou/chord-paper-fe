@@ -1,14 +1,14 @@
-import React from "react";
 import {
-    Theme,
-    Grid,
-    Tooltip as UnstyledTooltip,
-    Divider as UnstyledDivider,
     Button,
+    Divider as UnstyledDivider,
+    Grid,
+    Theme,
+    Tooltip as UnstyledTooltip,
 } from "@material-ui/core";
-import { useTheme, withStyles } from "@material-ui/styles";
 import UnstyledAddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import { DataTestID } from "../common/DataTestID";
+import { useTheme, withStyles } from "@material-ui/styles";
+import React from "react";
+import { DataTestID } from "../../common/DataTestID";
 
 const HighlightableGrid = withStyles({
     root: {

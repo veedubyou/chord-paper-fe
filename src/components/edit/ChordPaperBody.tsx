@@ -1,10 +1,11 @@
 import React from "react";
 import { Paper as UnstyledPaper, withStyles, Grid } from "@material-ui/core";
 import Line from "./Line";
-import { IDable } from "../common/ChordModel/Collection";
-import { ChordSong } from "../common/ChordModel/ChordSong";
-import { ChordLine } from "../common/ChordModel/ChordLine";
+import { IDable } from "../../common/ChordModel/Collection";
+import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { ChordLine } from "../../common/ChordModel/ChordLine";
 import NewLine from "./NewLine";
+import DragAndDrop from "./DragAndDrop";
 
 const Paper = withStyles({
     root: {
@@ -69,6 +70,34 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         }
     };
 
+    const chordDragAndDropHandler = (
+        destinationBlockID: IDable<"ChordBlock">,
+        splitIndex: number,
+        newChord: string,
+        sourceBlockID: IDable<"ChordBlock">
+    ) => {
+        // clearing the source block first allows handling of when the chord
+        // is dropped onto another token in the same block without special cases
+        const [sourceLine, sourceBlock] = props.song.findLineAndBlock(
+            sourceBlockID
+        );
+        sourceBlock.chord = "";
+
+        const [destinationLine, destinationBlock] = props.song.findLineAndBlock(
+            destinationBlockID
+        );
+        if (splitIndex !== 0) {
+            destinationLine.splitBlock(destinationBlockID, splitIndex);
+        }
+
+        destinationBlock.chord = newChord;
+
+        sourceLine.normalizeBlocks();
+        destinationLine.normalizeBlocks();
+
+        notifySongChanged();
+    };
+
     const lines = () => {
         const lines = props.song.chordLines.flatMap(
             (line: ChordLine, index: number) => {
@@ -85,6 +114,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
                         onChangeLine={changeLine}
                         onPasteOverflow={pasteOverflowFromLine}
                         onMergeWithPreviousLine={mergeWithPreviousLine}
+                        onChordDragAndDrop={chordDragAndDropHandler}
                         data-testid={`Line-${index}`}
                     />,
                     <NewLine
@@ -109,15 +139,17 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     };
 
     return (
-        <Paper elevation={0}>
-            <Grid container>
-                <Grid item xs={1}></Grid>
-                <Grid item xs={10}>
-                    {lines()}
+        <DragAndDrop>
+            <Paper elevation={0}>
+                <Grid container>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={10}>
+                        {lines()}
+                    </Grid>
+                    <Grid item xs={1}></Grid>
                 </Grid>
-                <Grid item xs={1}></Grid>
-            </Grid>
-        </Paper>
+            </Paper>
+        </DragAndDrop>
     );
 };
 

@@ -3,17 +3,18 @@ import UnstyledPlayArrowIcon from "@material-ui/icons/PlayArrow";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
 import { Link, Route } from "react-router-dom";
-import ErrorPage from "../ErrorPage";
-import AddChord from "./AddChord";
-import AddLine from "./AddLine";
-import ChordPositioning from "./ChordPositioning";
-import EditChord from "./EditChord";
-import EditLyrics from "./EditLyrics";
-import MergeLine from "./MergeLine";
-import PasteLyrics from "./PasteLyrics";
-import RemoveChord from "./RemoveChord";
-import RemoveLine from "./RemoveLine";
-import Starting from "./Start";
+import ErrorPage from "./edit/ErrorPage";
+import AddChord from "./tutorial/AddChord";
+import AddLine from "./tutorial/AddLine";
+import ChordPositioning from "./tutorial/ChordPositioning";
+import EditChord from "./tutorial/EditChord";
+import EditLyrics from "./tutorial/EditLyrics";
+import MergeLine from "./tutorial/MergeLine";
+import PasteLyrics from "./tutorial/PasteLyrics";
+import RemoveChord from "./tutorial/RemoveChord";
+import RemoveLine from "./tutorial/RemoveLine";
+import Starting from "./tutorial/Start";
+import DragAndDropChord from "./tutorial/DragAndDropChord";
 
 type ExerciseEntry = {
     title: string;
@@ -41,6 +42,11 @@ const allExercises: ExerciseEntry[] = [
         title: "Remove a Chord",
         route: "/learn/remove_chord",
         component: RemoveChord,
+    },
+    {
+        title: "Drag and Drop Chords",
+        route: "/learn/drag_and_drop_chord",
+        component: DragAndDropChord,
     },
     {
         title: "Add a Chord",

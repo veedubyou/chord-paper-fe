@@ -1,5 +1,5 @@
 import React from "react";
-import { render, cleanup, fireEvent, within } from "@testing-library/react";
+import { render, cleanup, fireEvent } from "@testing-library/react";
 
 import { ThemeProvider, createMuiTheme } from "@material-ui/core";
 
@@ -10,7 +10,7 @@ import {
     ExpectChordAndLyricFn,
 } from "./matcher";
 import { enterKey } from "./userEvent";
-import ChordPaper from "../components/ChordPaper";
+import ChordPaper from "../components/edit/ChordPaper";
 import { SnackbarProvider } from "notistack";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { ChordLine } from "../common/ChordModel/ChordLine";
@@ -96,8 +96,7 @@ describe("Changing the chord", () => {
             "Line-0",
             "NoneditableLine",
             "Block-1",
-            "TokenBox-0",
-            "ChordEditButton"
+            "ChordSymbol"
         );
 
         expect(chordSymbol).toBeInTheDocument();

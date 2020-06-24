@@ -19,7 +19,7 @@ import {
     getFindByTestIdChain,
 } from "./matcher";
 import { enterKey } from "./userEvent";
-import ChordPaper from "../components/ChordPaper";
+import ChordPaper from "../components/edit/ChordPaper";
 import { SnackbarProvider } from "notistack";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { ChordLine } from "../common/ChordModel/ChordLine";

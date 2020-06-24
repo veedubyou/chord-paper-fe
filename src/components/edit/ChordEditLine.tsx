@@ -1,21 +1,18 @@
 import {
     Box,
-    withStyles,
-    Theme,
     Button as UnstyledButton,
+    Theme,
     Tooltip as UnstyledTooltip,
+    withStyles,
 } from "@material-ui/core";
-import React from "react";
-
 import grey from "@material-ui/core/colors/grey";
 import red from "@material-ui/core/colors/red";
-
-import Block from "./Block";
-
 import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
-import { IDable } from "../common/ChordModel/Collection";
-import { ChordBlock } from "../common/ChordModel/ChordBlock";
-import { ChordLine } from "../common/ChordModel/ChordLine";
+import React from "react";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
+import { ChordLine } from "../../common/ChordModel/ChordLine";
+import { IDable } from "../../common/ChordModel/Collection";
+import Block, { BlockProps } from "./Block";
 
 const iconColorStyle = {
     root: {
@@ -56,6 +53,7 @@ interface ChordEditLineProps {
     onAdd?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     onRemove?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     onChangeLine?: (id: IDable<"ChordLine">) => void;
+    onChordDragAndDrop?: BlockProps["onChordDragAndDrop"];
 }
 
 const ChordEditLine: React.FC<ChordEditLineProps> = (
@@ -103,6 +101,7 @@ const ChordEditLine: React.FC<ChordEditLineProps> = (
             <Block
                 key={chordBlock.id}
                 chordBlock={chordBlock}
+                onChordDragAndDrop={props.onChordDragAndDrop}
                 onChordChange={chordChangeHandler}
                 onBlockSplit={blockSplitHandler}
                 data-testid={`Block-${index}`}

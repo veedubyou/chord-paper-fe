@@ -1,9 +1,8 @@
-import React from "react";
-import { Typography, Theme } from "@material-ui/core";
-import { inflateIfEmpty } from "../common/Whitespace";
+import { Theme, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
-import { lyricTypographyVariant } from "./LyricToken";
-import { outline } from "./Outline";
+import React from "react";
+import { inflateIfEmpty } from "../../common/Whitespace";
+import { lyricTypographyVariant } from "./Lyric";
 
 const ChordTypography = withStyles((theme: Theme) => ({
     root: {
@@ -13,16 +12,9 @@ const ChordTypography = withStyles((theme: Theme) => ({
     },
 }))(Typography);
 
-const HighlightedChordBox = withStyles((theme: Theme) => ({
-    root: {
-        ...outline(theme),
-        color: theme.palette.primary.dark,
-    },
-}))(ChordTypography);
-
-interface ChordSymbolProps {
+export interface ChordSymbolProps {
     children: string;
-    highlight?: boolean;
+    className?: string;
 }
 
 const ChordSymbol: React.FC<ChordSymbolProps> = (
@@ -39,17 +31,15 @@ const ChordSymbol: React.FC<ChordSymbolProps> = (
         return inflateIfEmpty(chord);
     };
 
-    const TypographyComponent =
-        props.highlight === true ? HighlightedChordBox : ChordTypography;
-
     return (
-        <TypographyComponent
+        <ChordTypography
             variant={lyricTypographyVariant} // keep chords and lyrics the same size
             display="inline"
             data-testid="ChordSymbol"
+            className={props.className}
         >
             {formattedChord()}
-        </TypographyComponent>
+        </ChordTypography>
     );
 };
 

@@ -3,7 +3,7 @@ import green from "@material-ui/core/colors/green";
 import UnstyledCheckCircleIcon from "@material-ui/icons/CheckCircle";
 import React, { useState } from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
-import ChordPaperBody from "../ChordPaperBody";
+import ChordPaperBody from "../edit/ChordPaperBody";
 
 const CheckCircleIcon = withStyles({
     root: {

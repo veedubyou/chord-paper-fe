@@ -1,12 +1,12 @@
 import { Box, Slide } from "@material-ui/core";
 import React, { useState } from "react";
-import TextInput from "./TextInput";
-
-import { DataTestID } from "../common/DataTestID";
-import { ChordLine } from "../common/ChordModel/ChordLine";
-import { IDable } from "../common/ChordModel/Collection";
+import { ChordLine } from "../../common/ChordModel/ChordLine";
+import { IDable } from "../../common/ChordModel/Collection";
+import { DataTestID } from "../../common/DataTestID";
+import { lyricTypographyVariant } from "../display/Lyric";
+import { BlockProps } from "./Block";
 import ChordEditLine from "./ChordEditLine";
-import { lyricTypographyVariant } from "./LyricToken";
+import TextInput from "./TextInput";
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
@@ -18,6 +18,7 @@ interface LineProps extends DataTestID {
         overflowPasteContent: string[]
     ) => void;
     onMergeWithPreviousLine?: (id: IDable<"ChordLine">) => boolean;
+    onChordDragAndDrop?: BlockProps["onChordDragAndDrop"];
 }
 
 const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
@@ -85,6 +86,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
             <ChordEditLine
                 chordLine={props.chordLine}
                 onChangeLine={props.onChangeLine}
+                onChordDragAndDrop={props.onChordDragAndDrop}
                 onAdd={addHandler}
                 onRemove={removeHandler}
                 onEdit={startEdit}

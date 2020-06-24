@@ -1,9 +1,9 @@
-import React, { useState } from "react";
 import { Paper, Theme, withStyles } from "@material-ui/core";
+import React, { useState } from "react";
+import { ChordSong } from "../../common/ChordModel/ChordSong";
 import ChordPaperBody from "./ChordPaperBody";
-import Header from "./Header";
 import ChordPaperMenu from "./ChordPaperMenu";
-import { ChordSong } from "../common/ChordModel/ChordSong";
+import Header from "./Header";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {

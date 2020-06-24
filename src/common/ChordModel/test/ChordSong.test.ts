@@ -323,4 +323,22 @@ describe("Chord Song", () => {
             });
         });
     });
+
+    describe("findLineAndBlock", () => {
+        describe("finding the block with the line", () => {
+            test("in the first line", () => {
+                const blockID = c.chordLines[0].chordBlocks[1];
+                const [line, block] = c.findLineAndBlock(blockID);
+                expect(line).toEqual(c.chordLines[0]);
+                expect(block).toEqual(c.chordLines[0].chordBlocks[1]);
+            });
+
+            test("in the second line", () => {
+                const blockID = c.chordLines[1].chordBlocks[0];
+                const [line, block] = c.findLineAndBlock(blockID);
+                expect(line).toEqual(c.chordLines[1]);
+                expect(block).toEqual(c.chordLines[1].chordBlocks[0]);
+            });
+        });
+    });
 });
