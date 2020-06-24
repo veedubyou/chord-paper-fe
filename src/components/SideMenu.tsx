@@ -1,46 +1,38 @@
-import React, { useState } from "react";
 import {
-    Drawer,
+    Collapse,
     Divider,
+    Drawer,
+    Grid,
     List,
     ListItem,
-    ListItemText,
-    Typography,
-    Theme,
-    Collapse,
     ListItemIcon,
+    ListItemText,
     Paper,
-    Grid,
-    Box,
+    Theme,
+    Typography,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
-import MusicNoteIcon from "@material-ui/icons/MusicNote";
-import PetsIcon from "@material-ui/icons/Pets";
-import FreeBreakfastIcon from "@material-ui/icons/FreeBreakfast";
-import StoreIcon from "@material-ui/icons/Store";
-
+import grey from "@material-ui/core/colors/grey";
+import UnstyledCloseIcon from "@material-ui/icons/Close";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import FreeBreakfastIcon from "@material-ui/icons/FreeBreakfast";
 import UnstyledMenuIcon from "@material-ui/icons/Menu";
-import UnstyledCloseIcon from "@material-ui/icons/Close";
-
+import MusicNoteIcon from "@material-ui/icons/MusicNote";
+import PetsIcon from "@material-ui/icons/Pets";
+import StoreIcon from "@material-ui/icons/Store";
 import { withStyles } from "@material-ui/styles";
-import grey from "@material-ui/core/colors/grey";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { allExerciseRoutes, ExerciseRoute } from "./Tutorial";
 
-const MenuIcon = withStyles({
+const withPointerStyle = withStyles({
     root: {
         cursor: "pointer",
     },
-})(UnstyledMenuIcon);
+});
 
-const CloseIcon = withStyles({
-    root: {
-        cursor: "pointer",
-        float: "right",
-        verticalAlign: "middle",
-    },
-})(UnstyledCloseIcon);
+const MenuIcon = withPointerStyle(UnstyledMenuIcon);
+const CloseIcon = withPointerStyle(UnstyledCloseIcon);
 
 const VerticalGridItem = withStyles({
     root: {
@@ -48,11 +40,11 @@ const VerticalGridItem = withStyles({
     },
 })(Grid);
 
-const TitleBox = withStyles((theme: Theme) => ({
+const TitleGrid = withStyles((theme: Theme) => ({
     root: {
         padding: theme.spacing(3),
     },
-}))(Box);
+}))(Grid);
 
 const TitleName = withStyles((theme: Theme) => ({
     root: {
@@ -154,18 +146,26 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
         <>
             {collapsedMenu()}
             <Drawer variant="persistent" open={open} anchor="left">
-                <TitleBox>
-                    <TitleName variant="h5" display="inline">
+                <TitleGrid
+                    container
+                    alignItems="center"
+                    justify="space-between"
+                >
+                    <Grid item>
                         <Link
                             to="/"
                             style={linkStyle}
                             data-testid="Menu-TitleButton"
                         >
-                            Chord Paper{" "}
+                            <TitleName variant="h5" display="inline">
+                                Chord Paper
+                            </TitleName>
                         </Link>
-                    </TitleName>
-                    <CloseIcon onClick={() => setOpen(false)} />
-                </TitleBox>
+                    </Grid>
+                    <Grid item>
+                        <CloseIcon onClick={() => setOpen(false)} />
+                    </Grid>
+                </TitleGrid>
 
                 <Divider />
                 <List>
