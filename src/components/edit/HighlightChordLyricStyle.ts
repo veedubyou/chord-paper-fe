@@ -148,11 +148,3 @@ export const hoverChordLyricStyle = (
         };
     };
 };
-
-// export const withChordLyricStyle = (
-//     options?: HighlightChordLyricStyleOptions
-// ) => withStyles(hoverChordLyricStyle(options));
-
-// export const withHighlightedChordLyricStyle = (
-//     options?: HighlightChordLyricStyleOptions
-// ) => withStyles(dragOverChordLyricStyle(options));

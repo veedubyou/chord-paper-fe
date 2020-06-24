@@ -76,6 +76,8 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         newChord: string,
         sourceBlockID: IDable<"ChordBlock">
     ) => {
+        // clearing the source block first allows handling of when the chord
+        // is dropped onto another token in the same block without special cases
         const [sourceLine, sourceBlock] = props.song.findLineAndBlock(
             sourceBlockID
         );

@@ -1,6 +1,6 @@
-import React from "react";
-import { Grid, Typography, Theme, Paper } from "@material-ui/core";
+import { Grid, Paper, Theme, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
+import React from "react";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {

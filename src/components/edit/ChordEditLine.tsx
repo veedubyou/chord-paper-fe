@@ -1,21 +1,18 @@
 import {
     Box,
-    withStyles,
-    Theme,
     Button as UnstyledButton,
+    Theme,
     Tooltip as UnstyledTooltip,
+    withStyles,
 } from "@material-ui/core";
-import React from "react";
-
 import grey from "@material-ui/core/colors/grey";
 import red from "@material-ui/core/colors/red";
-
-import Block, { BlockProps } from "./Block";
-
 import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
-import { IDable } from "../../common/ChordModel/Collection";
+import React from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
+import { IDable } from "../../common/ChordModel/Collection";
+import Block, { BlockProps } from "./Block";
 
 const iconColorStyle = {
     root: {

@@ -1,13 +1,46 @@
-import { Box } from "@material-ui/core";
+import { Box, StyledComponentProps, withStyles } from "@material-ui/core";
 import clsx from "clsx";
 import React from "react";
+import Lyric, { LyricTypography, lyricTypographyProps } from "../display/Lyric";
 import {
     chordSymbolClassName,
     chordTargetClassName,
     firstTokenClassName,
 } from "./HighlightChordLyricStyle";
-import Lyric from "../display/Lyric";
-import ChordTargetBox, { ChordTargetBoxProps } from "./ChordTargetBox";
+
+const InvisibleTypography = withStyles({
+    root: {
+        color: "transparent",
+        cursor: "pointer",
+        userSelect: "none",
+        position: "absolute",
+        left: 0,
+        top: 0,
+        transform: "translate(0%, -115%)",
+    },
+})(LyricTypography);
+
+interface ChordTargetBoxProps extends StyledComponentProps {
+    children: string;
+    className?: string;
+    onClick?: (event: React.MouseEvent<HTMLSpanElement>) => void;
+}
+
+const ChordTargetBox: React.FC<ChordTargetBoxProps> = (
+    props: ChordTargetBoxProps
+): JSX.Element => {
+    return (
+        <InvisibleTypography
+            {...lyricTypographyProps}
+            onClick={props.onClick}
+            classes={props.classes}
+            className={props.className}
+            data-testid="ChordEditButton"
+        >
+            {props.children}
+        </InvisibleTypography>
+    );
+};
 
 interface TokenProps {
     children: string;

@@ -1,17 +1,17 @@
+import { Theme } from "@material-ui/core";
+import FolderOpenIcon from "@material-ui/icons/FolderOpen";
+import NoteAddIcon from "@material-ui/icons/NoteAdd";
+import SaveIcon from "@material-ui/icons/Save";
 import {
     SpeedDial as UnstyledSpeedDial,
     SpeedDialAction,
     SpeedDialIcon,
 } from "@material-ui/lab";
 import { withStyles } from "@material-ui/styles";
-import { Theme } from "@material-ui/core";
-import SaveIcon from "@material-ui/icons/Save";
-import FolderOpenIcon from "@material-ui/icons/FolderOpen";
-import NoteAddIcon from "@material-ui/icons/NoteAdd";
-import React, { useState } from "react";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { isLeft } from "fp-ts/lib/Either";
 import { useSnackbar } from "notistack";
+import React, { useState } from "react";
+import { ChordSong } from "../../common/ChordModel/ChordSong";
 
 interface ChordPaperMenuProps {
     song: ChordSong;
