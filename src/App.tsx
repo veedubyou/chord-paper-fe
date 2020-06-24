@@ -49,7 +49,6 @@ const AppLayout = withStyles({
     root: {
         backgroundImage: `url(${WoodBackground})`,
         minHeight: "100vh",
-        overflow: "scroll",
     },
 })(Grid);
 
@@ -75,8 +74,8 @@ function App() {
         <ThemeProvider theme={theme}>
             <SnackbarProvider>
                 <HashRouter>
+                    <SideMenu />
                     <AppLayout container justify="center">
-                        <SideMenu />
                         <Grid item>{routeSwitches}</Grid>
                     </AppLayout>
                     <Version />
