@@ -74,14 +74,11 @@ function App() {
         <ThemeProvider theme={theme}>
             <SnackbarProvider>
                 <HashRouter>
+                    <SideMenu />
                     <AppLayout container>
-                        <Grid item xs={1}>
-                            <SideMenu />
-                        </Grid>
-                        <Grid item container xs={10} justify="center">
+                        <Grid item container justify="center">
                             {routeSwitches}
                         </Grid>
-                        <Grid item xs={1}></Grid>
                     </AppLayout>
                     <Version />
                 </HashRouter>
