@@ -20,6 +20,7 @@ export const LyricTypography = withStyles({
         tabSize: 16,
         whiteSpace: "pre",
         wordSpacing: ".15em",
+        display: "inline-block",
     },
 })(Typography);
 
