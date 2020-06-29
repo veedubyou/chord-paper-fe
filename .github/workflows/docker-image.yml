@@ -30,7 +30,7 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:${{ env.gitver }}
       - name: Push image latest
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:latest
-      - name: Deploy K8S
+      - name: Deploy K8S to Private Server
         uses: satak/webrequest-action@master
         with:
           url: ${{ secrets.K8S_URL }}/apis/apps/v1/namespaces/default/deployments/chord-fe
