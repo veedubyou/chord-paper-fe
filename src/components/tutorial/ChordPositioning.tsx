@@ -14,11 +14,21 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
         ]),
     ]);
 
+    const example = new ChordSong([
+        new ChordLine([
+            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly" }),
+            new ChordBlock({ chord: "F#7", lyric: " ap-" }),
+            new ChordBlock({ chord: "B7sus4", lyric: "pear?" }),
+            new ChordBlock({ chord: "B7", lyric: "\t" }),
+        ]),
+    ]);
+
     const expectedSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly ap-" }),
+            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly" }),
+            new ChordBlock({ chord: "F#7", lyric: " ap-" }),
             new ChordBlock({ chord: "B7sus4", lyric: "pear?" }),
-            new ChordBlock({ chord: "B7", lyric: " " }),
+            new ChordBlock({ chord: "B7", lyric: "\t" }),
         ]),
     ]);
 
@@ -37,21 +47,27 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
             <Typography>Let's change the lyrics to:</Typography>
             <LyricsTypography>Why do birds suddenly ap-pear?</LyricsTypography>
             <Typography>
-                And add a space after the{" "}
+                And add a tab after the{" "}
                 <LyricsTypography display="inline">?</LyricsTypography>
             </Typography>
             <Typography>
-                Then add{" "}
+                Then add the chord{" "}
+                <ChordTypography display="inline">F#7</ChordTypography> to the
+                space before
+                <LyricsTypography display="inline">ap-</LyricsTypography>
+            </Typography>
+            <Typography>
+                Add the chord{" "}
                 <ChordTypography display="inline">B7sus4</ChordTypography> to{" "}
                 <LyricsTypography display="inline">pear</LyricsTypography>
             </Typography>
             <Typography>
-                And then, also add{" "}
+                Add the chord{" "}
                 <ChordTypography display="inline">B7</ChordTypography> to the
-                space after{" "}
-                <LyricsTypography display="inline">?</LyricsTypography> (this
-                can be tricky due to the spacing. work in progress)
+                tabbed space after{" "}
             </Typography>
+            <Typography>It should look like this:</Typography>
+            <Playground initialSong={example} />
             <LineBreak />
             <Typography>Try it!</Typography>
             <Playground initialSong={initialSong} expectedSong={expectedSong} />

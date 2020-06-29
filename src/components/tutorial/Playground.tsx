@@ -7,7 +7,7 @@ import ChordPaperBody from "../edit/ChordPaperBody";
 
 const CheckCircleIcon = withStyles({
     root: {
-        color: green[200],
+        color: green[400],
     },
 })(UnstyledCheckCircleIcon);
 
