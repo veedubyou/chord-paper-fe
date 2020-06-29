@@ -2,6 +2,6 @@
 
 # Convenience script to undeploy everything
 
-microk8s kubectl delete svc/chord-fe-svc
-microk8s kubectl delete deploy/chord-fe-deploy
+microk8s kubectl delete svc/chord-fe
+microk8s kubectl delete deploy/chord-fe
 watch microk8s kubectl get all
