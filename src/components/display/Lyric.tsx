@@ -17,6 +17,7 @@ export const lyricTypographyProps = {
 
 export const LyricTypography = withStyles({
     root: {
+        tabSize: 16,
         whiteSpace: "pre",
         wordSpacing: ".15em",
     },

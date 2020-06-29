@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
 import { CSSProperties } from "@material-ui/styles";
-import React, { useState } from "react";
+import React from "react";
 
 interface TextInputProps {
     children: string;
@@ -21,34 +21,127 @@ interface TextInputProps {
 const TextInput: React.FC<TextInputProps> = (
     props: TextInputProps
 ): JSX.Element => {
-    const [value, setValue] = useState<string>(props.children);
     const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
     const theme: Theme = useTheme();
 
-    const updateValue = (
-        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        setValue(event.target.value);
+    const value = (): string => {
+        if (inputRef.current === null || inputRef.current.value === null) {
+            return "";
+        }
+
+        return inputRef.current.value;
     };
 
-    const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        if (event.key === "Enter") {
-            finish(value);
+    const setValue = (newValue: string) => {
+        if (inputRef.current === null) {
             return;
+        }
+
+        inputRef.current.value = newValue;
+    };
+
+    const enterHandler = (
+        event: React.KeyboardEvent<HTMLDivElement>
+    ): boolean => {
+        if (event.key !== "Enter") {
+            return false;
+        }
+
+        finish(value());
+        return true;
+    };
+
+    const specialBackspaceHandler = (
+        event: React.KeyboardEvent<HTMLDivElement>
+    ): boolean => {
+        if (!props.onSpecialBackspace) {
+            return false;
         }
 
         const specialBackspace: boolean =
             event.key === "Backspace" && (event.metaKey || event.ctrlKey);
+        if (!specialBackspace) {
+            return false;
+        }
+
         const selectionAtBeginning: boolean =
             inputRef.current?.selectionStart === 0 &&
             inputRef.current?.selectionEnd === 0;
+        if (!selectionAtBeginning) {
+            return false;
+        }
+
+        props.onSpecialBackspace();
+        return true;
+    };
+
+    const splitStringBySelection = (): [string, string] => {
+        const currValue = value();
 
         if (
-            specialBackspace &&
-            selectionAtBeginning &&
-            props.onSpecialBackspace
+            inputRef.current === null ||
+            inputRef.current.selectionStart === null ||
+            inputRef.current.selectionEnd === null
         ) {
-            props.onSpecialBackspace();
+            return [currValue, ""];
+        }
+
+        const beforeSelection = currValue.slice(
+            0,
+            inputRef.current.selectionStart
+        );
+        const afterSelection = currValue.slice(inputRef.current.selectionEnd);
+        return [beforeSelection, afterSelection];
+    };
+
+    const currentSelectionEnd = (): number | null => {
+        if (inputRef.current === null) {
+            return null;
+        }
+
+        return inputRef.current.selectionEnd;
+    };
+
+    const tabHandler = (
+        event: React.KeyboardEvent<HTMLDivElement>
+    ): boolean => {
+        if (event.key !== "Tab") {
+            return false;
+        }
+
+        debugger;
+
+        if (inputRef.current === null) {
+            return false;
+        }
+
+        const [beforeSelection, afterSelection] = splitStringBySelection();
+        const newValue = beforeSelection + "\t" + afterSelection;
+
+        const currentSelection = currentSelectionEnd();
+        const nextSelection: number | null =
+            currentSelection !== null ? currentSelection + 1 : null;
+
+        setValue(newValue);
+
+        if (nextSelection !== null) {
+            inputRef.current.setSelectionRange(nextSelection, nextSelection);
+        }
+
+        return true;
+    };
+
+    const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        const handlers: ((
+            event: React.KeyboardEvent<HTMLDivElement>
+        ) => boolean)[] = [enterHandler, specialBackspaceHandler, tabHandler];
+
+        for (const handler of handlers) {
+            const handled: boolean = handler(event);
+            if (handled) {
+                event.preventDefault();
+                return;
+            }
         }
     };
 
@@ -59,34 +152,18 @@ const TextInput: React.FC<TextInputProps> = (
     };
 
     const blurHandler = () => {
-        finish(value);
+        finish(value());
     };
 
     const composeMultilinePaste = (
         pasteContent: string[]
     ): [string, string[]] => {
-        let beforeSelectionStr: string;
-        let afterSelectionStr: string;
-        if (
-            inputRef.current === null ||
-            inputRef.current.selectionStart === null ||
-            inputRef.current.selectionEnd === null
-        ) {
-            beforeSelectionStr = value;
-            afterSelectionStr = "";
-        } else {
-            beforeSelectionStr = value.slice(
-                0,
-                inputRef.current.selectionStart
-            );
-            afterSelectionStr = value.slice(inputRef.current.selectionEnd);
-        }
-
-        const newValue = beforeSelectionStr + pasteContent[0];
+        const [beforeSelection, afterSelection] = splitStringBySelection();
+        const newValue = beforeSelection + pasteContent[0];
 
         const newPasteLines = pasteContent.slice(1);
         const lastIndex = newPasteLines.length - 1;
-        newPasteLines[lastIndex] += afterSelectionStr;
+        newPasteLines[lastIndex] += afterSelection;
 
         return [newValue, newPasteLines];
     };
@@ -150,9 +227,8 @@ const TextInput: React.FC<TextInputProps> = (
                 ...browserInputProps(),
             }}
             inputRef={inputRef}
-            value={value}
+            defaultValue={props.children}
             onBlur={blurHandler}
-            onChange={updateValue}
             onKeyDown={keyDownHandler}
             onPaste={pasteHandler}
             fullWidth

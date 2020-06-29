@@ -15,6 +15,7 @@ import RemoveChord from "./tutorial/RemoveChord";
 import RemoveLine from "./tutorial/RemoveLine";
 import Starting from "./tutorial/Start";
 import DragAndDropChord from "./tutorial/DragAndDropChord";
+import Instrumental from "./tutorial/Instrumental";
 
 type ExerciseEntry = {
     title: string;
@@ -57,6 +58,11 @@ const allExercises: ExerciseEntry[] = [
         title: "Edit Lyrics",
         route: "/learn/edit_lyrics",
         component: EditLyrics,
+    },
+    {
+        title: "Instrumentals",
+        route: "/learn/instrumentals",
+        component: Instrumental,
     },
     {
         title: "Chord Positioning",
