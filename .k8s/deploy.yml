@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: chord-fe-deploy
+  name: chord-fe
   labels:
     app: chord-fe
 spec:
@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app: chord-fe
+      annotations:
+        restartedAt: ""
     spec:
       containers:
       - name: chord-fe
