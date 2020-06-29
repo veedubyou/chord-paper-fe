@@ -30,11 +30,13 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:${{ env.gitver }}
       - name: Push image latest
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:latest
+      - name: Get Current Timestamp
+        run: echo "::set-env name=date::$(TZ='America/Vancouver' date +%Y%h%d-%H-%M)"
       - name: Deploy K8S to Private Server
         uses: satak/webrequest-action@master
         with:
           url: ${{ secrets.K8S_URL }}/apis/apps/v1/namespaces/default/deployments/chord-fe
           method: PATCH
-          payload: '[{"op": "replace", "path": "/spec/template/metadata/annotations/restartedAt", "value":"$(date +%s)"}]'
+          payload: '[{"op": "replace", "path": "/spec/template/metadata/annotations/restartedAt", "value":"${{ env.date }}"}]'
           headers: '{"Authorization": "Bearer ${{ secrets.K8S_TOKEN }}", "Content-Type": "application/json-patch+json", "Accept": "application/json"}'
 
