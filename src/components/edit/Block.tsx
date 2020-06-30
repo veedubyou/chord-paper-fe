@@ -98,18 +98,14 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         tokenIndex: number
     ) => {
         return (event: React.MouseEvent<HTMLSpanElement>) => {
+            // block splitting happens after the first token
+            // as first token is already aligned with the current chord
+            if (tokenIndex !== 0) {
+                props.onBlockSplit?.(props.chordBlock, tokenIndex);
+            }
+
             setEditing(true);
-
-            // make this async so that the feedback for the cursor is fast
-            setTimeout(() => {
-                // block splitting happens after the first token
-                // as first token is already aligned with the current chord
-                if (tokenIndex !== 0) {
-                    props.onBlockSplit?.(props.chordBlock, tokenIndex);
-                }
-
-                props.onInteractionStart?.();
-            });
+            props.onInteractionStart?.();
 
             event.stopPropagation();
         };
