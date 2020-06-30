@@ -32,20 +32,18 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const [removed, setRemoved] = useState(false);
 
     const startEdit = () => {
-        ReactDOM.unstable_batchedUpdates(() => {
+        setEditing(true);
+        setTimeout(() => {
             props.onInteractionStart?.();
-            setEditing(true);
         });
     };
 
     const finishEdit = (newLyrics: string) => {
-        ReactDOM.unstable_batchedUpdates(() => {
-            setEditing(false);
+        setEditing(false);
 
-            props.chordLine.replaceLyrics(newLyrics);
-            props.onChangeLine?.(props.chordLine);
-            props.onInteractionEnd?.();
-        });
+        props.chordLine.replaceLyrics(newLyrics);
+        props.onChangeLine?.(props.chordLine);
+        props.onInteractionEnd?.();
     };
 
     const addHandler = () => {

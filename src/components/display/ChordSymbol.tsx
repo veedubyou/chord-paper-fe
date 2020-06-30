@@ -1,5 +1,5 @@
 import { Theme, Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { withStyles, StyledComponentProps } from "@material-ui/styles";
 import React from "react";
 import { inflateIfEmpty } from "../../common/Whitespace";
 import { lyricTypographyVariant } from "./Lyric";
@@ -7,12 +7,11 @@ import { lyricTypographyVariant } from "./Lyric";
 const ChordTypography = withStyles({
     root: {
         whiteSpace: "pre",
-        // cursor: "pointer",
         fontFamily: "PoriChord",
     },
 })(Typography);
 
-export interface ChordSymbolProps {
+export interface ChordSymbolProps extends StyledComponentProps {
     children: string;
     className?: string;
 }
@@ -37,6 +36,7 @@ const ChordSymbol: React.FC<ChordSymbolProps> = (
             display="inline"
             data-testid="ChordSymbol"
             className={props.className}
+            classes={props.classes}
         >
             {formattedChord()}
         </ChordTypography>

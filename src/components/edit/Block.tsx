@@ -18,7 +18,6 @@ import { lyricTypographyVariant } from "../display/Lyric";
 import TextInput from "./TextInput";
 import Token from "./Token";
 import ChordSymbol from "../display/ChordSymbol";
-import ReactDOM from "react-dom";
 
 const chordSymbolClassName = "ChordSymbol";
 
@@ -99,29 +98,25 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         tokenIndex: number
     ) => {
         return (event: React.MouseEvent<HTMLSpanElement>) => {
-            // ReactDOM.unstable_batchedUpdates(() => {
             setEditing(true);
 
-            // block splitting happens after the first token
-            // as first token is already aligned with the current chord
-            if (tokenIndex !== 0) {
-                props.onBlockSplit?.(props.chordBlock, tokenIndex);
-            }
+            // make this async so that the feedback for the cursor is fast
+            setTimeout(() => {
+                if (tokenIndex !== 0) {
+                    props.onBlockSplit?.(props.chordBlock, tokenIndex);
+                }
 
-            props.onInteractionStart?.();
-            // });
+                props.onInteractionStart?.();
+            });
 
             event.stopPropagation();
         };
     };
 
     const endEdit = (newChord: string) => {
-        // ReactDOM.unstable_batchedUpdates(() => {
         setEditing(false);
-
         props.onChordChange?.(props.chordBlock, newChord);
         props.onInteractionEnd?.();
-        // });
     };
 
     const handleDragged = () => {
