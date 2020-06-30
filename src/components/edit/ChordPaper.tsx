@@ -15,6 +15,7 @@ const RootPaper = withStyles((theme: Theme) => ({
 
 interface ChordPaperProps {
     initialSong: ChordSong;
+    onSongChanged?: (song: ChordSong) => void;
 }
 
 const ChordPaper: React.FC<ChordPaperProps> = (
@@ -22,8 +23,12 @@ const ChordPaper: React.FC<ChordPaperProps> = (
 ): JSX.Element => {
     const [song, setSong] = useState<ChordSong>(props.initialSong);
 
-    const songChangeHandler = (updatedSong: ChordSong) => {
-        setSong(updatedSong.clone());
+    const songChangeHandler = (song: ChordSong) => {
+        const updatedSong = song.clone();
+        setSong(updatedSong);
+        if (props.onSongChanged) {
+            props.onSongChanged(updatedSong);
+        }
     };
 
     const loadHandler = (loadedSong: ChordSong) => {
