@@ -31,7 +31,7 @@ jobs:
       - name: Push image latest
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:latest
       - name: Get Current Timestamp
-        run: echo "::set-env name=date::$(TZ='America/Vancouver' date +%Y%h%d-%H-%M)"
+        run: echo "::set-env name=date::$(date +%s)"
       - name: Deploy K8S to Private Server
         uses: satak/webrequest-action@master
         with:
