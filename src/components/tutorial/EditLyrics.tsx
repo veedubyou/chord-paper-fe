@@ -30,8 +30,9 @@ const EditLyrics: React.FC<{}> = (): JSX.Element => {
             <LineBreak />
             <Typography>
                 You can edit the lyrics by clicking anywhere along the lyrics.
-                Chord Paper will move chords along with lyrics when you edit
-                them. Let's change the lyrics to:
+                Finish editing lyrics by pressing enter or clicking outside the
+                text edit box. Chord Paper will move chords along with lyrics
+                when you edit them. Let's change the lyrics to:
             </Typography>
             <LyricsTypography>
                 Why oh why do birds suddenly appear?
