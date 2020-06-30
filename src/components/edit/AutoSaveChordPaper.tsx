@@ -1,13 +1,9 @@
-import { Paper, Theme, withStyles } from "@material-ui/core";
-import React, { useState } from "react";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
-import ChordPaperBody from "./ChordPaperBody";
-import ChordPaperMenu from "./ChordPaperMenu";
-import Header from "./Header";
-import { loadSong, saveSong } from "../../common/BrowserSave";
-import ChordPaper from "./ChordPaper";
 import { isLeft } from "fp-ts/lib/Either";
 import { useSnackbar } from "notistack";
+import React from "react";
+import { loadSong, saveSong } from "../../common/BrowserSave";
+import { ChordSong } from "../../common/ChordModel/ChordSong";
+import ChordPaper from "./ChordPaper";
 
 const AutoSaveChordPaper: React.FC<{}> = (): JSX.Element => {
     const { enqueueSnackbar } = useSnackbar();
