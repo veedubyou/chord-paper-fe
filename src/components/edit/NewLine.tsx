@@ -41,17 +41,30 @@ const AddCircleOutlineIcon = withStyles((theme: Theme) => ({
 
 interface NewLineProps extends DataTestID {
     onAdd?: () => void;
+    interactive: boolean;
 }
 
 const NewLine: React.FC<NewLineProps> = (props: NewLineProps): JSX.Element => {
     const theme: Theme = useTheme();
 
-    const hoverMenu = (): React.ReactElement => {
+    const hoverMenu = (): React.ReactElement | string => {
+        if (!props.interactive) {
+            return "";
+        }
+
         return (
             <Button data-testid={"AddButton"} onClick={props.onAdd}>
                 <AddCircleOutlineIcon />
             </Button>
         );
+    };
+
+    const handleClick = (): (() => void) | undefined => {
+        if (!props.interactive) {
+            return undefined;
+        }
+
+        return props.onAdd;
     };
 
     return (
@@ -60,7 +73,7 @@ const NewLine: React.FC<NewLineProps> = (props: NewLineProps): JSX.Element => {
                 container
                 direction="column"
                 justify="center"
-                onClick={props.onAdd}
+                onClick={handleClick()}
                 data-testid={props["data-testid"]}
                 style={{
                     minHeight: theme.spacing(3),

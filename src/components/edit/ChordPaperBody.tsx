@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Paper as UnstyledPaper, withStyles, Grid } from "@material-ui/core";
 import Line from "./Line";
 import { IDable } from "../../common/ChordModel/Collection";
@@ -21,6 +21,10 @@ interface ChordPaperBodyProps {
 const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     props: ChordPaperBodyProps
 ): React.ReactElement => {
+    const [interacting, setInteracting] = useState(false);
+
+    const interactive = !interacting;
+
     const addLineToTop = () => {
         const newLine: ChordLine = new ChordLine();
         props.song.addBeginning(newLine);
@@ -107,8 +111,11 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
 
                 return [
                     <Line
+                        interactive={interactive}
                         key={line.id}
                         chordLine={line}
+                        onInteractionStart={() => setInteracting(true)}
+                        onInteractionEnd={() => setInteracting(false)}
                         onAddLine={addLine}
                         onRemoveLine={removeLine}
                         onChangeLine={changeLine}
@@ -118,6 +125,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
                         data-testid={`Line-${index}`}
                     />,
                     <NewLine
+                        interactive={interactive}
                         key={"NewLine-" + line.id}
                         onAdd={addLineBelow}
                         data-testid={`NewLine-${index}`}
@@ -128,6 +136,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
 
         const firstNewLine = (
             <NewLine
+                interactive={interactive}
                 key={"NewLine-Top"}
                 onAdd={addLineToTop}
                 data-testid={"NewLine-Top"}

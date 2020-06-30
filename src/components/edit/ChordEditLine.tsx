@@ -49,11 +49,16 @@ const HighlightableBox = withStyles((theme: Theme) => ({
 
 interface ChordEditLineProps {
     chordLine: ChordLine;
+    interactive: boolean;
+
     onEdit?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     onAdd?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     onRemove?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     onChangeLine?: (id: IDable<"ChordLine">) => void;
     onChordDragAndDrop?: BlockProps["onChordDragAndDrop"];
+
+    onInteractionStart?: () => void;
+    onInteractionEnd?: () => void;
 }
 
 const ChordEditLine: React.FC<ChordEditLineProps> = (
@@ -69,7 +74,11 @@ const ChordEditLine: React.FC<ChordEditLineProps> = (
         ];
     }
 
-    const hoverMenu = (): React.ReactElement => {
+    const hoverMenu = (): React.ReactElement | string => {
+        if (!props.interactive) {
+            return "";
+        }
+
         return (
             <Button onClick={props.onRemove} data-testid={"RemoveButton"}>
                 <BackspaceIcon />
@@ -99,12 +108,15 @@ const ChordEditLine: React.FC<ChordEditLineProps> = (
     const blocks: React.ReactElement[] = chordBlocks.map(
         (chordBlock: ChordBlock, index: number) => (
             <Block
+                interactive={props.interactive}
                 key={chordBlock.id}
                 chordBlock={chordBlock}
                 onChordDragAndDrop={props.onChordDragAndDrop}
                 onChordChange={chordChangeHandler}
                 onBlockSplit={blockSplitHandler}
                 data-testid={`Block-${index}`}
+                onInteractionStart={props.onInteractionStart}
+                onInteractionEnd={props.onInteractionEnd}
             ></Block>
         )
     );

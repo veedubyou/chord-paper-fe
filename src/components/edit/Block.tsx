@@ -17,6 +17,8 @@ import {
 import { lyricTypographyVariant } from "../display/Lyric";
 import TextInput from "./TextInput";
 import Token from "./Token";
+import ChordSymbol from "../display/ChordSymbol";
+import ReactDOM from "react-dom";
 
 const chordSymbolClassName = "ChordSymbol";
 
@@ -54,6 +56,8 @@ const useNormalTokenStyle = {
 
 export interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
+    interactive: boolean;
+
     onChordDragAndDrop?: (
         destinationBlockID: IDable<"ChordBlock">,
         splitIndex: number,
@@ -62,6 +66,9 @@ export interface BlockProps extends DataTestID {
     ) => void;
     onChordChange?: (id: IDable<"ChordBlock">, newChord: string) => void;
     onBlockSplit?: (id: IDable<"ChordBlock">, splitIndex: number) => void;
+
+    onInteractionStart?: () => void;
+    onInteractionEnd?: () => void;
 }
 
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
@@ -92,45 +99,51 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         tokenIndex: number
     ) => {
         return (event: React.MouseEvent<HTMLSpanElement>) => {
+            // ReactDOM.unstable_batchedUpdates(() => {
+            setEditing(true);
+
             // block splitting happens after the first token
             // as first token is already aligned with the current chord
-            if (tokenIndex !== 0 && props.onBlockSplit) {
-                props.onBlockSplit(props.chordBlock, tokenIndex);
+            if (tokenIndex !== 0) {
+                props.onBlockSplit?.(props.chordBlock, tokenIndex);
             }
 
-            setEditing(true);
+            props.onInteractionStart?.();
+            // });
+
             event.stopPropagation();
         };
     };
 
+    const endEdit = (newChord: string) => {
+        // ReactDOM.unstable_batchedUpdates(() => {
+        setEditing(false);
+
+        props.onChordChange?.(props.chordBlock, newChord);
+        props.onInteractionEnd?.();
+        // });
+    };
+
     const handleDragged = () => {
-        if (props.onChordChange) {
-            props.onChordChange(props.chordBlock, "");
-        }
+        props.onChordChange?.(props.chordBlock, "");
     };
 
     const dropHandler = (tokenIndex: number) => {
         return (newChord: string, sourceBlockID: IDable<"ChordBlock">) => {
-            if (props.onChordDragAndDrop) {
-                props.onChordDragAndDrop(
-                    props.chordBlock,
-                    tokenIndex,
-                    newChord,
-                    sourceBlockID
-                );
-            }
+            props.onChordDragAndDrop?.(
+                props.chordBlock,
+                tokenIndex,
+                newChord,
+                sourceBlockID
+            );
         };
     };
 
-    const endEdit = (newChord: string) => {
-        if (props.onChordChange) {
-            props.onChordChange(props.chordBlock, newChord);
+    const lyricBlock = (lyric: string, index: number): React.ReactElement => {
+        if (!props.interactive) {
+            return <Token index={index}>{lyric}</Token>;
         }
 
-        setEditing(false);
-    };
-
-    const lyricBlock = (lyric: string, index: number): React.ReactElement => {
         // every above lyric target above after the first should get its own highlightable outline chord target box
         // the first one will depend if it has a chord above it.
         // if it does not, then treat it the same as all other tokens
@@ -162,6 +175,10 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     );
 
     const chordRow = (): JSX.Element => {
+        //@ts-ignore
+        if (window.debug !== undefined && window.debug) {
+            debugger;
+        }
         if (editing) {
             return (
                 <Box data-testid="ChordEdit">
@@ -174,6 +191,10 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                     </TextInput>
                 </Box>
             );
+        }
+
+        if (!props.interactive) {
+            return <ChordSymbol>{props.chordBlock.chord}</ChordSymbol>;
         }
 
         return (
@@ -189,6 +210,23 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             </DraggableChordSymbol>
         );
     };
+
+    if (!props.interactive) {
+        return (
+            <Box display="inline-block">
+                <Grid
+                    container
+                    direction="column"
+                    data-testid={props["data-testid"]}
+                >
+                    <Grid item>{chordRow()}</Grid>
+                    <Grid item data-testid="Lyric">
+                        {lyricBlocks}
+                    </Grid>
+                </Grid>
+            </Box>
+        );
+    }
 
     return (
         <Box display="inline-block">

@@ -7,9 +7,12 @@ import { lyricTypographyVariant } from "../display/Lyric";
 import { BlockProps } from "./Block";
 import ChordEditLine from "./ChordEditLine";
 import TextInput from "./TextInput";
+import ReactDOM from "react-dom";
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
+    interactive: boolean;
+
     onChangeLine?: (id: IDable<"ChordLine">) => void;
     onAddLine?: (id: IDable<"ChordLine">) => void;
     onRemoveLine?: (id: IDable<"ChordLine">) => void;
@@ -19,6 +22,9 @@ interface LineProps extends DataTestID {
     ) => void;
     onMergeWithPreviousLine?: (id: IDable<"ChordLine">) => boolean;
     onChordDragAndDrop?: BlockProps["onChordDragAndDrop"];
+
+    onInteractionStart?: () => void;
+    onInteractionEnd?: () => void;
 }
 
 const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
@@ -26,17 +32,20 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const [removed, setRemoved] = useState(false);
 
     const startEdit = () => {
-        setEditing(true);
+        ReactDOM.unstable_batchedUpdates(() => {
+            props.onInteractionStart?.();
+            setEditing(true);
+        });
     };
 
     const finishEdit = (newLyrics: string) => {
-        setEditing(false);
+        ReactDOM.unstable_batchedUpdates(() => {
+            setEditing(false);
 
-        props.chordLine.replaceLyrics(newLyrics);
-
-        if (props.onChangeLine) {
-            props.onChangeLine(props.chordLine);
-        }
+            props.chordLine.replaceLyrics(newLyrics);
+            props.onChangeLine?.(props.chordLine);
+            props.onInteractionEnd?.();
+        });
     };
 
     const addHandler = () => {
@@ -84,9 +93,12 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const nonEditableLine = (): React.ReactElement => {
         return (
             <ChordEditLine
+                interactive={props.interactive}
                 chordLine={props.chordLine}
                 onChangeLine={props.onChangeLine}
                 onChordDragAndDrop={props.onChordDragAndDrop}
+                onInteractionStart={props.onInteractionStart}
+                onInteractionEnd={props.onInteractionEnd}
                 onAdd={addHandler}
                 onRemove={removeHandler}
                 onEdit={startEdit}
