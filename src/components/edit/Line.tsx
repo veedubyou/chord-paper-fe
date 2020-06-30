@@ -7,7 +7,6 @@ import { lyricTypographyVariant } from "../display/Lyric";
 import { BlockProps } from "./Block";
 import ChordEditLine from "./ChordEditLine";
 import TextInput from "./TextInput";
-import ReactDOM from "react-dom";
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
