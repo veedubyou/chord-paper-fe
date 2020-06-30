@@ -32,9 +32,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
 
     const startEdit = () => {
         setEditing(true);
-        setTimeout(() => {
-            props.onInteractionStart?.();
-        });
+        props.onInteractionStart?.();
     };
 
     const finishEdit = (newLyrics: string) => {

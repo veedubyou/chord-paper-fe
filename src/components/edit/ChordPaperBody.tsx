@@ -46,6 +46,16 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         notifySongChanged();
     };
 
+    const handleInteractionStart = () => {
+        // do this async - don't block the interactive element from being responsive
+        // while the rest of the app rerenders
+        (async () => setInteracting(true))();
+    };
+
+    const handleInteractionEnd = () => {
+        (async () => setInteracting(false))();
+    };
+
     const pasteOverflowFromLine = (
         id: IDable<"ChordLine">,
         overflowContent: string[]
@@ -114,8 +124,8 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
                         interactive={interactive}
                         key={line.id}
                         chordLine={line}
-                        onInteractionStart={() => setInteracting(true)}
-                        onInteractionEnd={() => setInteracting(false)}
+                        onInteractionStart={handleInteractionStart}
+                        onInteractionEnd={handleInteractionEnd}
                         onAddLine={addLine}
                         onRemoveLine={removeLine}
                         onChangeLine={changeLine}
