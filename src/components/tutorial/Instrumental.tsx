@@ -3,7 +3,7 @@ import React from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { LineBreak, LyricsTypography } from "./Common";
+import { LineBreak, LyricsTypography, ChordTypography } from "./Common";
 import Playground from "./Playground";
 
 const Instrumental: React.FC<{}> = (): JSX.Element => {
@@ -59,7 +59,14 @@ const Instrumental: React.FC<{}> = (): JSX.Element => {
                 Let's replicate the example from above using just the{" "}
                 <LyricsTypography display="inline">tab</LyricsTypography> and{" "}
                 <LyricsTypography display="inline">|</LyricsTypography>{" "}
-                characters, and inserting the 4 chords.
+                characters. Insert 4 tabs by editing the lyrics, and pressing
+                tab 4 times. Then divide them with{" "}
+                <LyricsTypography display="inline">|</LyricsTypography>, and add{" "}
+                <ChordTypography display="inline">Bm</ChordTypography>,{" "}
+                <ChordTypography display="inline">A</ChordTypography>,{" "}
+                <ChordTypography display="inline">E</ChordTypography>,{" "}
+                <ChordTypography display="inline">C#m7</ChordTypography>{" "}
+                respectively to each tab.
             </Typography>
             <LineBreak />
             <Typography>Try it!</Typography>
