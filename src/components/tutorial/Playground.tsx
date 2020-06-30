@@ -1,15 +1,19 @@
-import { Badge as UnstyledBadge, Paper, withStyles } from "@material-ui/core";
-import green from "@material-ui/core/colors/green";
+import {
+    Badge as UnstyledBadge,
+    Paper,
+    Theme,
+    withStyles,
+} from "@material-ui/core";
 import UnstyledCheckCircleIcon from "@material-ui/icons/CheckCircle";
 import React, { useState } from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import ChordPaperBody from "../edit/ChordPaperBody";
 
-const CheckCircleIcon = withStyles({
+const CheckCircleIcon = withStyles((theme: Theme) => ({
     root: {
-        color: green[400],
+        color: theme.palette.success.main,
     },
-})(UnstyledCheckCircleIcon);
+}))(UnstyledCheckCircleIcon);
 
 const Badge = withStyles({
     root: {

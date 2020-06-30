@@ -46,7 +46,7 @@ jobs:
           method: PATCH
           payload: '[{"op": "replace", "path": "/spec/template/metadata/annotations/restartedAt", "value":"${{ env.date }}"}]'
           headers: '{"Authorization": "Bearer ${{ secrets.K8S_TOKEN }}", "Content-Type": "application/json-patch+json", "Accept": "application/json"}'
-
+          
       - name: Setup GCloud CLI
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
