@@ -1,22 +1,22 @@
-import React from "react";
 import {
+    createMuiTheme,
+    Grid,
+    PaletteColorOptions,
     Theme,
     ThemeProvider,
-    createMuiTheme,
-    PaletteColorOptions,
-    Grid,
 } from "@material-ui/core";
-import ChordPaper from "./components/edit/ChordPaper";
-import { SnackbarProvider } from "notistack";
-import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
 import { withStyles } from "@material-ui/styles";
+import { SnackbarProvider as UnstyledSnackbarProvider } from "notistack";
+import React from "react";
+import { HashRouter, Route, Switch } from "react-router-dom";
 import WoodBackground from "./assets/img/symphony.png";
-import SideMenu from "./components/SideMenu";
-import { HashRouter, Switch, Route } from "react-router-dom";
 import About from "./components/about/About";
+import AutoSaveChordPaper from "./components/edit/AutoSaveChordPaper";
+import ChordPaper from "./components/edit/ChordPaper";
+import SideMenu from "./components/SideMenu";
 import { TutorialSwitches } from "./components/Tutorial";
 import Version from "./components/Version";
-import { ChordSong } from "./common/ChordModel/ChordSong";
+import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -33,10 +33,18 @@ const createTheme = (): Theme => {
         contrastText: "#ffffff",
     };
 
+    const green: PaletteColorOptions = {
+        main: "#00c853",
+        light: "#5efc82",
+        dark: "#009624",
+        contrastText: "#000000",
+    };
+
     return createMuiTheme({
         palette: {
             primary: lightBlue,
             secondary: purple,
+            success: green,
         },
         typography: {
             fontFamily: "Merriweather",
@@ -44,6 +52,14 @@ const createTheme = (): Theme => {
         },
     });
 };
+
+const theme: Theme = createTheme();
+
+const SnackbarProvider = withStyles((theme: Theme) => ({
+    variantSuccess: {
+        backgroundColor: theme.palette.success.main,
+    },
+}))(UnstyledSnackbarProvider);
 
 const AppLayout = withStyles({
     root: {
@@ -53,12 +69,10 @@ const AppLayout = withStyles({
 })(Grid);
 
 function App() {
-    const theme: Theme = createTheme();
-
     const routeSwitches = (
         <Switch>
             <Route key="/" exact path="/">
-                <ChordPaper initialSong={new ChordSong()} />
+                <AutoSaveChordPaper />
             </Route>
             <Route key="/demo" exact path="/demo">
                 <ChordPaper initialSong={NeverGonnaGiveYouUp()} />

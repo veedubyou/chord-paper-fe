@@ -1,5 +1,5 @@
 import { Box, Slide } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { IDable } from "../../common/ChordModel/Collection";
 import { DataTestID } from "../../common/DataTestID";
@@ -7,6 +7,7 @@ import { lyricTypographyVariant } from "../display/Lyric";
 import { BlockProps } from "./Block";
 import ChordEditLine from "./ChordEditLine";
 import TextInput from "./TextInput";
+import { InteractionContext } from "./InteractionContext";
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
@@ -25,12 +26,17 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const [editing, setEditing] = useState(false);
     const [removed, setRemoved] = useState(false);
 
+    const { startInteraction, endInteraction } = useContext(InteractionContext);
+
     const startEdit = () => {
         setEditing(true);
+        startInteraction();
     };
 
     const finishEdit = (newLyrics: string) => {
         setEditing(false);
+
+        endInteraction();
 
         props.chordLine.replaceLyrics(newLyrics);
 

@@ -1,7 +1,7 @@
 import { Box, Grid, makeStyles, Theme } from "@material-ui/core";
 import red from "@material-ui/core/colors/red";
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { IDable } from "../../common/ChordModel/Collection";
 import { DataTestID } from "../../common/DataTestID";
@@ -17,6 +17,7 @@ import {
 import { lyricTypographyVariant } from "../display/Lyric";
 import TextInput from "./TextInput";
 import Token from "./Token";
+import { InteractionContext } from "./InteractionContext";
 
 const chordSymbolClassName = "ChordSymbol";
 
@@ -66,6 +67,7 @@ export interface BlockProps extends DataTestID {
 
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     const [editing, setEditing] = useState(false);
+    const { startInteraction, endInteraction } = useContext(InteractionContext);
 
     let lyricTokens: string[] = props.chordBlock.lyricTokens;
 
@@ -99,6 +101,8 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             }
 
             setEditing(true);
+            startInteraction();
+
             event.stopPropagation();
         };
     };
@@ -128,6 +132,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         }
 
         setEditing(false);
+        endInteraction();
     };
 
     const lyricBlock = (lyric: string, index: number): React.ReactElement => {
