@@ -56,6 +56,7 @@ jobs:
 
       - name: Deploy to GKE
         continue-on-error: true
+        timeout-minutes: 2
         run: |
           gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
           kubectl rollout restart deploy/chord-fe
