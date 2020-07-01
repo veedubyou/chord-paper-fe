@@ -1,11 +1,23 @@
-import React from "react";
-import { Paper as UnstyledPaper, withStyles, Grid } from "@material-ui/core";
+import React, { useState } from "react";
+import {
+    Paper as UnstyledPaper,
+    withStyles,
+    Grid,
+    makeStyles,
+} from "@material-ui/core";
 import Line from "./Line";
 import { IDable } from "../../common/ChordModel/Collection";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import NewLine from "./NewLine";
 import DragAndDrop from "./DragAndDrop";
+import { InteractionContext, InteractionSetter } from "./InteractionContext";
+
+const useUninteractiveStyle = makeStyles({
+    root: {
+        pointerEvents: "none",
+    },
+});
 
 const Paper = withStyles({
     root: {
@@ -21,6 +33,23 @@ interface ChordPaperBodyProps {
 const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     props: ChordPaperBodyProps
 ): React.ReactElement => {
+    const [interacting, setInteracting] = useState(false);
+
+    const interactionContextValue: InteractionSetter = {
+        startInteraction: () => {
+            setTimeout(() => {
+                setInteracting(true);
+            });
+        },
+        endInteraction: () => {
+            setTimeout(() => {
+                setInteracting(false);
+            });
+        },
+    };
+
+    const uninteractiveStyle = useUninteractiveStyle();
+
     const addLineToTop = () => {
         const newLine: ChordLine = new ChordLine();
         props.song.addBeginning(newLine);
@@ -138,17 +167,22 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         return lines;
     };
 
+    // prevent other interactions if currently interacting
+    const paperClassName = interacting ? uninteractiveStyle.root : undefined;
+
     return (
         <DragAndDrop>
-            <Paper elevation={0}>
-                <Grid container>
-                    <Grid item xs={1}></Grid>
-                    <Grid item xs={10}>
-                        {lines()}
+            <InteractionContext.Provider value={interactionContextValue}>
+                <Paper className={paperClassName} elevation={0}>
+                    <Grid container>
+                        <Grid item xs={1}></Grid>
+                        <Grid item xs={10}>
+                            {lines()}
+                        </Grid>
+                        <Grid item xs={1}></Grid>
                     </Grid>
-                    <Grid item xs={1}></Grid>
-                </Grid>
-            </Paper>
+                </Paper>
+            </InteractionContext.Provider>
         </DragAndDrop>
     );
 };
