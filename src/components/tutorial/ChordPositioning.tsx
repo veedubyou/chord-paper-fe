@@ -53,7 +53,7 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
             <Typography>
                 Then add the chord{" "}
                 <ChordTypography display="inline">F#7</ChordTypography> to the
-                space before
+                space before{" "}
                 <LyricsTypography display="inline">ap-</LyricsTypography>
             </Typography>
             <Typography>
