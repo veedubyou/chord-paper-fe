@@ -46,6 +46,20 @@ jobs:
           method: PATCH
           payload: '[{"op": "replace", "path": "/spec/template/metadata/annotations/restartedAt", "value":"${{ env.date }}"}]'
           headers: '{"Authorization": "Bearer ${{ secrets.K8S_TOKEN }}", "Content-Type": "application/json-patch+json", "Accept": "application/json"}'
+          
+      - name: Setup GCloud CLI
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '270.0.0'
+          service_account_email: ${{ secrets.GKE_EMAIL }}
+          service_account_key: ${{ secrets.GKE_KEY }}
+
+      - name: Deploy to GKE
+        run: |
+          gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GKE_PROJECT
+          kubectl rollout restart deploy/chord-fe
+          kubectl rollout status deploy/chord-fe
+          kubectl get services -o wide
 
       - name: Setup GCloud CLI
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
@@ -61,5 +75,6 @@ jobs:
           kubectl rollout restart deploy/chord-fe
           kubectl rollout status deploy/chord-fe
           kubectl get services -o wide
+
 
       
