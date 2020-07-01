@@ -1,13 +1,19 @@
 import {
     InputBaseComponentProps,
-    TextField,
+    TextField as UnstyledTextField,
     Theme,
     TypographyVariant,
     useTheme,
 } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
-import { CSSProperties } from "@material-ui/styles";
+import { CSSProperties, withStyles } from "@material-ui/styles";
 import React from "react";
+
+const TextField = withStyles({
+    root: {
+        pointerEvents: "auto",
+    },
+})(UnstyledTextField);
 
 interface TextInputProps {
     children: string;
