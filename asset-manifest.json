@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css",
-    "main.js": "/chord-paper-fe/static/js/main.68693c15.chunk.js",
-    "main.js.map": "/chord-paper-fe/static/js/main.68693c15.chunk.js.map",
+    "main.js": "/chord-paper-fe/static/js/main.f65d5a37.chunk.js",
+    "main.js.map": "/chord-paper-fe/static/js/main.f65d5a37.chunk.js.map",
     "runtime-main.js": "/chord-paper-fe/static/js/runtime-main.3f6cd68b.js",
     "runtime-main.js.map": "/chord-paper-fe/static/js/runtime-main.3f6cd68b.js.map",
     "static/js/2.22986b12.chunk.js": "/chord-paper-fe/static/js/2.22986b12.chunk.js",
     "static/js/2.22986b12.chunk.js.map": "/chord-paper-fe/static/js/2.22986b12.chunk.js.map",
     "index.html": "/chord-paper-fe/index.html",
-    "precache-manifest.cad14604afc6c8135e3d13e7d56b2c0e.js": "/chord-paper-fe/precache-manifest.cad14604afc6c8135e3d13e7d56b2c0e.js",
+    "precache-manifest.bb13712dffe08258823834a1568bb440.js": "/chord-paper-fe/precache-manifest.bb13712dffe08258823834a1568bb440.js",
     "service-worker.js": "/chord-paper-fe/service-worker.js",
     "static/css/main.bea93a8b.chunk.css.map": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css.map",
     "static/js/2.22986b12.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.22986b12.chunk.js.LICENSE.txt",
@@ -19,6 +19,6 @@
     "static/js/runtime-main.3f6cd68b.js",
     "static/js/2.22986b12.chunk.js",
     "static/css/main.bea93a8b.chunk.css",
-    "static/js/main.68693c15.chunk.js"
+    "static/js/main.f65d5a37.chunk.js"
   ]
 }
