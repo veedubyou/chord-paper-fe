@@ -29,7 +29,7 @@ const ChordInput = withStyles((theme: Theme) => ({
     root: {
         fontFamily: "PoriChord",
         borderBottom: "solid",
-        borderBottomColor: theme.palette.secondary.main,
+        borderBottomColor: theme.palette.primary.main,
         borderBottomWidth: "2px",
     },
 }))(TextInput);
