@@ -18,11 +18,21 @@ import { lyricTypographyVariant } from "../display/Lyric";
 import TextInput from "./TextInput";
 import Token from "./Token";
 import { InteractionContext } from "./InteractionContext";
+import { withStyles } from "@material-ui/styles";
 
 const chordSymbolClassName = "ChordSymbol";
 
 const blockChordSymbolClassName = "BlockChordSymbol";
 const blockChordTargetClassName = "BlockChordTarget";
+
+const ChordInput = withStyles((theme: Theme) => ({
+    root: {
+        fontFamily: "PoriChord",
+        borderBottom: "solid",
+        borderBottomColor: theme.palette.secondary.main,
+        borderBottomWidth: "2px",
+    },
+}))(TextInput);
 
 const useFirstTokenStyle = {
     dragOver: makeStyles(
@@ -170,13 +180,13 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         if (editing) {
             return (
                 <Box data-testid="ChordEdit">
-                    <TextInput
+                    <ChordInput
                         width="5em"
                         variant={lyricTypographyVariant}
                         onFinish={endEdit}
                     >
                         {props.chordBlock.chord}
-                    </TextInput>
+                    </ChordInput>
                 </Box>
             );
         }

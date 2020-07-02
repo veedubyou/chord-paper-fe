@@ -1,13 +1,22 @@
-import { Box, Slide } from "@material-ui/core";
+import { Box, Slide, withStyles, Theme } from "@material-ui/core";
 import React, { useState, useContext } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { IDable } from "../../common/ChordModel/Collection";
 import { DataTestID } from "../../common/DataTestID";
-import { lyricTypographyVariant } from "../display/Lyric";
+import { lyricTypographyVariant, lyricStyle } from "../display/Lyric";
 import { BlockProps } from "./Block";
 import ChordEditLine from "./ChordEditLine";
 import TextInput from "./TextInput";
 import { InteractionContext } from "./InteractionContext";
+
+const LyricInput = withStyles((theme: Theme) => ({
+    root: {
+        ...lyricStyle.root,
+        borderBottom: "solid",
+        borderBottomColor: theme.palette.secondary.main,
+        borderBottomWidth: "2px",
+    },
+}))(TextInput);
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
@@ -105,14 +114,14 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
 
         return (
             <Box position="absolute" left="0" bottom="2px" width="100%">
-                <TextInput
+                <LyricInput
                     variant={lyricTypographyVariant}
                     onFinish={finishEdit}
                     onPasteOverflow={pasteOverflowHandler}
                     onSpecialBackspace={specialBackspaceHandler}
                 >
                     {lyrics}
-                </TextInput>
+                </LyricInput>
             </Box>
         );
     };

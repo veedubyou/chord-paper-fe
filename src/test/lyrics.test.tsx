@@ -29,7 +29,7 @@ afterEach(cleanup);
 
 beforeAll(() => {
     //https://github.com/mui-org/material-ui/issues/15726#issuecomment-493124813
-    global.document.createRange = () => ({
+    global.document.createRange = (): Range => ({
         setStart: () => {},
         setEnd: () => {},
         //@ts-ignore
@@ -37,7 +37,11 @@ beforeAll(() => {
             nodeName: "BODY",
             ownerDocument: document,
         },
+        selectNodeContents: () => {},
+        collapse: () => {},
     });
+
+    global.window.getSelection = () => null;
 });
 
 const lyrics: string[] = [
@@ -120,7 +124,7 @@ describe("Plain text edit action", () => {
         expect(await findInputElem()).toBeInTheDocument();
 
         fireEvent.change(await findInputElem(), {
-            target: { value: newLyric },
+            target: { textContent: newLyric },
         });
 
         enterKey(await findInputElem());
@@ -203,7 +207,7 @@ describe("Edit action with chords", () => {
         expect(await findInputElem()).toBeInTheDocument();
 
         fireEvent.change(await findInputElem(), {
-            target: { value: newLyric },
+            target: { textContent: newLyric },
         });
 
         enterKey(await findInputElem());
@@ -552,7 +556,7 @@ describe("Pasting Lyrics", () => {
                         );
 
                     fireEvent.change(await inputElemFn(), {
-                        target: { value: "" },
+                        target: { textContent: "" },
                     });
 
                     await act(async () => {
