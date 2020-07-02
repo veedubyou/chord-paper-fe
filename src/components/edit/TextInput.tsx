@@ -17,8 +17,10 @@ const InputTypography = withStyles((theme: Theme) => ({
     },
 }))(Typography);
 
-const useSpanStyle = makeStyles({
+const useContentEditableStyle = makeStyles({
     root: {
+        display: "inline-block",
+        width: "100%",
         pointerEvents: "auto",
         outline: "none",
         // this prevent the span height from collapsing if there's no content
@@ -269,7 +271,7 @@ const TextInput: React.FC<TextInputProps> = (
 
     useEffect(focusAndPlaceCaret);
 
-    const spanStyle = useSpanStyle();
+    const spanStyle = useContentEditableStyle();
 
     return (
         <InputTypography
