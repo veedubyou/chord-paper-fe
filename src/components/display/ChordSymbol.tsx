@@ -1,16 +1,16 @@
-import { Theme, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
 import { inflateIfEmpty } from "../../common/Whitespace";
 import { lyricTypographyVariant } from "./Lyric";
 
-const ChordTypography = withStyles((theme: Theme) => ({
+const ChordTypography = withStyles({
     root: {
         whiteSpace: "pre",
         cursor: "pointer",
         fontFamily: "PoriChord",
     },
-}))(Typography);
+})(Typography);
 
 export interface ChordSymbolProps {
     children: string;

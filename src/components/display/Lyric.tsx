@@ -1,4 +1,4 @@
-import { Typography, withStyles } from "@material-ui/core";
+import { Typography, withStyles, createStyles } from "@material-ui/core";
 import clsx from "clsx";
 import React from "react";
 import { DataTestID } from "../../common/DataTestID";
@@ -15,14 +15,16 @@ export const lyricTypographyProps = {
     display: "inline" as "inline",
 };
 
-export const LyricTypography = withStyles({
+export const lyricStyle = createStyles({
     root: {
         tabSize: 16,
         whiteSpace: "pre",
         wordSpacing: ".15em",
         display: "inline-block",
     },
-})(Typography);
+});
+
+export const LyricTypography = withStyles(lyricStyle)(Typography);
 
 interface LyricProps extends DataTestID {
     children: string;

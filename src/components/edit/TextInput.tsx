@@ -1,21 +1,34 @@
 import {
-    InputBaseComponentProps,
-    TextField as UnstyledTextField,
+    makeStyles,
     Theme,
     TypographyVariant,
-    useTheme,
+    Typography,
 } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
-import { CSSProperties, withStyles } from "@material-ui/styles";
-import React from "react";
+import { StyledComponentProps, withStyles } from "@material-ui/styles";
+import React, { useEffect } from "react";
 
-const TextField = withStyles({
+const InputTypography = withStyles((theme: Theme) => ({
+    root: {
+        width: "100%",
+        backgroundColor: grey[200],
+        whiteSpace: "pre",
+        display: "inline-block",
+    },
+}))(Typography);
+
+const useSpanStyle = makeStyles({
     root: {
         pointerEvents: "auto",
+        outline: "none",
+        // this prevent the span height from collapsing if there's no content
+        "&:empty:before": {
+            content: '"\\a0"',
+        },
     },
-})(UnstyledTextField);
+});
 
-interface TextInputProps {
+interface TextInputProps extends StyledComponentProps {
     children: string;
     onFinish?: (newValue: string) => void;
     onSpecialBackspace?: () => void;
@@ -27,23 +40,25 @@ interface TextInputProps {
 const TextInput: React.FC<TextInputProps> = (
     props: TextInputProps
 ): JSX.Element => {
-    const inputRef: React.RefObject<HTMLInputElement> = React.createRef();
-    const theme: Theme = useTheme();
+    const contentEditableRef: React.RefObject<HTMLSpanElement> = React.createRef();
 
     const value = (): string => {
-        if (inputRef.current === null || inputRef.current.value === null) {
+        if (
+            contentEditableRef.current === null ||
+            contentEditableRef.current.textContent === null
+        ) {
             return "";
         }
 
-        return inputRef.current.value;
+        return contentEditableRef.current.textContent;
     };
 
     const setValue = (newValue: string) => {
-        if (inputRef.current === null) {
+        if (contentEditableRef.current === null) {
             return;
         }
 
-        inputRef.current.value = newValue;
+        contentEditableRef.current.textContent = newValue;
     };
 
     const enterHandler = (
@@ -55,6 +70,34 @@ const TextInput: React.FC<TextInputProps> = (
 
         finish(value());
         return true;
+    };
+
+    const selectionRange = (): Range | null => {
+        const selection = window.getSelection();
+        if (selection === null || selection.rangeCount === 0) {
+            return null;
+        }
+
+        return selection.getRangeAt(0);
+    };
+
+    const selectionOffsets = (): [number, number] | null => {
+        if (contentEditableRef.current === null) {
+            return null;
+        }
+
+        const node = contentEditableRef.current;
+
+        const range = selectionRange();
+        if (
+            range === null ||
+            !node.contains(range.startContainer) ||
+            !node.contains(range.endContainer)
+        ) {
+            return null;
+        }
+
+        return [range.startOffset, range.endOffset];
     };
 
     const specialBackspaceHandler = (
@@ -70,10 +113,12 @@ const TextInput: React.FC<TextInputProps> = (
             return false;
         }
 
-        const selectionAtBeginning: boolean =
-            inputRef.current?.selectionStart === 0 &&
-            inputRef.current?.selectionEnd === 0;
-        if (!selectionAtBeginning) {
+        const offsets = selectionOffsets();
+        if (offsets === null) {
+            return false;
+        }
+
+        if (offsets[0] !== 0 || offsets[1] !== 0) {
             return false;
         }
 
@@ -84,28 +129,14 @@ const TextInput: React.FC<TextInputProps> = (
     const splitStringBySelection = (): [string, string] => {
         const currValue = value();
 
-        if (
-            inputRef.current === null ||
-            inputRef.current.selectionStart === null ||
-            inputRef.current.selectionEnd === null
-        ) {
-            return [currValue, ""];
+        const offsets = selectionOffsets();
+        if (offsets === null) {
+            return [value(), ""];
         }
 
-        const beforeSelection = currValue.slice(
-            0,
-            inputRef.current.selectionStart
-        );
-        const afterSelection = currValue.slice(inputRef.current.selectionEnd);
+        const beforeSelection = currValue.slice(0, offsets[0]);
+        const afterSelection = currValue.slice(offsets[1]);
         return [beforeSelection, afterSelection];
-    };
-
-    const currentSelectionEnd = (): number | null => {
-        if (inputRef.current === null) {
-            return null;
-        }
-
-        return inputRef.current.selectionEnd;
     };
 
     const tabHandler = (
@@ -115,32 +146,50 @@ const TextInput: React.FC<TextInputProps> = (
             return false;
         }
 
-        debugger;
-
-        if (inputRef.current === null) {
+        if (contentEditableRef.current === null) {
             return false;
         }
 
-        const [beforeSelection, afterSelection] = splitStringBySelection();
-        const newValue = beforeSelection + "\t" + afterSelection;
-
-        const currentSelection = currentSelectionEnd();
-        const nextSelection: number | null =
-            currentSelection !== null ? currentSelection + 1 : null;
-
-        setValue(newValue);
-
-        if (nextSelection !== null) {
-            inputRef.current.setSelectionRange(nextSelection, nextSelection);
+        const range = selectionRange();
+        if (range === null) {
+            return false;
         }
 
+        range.deleteContents();
+        range.insertNode(document.createTextNode("\t"));
+        range.collapse(false);
+        contentEditableRef.current.normalize();
+
         return true;
+    };
+
+    const specialStylingKeysHandler = (
+        event: React.KeyboardEvent<HTMLDivElement>
+    ): boolean => {
+        if (!event.metaKey && !event.ctrlKey) {
+            return false;
+        }
+
+        // prevent bold, underline, or italics commands
+        return (
+            event.key === "b" ||
+            event.key === "B" ||
+            event.key === "u" ||
+            event.key === "U" ||
+            event.key === "i" ||
+            event.key === "I"
+        );
     };
 
     const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
         const handlers: ((
             event: React.KeyboardEvent<HTMLDivElement>
-        ) => boolean)[] = [enterHandler, specialBackspaceHandler, tabHandler];
+        ) => boolean)[] = [
+            enterHandler,
+            specialBackspaceHandler,
+            tabHandler,
+            specialStylingKeysHandler,
+        ];
 
         for (const handler of handlers) {
             const handled: boolean = handler(event);
@@ -198,48 +247,50 @@ const TextInput: React.FC<TextInputProps> = (
         }
     };
 
-    const browserInputProps = () => {
-        let variant: CSSProperties | undefined = undefined;
-        if (props.variant !== undefined) {
-            variant = theme?.typography?.[props.variant];
+    const focusAndPlaceCaret = () => {
+        if (contentEditableRef.current === null) {
+            return;
         }
 
-        const padding: string | number | undefined =
-            variant?.padding !== undefined ? variant.padding : 0;
-        const fontSize: string | number | undefined = variant?.fontSize;
+        contentEditableRef.current.focus();
 
-        const inputProps: InputBaseComponentProps = {
-            style: {
-                padding: padding,
-                fontSize: fontSize,
-                opacity: 1,
-                background: grey[100],
-            },
-        };
-
-        if (props.width !== undefined && inputProps.style) {
-            inputProps.style.width = props.width;
+        const selection = window.getSelection();
+        if (selection === null) {
+            return;
         }
 
-        return inputProps;
+        const newRange = document.createRange();
+        newRange.selectNodeContents(contentEditableRef.current);
+        newRange.collapse(false);
+
+        selection.removeAllRanges();
+        selection.addRange(newRange);
     };
 
+    useEffect(focusAndPlaceCaret);
+
+    const spanStyle = useSpanStyle();
+
     return (
-        <TextField
-            autoFocus
-            variant="filled"
-            inputProps={{
-                "data-testid": "InnerInput",
-                ...browserInputProps(),
-            }}
-            inputRef={inputRef}
-            defaultValue={props.children}
-            onBlur={blurHandler}
-            onKeyDown={keyDownHandler}
-            onPaste={pasteHandler}
-            fullWidth
+        <InputTypography
+            classes={props.classes}
+            variant={props.variant}
+            display="inline"
             data-testid="EditableLine"
-        />
+        >
+            <span
+                contentEditable
+                className={spanStyle.root}
+                ref={contentEditableRef}
+                data-testid="InnerInput"
+                onBlur={blurHandler}
+                onKeyDown={keyDownHandler}
+                onPaste={pasteHandler}
+                suppressContentEditableWarning
+            >
+                {props.children}
+            </span>
+        </InputTypography>
     );
 };
 

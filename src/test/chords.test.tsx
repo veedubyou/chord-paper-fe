@@ -20,7 +20,7 @@ afterEach(cleanup);
 
 beforeAll(() => {
     //https://github.com/mui-org/material-ui/issues/15726#issuecomment-493124813
-    global.document.createRange = () => ({
+    global.document.createRange = (): Range => ({
         setStart: () => {},
         setEnd: () => {},
         //@ts-ignore
@@ -28,7 +28,11 @@ beforeAll(() => {
             nodeName: "BODY",
             ownerDocument: document,
         },
+        selectNodeContents: () => {},
+        collapse: () => {},
     });
+
+    global.window.getSelection = () => null;
 });
 
 const song = (): ChordSong => {
@@ -114,7 +118,7 @@ describe("Changing the chord", () => {
             );
 
         fireEvent.change(await chordEdit(), {
-            target: { value: "F7" },
+            target: { textContent: "F7" },
         });
         enterKey(await chordEdit());
 
@@ -135,7 +139,7 @@ describe("Changing the chord", () => {
         );
 
         fireEvent.change(chordEdit, {
-            target: { value: "" },
+            target: { textContent: "" },
         });
 
         enterKey(chordEdit);
@@ -182,7 +186,7 @@ describe("inserting a chord", () => {
 
     test("it splits the block", async () => {
         fireEvent.change(await chordEdit(), {
-            target: { value: "Am7" },
+            target: { textContent: "Am7" },
         });
 
         enterKey(await chordEdit());
@@ -202,7 +206,7 @@ describe("inserting a chord", () => {
 
     test("it makes no changes if no input after all", async () => {
         fireEvent.change(await chordEdit(), {
-            target: { value: "" },
+            target: { textContent: "" },
         });
 
         enterKey(await chordEdit());
