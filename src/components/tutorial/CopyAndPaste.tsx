@@ -135,8 +135,8 @@ const CopyAndPaste: React.FC<{}> = (): JSX.Element => {
             </Typography>
             <LineBreak />
             <Typography>
-                If you have trouble selecting a line, try starting the selection
-                higher than the chords of the line.
+                If you have trouble selecting a line, try dragging your cursor
+                starting further left and above the line.
             </Typography>
             <LineBreak />
             <Typography>
