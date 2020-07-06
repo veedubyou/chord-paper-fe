@@ -1,29 +1,8 @@
-import React from "react";
-import {
-    render,
-    fireEvent,
-    waitForElementToBeRemoved,
-    cleanup,
-    Matcher,
-    act,
-} from "@testing-library/react";
-
-import { ThemeProvider, createMuiTheme } from "@material-ui/core";
-
-import {
-    matchLyric,
-    lyricsInElement,
-    FindByTestIdChainFn,
-    ExpectChordAndLyricFn,
-    getExpectChordAndLyric,
-    getFindByTestIdChain,
-} from "./matcher";
-import { enterKey } from "./userEvent";
-import ChordPaper from "../components/edit/ChordPaper";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 import { SnackbarProvider } from "notistack";
+import React from "react";
 import { ChordSong } from "../common/ChordModel/ChordSong";
-import { ChordLine } from "../common/ChordModel/ChordLine";
-import { ChordBlock } from "../common/ChordModel/ChordBlock";
+import ChordPaper from "../components/edit/ChordPaper";
 
 export const chordPaperFromLyrics = (lyrics: string[]) => {
     const song = ChordSong.fromLyricsLines(lyrics);
