@@ -4,7 +4,7 @@ import {
     Paper as UnstyledPaper,
     withStyles,
 } from "@material-ui/core";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { IDable } from "../../common/ChordModel/Collection";
