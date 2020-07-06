@@ -13,7 +13,7 @@ describe("ChordBlock", () => {
 
         test("serializes and deserializes correctly", () => {
             const original = testBlock();
-            const json = original.serialize();
+            const json = JSON.stringify(original);
             const result = ChordBlock.deserialize(json);
 
             const deserialized: ChordBlock = getOrElse(failBlock)(result);
@@ -120,6 +120,44 @@ describe("ChordBlock", () => {
                 });
                 expect(original.contentEquals(other)).toEqual(false);
             });
+        });
+    });
+
+    describe("isEmpty", () => {
+        test("actually empty", () => {
+            const block = new ChordBlock({
+                chord: "",
+                lyric: "",
+            });
+
+            expect(block.isEmpty()).toEqual(true);
+        });
+
+        test("only lyric empty", () => {
+            const block = new ChordBlock({
+                chord: "A7",
+                lyric: "",
+            });
+
+            expect(block.isEmpty()).toEqual(false);
+        });
+
+        test("only chord empty", () => {
+            const block = new ChordBlock({
+                chord: "",
+                lyric: "Never",
+            });
+
+            expect(block.isEmpty()).toEqual(false);
+        });
+
+        test("nothing empty", () => {
+            const block = new ChordBlock({
+                chord: "A7",
+                lyric: "Never",
+            });
+
+            expect(block.isEmpty()).toEqual(false);
         });
     });
 });

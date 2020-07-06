@@ -24,6 +24,7 @@ import { SnackbarProvider } from "notistack";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordBlock } from "../common/ChordModel/ChordBlock";
+import { chordPaperFromLyrics, chordPaperFromSong } from "./common";
 
 afterEach(cleanup);
 
@@ -57,28 +58,6 @@ const lyrics: string[] = [
 
 const basicChordPaper = () => {
     return chordPaperFromLyrics(lyrics);
-};
-
-const chordPaperFromLyrics = (lyrics: string[]) => {
-    const song = ChordSong.fromLyricsLines(lyrics);
-
-    return (
-        <ThemeProvider theme={createMuiTheme()}>
-            <SnackbarProvider>
-                <ChordPaper initialSong={song} />
-            </SnackbarProvider>
-        </ThemeProvider>
-    );
-};
-
-const chordPaperFromSong = (song: ChordSong) => {
-    return (
-        <ThemeProvider theme={createMuiTheme()}>
-            <SnackbarProvider>
-                <ChordPaper initialSong={song} />
-            </SnackbarProvider>
-        </ThemeProvider>
-    );
 };
 
 const getFindByTestId = (chordSong: ChordSong) => {
@@ -499,158 +478,5 @@ describe("Remove action", () => {
         const line = await findByTestIdChain("Line-2", "NoneditableLine");
         const lyrics = lyricsInElement(line);
         expect(lyrics).toEqual("Never gonna make you cry");
-    });
-});
-
-describe("Pasting Lyrics", () => {
-    const pasteEvent = (
-        textContent: string[],
-        carriageReturn: boolean
-    ): Event => {
-        const event = new Event("paste", {
-            bubbles: true,
-            cancelable: true,
-            composed: true,
-        });
-
-        const joinChar = carriageReturn ? "\r\n" : "\n";
-        //@ts-ignore
-        event["clipboardData"] = {
-            getData: (pasteType: string) => textContent.join(joinChar),
-        };
-
-        return event;
-    };
-
-    const startEdit = async (
-        findByTestIdChain: FindByTestIdChainFn,
-        ...testIDPath: string[]
-    ) => {
-        const line = await findByTestIdChain(...testIDPath);
-        expect(line).toBeInTheDocument();
-        fireEvent.mouseOver(line);
-        fireEvent.click(line);
-    };
-
-    describe("into an empty line", () => {
-        let findByTestIdChain: FindByTestIdChainFn;
-        let expectChordAndLyric: ExpectChordAndLyricFn;
-
-        beforeEach(async () => {
-            const chordPaper = chordPaperFromLyrics(["", "123"]);
-            const { findByTestId } = render(chordPaper);
-            findByTestIdChain = getFindByTestIdChain(findByTestId);
-            expectChordAndLyric = getExpectChordAndLyric(findByTestId);
-
-            await startEdit(findByTestIdChain, "Line-0", "NoneditableLine");
-        });
-
-        const pasteMultipleLinesTests = (carriageReturn: boolean) => {
-            describe("pasting multiple lines", () => {
-                beforeEach(async () => {
-                    const inputElemFn = async () =>
-                        await findByTestIdChain(
-                            "Line-0",
-                            "EditableLine",
-                            "InnerInput"
-                        );
-
-                    fireEvent.change(await inputElemFn(), {
-                        target: { textContent: "" },
-                    });
-
-                    await act(async () => {
-                        (await inputElemFn()).dispatchEvent(
-                            pasteEvent(["ABC", "as easy as"], carriageReturn)
-                        );
-                    });
-                });
-
-                test("it pastes in the first line", async () => {
-                    await expectChordAndLyric("", "ABC", [
-                        "Line-0",
-                        "NoneditableLine",
-                    ]);
-                });
-
-                test("adds the other lines below the first line", async () => {
-                    await expectChordAndLyric("", "as easy as", [
-                        "Line-1",
-                        "NoneditableLine",
-                    ]);
-                });
-
-                test("it pushes down the second line", async () => {
-                    await expectChordAndLyric("", "123", [
-                        "Line-2",
-                        "NoneditableLine",
-                    ]);
-                });
-            });
-        };
-
-        describe("for mac", () => {
-            pasteMultipleLinesTests(false);
-        });
-
-        describe("for windows", () => {
-            pasteMultipleLinesTests(true);
-        });
-    });
-
-    describe("in the end of a line with some text", () => {
-        let findByTestIdChain: FindByTestIdChainFn;
-        let expectChordAndLyric: ExpectChordAndLyricFn;
-
-        beforeEach(async () => {
-            const chordPaper = chordPaperFromLyrics([
-                "AB",
-                "Are simple as do re mi",
-            ]);
-            const { findByTestId } = render(chordPaper);
-            findByTestIdChain = getFindByTestIdChain(findByTestId);
-            expectChordAndLyric = getExpectChordAndLyric(findByTestId);
-
-            await startEdit(findByTestIdChain, "Line-0", "NoneditableLine");
-        });
-
-        describe("pasting multiple lines", () => {
-            beforeEach(async () => {
-                const input = await findByTestIdChain(
-                    "Line-0",
-                    "EditableLine",
-                    "InnerInput"
-                );
-
-                act(() => {
-                    input.dispatchEvent(pasteEvent(["C", "as easy as", "123"]));
-                });
-            });
-            test("it pastes in the remainder of the first line", async () => {
-                await expectChordAndLyric("", "ABC", [
-                    "Line-0",
-                    "NoneditableLine",
-                ]);
-            });
-
-            test("adds the other lines below the first line", async () => {
-                await expectChordAndLyric("", "as easy as", [
-                    "Line-1",
-                    "NoneditableLine",
-                ]);
-
-                await expectChordAndLyric("", "123", [
-                    "Line-2",
-                    "NoneditableLine",
-                ]);
-            });
-
-            test("it pushes down the second line", async () => {
-                await expectChordAndLyric("", "Are simple as do re mi", [
-                    "Line-3",
-                    "NoneditableLine",
-                ]);
-            });
-        });
     });
 });

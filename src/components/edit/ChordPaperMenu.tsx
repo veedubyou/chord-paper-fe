@@ -42,7 +42,9 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     };
 
     const saveAction = () => {
-        const blob = new Blob([props.song.serialize()], {
+        const jsonStr = JSON.stringify(props.song);
+
+        const blob = new Blob([jsonStr], {
             type: "application/json",
         });
         const objectURL = URL.createObjectURL(blob);

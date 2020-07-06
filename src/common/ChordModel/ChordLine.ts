@@ -1,13 +1,14 @@
-import { Collection, IDable, stringifyIgnoreID } from "./Collection";
-import shortid from "shortid";
+import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
-import { Either, right, left, isLeft, parseJSON } from "fp-ts/lib/Either";
-import { replaceChordLineLyrics } from "./ChordLinePatcher";
+import lodash from "lodash";
+import shortid from "shortid";
 import {
-    ChordBlockValidator,
-    ChordBlockValidatedFields,
     ChordBlock,
+    ChordBlockValidatedFields,
+    ChordBlockValidator,
 } from "./ChordBlock";
+import { replaceChordLineLyrics } from "./ChordLinePatcher";
+import { Collection, IDable } from "./Collection";
 
 export const ChordLineValidator = iots.type({
     elements: iots.array(ChordBlockValidator),
@@ -42,10 +43,6 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
         );
 
         return new ChordLine(chordBlockElems);
-    }
-
-    serialize(): string {
-        return stringifyIgnoreID(this);
     }
 
     static deserialize(jsonStr: string): Either<Error, ChordLine> {
@@ -137,6 +134,10 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
         return clone;
     }
 
+    toJSON(): object {
+        return lodash.omit(this, "id");
+    }
+
     contentEquals(other: ChordLine): boolean {
         if (this.chordBlocks.length !== other.chordBlocks.length) {
             return false;
@@ -160,5 +161,17 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
         };
 
         return this.chordBlocks.reduce(reducer, true);
+    }
+
+    isEmpty(): boolean {
+        if (this.chordBlocks.length > 1) {
+            return false;
+        }
+
+        if (this.chordBlocks.length === 0) {
+            return true;
+        }
+
+        return this.chordBlocks[0].isEmpty();
     }
 }
