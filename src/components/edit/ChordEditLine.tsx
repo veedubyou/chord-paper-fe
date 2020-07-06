@@ -39,13 +39,13 @@ const Tooltip = withStyles({
     },
 })(UnstyledTooltip);
 
-const HighlightableBox = withStyles((theme: Theme) => ({
+const HighlightableBox = withStyles({
     root: {
         "&:hover": {
             backgroundColor: grey[100],
         },
     },
-}))(Box);
+})(Box);
 
 interface ChordEditLineProps {
     chordLine: ChordLine;

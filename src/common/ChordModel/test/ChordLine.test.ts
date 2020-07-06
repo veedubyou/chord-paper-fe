@@ -23,7 +23,7 @@ describe("ChordLine", () => {
         };
 
         test("deserializing a serialized chordline", () => {
-            const json = c.serialize();
+            const json = JSON.stringify(c);
             const results = ChordLine.deserialize(json);
 
             const deserialized: ChordLine = getOrElse(failLine)(results);
@@ -176,6 +176,20 @@ describe("ChordLine", () => {
                 ]);
                 expect(original.contentEquals(other)).toEqual(false);
             });
+        });
+    });
+
+    describe("isEmpty", () => {
+        test("an empty line", () => {
+            const line = new ChordLine();
+            expect(line.isEmpty()).toEqual(true);
+        });
+
+        test("block has content", () => {
+            const line = new ChordLine([
+                new ChordBlock({ chord: "A7", lyric: "" }),
+            ]);
+            expect(line.isEmpty()).toEqual(false);
         });
     });
 });

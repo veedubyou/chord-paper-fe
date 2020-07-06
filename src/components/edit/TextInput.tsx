@@ -22,6 +22,7 @@ const useContentEditableStyle = makeStyles({
         display: "inline-block",
         width: "100%",
         pointerEvents: "auto",
+        userSelect: "text",
         outline: "none",
         // this prevent the span height from collapsing if there's no content
         "&:empty:before": {
@@ -35,6 +36,7 @@ interface TextInputProps extends StyledComponentProps {
     onFinish?: (newValue: string) => void;
     onSpecialBackspace?: () => void;
     onPasteOverflow?: (overflowContent: string[]) => void;
+    onJSONPaste?: (jsonStr: string) => boolean;
     width?: string;
     variant?: TypographyVariant;
 }
@@ -225,27 +227,67 @@ const TextInput: React.FC<TextInputProps> = (
         return [newValue, newPasteLines];
     };
 
-    const pasteHandler = (event: React.ClipboardEvent<HTMLDivElement>) => {
+    const handlePlainTextPaste = (
+        event: React.ClipboardEvent<HTMLDivElement>
+    ): boolean => {
+        if (props.onPasteOverflow === undefined) {
+            return false;
+        }
+
         const payload = event.clipboardData.getData("text/plain");
 
         if (payload === "") {
-            return;
+            return false;
         }
 
         // handling both Windows + Mac
         let linesOfText: string[] = payload.split("\r\n");
         linesOfText = linesOfText.flatMap((line: string) => line.split("\n"));
 
-        if (linesOfText.length > 1 && props.onPasteOverflow !== undefined) {
-            event.preventDefault();
+        if (linesOfText.length === 0) {
+            return false;
+        }
 
-            const [newValue, newPasteLines] = composeMultilinePaste(
-                linesOfText
-            );
+        const [newValue, newPasteLines] = composeMultilinePaste(linesOfText);
 
-            setValue(newValue);
-            finish(newValue);
-            props.onPasteOverflow(newPasteLines);
+        setValue(newValue);
+        finish(newValue);
+        props.onPasteOverflow(newPasteLines);
+        return true;
+    };
+
+    const handleJSONPaste = (
+        event: React.ClipboardEvent<HTMLDivElement>
+    ): boolean => {
+        if (props.onJSONPaste === undefined) {
+            return false;
+        }
+
+        const payload = event.clipboardData.getData("application/json");
+
+        if (payload === "") {
+            return false;
+        }
+
+        const handled = props.onJSONPaste(payload);
+        if (handled) {
+            finish(value());
+        }
+
+        return handled;
+    };
+
+    const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
+        const handlers: ((
+            event: React.ClipboardEvent<HTMLDivElement>
+        ) => boolean)[] = [handleJSONPaste, handlePlainTextPaste];
+
+        for (const handler of handlers) {
+            const handled: boolean = handler(event);
+            if (handled) {
+                event.preventDefault();
+                return;
+            }
         }
     };
 
@@ -271,7 +313,7 @@ const TextInput: React.FC<TextInputProps> = (
 
     useEffect(focusAndPlaceCaret);
 
-    const spanStyle = useContentEditableStyle();
+    const contentEditableStyle = useContentEditableStyle();
 
     return (
         <InputTypography
@@ -282,12 +324,12 @@ const TextInput: React.FC<TextInputProps> = (
         >
             <span
                 contentEditable
-                className={spanStyle.root}
+                className={contentEditableStyle.root}
                 ref={contentEditableRef}
                 data-testid="InnerInput"
                 onBlur={blurHandler}
                 onKeyDown={keyDownHandler}
-                onPaste={pasteHandler}
+                onPaste={handlePaste}
                 suppressContentEditableWarning
             >
                 {props.children}

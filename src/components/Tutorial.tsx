@@ -7,15 +7,16 @@ import ErrorPage from "./edit/ErrorPage";
 import AddChord from "./tutorial/AddChord";
 import AddLine from "./tutorial/AddLine";
 import ChordPositioning from "./tutorial/ChordPositioning";
+import CopyAndPaste from "./tutorial/CopyAndPaste";
+import DragAndDropChord from "./tutorial/DragAndDropChord";
 import EditChord from "./tutorial/EditChord";
 import EditLyrics from "./tutorial/EditLyrics";
+import Instrumental from "./tutorial/Instrumental";
 import MergeLine from "./tutorial/MergeLine";
 import PasteLyrics from "./tutorial/PasteLyrics";
 import RemoveChord from "./tutorial/RemoveChord";
 import RemoveLine from "./tutorial/RemoveLine";
 import Starting from "./tutorial/Start";
-import DragAndDropChord from "./tutorial/DragAndDropChord";
-import Instrumental from "./tutorial/Instrumental";
 
 type ExerciseEntry = {
     title: string;
@@ -88,6 +89,11 @@ const allExercises: ExerciseEntry[] = [
         title: "Merging Lines",
         route: "/learn/merge_lines",
         component: MergeLine,
+    },
+    {
+        title: "Copying and Pasting Lines",
+        route: "/learn/copy_and_paste",
+        component: CopyAndPaste,
     },
 ];
 

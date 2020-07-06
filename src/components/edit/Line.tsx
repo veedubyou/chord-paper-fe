@@ -9,6 +9,12 @@ import ChordEditLine from "./ChordEditLine";
 import TextInput from "./TextInput";
 import { InteractionContext } from "./InteractionContext";
 
+const AtomicSelectionBox = withStyles({
+    root: {
+        userSelect: "all",
+    },
+})(Box);
+
 const LyricInput = withStyles((theme: Theme) => ({
     root: {
         ...lyricStyle.root,
@@ -20,6 +26,7 @@ const LyricInput = withStyles((theme: Theme) => ({
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
+    "data-lineid": string;
     onChangeLine?: (id: IDable<"ChordLine">) => void;
     onAddLine?: (id: IDable<"ChordLine">) => void;
     onRemoveLine?: (id: IDable<"ChordLine">) => void;
@@ -27,6 +34,7 @@ interface LineProps extends DataTestID {
         id: IDable<"ChordLine">,
         overflowPasteContent: string[]
     ) => void;
+    onJSONPaste?: (id: IDable<"ChordLine">, jsonStr: string) => boolean;
     onMergeWithPreviousLine?: (id: IDable<"ChordLine">) => boolean;
     onChordDragAndDrop?: BlockProps["onChordDragAndDrop"];
 }
@@ -85,6 +93,14 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         }
     };
 
+    const jsonPasteHandler = (jsonStr: string): boolean => {
+        if (props.onJSONPaste === undefined) {
+            return false;
+        }
+
+        return props.onJSONPaste(props.chordLine, jsonStr);
+    };
+
     const specialBackspaceHandler = () => {
         if (props.onMergeWithPreviousLine) {
             const handledAndStopEditing = props.onMergeWithPreviousLine(
@@ -117,6 +133,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 <LyricInput
                     variant={lyricTypographyVariant}
                     onFinish={finishEdit}
+                    onJSONPaste={jsonPasteHandler}
                     onPasteOverflow={pasteOverflowHandler}
                     onSpecialBackspace={specialBackspaceHandler}
                 >
@@ -144,15 +161,18 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
 
     return (
         <Slide direction={yeetDirection} in={!removed} timeout={removalTime}>
-            <Box
-                borderBottom={1}
-                borderColor="grey.50"
-                width="100%"
-                position="relative"
-                data-testid={props["data-testid"]}
-            >
-                {elem}
-            </Box>
+            <AtomicSelectionBox>
+                <Box
+                    borderBottom={1}
+                    borderColor="grey.50"
+                    width="100%"
+                    position="relative"
+                    data-lineid={props["data-lineid"]}
+                    data-testid={props["data-testid"]}
+                >
+                    {elem}
+                </Box>
+            </AtomicSelectionBox>
         </Slide>
     );
 };

@@ -1,8 +1,9 @@
-import { IDable, stringifyIgnoreID } from "./Collection";
+import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
+import * as iots from "io-ts";
+import lodash from "lodash";
 import shortid from "shortid";
 import { tokenize } from "../LyricTokenizer";
-import * as iots from "io-ts";
-import { Either, right, left, isLeft, parseJSON } from "fp-ts/lib/Either";
+import { IDable } from "./Collection";
 
 interface ChordBlockConstructorParams {
     chord: string;
@@ -30,8 +31,8 @@ export class ChordBlock implements IDable<"ChordBlock"> {
         this.type = "ChordBlock";
     }
 
-    serialize(): string {
-        return stringifyIgnoreID(this);
+    toJSON(): object {
+        return lodash.omit(this, "id");
     }
 
     static fromValidatedFields(
@@ -100,5 +101,9 @@ export class ChordBlock implements IDable<"ChordBlock"> {
 
     contentEquals(other: ChordBlock): boolean {
         return this.chord === other.chord && this.lyric === other.lyric;
+    }
+
+    isEmpty(): boolean {
+        return this.chord === "" && this.lyric === "";
     }
 }

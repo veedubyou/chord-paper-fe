@@ -1,17 +1,18 @@
-import React, { useState } from "react";
 import {
-    Paper as UnstyledPaper,
-    withStyles,
     Grid,
     makeStyles,
+    Paper as UnstyledPaper,
+    withStyles,
 } from "@material-ui/core";
-import Line from "./Line";
-import { IDable } from "../../common/ChordModel/Collection";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
+import React, { useState, useEffect } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
-import NewLine from "./NewLine";
+import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { IDable } from "../../common/ChordModel/Collection";
+import { useLineCopyHandler, useLinePasteHandler } from "./CopyAndPaste";
 import DragAndDrop from "./DragAndDrop";
 import { InteractionContext, InteractionSetter } from "./InteractionContext";
+import Line from "./Line";
+import NewLine from "./NewLine";
 
 const useUninteractiveStyle = makeStyles({
     root: {
@@ -34,6 +35,8 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     props: ChordPaperBodyProps
 ): React.ReactElement => {
     const [interacting, setInteracting] = useState(false);
+    const handleCopy = useLineCopyHandler(props.song);
+    const handleLinePaste = useLinePasteHandler(props.song);
 
     const interactionContextValue: InteractionSetter = {
         startInteraction: () => {
@@ -50,28 +53,28 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
 
     const uninteractiveStyle = useUninteractiveStyle();
 
-    const addLineToTop = () => {
+    const handleAddLineToTop = () => {
         const newLine: ChordLine = new ChordLine();
         props.song.addBeginning(newLine);
         notifySongChanged();
     };
 
-    const addLine = (id: IDable<"ChordLine">) => {
+    const handleAddLine = (id: IDable<"ChordLine">) => {
         const newLine: ChordLine = new ChordLine();
         props.song.addAfter(id, newLine);
         notifySongChanged();
     };
 
-    const removeLine = (id: IDable<"ChordLine">) => {
+    const handleRemoveLine = (id: IDable<"ChordLine">) => {
         props.song.remove(id);
         notifySongChanged();
     };
 
-    const changeLine = (id: IDable<"ChordLine">) => {
+    const handleChangeLine = (id: IDable<"ChordLine">) => {
         notifySongChanged();
     };
 
-    const pasteOverflowFromLine = (
+    const handlePasteOverflow = (
         id: IDable<"ChordLine">,
         overflowContent: string[]
     ) => {
@@ -80,6 +83,19 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         );
         props.song.addAfter(id, ...newChordLines);
         notifySongChanged();
+    };
+
+    const handleJSONPaste = (
+        id: IDable<"ChordLine">,
+        jsonStr: string
+    ): boolean => {
+        const handled = handleLinePaste(id, jsonStr);
+        if (!handled) {
+            return false;
+        }
+
+        notifySongChanged();
+        return true;
     };
 
     const mergeWithPreviousLine = (id: IDable<"ChordLine">): boolean => {
@@ -99,7 +115,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         }
     };
 
-    const chordDragAndDropHandler = (
+    const handleChordDND = (
         destinationBlockID: IDable<"ChordBlock">,
         splitIndex: number,
         newChord: string,
@@ -131,19 +147,21 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         const lines = props.song.chordLines.flatMap(
             (line: ChordLine, index: number) => {
                 const addLineBelow = () => {
-                    addLine(line);
+                    handleAddLine(line);
                 };
 
                 return [
                     <Line
                         key={line.id}
                         chordLine={line}
-                        onAddLine={addLine}
-                        onRemoveLine={removeLine}
-                        onChangeLine={changeLine}
-                        onPasteOverflow={pasteOverflowFromLine}
+                        data-lineid={line.id}
+                        onAddLine={handleAddLine}
+                        onRemoveLine={handleRemoveLine}
+                        onChangeLine={handleChangeLine}
+                        onJSONPaste={handleJSONPaste}
+                        onPasteOverflow={handlePasteOverflow}
                         onMergeWithPreviousLine={mergeWithPreviousLine}
-                        onChordDragAndDrop={chordDragAndDropHandler}
+                        onChordDragAndDrop={handleChordDND}
                         data-testid={`Line-${index}`}
                     />,
                     <NewLine
@@ -158,7 +176,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         const firstNewLine = (
             <NewLine
                 key={"NewLine-Top"}
-                onAdd={addLineToTop}
+                onAdd={handleAddLineToTop}
                 data-testid={"NewLine-Top"}
             />
         );
@@ -173,13 +191,15 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     return (
         <DragAndDrop>
             <InteractionContext.Provider value={interactionContextValue}>
-                <Paper className={paperClassName} elevation={0}>
-                    <Grid container>
-                        <Grid item xs={1}></Grid>
+                <Paper
+                    onCopy={handleCopy}
+                    className={paperClassName}
+                    elevation={0}
+                >
+                    <Grid container justify="center">
                         <Grid item xs={10}>
                             {lines()}
                         </Grid>
-                        <Grid item xs={1}></Grid>
                     </Grid>
                 </Paper>
             </InteractionContext.Provider>

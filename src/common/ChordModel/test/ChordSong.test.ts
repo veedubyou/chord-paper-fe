@@ -48,7 +48,7 @@ describe("Chord Song", () => {
         };
 
         test("deserializing a serialized chordsong", () => {
-            const json = c.serialize();
+            const json = JSON.stringify(c);
             const results = ChordSong.deserialize(json);
 
             const deserialized: ChordSong = getOrElse(failSong)(results);

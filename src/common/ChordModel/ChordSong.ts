@@ -1,13 +1,13 @@
+import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
-import { Collection, stringifyIgnoreID, IDable } from "./Collection";
-import { Either, right, left, isLeft, parseJSON } from "fp-ts/lib/Either";
-import {
-    ChordLineValidator,
-    ChordLineValidatedFields,
-    ChordLine,
-} from "./ChordLine";
 import lodash from "lodash";
 import { ChordBlock } from "./ChordBlock";
+import {
+    ChordLine,
+    ChordLineValidatedFields,
+    ChordLineValidator,
+} from "./ChordLine";
+import { Collection, IDable } from "./Collection";
 
 const SongMetadataValidator = iots.type({
     title: iots.string,
@@ -55,10 +55,6 @@ export class ChordSong extends Collection<ChordLine, "ChordLine"> {
             }
         );
         return new ChordSong(chordLines, validatedFields.metadata);
-    }
-
-    serialize(): string {
-        return stringifyIgnoreID(this);
     }
 
     static deserialize(jsonStr: string): Either<Error, ChordSong> {
@@ -126,6 +122,10 @@ export class ChordSong extends Collection<ChordLine, "ChordLine"> {
 
     clone(): ChordSong {
         return new ChordSong(this.elements, this.metadata);
+    }
+
+    toJSON(): object {
+        return this;
     }
 
     mergeLineWithPrevious(idable: IDable<"ChordLine">): boolean {

@@ -9,6 +9,7 @@ const ChordTypography = withStyles({
         whiteSpace: "pre",
         cursor: "pointer",
         fontFamily: "PoriChord",
+        userSelect: "all",
     },
 })(Typography);
 
