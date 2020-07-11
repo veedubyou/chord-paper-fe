@@ -53,7 +53,7 @@ const song = (): ChordSong => {
 const basicChordPaper = () => (
     <ThemeProvider theme={createMuiTheme()}>
         <SnackbarProvider>
-            <ChordPaper initialSong={song()} />
+            <ChordPaper song={song()} />
         </SnackbarProvider>
     </ThemeProvider>
 );

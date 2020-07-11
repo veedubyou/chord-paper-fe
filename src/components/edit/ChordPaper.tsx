@@ -14,41 +14,38 @@ const RootPaper = withStyles((theme: Theme) => ({
 }))(Paper);
 
 interface ChordPaperProps {
-    initialSong: ChordSong;
+    song: ChordSong;
     onSongChanged?: (song: ChordSong) => void;
 }
 
 const ChordPaper: React.FC<ChordPaperProps> = (
     props: ChordPaperProps
 ): JSX.Element => {
-    const [song, setSong] = useState<ChordSong>(props.initialSong);
-
     const songChangeHandler = (song: ChordSong) => {
-        const updatedSong = song.clone();
-        setSong(updatedSong);
-        if (props.onSongChanged) {
-            props.onSongChanged(updatedSong);
-        }
+        props.onSongChanged?.(song);
     };
 
     const loadHandler = (loadedSong: ChordSong) => {
-        setSong(loadedSong.clone());
+        props.onSongChanged?.(loadedSong);
     };
 
     const newSongHandler = () => {
-        setSong(new ChordSong());
+        props.onSongChanged?.(new ChordSong());
     };
 
     return (
         <RootPaper elevation={3} data-testid="ChordPaper">
             <Header
                 data-testid={"Header"}
-                song={song}
+                song={props.song}
                 onSongChanged={songChangeHandler}
             />
-            <ChordPaperBody song={song} onSongChanged={songChangeHandler} />
+            <ChordPaperBody
+                song={props.song}
+                onSongChanged={songChangeHandler}
+            />
             <ChordPaperMenu
-                song={song}
+                song={props.song}
                 onLoad={loadHandler}
                 onNewSong={newSongHandler}
             />

@@ -2,6 +2,8 @@ import { Theme } from "@material-ui/core";
 import FolderOpenIcon from "@material-ui/icons/FolderOpen";
 import NoteAddIcon from "@material-ui/icons/NoteAdd";
 import SaveIcon from "@material-ui/icons/Save";
+import PlayIcon from "@material-ui/icons/PlayArrow";
+
 import {
     SpeedDial as UnstyledSpeedDial,
     SpeedDialAction,
@@ -12,6 +14,7 @@ import { isLeft } from "fp-ts/lib/Either";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { useHistory } from "react-router-dom";
 
 interface ChordPaperMenuProps {
     song: ChordSong;
@@ -32,6 +35,7 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
 ): JSX.Element => {
     const [open, setOpen] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
+    const history = useHistory();
 
     const openMenu = () => {
         setOpen(true);
@@ -119,6 +123,10 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
         inputElem.click();
     };
 
+    const playAction = () => {
+        history.push("/song/play");
+    };
+
     return (
         <SpeedDial
             icon={<SpeedDialIcon />}
@@ -141,6 +149,11 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                 icon={<NoteAddIcon />}
                 tooltipTitle="New Song"
                 onClick={props.onNewSong}
+            />
+            <SpeedDialAction
+                icon={<PlayIcon />}
+                tooltipTitle="Play Mode"
+                onClick={playAction}
             />
         </SpeedDial>
     );

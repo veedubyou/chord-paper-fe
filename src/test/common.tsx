@@ -10,7 +10,7 @@ export const chordPaperFromLyrics = (lyrics: string[]) => {
     return (
         <ThemeProvider theme={createMuiTheme()}>
             <SnackbarProvider>
-                <ChordPaper initialSong={song} />
+                <ChordPaper song={song} />
             </SnackbarProvider>
         </ThemeProvider>
     );
@@ -20,7 +20,7 @@ export const chordPaperFromSong = (song: ChordSong) => {
     return (
         <ThemeProvider theme={createMuiTheme()}>
             <SnackbarProvider>
-                <ChordPaper initialSong={song} />
+                <ChordPaper song={song} />
             </SnackbarProvider>
         </ThemeProvider>
     );

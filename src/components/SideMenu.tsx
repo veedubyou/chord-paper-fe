@@ -159,8 +159,8 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
             <Divider />
             <List>
                 <Link
-                    key="/"
-                    to="/"
+                    key="/song"
+                    to="/song"
                     style={linkStyle}
                     data-testid="Menu-HomeButton"
                 >

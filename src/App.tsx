@@ -8,15 +8,16 @@ import {
 import { withStyles } from "@material-ui/styles";
 import { SnackbarProvider as UnstyledSnackbarProvider } from "notistack";
 import React from "react";
-import { HashRouter, Route, Switch } from "react-router-dom";
+import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
 import WoodBackground from "./assets/img/symphony.png";
 import About from "./components/about/About";
-import AutoSaveChordPaper from "./components/edit/AutoSaveChordPaper";
 import ChordPaper from "./components/edit/ChordPaper";
 import SideMenu from "./components/SideMenu";
 import { TutorialSwitches } from "./components/Tutorial";
 import Version from "./components/Version";
 import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
+import Play from "./components/play/Play";
+import Song from "./components/Song";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -69,13 +70,19 @@ const AppLayout = withStyles({
 })(Grid);
 
 function App() {
+    console.log("app rendered");
     const routeSwitches = (
         <Switch>
-            <Route key="/" exact path="/">
-                <AutoSaveChordPaper />
+            <Redirect from="/" to="/song" exact></Redirect>
+            <Redirect from="/song" to="/song/edit" exact />
+
+            <Route key="/song" path="/song">
+                {/* <Redirect from="/song" to="/song/edit" exact /> */}
+
+                <Song initialSong={NeverGonnaGiveYouUp()} />
             </Route>
             <Route key="/demo" exact path="/demo">
-                <ChordPaper initialSong={NeverGonnaGiveYouUp()} />
+                <ChordPaper song={NeverGonnaGiveYouUp()} />
             </Route>
             {TutorialSwitches()}
             <Route key="/about" exact path="/about">
