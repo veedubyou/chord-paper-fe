@@ -3,18 +3,16 @@ import {
     Grid,
     Paper,
     Typography as UnstyledTypography,
-    Fab,
 } from "@material-ui/core";
+import grey from "@material-ui/core/colors/grey";
 import { withStyles } from "@material-ui/styles";
 import { useWindowWidth } from "@react-hook/window-size";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { NeverGonnaGiveYouUp } from "../../NeverGonnaGiveYouUp";
-import ChordSymbol from "../display/ChordSymbol";
-import grey from "@material-ui/core/colors/grey";
-import PlayMenu from "./PlayMenu";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
+import ChordSymbol from "../display/ChordSymbol";
+import PlayMenu from "./PlayMenu";
 
 const Typography = withStyles({
     root: {
@@ -63,10 +61,12 @@ const PlayLine: React.FC<PlayLineProps> = (
 
 interface PlayProps {
     song: ChordSong;
+    basePath: string;
+    onEdit?: () => void;
 }
 
 const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
-    const numberOfColumns = 2;
+    const numberOfColumns = 3;
     const columnGap = 20;
 
     const windowWidth = useWindowWidth();
@@ -195,7 +195,7 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
 
     return (
         <SizedPaper onMouseDown={handleClick} onContextMenu={cancelContextMenu}>
-            <PlayMenu />
+            <PlayMenu onExit={props.onEdit} />
             <MarginBox>{lines}</MarginBox>
         </SizedPaper>
     );

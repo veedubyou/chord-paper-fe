@@ -46,11 +46,11 @@ const TitleGrid = withStyles((theme: Theme) => ({
     },
 }))(Grid);
 
-const TitleName = withStyles((theme: Theme) => ({
+const TitleName = withStyles({
     root: {
         color: grey[600],
     },
-}))(Typography);
+})(Typography);
 
 const CollapsedMenuSurface = withStyles({
     root: {
@@ -215,6 +215,21 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
         <>
             {collapsedMenu}
             {expandedMenu}
+        </>
+    );
+};
+
+interface WithSideMenuProps {
+    children: React.ReactNode;
+}
+
+export const WithSideMenu: React.FC<WithSideMenuProps> = (
+    props: WithSideMenuProps
+) => {
+    return (
+        <>
+            <SideMenu />
+            {props.children}
         </>
     );
 };

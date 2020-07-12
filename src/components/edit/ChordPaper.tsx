@@ -1,5 +1,5 @@
 import { Paper, Theme, withStyles } from "@material-ui/core";
-import React, { useState } from "react";
+import React from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import ChordPaperBody from "./ChordPaperBody";
 import ChordPaperMenu from "./ChordPaperMenu";
@@ -16,6 +16,7 @@ const RootPaper = withStyles((theme: Theme) => ({
 interface ChordPaperProps {
     song: ChordSong;
     onSongChanged?: (song: ChordSong) => void;
+    onPlay?: () => void;
 }
 
 const ChordPaper: React.FC<ChordPaperProps> = (
@@ -48,6 +49,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                 song={props.song}
                 onLoad={loadHandler}
                 onNewSong={newSongHandler}
+                onPlay={props.onPlay}
             />
         </RootPaper>
     );

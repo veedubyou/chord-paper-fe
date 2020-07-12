@@ -1,17 +1,15 @@
 import { Theme } from "@material-ui/core";
-import UnstyledMenuIcon from "@material-ui/icons/Menu";
+import grey from "@material-ui/core/colors/grey";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-
+import UnstyledMenuIcon from "@material-ui/icons/Menu";
 import {
     SpeedDial as UnstyledSpeedDial,
     SpeedDialAction,
 } from "@material-ui/lab";
 import { withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
-import grey from "@material-ui/core/colors/grey";
-import { Link, useHistory } from "react-router-dom";
 
-interface ChordPaperMenuProps {
+interface PlayMenuProps {
     onExit?: () => void;
 }
 
@@ -33,11 +31,10 @@ const SpeedDial = withStyles((theme: Theme) => ({
     },
 }))(UnstyledSpeedDial);
 
-const PlayMenu: React.FC<ChordPaperMenuProps> = (
-    props: ChordPaperMenuProps
+const PlayMenu: React.FC<PlayMenuProps> = (
+    props: PlayMenuProps
 ): JSX.Element => {
     const [open, setOpen] = useState(false);
-    const history = useHistory();
 
     const openMenu = () => {
         setOpen(true);
@@ -50,7 +47,7 @@ const PlayMenu: React.FC<ChordPaperMenuProps> = (
     const handleExit = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
-        history.push("/song");
+        props.onExit?.();
         event.stopPropagation();
     };
 
