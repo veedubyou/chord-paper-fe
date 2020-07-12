@@ -186,7 +186,10 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     };
 
     // prevent other interactions if currently interacting
-    const paperClassName = interacting ? uninteractiveStyle.root : undefined;
+    const allowInteraction: boolean = !interacting;
+    const paperClassName = allowInteraction
+        ? undefined
+        : uninteractiveStyle.root;
 
     return (
         <DragAndDrop>

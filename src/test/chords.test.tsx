@@ -1,20 +1,18 @@
+import { createMuiTheme, ThemeProvider } from "@material-ui/core";
+import { cleanup, fireEvent, render } from "@testing-library/react";
+import { SnackbarProvider } from "notistack";
 import React from "react";
-import { render, cleanup, fireEvent } from "@testing-library/react";
-
-import { ThemeProvider, createMuiTheme } from "@material-ui/core";
-
+import { ChordBlock } from "../common/ChordModel/ChordBlock";
+import { ChordLine } from "../common/ChordModel/ChordLine";
+import { ChordSong } from "../common/ChordModel/ChordSong";
+import Song from "../components/Song";
 import {
+    ExpectChordAndLyricFn,
+    FindByTestIdChainFn,
     getExpectChordAndLyric,
     getFindByTestIdChain,
-    FindByTestIdChainFn,
-    ExpectChordAndLyricFn,
 } from "./matcher";
 import { enterKey } from "./userEvent";
-import ChordPaper from "../components/edit/ChordPaper";
-import { SnackbarProvider } from "notistack";
-import { ChordSong } from "../common/ChordModel/ChordSong";
-import { ChordLine } from "../common/ChordModel/ChordLine";
-import { ChordBlock } from "../common/ChordModel/ChordBlock";
 
 afterEach(cleanup);
 
@@ -53,7 +51,7 @@ const song = (): ChordSong => {
 const basicChordPaper = () => (
     <ThemeProvider theme={createMuiTheme()}>
         <SnackbarProvider>
-            <ChordPaper initialSong={song()} />
+            <Song initialSong={song()} />
         </SnackbarProvider>
     </ThemeProvider>
 );

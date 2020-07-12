@@ -2,7 +2,7 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 import { SnackbarProvider } from "notistack";
 import React from "react";
 import { ChordSong } from "../common/ChordModel/ChordSong";
-import ChordPaper from "../components/edit/ChordPaper";
+import Song, { SongMode } from "../components/Song";
 
 export const chordPaperFromLyrics = (lyrics: string[]) => {
     const song = ChordSong.fromLyricsLines(lyrics);
@@ -10,7 +10,11 @@ export const chordPaperFromLyrics = (lyrics: string[]) => {
     return (
         <ThemeProvider theme={createMuiTheme()}>
             <SnackbarProvider>
-                <ChordPaper initialSong={song} />
+                <Song
+                    initialSong={song}
+                    mode={SongMode.Edit}
+                    basePath="/test"
+                />
             </SnackbarProvider>
         </ThemeProvider>
     );
@@ -20,7 +24,11 @@ export const chordPaperFromSong = (song: ChordSong) => {
     return (
         <ThemeProvider theme={createMuiTheme()}>
             <SnackbarProvider>
-                <ChordPaper initialSong={song} />
+                <Song
+                    initialSong={song}
+                    mode={SongMode.Edit}
+                    basePath="/test"
+                />
             </SnackbarProvider>
         </ThemeProvider>
     );

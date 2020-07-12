@@ -1,6 +1,7 @@
 import { Theme } from "@material-ui/core";
 import FolderOpenIcon from "@material-ui/icons/FolderOpen";
 import NoteAddIcon from "@material-ui/icons/NoteAdd";
+import PlayIcon from "@material-ui/icons/PlayArrow";
 import SaveIcon from "@material-ui/icons/Save";
 import {
     SpeedDial as UnstyledSpeedDial,
@@ -17,6 +18,7 @@ interface ChordPaperMenuProps {
     song: ChordSong;
     onLoad?: (loadedSong: ChordSong) => void;
     onNewSong?: () => void;
+    onPlay?: () => void;
 }
 
 const SpeedDial = withStyles((theme: Theme) => ({
@@ -141,6 +143,11 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                 icon={<NoteAddIcon />}
                 tooltipTitle="New Song"
                 onClick={props.onNewSong}
+            />
+            <SpeedDialAction
+                icon={<PlayIcon />}
+                tooltipTitle="Play Mode"
+                onClick={props.onPlay}
             />
         </SpeedDial>
     );

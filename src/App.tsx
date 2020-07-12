@@ -8,12 +8,18 @@ import {
 import { withStyles } from "@material-ui/styles";
 import { SnackbarProvider as UnstyledSnackbarProvider } from "notistack";
 import React from "react";
-import { HashRouter, Route, Switch } from "react-router-dom";
+import {
+    HashRouter,
+    Redirect,
+    Route,
+    Switch,
+    useLocation,
+} from "react-router-dom";
 import WoodBackground from "./assets/img/symphony.png";
 import About from "./components/about/About";
-import AutoSaveChordPaper from "./components/edit/AutoSaveChordPaper";
-import ChordPaper from "./components/edit/ChordPaper";
+import AutoSaveSongRouter from "./components/AutoSaveSongRouter";
 import SideMenu from "./components/SideMenu";
+import SongRouter from "./components/SongRouter";
 import { TutorialSwitches } from "./components/Tutorial";
 import Version from "./components/Version";
 import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
@@ -68,33 +74,57 @@ const AppLayout = withStyles({
     },
 })(Grid);
 
-function App() {
-    const routeSwitches = (
+const shouldShowMenu = (path: string): boolean => {
+    return !["/song/play", "/demo/play"].includes(path);
+};
+
+const AppContent: React.FC<{}> = (): JSX.Element => {
+    const location = useLocation();
+
+    const routes = (
         <Switch>
-            <Route key="/" exact path="/">
-                <AutoSaveChordPaper />
+            <Redirect from="/" to="/song" exact />
+
+            <Redirect from="/song" to="/song/edit" exact />
+            <Route key="/song" path="/song">
+                <AutoSaveSongRouter basePath="/song" />
             </Route>
-            <Route key="/demo" exact path="/demo">
-                <ChordPaper initialSong={NeverGonnaGiveYouUp()} />
+
+            <Redirect from="/demo" to="/demo/edit" exact />
+            <Route key="/demo" path="/demo">
+                <SongRouter
+                    basePath="/demo"
+                    initialSong={NeverGonnaGiveYouUp()}
+                />
             </Route>
+
             {TutorialSwitches()}
             <Route key="/about" exact path="/about">
                 <About />
             </Route>
+            <Redirect to="/" />
         </Switch>
     );
 
     return (
+        <>
+            {shouldShowMenu(location.pathname) && <SideMenu />}
+            <AppLayout container>
+                <Grid item container justify="center">
+                    {routes}
+                </Grid>
+            </AppLayout>
+            <Version />
+        </>
+    );
+};
+
+function App() {
+    return (
         <ThemeProvider theme={theme}>
             <SnackbarProvider>
                 <HashRouter>
-                    <SideMenu />
-                    <AppLayout container>
-                        <Grid item container justify="center">
-                            {routeSwitches}
-                        </Grid>
-                    </AppLayout>
-                    <Version />
+                    <AppContent />;
                 </HashRouter>
             </SnackbarProvider>
         </ThemeProvider>

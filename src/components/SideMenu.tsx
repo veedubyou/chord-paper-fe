@@ -46,11 +46,11 @@ const TitleGrid = withStyles((theme: Theme) => ({
     },
 }))(Grid);
 
-const TitleName = withStyles((theme: Theme) => ({
+const TitleName = withStyles({
     root: {
         color: grey[600],
     },
-}))(Typography);
+})(Typography);
 
 const CollapsedMenuSurface = withStyles({
     root: {
@@ -159,8 +159,8 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
             <Divider />
             <List>
                 <Link
-                    key="/"
-                    to="/"
+                    key="/song"
+                    to="/song"
                     style={linkStyle}
                     data-testid="Menu-HomeButton"
                 >
