@@ -1,26 +1,7 @@
+import { fireEvent, render } from "@testing-library/react";
 import React from "react";
-import {
-    render,
-    cleanup,
-    fireEvent,
-    findByTestId,
-} from "@testing-library/react";
-
-import { ThemeProvider, createMuiTheme } from "@material-ui/core";
-
-import {
-    getExpectChordAndLyric,
-    getFindByTestIdChain,
-    FindByTestIdChainFn,
-    ExpectChordAndLyricFn,
-} from "./matcher";
-import { enterKey } from "./userEvent";
-import ChordPaper from "../components/edit/ChordPaper";
-import { SnackbarProvider } from "notistack";
-import { ChordSong } from "../common/ChordModel/ChordSong";
-import { ChordLine } from "../common/ChordModel/ChordLine";
-import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import App from "../App";
+import { FindByTestIdChainFn, getFindByTestIdChain } from "./matcher";
 
 describe("App side menu", () => {
     let findByTestIdChain: FindByTestIdChainFn;

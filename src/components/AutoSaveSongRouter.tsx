@@ -5,7 +5,7 @@ import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { loadSong, saveSong } from "../common/BrowserSave";
 import { ChordSong } from "../common/ChordModel/ChordSong";
-import Song from "./Song";
+import SongRouter from "./SongRouter";
 
 const useBackdropStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -16,12 +16,12 @@ const useBackdropStyles = makeStyles((theme: Theme) =>
     })
 );
 
-interface AutoSaveSongProps {
+interface AutoSaveSongRouterProps {
     basePath: string;
 }
 
-const AutoSaveSong: React.FC<AutoSaveSongProps> = (
-    props: AutoSaveSongProps
+const AutoSaveSongRouter: React.FC<AutoSaveSongRouterProps> = (
+    props: AutoSaveSongRouterProps
 ): JSX.Element => {
     const [loadedSong, setLoadedSong] = useState<ChordSong | null>(null);
     const { enqueueSnackbar } = useSnackbar();
@@ -60,7 +60,7 @@ const AutoSaveSong: React.FC<AutoSaveSongProps> = (
     }
 
     return (
-        <Song
+        <SongRouter
             basePath={props.basePath}
             initialSong={loadedSong}
             onSongChanged={handleSongChanged}
@@ -68,4 +68,4 @@ const AutoSaveSong: React.FC<AutoSaveSongProps> = (
     );
 };
 
-export default AutoSaveSong;
+export default AutoSaveSongRouter;

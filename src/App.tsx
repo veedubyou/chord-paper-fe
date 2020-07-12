@@ -17,9 +17,9 @@ import {
 } from "react-router-dom";
 import WoodBackground from "./assets/img/symphony.png";
 import About from "./components/about/About";
-import AutoSaveSong from "./components/AutoSaveSong";
+import AutoSaveSongRouter from "./components/AutoSaveSongRouter";
 import SideMenu from "./components/SideMenu";
-import Song from "./components/Song";
+import SongRouter from "./components/SongRouter";
 import { TutorialSwitches } from "./components/Tutorial";
 import Version from "./components/Version";
 import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
@@ -87,12 +87,15 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
 
             <Redirect from="/song" to="/song/edit" exact />
             <Route key="/song" path="/song">
-                <AutoSaveSong basePath="/song" />
+                <AutoSaveSongRouter basePath="/song" />
             </Route>
 
             <Redirect from="/demo" to="/demo/edit" exact />
             <Route key="/demo" path="/demo">
-                <Song basePath="/demo" initialSong={NeverGonnaGiveYouUp()} />
+                <SongRouter
+                    basePath="/demo"
+                    initialSong={NeverGonnaGiveYouUp()}
+                />
             </Route>
 
             {TutorialSwitches()}
