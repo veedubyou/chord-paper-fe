@@ -16,7 +16,7 @@ interface PlayProps {
 
 const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
     const numberOfColumns = 2;
-    const columnGap = 20;
+    const columnMargin = 20;
 
     const windowWidth = useWindowWidth();
     const columnWidth = windowWidth / numberOfColumns;
@@ -112,8 +112,8 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
 
     const ColumnedPaper = withStyles({
         root: {
-            columnGap: `0px`,
-            columnRuleWidth: `2px`,
+            columnGap: "0px",
+            columnRuleWidth: "2px",
             columnRuleStyle: "solid",
             columnRuleColor: grey[300],
             columns: numberOfColumns,
@@ -128,8 +128,8 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
     // making 0 gap columns with margins makes the math a lot simpler for each column
     const MarginBox = withStyles({
         root: {
-            marginLeft: `${columnGap}px`,
-            marginRight: `${columnGap}px`,
+            marginLeft: `${columnMargin}px`,
+            marginRight: `${columnMargin}px`,
         },
     })(Box);
 

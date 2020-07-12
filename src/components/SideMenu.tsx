@@ -219,19 +219,4 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-interface WithSideMenuProps {
-    children: React.ReactNode;
-}
-
-export const WithSideMenu: React.FC<WithSideMenuProps> = (
-    props: WithSideMenuProps
-) => {
-    return (
-        <>
-            <SideMenu />
-            {props.children}
-        </>
-    );
-};
-
 export default SideMenu;

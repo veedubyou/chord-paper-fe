@@ -6,15 +6,12 @@ import Play from "./play/Play";
 
 interface SongProps {
     basePath: string;
-    initialSong?: ChordSong;
+    initialSong: ChordSong;
     onSongChanged?: (song: ChordSong) => void;
 }
 
 const Song: React.FC<SongProps> = (props: SongProps): JSX.Element => {
-    const initialSong =
-        props.initialSong !== undefined ? props.initialSong : new ChordSong();
-
-    const [song, setSong] = useState<ChordSong>(initialSong);
+    const [song, setSong] = useState<ChordSong>(props.initialSong);
     const history = useHistory();
 
     const handleSongChanged = (song: ChordSong) => {
