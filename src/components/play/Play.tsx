@@ -1,63 +1,12 @@
-import {
-    Box,
-    Grid,
-    Paper,
-    Typography as UnstyledTypography,
-} from "@material-ui/core";
+import { Box, Paper } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
 import { withStyles } from "@material-ui/styles";
 import { useWindowWidth } from "@react-hook/window-size";
 import React, { useEffect } from "react";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
-import ChordSymbol from "../display/ChordSymbol";
 import PlayMenu from "./PlayMenu";
-
-const Typography = withStyles({
-    root: {
-        whiteSpace: "pre",
-    },
-})(UnstyledTypography);
-
-interface PlayBlockProps {
-    block: ChordBlock;
-}
-
-const PlayBlock: React.FC<PlayBlockProps> = (
-    props: PlayBlockProps
-): JSX.Element => {
-    return (
-        <Box display="inline-block">
-            <Grid container direction="column" component="span">
-                <Grid item>
-                    <ChordSymbol>{props.block.chord}</ChordSymbol>
-                </Grid>
-                <Grid item>
-                    <Typography variant="h6" display="inline">
-                        {props.block.lyric}
-                    </Typography>
-                </Grid>
-            </Grid>
-        </Box>
-    );
-};
-
-interface PlayLineProps {
-    line: ChordLine;
-}
-
-const PlayLine: React.FC<PlayLineProps> = (
-    props: PlayLineProps
-): JSX.Element => {
-    return (
-        <Box>
-            {props.line.chordBlocks.map((block: ChordBlock) => (
-                <PlayBlock block={block}></PlayBlock>
-            ))}
-        </Box>
-    );
-};
+import PlayLine from "./PlayLine";
 
 interface PlayProps {
     song: ChordSong;
@@ -66,7 +15,7 @@ interface PlayProps {
 }
 
 const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
-    const numberOfColumns = 3;
+    const numberOfColumns = 2;
     const columnGap = 20;
 
     const windowWidth = useWindowWidth();
@@ -161,7 +110,7 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
         event.preventDefault();
     };
 
-    const SizedPaper = withStyles({
+    const ColumnedPaper = withStyles({
         root: {
             columnGap: `0px`,
             columnRuleWidth: `2px`,
@@ -175,6 +124,7 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
 
     // using margins instead of column-gap, CSS columns force the rightmost column
     // up against the edge of the viewport and doesn't strictly respect column width
+    //
     // making 0 gap columns with margins makes the math a lot simpler for each column
     const MarginBox = withStyles({
         root: {
@@ -194,10 +144,13 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
     });
 
     return (
-        <SizedPaper onMouseDown={handleClick} onContextMenu={cancelContextMenu}>
+        <ColumnedPaper
+            onMouseDown={handleClick}
+            onContextMenu={cancelContextMenu}
+        >
             <PlayMenu onExit={props.onEdit} />
             <MarginBox>{lines}</MarginBox>
-        </SizedPaper>
+        </ColumnedPaper>
     );
 };
 

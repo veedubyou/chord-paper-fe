@@ -78,7 +78,7 @@ const shouldShowMenu = (path: string): boolean => {
     return !["/song/play", "/demo/play"].includes(path);
 };
 
-const AppContent: React.FC<{}> = () => {
+const AppContent: React.FC<{}> = (): JSX.Element => {
     const location = useLocation();
 
     const routes = (
