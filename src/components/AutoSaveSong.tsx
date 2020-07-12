@@ -51,9 +51,7 @@ const AutoSaveSong: React.FC<AutoSaveSongProps> = (
     };
 
     if (loadedSong === null) {
-        setTimeout(() => {
-            setLoadedSong(loadLastSavedSong());
-        }, 5000);
+        setLoadedSong(loadLastSavedSong());
         return (
             <Backdrop className={backdropStyles.backdrop} open>
                 <CircularProgress />
