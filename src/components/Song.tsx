@@ -9,7 +9,6 @@ export enum SongMode {
 }
 
 interface SongProps {
-    basePath: string;
     initialSong: ChordSong;
     mode: SongMode;
     onEdit?: () => void;
@@ -27,9 +26,7 @@ const Song: React.FC<SongProps> = (props: SongProps): JSX.Element => {
     };
 
     if (props.mode === SongMode.Play) {
-        return (
-            <Play basePath={props.basePath} song={song} onEdit={props.onEdit} />
-        );
+        return <Play song={song} onEdit={props.onEdit} />;
     }
 
     return (

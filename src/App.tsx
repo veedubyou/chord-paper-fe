@@ -17,12 +17,12 @@ import {
 } from "react-router-dom";
 import WoodBackground from "./assets/img/symphony.png";
 import About from "./components/about/About";
-import AutoSaveSongRouter from "./components/AutoSaveSongRouter";
 import SideMenu from "./components/SideMenu";
 import SongRouter from "./components/SongRouter";
 import { TutorialSwitches } from "./components/Tutorial";
 import Version from "./components/Version";
 import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
+import { withAutoSave } from "./components/WithAutoSave";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -77,6 +77,8 @@ const AppLayout = withStyles({
 const shouldShowMenu = (path: string): boolean => {
     return !["/song/play", "/demo/play"].includes(path);
 };
+
+const AutoSaveSongRouter = withAutoSave(SongRouter);
 
 const AppContent: React.FC<{}> = (): JSX.Element => {
     const location = useLocation();

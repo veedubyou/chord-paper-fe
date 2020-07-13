@@ -10,7 +10,6 @@ import PlayLine from "./PlayLine";
 
 interface PlayProps {
     song: ChordSong;
-    basePath: string;
     onEdit?: () => void;
 }
 
