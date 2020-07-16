@@ -195,7 +195,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         <DragAndDrop>
             <InteractionContext.Provider value={interactionContextValue}>
                 <Paper
-                    onCopy={handleCopy}
+                    onCopy={allowInteraction ? handleCopy : undefined}
                     className={paperClassName}
                     elevation={0}
                 >
