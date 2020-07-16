@@ -1,14 +1,8 @@
-import { Box, Grid, Typography as UnstyledTypography } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Box, Grid } from "@material-ui/core";
 import React from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import ChordSymbol from "../display/ChordSymbol";
-
-const Typography = withStyles({
-    root: {
-        whiteSpace: "pre",
-    },
-})(UnstyledTypography);
+import Lyric from "../display/Lyric";
 
 interface PlayBlockProps {
     block: ChordBlock;
@@ -24,9 +18,7 @@ const PlayBlock: React.FC<PlayBlockProps> = (
                     <ChordSymbol>{props.block.chord}</ChordSymbol>
                 </Grid>
                 <Grid item>
-                    <Typography variant="h6" display="inline">
-                        {props.block.lyric}
-                    </Typography>
+                    <Lyric data-testid="lyric">{props.block.lyric}</Lyric>
                 </Grid>
             </Grid>
         </Box>
