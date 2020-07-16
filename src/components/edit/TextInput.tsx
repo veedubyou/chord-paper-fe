@@ -143,13 +143,7 @@ const TextInput: React.FC<TextInputProps> = (
         return [beforeSelection, afterSelection];
     };
 
-    const tabHandler = (
-        event: React.KeyboardEvent<HTMLDivElement>
-    ): boolean => {
-        if (event.key !== "Tab") {
-            return false;
-        }
-
+    const insertTextAtSelection = (newContent: string): boolean => {
         if (contentEditableRef.current === null) {
             return false;
         }
@@ -160,11 +154,20 @@ const TextInput: React.FC<TextInputProps> = (
         }
 
         range.deleteContents();
-        range.insertNode(document.createTextNode("\t"));
+        range.insertNode(document.createTextNode(newContent));
         range.collapse(false);
         contentEditableRef.current.normalize();
-
         return true;
+    };
+
+    const tabHandler = (
+        event: React.KeyboardEvent<HTMLDivElement>
+    ): boolean => {
+        if (event.key !== "Tab") {
+            return false;
+        }
+
+        return insertTextAtSelection("\t");
     };
 
     const specialStylingKeysHandler = (
@@ -246,6 +249,10 @@ const TextInput: React.FC<TextInputProps> = (
 
         if (linesOfText.length === 0) {
             return false;
+        }
+
+        if (linesOfText.length === 1) {
+            return insertTextAtSelection(linesOfText[0]);
         }
 
         const [newValue, newPasteLines] = composeMultilinePaste(linesOfText);
