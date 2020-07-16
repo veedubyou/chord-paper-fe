@@ -17,18 +17,12 @@ interface PlayProps {
 
 const defaultFontSize = 20;
 
-const fontSizeToPx = (
-    fontSize: string | number,
-    htmlFontSize: number
-): number => {
-    console.log("font size", fontSize);
+const fontSizeToPx = (fontSize: string | number): number => {
     if (typeof fontSize === "number") {
-        console.log("number");
         return fontSize;
     }
 
     if (!fontSize.includes("rem")) {
-        console.log("no rem");
         return defaultFontSize;
     }
     const remTokens: string[] = fontSize.split("rem");
@@ -37,7 +31,9 @@ const fontSizeToPx = (
     if (isNaN(remSize)) {
         return defaultFontSize;
     }
-    console.log("GOD");
+
+    const htmlFontSize = 16;
+
     return remSize * htmlFontSize;
 };
 
@@ -45,10 +41,7 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
     const theme: Theme = useTheme();
     const [formatting, setFormatting] = useState<PlayFormatting>({
         numberOfColumns: 2,
-        fontSize: fontSizeToPx(
-            theme.typography.h6.fontSize ?? defaultFontSize,
-            theme.typography.fontSize
-        ),
+        fontSize: fontSizeToPx(theme.typography.h6.fontSize ?? defaultFontSize),
         columnMargin: 20,
     });
 

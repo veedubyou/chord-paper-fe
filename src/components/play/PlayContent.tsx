@@ -1,8 +1,8 @@
-import { Box, Paper, Theme, RootRef } from "@material-ui/core";
+import { Box, Paper, RootRef } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
-import { withStyles, useTheme } from "@material-ui/styles";
+import { withStyles } from "@material-ui/styles";
 import { useWindowWidth } from "@react-hook/window-size";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import PlayLine from "./PlayLine";

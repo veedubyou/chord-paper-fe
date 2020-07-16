@@ -9,19 +9,12 @@ import {
     InputAdornment,
     TextField,
     Theme,
-    Typography as UnstyledTypography,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import React, { ChangeEvent, useState } from "react";
 import { isWhitespace } from "../../common/Whitespace";
 import { PlayFormatting } from "./PlayContent";
-
-const Typography = withStyles({
-    root: {
-        whiteSpace: "pre",
-    },
-})(UnstyledTypography);
 
 interface TextSettings {
     numberOfColumns: string;
@@ -38,8 +31,6 @@ interface DisplaySettingsProps {
 
 const Box = withStyles((theme: Theme) => ({
     root: {
-        // marginTop: theme.spacing(1),
-        // marginBottom: theme.spacing(1),
         margin: theme.spacing(1),
     },
 }))(UnstyledBox);
