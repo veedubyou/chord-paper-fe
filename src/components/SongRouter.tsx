@@ -1,11 +1,12 @@
 import React from "react";
 import { Route, useHistory } from "react-router-dom";
 import { ChordSong } from "../common/ChordModel/ChordSong";
-import Song, { SongMode } from "./Song";
+import ChordPaper from "./edit/ChordPaper";
+import Play from "./play/Play";
 
 interface SongRouterProps {
     basePath: string;
-    initialSong: ChordSong;
+    song: ChordSong;
     onSongChanged?: (song: ChordSong) => void;
 }
 
@@ -28,22 +29,14 @@ const SongRouter: React.FC<SongRouterProps> = (
     return (
         <>
             <Route key={editPath} path={editPath}>
-                <Song
-                    initialSong={props.initialSong}
-                    mode={SongMode.Edit}
+                <ChordPaper
+                    song={props.song}
                     onSongChanged={props.onSongChanged}
-                    onEdit={switchToEdit}
                     onPlay={switchToPlay}
                 />
             </Route>
             <Route key={playPath} path={playPath}>
-                <Song
-                    initialSong={props.initialSong}
-                    mode={SongMode.Play}
-                    onSongChanged={props.onSongChanged}
-                    onEdit={switchToEdit}
-                    onPlay={switchToPlay}
-                />
+                <Play song={props.song} onEdit={switchToEdit} />;
             </Route>
         </>
     );
