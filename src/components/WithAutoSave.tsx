@@ -16,7 +16,7 @@ const useBackdropStyles = makeStyles((theme: Theme) =>
 );
 
 interface SongProps {
-    initialSong: ChordSong;
+    song: ChordSong;
     onSongChanged?: (song: ChordSong) => void;
 }
 
@@ -65,7 +65,7 @@ export const withAutoSave = <P extends SongProps>(
         // https://github.com/microsoft/TypeScript/issues/35858
         const originalComponentProps = {
             ...props,
-            initialSong: loadedSong,
+            song: loadedSong,
             onSongChanged: handleSongChanged,
         } as P;
 

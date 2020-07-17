@@ -23,6 +23,7 @@ import { TutorialSwitches } from "./components/Tutorial";
 import Version from "./components/Version";
 import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
 import { withAutoSave } from "./components/WithAutoSave";
+import { withSongContext } from "./components/WithSongContext";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -78,7 +79,8 @@ const shouldShowMenu = (path: string): boolean => {
     return !["/song/play", "/demo/play"].includes(path);
 };
 
-const AutoSaveSongRouter = withAutoSave(SongRouter);
+const MainSong = withAutoSave(withSongContext(SongRouter));
+const DemoSong = withSongContext(SongRouter);
 
 const AppContent: React.FC<{}> = (): JSX.Element => {
     const location = useLocation();
@@ -89,15 +91,12 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
 
             <Redirect from="/song" to="/song/edit" exact />
             <Route key="/song" path="/song">
-                <AutoSaveSongRouter basePath="/song" />
+                <MainSong basePath="/song" />
             </Route>
 
             <Redirect from="/demo" to="/demo/edit" exact />
             <Route key="/demo" path="/demo">
-                <SongRouter
-                    basePath="/demo"
-                    initialSong={NeverGonnaGiveYouUp()}
-                />
+                <DemoSong basePath="/demo" song={NeverGonnaGiveYouUp()} />
             </Route>
 
             {TutorialSwitches()}

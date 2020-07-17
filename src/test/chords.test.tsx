@@ -5,7 +5,6 @@ import React from "react";
 import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordSong } from "../common/ChordModel/ChordSong";
-import Song from "../components/Song";
 import {
     ExpectChordAndLyricFn,
     FindByTestIdChainFn,
@@ -13,6 +12,10 @@ import {
     getFindByTestIdChain,
 } from "./matcher";
 import { enterKey } from "./userEvent";
+import { withSongContext } from "../components/WithSongContext";
+import ChordPaper from "../components/edit/ChordPaper";
+
+const Song = withSongContext(ChordPaper);
 
 afterEach(cleanup);
 
@@ -51,7 +54,7 @@ const song = (): ChordSong => {
 const basicChordPaper = () => (
     <ThemeProvider theme={createMuiTheme()}>
         <SnackbarProvider>
-            <Song initialSong={song()} />
+            <Song song={song()} />
         </SnackbarProvider>
     </ThemeProvider>
 );
