@@ -1,5 +1,4 @@
 import {
-    BaseTextFieldProps,
     Box as UnstyledBox,
     Button,
     Dialog,
@@ -8,6 +7,7 @@ import {
     DialogTitle,
     InputAdornment,
     TextField,
+    TextFieldProps as TextFieldPropsWithVariant,
     Theme,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
@@ -16,10 +16,18 @@ import React, { ChangeEvent, useState } from "react";
 import { isWhitespace } from "../../common/Whitespace";
 import { PlayFormatting } from "./PlayContent";
 
+type TextFieldProps = Omit<Partial<TextFieldPropsWithVariant>, "variant">;
+
 interface TextSettings {
     numberOfColumns: string;
     fontSize: string;
     columnMargin: string;
+}
+
+interface InputFieldSpecification {
+    label: string;
+    field: keyof TextSettings;
+    adornment: string | null;
 }
 
 interface DisplaySettingsProps {
@@ -110,39 +118,16 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = (
         });
     };
 
-    const handleColumnsChange = (
-        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        const newValue = event.target.value;
-        setSettings({
-            ...settings,
-            numberOfColumns: newValue,
-        });
+    const settingChangeHandler = (field: keyof TextSettings) => {
+        return (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            const newValue = event.target.value;
+            const newSettings: TextSettings = { ...settings };
+            newSettings[field] = newValue;
+            setSettings(newSettings);
+        };
     };
 
-    const handleFontsizeChange = (
-        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        const newValue = event.target.value;
-        setSettings({
-            ...settings,
-            fontSize: newValue,
-        });
-    };
-
-    const handleColumnMarginChange = (
-        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
-        const newValue = event.target.value;
-        setSettings({
-            ...settings,
-            columnMargin: newValue,
-        });
-    };
-
-    const intValidationErrorProps = (
-        strValue: string
-    ): Omit<Partial<BaseTextFieldProps>, "variant"> => {
+    const intValidationErrorProps = (strValue: string): TextFieldProps => {
         const result = validateInt(strValue);
         return {
             error: isLeft(result) ? true : undefined,
@@ -150,51 +135,45 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = (
         };
     };
 
-    const numberOfColumnsInput = () => {
-        return (
-            <Box>
-                <TextField
-                    defaultValue={settings.numberOfColumns}
-                    label="number of columns"
-                    onChange={handleColumnsChange}
-                    {...intValidationErrorProps(settings.numberOfColumns)}
-                />
-            </Box>
-        );
-    };
+    const inputSpecs: InputFieldSpecification[] = [
+        {
+            label: "number of columns",
+            field: "numberOfColumns",
+            adornment: null,
+        },
+        {
+            label: "font size",
+            field: "fontSize",
+            adornment: "px",
+        },
+        {
+            label: "column margin",
+            field: "columnMargin",
+            adornment: "px",
+        },
+    ];
 
-    const fontSizeInput = () => {
-        return (
-            <Box>
-                <TextField
-                    label="font size"
-                    defaultValue={settings.fontSize}
-                    onChange={handleFontsizeChange}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">px</InputAdornment>
-                        ),
-                    }}
-                    {...intValidationErrorProps(settings.fontSize)}
-                />
-            </Box>
-        );
-    };
+    const makeInput = (spec: InputFieldSpecification) => {
+        const textFieldProps: TextFieldProps = {
+            label: spec.label,
+            defaultValue: settings[spec.field],
+            onChange: settingChangeHandler(spec.field),
+            ...intValidationErrorProps(settings[spec.field]),
+        };
 
-    const columnMarginInput = () => {
+        if (spec.adornment !== null) {
+            textFieldProps.InputProps = {
+                endAdornment: (
+                    <InputAdornment position="end">
+                        {spec.adornment}
+                    </InputAdornment>
+                ),
+            };
+        }
+
         return (
             <Box>
-                <TextField
-                    label="column margin"
-                    defaultValue={settings.columnMargin}
-                    onChange={handleColumnMarginChange}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">px</InputAdornment>
-                        ),
-                    }}
-                    {...intValidationErrorProps(settings.columnMargin)}
-                />
+                <TextField {...textFieldProps} />
             </Box>
         );
     };
@@ -203,11 +182,10 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = (
         <Dialog open={props.open} onClose={props.onClose}>
             <DialogTitle>Display Settings</DialogTitle>
             <DialogContent>
-                {numberOfColumnsInput()}
-                {fontSizeInput()}
-                {columnMarginInput()}
+                {inputSpecs.map((spec: InputFieldSpecification) =>
+                    makeInput(spec)
+                )}
             </DialogContent>
-
             <DialogActions>
                 <Button onClick={props.onClose}>Cancel</Button>
                 <Button disabled={hasValidationErrors()} onClick={handleSubmit}>

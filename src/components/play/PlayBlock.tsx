@@ -3,7 +3,6 @@ import React from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import ChordSymbol from "../display/ChordSymbol";
 import Lyric from "../display/Lyric";
-import { withStyles } from "@material-ui/styles";
 
 interface PlayBlockProps {
     block: ChordBlock;
