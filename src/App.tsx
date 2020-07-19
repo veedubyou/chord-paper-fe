@@ -8,6 +8,7 @@ import {
 import { withStyles } from "@material-ui/styles";
 import { SnackbarProvider as UnstyledSnackbarProvider } from "notistack";
 import React from "react";
+import { Helmet } from "react-helmet";
 import {
     HashRouter,
     Redirect,
@@ -21,9 +22,9 @@ import SideMenu from "./components/SideMenu";
 import SongRouter from "./components/SongRouter";
 import { TutorialSwitches } from "./components/Tutorial";
 import Version from "./components/Version";
-import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
 import { withAutoSave } from "./components/WithAutoSave";
 import { withSongContext } from "./components/WithSongContext";
+import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -123,6 +124,9 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
 function App() {
     return (
         <ThemeProvider theme={theme}>
+            <Helmet>
+                <title>Chord Paper</title>
+            </Helmet>
             <SnackbarProvider>
                 <HashRouter>
                     <AppContent />;
