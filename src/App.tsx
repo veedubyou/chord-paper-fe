@@ -8,7 +8,7 @@ import {
 import { withStyles } from "@material-ui/styles";
 import { SnackbarProvider as UnstyledSnackbarProvider } from "notistack";
 import React from "react";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import {
     HashRouter,
     Redirect,
@@ -123,17 +123,19 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
 
 function App() {
     return (
-        <ThemeProvider theme={theme}>
-            <Helmet
-                titleTemplate="%s - Chord Paper"
-                defaultTitle="Chord Paper"
-            />
-            <SnackbarProvider>
-                <HashRouter>
-                    <AppContent />;
-                </HashRouter>
-            </SnackbarProvider>
-        </ThemeProvider>
+        <HelmetProvider>
+            <ThemeProvider theme={theme}>
+                <Helmet
+                    titleTemplate="%s - Chord Paper"
+                    defaultTitle="Chord Paper"
+                />
+                <SnackbarProvider>
+                    <HashRouter>
+                        <AppContent />;
+                    </HashRouter>
+                </SnackbarProvider>
+            </ThemeProvider>
+        </HelmetProvider>
     );
 }
 

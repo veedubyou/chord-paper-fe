@@ -6,7 +6,7 @@ import {
 } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
 import React, { useState } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import PlayContent, { PlayFormatting } from "./PlayContent";
 import PlayMenu from "./PlayMenu";

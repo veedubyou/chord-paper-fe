@@ -1,6 +1,6 @@
 import { Paper, Theme, withStyles } from "@material-ui/core";
 import React from "react";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import ChordPaperBody from "./ChordPaperBody";
 import ChordPaperMenu from "./ChordPaperMenu";
