@@ -1,14 +1,16 @@
-import React, { useState } from "react";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
-import PlayContent, { PlayFormatting } from "./PlayContent";
-import PlayMenu from "./PlayMenu";
 import {
-    ThemeProvider,
-    Theme,
     createMuiTheme,
     responsiveFontSizes,
+    Theme,
+    ThemeProvider,
 } from "@material-ui/core";
 import { useTheme } from "@material-ui/styles";
+import React, { useState } from "react";
+import { Helmet } from "react-helmet";
+import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { pageTitle } from "../display/PageTitle";
+import PlayContent, { PlayFormatting } from "./PlayContent";
+import PlayMenu from "./PlayMenu";
 
 interface PlayProps {
     song: ChordSong;
@@ -61,6 +63,9 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
 
     return (
         <>
+            <Helmet>
+                <title>{pageTitle(props.song)}</title>
+            </Helmet>
             <PlayMenu
                 formatting={formatting}
                 onFormattingChange={setFormatting}

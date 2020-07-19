@@ -1,6 +1,8 @@
 import { Paper, Theme, withStyles } from "@material-ui/core";
 import React from "react";
+import { Helmet } from "react-helmet";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { pageTitle } from "../display/PageTitle";
 import ChordPaperBody from "./ChordPaperBody";
 import ChordPaperMenu from "./ChordPaperMenu";
 import Header from "./Header";
@@ -35,23 +37,28 @@ const ChordPaper: React.FC<ChordPaperProps> = (
     };
 
     return (
-        <RootPaper elevation={3} data-testid="ChordPaper">
-            <Header
-                data-testid={"Header"}
-                song={props.song}
-                onSongChanged={songChangeHandler}
-            />
-            <ChordPaperBody
-                song={props.song}
-                onSongChanged={songChangeHandler}
-            />
-            <ChordPaperMenu
-                song={props.song}
-                onLoad={loadHandler}
-                onNewSong={newSongHandler}
-                onPlay={props.onPlay}
-            />
-        </RootPaper>
+        <>
+            <Helmet>
+                <title>{pageTitle(props.song)}</title>
+            </Helmet>
+            <RootPaper elevation={3} data-testid="ChordPaper">
+                <Header
+                    data-testid={"Header"}
+                    song={props.song}
+                    onSongChanged={songChangeHandler}
+                />
+                <ChordPaperBody
+                    song={props.song}
+                    onSongChanged={songChangeHandler}
+                />
+                <ChordPaperMenu
+                    song={props.song}
+                    onLoad={loadHandler}
+                    onNewSong={newSongHandler}
+                    onPlay={props.onPlay}
+                />
+            </RootPaper>
+        </>
     );
 };
 
