@@ -2,7 +2,6 @@ import { Paper, Theme, withStyles } from "@material-ui/core";
 import React from "react";
 import { Helmet } from "react-helmet";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { pageTitle } from "../display/PageTitle";
 import ChordPaperBody from "./ChordPaperBody";
 import ChordPaperMenu from "./ChordPaperMenu";
 import Header from "./Header";
@@ -39,7 +38,11 @@ const ChordPaper: React.FC<ChordPaperProps> = (
     return (
         <>
             <Helmet>
-                <title>{pageTitle(props.song)}</title>
+                <title>
+                    {props.song.metadata.title !== ""
+                        ? props.song.metadata.title
+                        : "New Song"}
+                </title>
             </Helmet>
             <RootPaper elevation={3} data-testid="ChordPaper">
                 <Header

@@ -8,7 +8,6 @@ import { useTheme } from "@material-ui/styles";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { pageTitle } from "../display/PageTitle";
 import PlayContent, { PlayFormatting } from "./PlayContent";
 import PlayMenu from "./PlayMenu";
 
@@ -64,7 +63,11 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
     return (
         <>
             <Helmet>
-                <title>{pageTitle(props.song)}</title>
+                <title>
+                    {props.song.metadata.title !== ""
+                        ? props.song.metadata.title
+                        : "New Song"}
+                </title>
             </Helmet>
             <PlayMenu
                 formatting={formatting}

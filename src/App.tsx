@@ -124,9 +124,10 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
 function App() {
     return (
         <ThemeProvider theme={theme}>
-            <Helmet>
-                <title>Chord Paper</title>
-            </Helmet>
+            <Helmet
+                titleTemplate="%s - Chord Paper"
+                defaultTitle="Chord Paper"
+            />
             <SnackbarProvider>
                 <HashRouter>
                     <AppContent />;
