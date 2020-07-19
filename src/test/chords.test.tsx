@@ -14,6 +14,7 @@ import {
 import { enterKey } from "./userEvent";
 import { withSongContext } from "../components/WithSongContext";
 import ChordPaper from "../components/edit/ChordPaper";
+import { chordPaperFromSong } from "./common";
 
 const Song = withSongContext(ChordPaper);
 
@@ -51,13 +52,9 @@ const song = (): ChordSong => {
     return new ChordSong(lines);
 };
 
-const basicChordPaper = () => (
-    <ThemeProvider theme={createMuiTheme()}>
-        <SnackbarProvider>
-            <Song song={song()} />
-        </SnackbarProvider>
-    </ThemeProvider>
-);
+const basicChordPaper = () => {
+    return chordPaperFromSong(song());
+};
 
 describe("Rendering initial chords", () => {
     test("renders the chords", async () => {
