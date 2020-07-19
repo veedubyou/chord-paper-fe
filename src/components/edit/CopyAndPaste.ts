@@ -277,7 +277,7 @@ export const useLineCopyHandler = (song: ChordSong) => {
 export const useLinePasteHandler = (song: ChordSong) => {
     const { enqueueSnackbar } = useSnackbar();
 
-    return (id: IDable<"ChordLine">, jsonStr: string): boolean => {
+    return (id: IDable<ChordLine>, jsonStr: string): boolean => {
         const deserializedCopyResult = deserializeCopiedChordLines(jsonStr);
         // not actually a Chord Paper line payload, don't handle it
         if (deserializedCopyResult === null) {

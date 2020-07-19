@@ -17,8 +17,8 @@ export const ChordLineValidator = iots.type({
 
 export type ChordLineValidatedFields = iots.TypeOf<typeof ChordLineValidator>;
 
-export class ChordLine extends Collection<ChordBlock, "ChordBlock">
-    implements IDable<"ChordLine"> {
+export class ChordLine extends Collection<ChordBlock>
+    implements IDable<ChordLine> {
     id: string;
     type: "ChordLine";
 
@@ -94,13 +94,13 @@ export class ChordLine extends Collection<ChordBlock, "ChordBlock">
         replaceChordLineLyrics(this, newLyrics);
     }
 
-    setChord(idable: IDable<"ChordBlock">, newChord: string): void {
+    setChord(idable: IDable<ChordBlock>, newChord: string): void {
         const index = this.indexOf(idable.id);
         this.elements[index].chord = newChord;
         this.normalizeBlocks();
     }
 
-    splitBlock(idable: IDable<"ChordBlock">, splitIndex: number): void {
+    splitBlock(idable: IDable<ChordBlock>, splitIndex: number): void {
         const index = this.indexOf(idable.id);
         const block = this.elements[index];
         const newPrevBlock = block.split(splitIndex);

@@ -2,18 +2,19 @@ import { RootRef } from "@material-ui/core";
 import React from "react";
 import { DropTargetMonitor, useDrop } from "react-dnd";
 import { IDable } from "../../common/ChordModel/Collection";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 
 export const DNDChordType: "chord" = "chord";
 
 export interface DNDChord {
     type: typeof DNDChordType;
-    sourceBlockID: IDable<"ChordBlock">;
+    sourceBlockID: IDable<ChordBlock>;
     chord: string;
     handled: boolean;
 }
 
 export const NewDNDChord = (
-    sourceBlockID: IDable<"ChordBlock">,
+    sourceBlockID: IDable<ChordBlock>,
     chord: string
 ): DNDChord => {
     return {
@@ -30,7 +31,7 @@ interface ClassNameable {
 
 interface ChordDroppableProps {
     children: React.ReactElement<ClassNameable>;
-    onDropped: (newChord: string, sourceBlockID: IDable<"ChordBlock">) => void;
+    onDropped: (newChord: string, sourceBlockID: IDable<ChordBlock>) => void;
     hoverableClassName?: string;
     dragOverClassName?: string;
 }

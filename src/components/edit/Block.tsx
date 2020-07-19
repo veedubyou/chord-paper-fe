@@ -66,13 +66,13 @@ const useNormalTokenStyle = {
 export interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
     onChordDragAndDrop?: (
-        destinationBlockID: IDable<"ChordBlock">,
+        destinationBlockID: IDable<ChordBlock>,
         splitIndex: number,
         newChord: string,
-        sourceBlockID: IDable<"ChordBlock">
+        sourceBlockID: IDable<ChordBlock>
     ) => void;
-    onChordChange?: (id: IDable<"ChordBlock">, newChord: string) => void;
-    onBlockSplit?: (id: IDable<"ChordBlock">, splitIndex: number) => void;
+    onChordChange?: (id: IDable<ChordBlock>, newChord: string) => void;
+    onBlockSplit?: (id: IDable<ChordBlock>, splitIndex: number) => void;
 }
 
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
@@ -124,7 +124,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     };
 
     const dropHandler = (tokenIndex: number) => {
-        return (newChord: string, sourceBlockID: IDable<"ChordBlock">) => {
+        return (newChord: string, sourceBlockID: IDable<ChordBlock>) => {
             if (props.onChordDragAndDrop) {
                 props.onChordDragAndDrop(
                     props.chordBlock,

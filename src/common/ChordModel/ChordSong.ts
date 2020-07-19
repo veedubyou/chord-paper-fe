@@ -24,7 +24,7 @@ const ChordSongValidator = iots.type({
 });
 type ChordSongValidatedFields = iots.TypeOf<typeof ChordSongValidator>;
 
-export class ChordSong extends Collection<ChordLine, "ChordLine"> {
+export class ChordSong extends Collection<ChordLine> {
     metadata: SongMetadata;
 
     constructor(elements?: ChordLine[], metadata?: SongMetadata) {
@@ -128,7 +128,7 @@ export class ChordSong extends Collection<ChordLine, "ChordLine"> {
         return this;
     }
 
-    mergeLineWithPrevious(idable: IDable<"ChordLine">): boolean {
+    mergeLineWithPrevious(idable: IDable<ChordLine>): boolean {
         const index = this.indexOf(idable.id);
         // no previous line to merge with, just bail
         if (index === 0) {
@@ -183,7 +183,7 @@ export class ChordSong extends Collection<ChordLine, "ChordLine"> {
         return this.chordLines.reduce(reducer, true);
     }
 
-    findLineAndBlock(blockID: IDable<"ChordBlock">): [ChordLine, ChordBlock] {
+    findLineAndBlock(blockID: IDable<ChordBlock>): [ChordLine, ChordBlock] {
         for (const line of this.chordLines) {
             const block: ChordBlock | undefined = line.chordBlocks.find(
                 (block: ChordBlock) => block.id === blockID.id

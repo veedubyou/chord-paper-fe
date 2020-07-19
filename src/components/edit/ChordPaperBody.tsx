@@ -13,6 +13,7 @@ import DragAndDrop from "./DragAndDrop";
 import { InteractionContext, InteractionSetter } from "./InteractionContext";
 import Line from "./Line";
 import NewLine from "./NewLine";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 
 const useUninteractiveStyle = makeStyles({
     root: {
@@ -59,23 +60,23 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         notifySongChanged();
     };
 
-    const handleAddLine = (id: IDable<"ChordLine">) => {
+    const handleAddLine = (id: IDable<ChordLine>) => {
         const newLine: ChordLine = new ChordLine();
         props.song.addAfter(id, newLine);
         notifySongChanged();
     };
 
-    const handleRemoveLine = (id: IDable<"ChordLine">) => {
+    const handleRemoveLine = (id: IDable<ChordLine>) => {
         props.song.remove(id);
         notifySongChanged();
     };
 
-    const handleChangeLine = (id: IDable<"ChordLine">) => {
+    const handleChangeLine = (id: IDable<ChordLine>) => {
         notifySongChanged();
     };
 
     const handlePasteOverflow = (
-        id: IDable<"ChordLine">,
+        id: IDable<ChordLine>,
         overflowContent: string[]
     ) => {
         const newChordLines = overflowContent.map((newLyricLine: string) =>
@@ -86,7 +87,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     };
 
     const handleJSONPaste = (
-        id: IDable<"ChordLine">,
+        id: IDable<ChordLine>,
         jsonStr: string
     ): boolean => {
         const handled = handleLinePaste(id, jsonStr);
@@ -98,7 +99,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         return true;
     };
 
-    const mergeWithPreviousLine = (id: IDable<"ChordLine">): boolean => {
+    const mergeWithPreviousLine = (id: IDable<ChordLine>): boolean => {
         const didMerge = props.song.mergeLineWithPrevious(id);
 
         if (didMerge) {
@@ -116,10 +117,10 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     };
 
     const handleChordDND = (
-        destinationBlockID: IDable<"ChordBlock">,
+        destinationBlockID: IDable<ChordBlock>,
         splitIndex: number,
         newChord: string,
-        sourceBlockID: IDable<"ChordBlock">
+        sourceBlockID: IDable<ChordBlock>
     ) => {
         // clearing the source block first allows handling of when the chord
         // is dropped onto another token in the same block without special cases

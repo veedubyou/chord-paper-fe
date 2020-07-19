@@ -1,12 +1,13 @@
 import { RootRef } from "@material-ui/core";
 import React from "react";
 import { useDrag } from "react-dnd";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { IDable } from "../../common/ChordModel/Collection";
 import ChordSymbol, { ChordSymbolProps } from "../display/ChordSymbol";
 import { NewDNDChord } from "./ChordDroppable";
 
 interface DraggableChordSymbolProps extends ChordSymbolProps {
-    chordBlockID: IDable<"ChordBlock">;
+    chordBlockID: IDable<ChordBlock>;
     onDragged?: () => void;
 }
 

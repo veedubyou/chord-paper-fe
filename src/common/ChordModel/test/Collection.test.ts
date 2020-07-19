@@ -1,7 +1,7 @@
 import { IDable, Collection } from "../Collection";
 
 describe("Collection", () => {
-    class Item implements IDable<"Item"> {
+    class Item implements IDable<Item> {
         id: string;
         type: "Item";
         value: string;
@@ -13,7 +13,7 @@ describe("Collection", () => {
         }
     }
 
-    class ItemCollection extends Collection<Item, "Item"> {
+    class ItemCollection extends Collection<Item> {
         clone(): ItemCollection {
             return new ItemCollection(this.elements);
         }
