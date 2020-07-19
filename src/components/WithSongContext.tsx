@@ -6,21 +6,15 @@ interface SongProps {
     onSongChanged?: (song: ChordSong) => void;
 }
 
-interface InitialSong {
-    song: ChordSong;
-}
-
-type PropsWithoutSong<P extends SongProps> = Omit<P, keyof SongProps>;
-type HOCProps<P extends SongProps> = PropsWithoutSong<P> & InitialSong;
-
 export const withSongContext = <P extends SongProps>(
     OriginalComponent: React.FC<P>
-): React.FC<HOCProps<P>> => {
-    return (props: HOCProps<P>): JSX.Element => {
+): React.FC<P> => {
+    return (props: P): JSX.Element => {
         const [song, setSong] = useState<ChordSong>(props.song);
 
         const handleSongChanged = (song: ChordSong) => {
             setSong(song.clone());
+            props.onSongChanged?.(song);
         };
 
         const { song: throwawaySong, ...propsWithoutInitialSong } = props;
