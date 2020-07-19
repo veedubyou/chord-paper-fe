@@ -27,15 +27,15 @@ const LyricInput = withStyles((theme: Theme) => ({
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
     "data-lineid": string;
-    onChangeLine?: (id: IDable<"ChordLine">) => void;
-    onAddLine?: (id: IDable<"ChordLine">) => void;
-    onRemoveLine?: (id: IDable<"ChordLine">) => void;
+    onChangeLine?: (id: IDable<ChordLine>) => void;
+    onAddLine?: (id: IDable<ChordLine>) => void;
+    onRemoveLine?: (id: IDable<ChordLine>) => void;
     onPasteOverflow?: (
-        id: IDable<"ChordLine">,
+        id: IDable<ChordLine>,
         overflowPasteContent: string[]
     ) => void;
-    onJSONPaste?: (id: IDable<"ChordLine">, jsonStr: string) => boolean;
-    onMergeWithPreviousLine?: (id: IDable<"ChordLine">) => boolean;
+    onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
+    onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;
     onChordDragAndDrop?: BlockProps["onChordDragAndDrop"];
 }
 

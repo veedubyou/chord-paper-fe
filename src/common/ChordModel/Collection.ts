@@ -1,11 +1,11 @@
 // use the name of the class the ID is describing for T
-// e.g. IDable<"Person">
-export interface IDable<T extends string> {
+// e.g. IDable<Person>
+export interface IDable<T extends IDable<T>> {
     id: string;
-    type: T;
+    type: T["type"];
 }
 
-export abstract class Collection<T extends IDable<U>, U extends string> {
+export abstract class Collection<T extends IDable<T>> {
     elements: T[];
 
     constructor(elements?: T[]) {
@@ -26,10 +26,10 @@ export abstract class Collection<T extends IDable<U>, U extends string> {
         return index;
     }
 
-    abstract clone(): Collection<T, U>;
+    abstract clone(): Collection<T>;
 
     // adds a element after the specified id
-    addAfter(idable: IDable<U>, ...newElem: T[]): void {
+    addAfter(idable: IDable<T>, ...newElem: T[]): void {
         const indexOfBefore = this.indexOf(idable.id);
         this.elements.splice(indexOfBefore + 1, 0, ...newElem);
     }
@@ -38,13 +38,13 @@ export abstract class Collection<T extends IDable<U>, U extends string> {
         this.elements.splice(0, 0, ...newElem);
     }
 
-    remove(idable: IDable<U>): T {
+    remove(idable: IDable<T>): T {
         const index = this.indexOf(idable.id);
         const removed = this.elements.splice(index, 1);
         return removed[0];
     }
 
-    get(idable: IDable<U>): T {
+    get(idable: IDable<T>): T {
         const index = this.indexOf(idable.id);
         return this.elements[index];
     }

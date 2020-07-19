@@ -52,7 +52,7 @@ interface ChordEditLineProps {
     onEdit?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     onAdd?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
     onRemove?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-    onChangeLine?: (id: IDable<"ChordLine">) => void;
+    onChangeLine?: (id: IDable<ChordLine>) => void;
     onChordDragAndDrop?: BlockProps["onChordDragAndDrop"];
 }
 
@@ -77,7 +77,7 @@ const ChordEditLine: React.FC<ChordEditLineProps> = (
         );
     };
 
-    const chordChangeHandler = (id: IDable<"ChordBlock">, newChord: string) => {
+    const chordChangeHandler = (id: IDable<ChordBlock>, newChord: string) => {
         props.chordLine.setChord(id, newChord);
 
         if (props.onChangeLine) {
@@ -85,10 +85,7 @@ const ChordEditLine: React.FC<ChordEditLineProps> = (
         }
     };
 
-    const blockSplitHandler = (
-        id: IDable<"ChordBlock">,
-        splitIndex: number
-    ) => {
+    const blockSplitHandler = (id: IDable<ChordBlock>, splitIndex: number) => {
         props.chordLine.splitBlock(id, splitIndex);
 
         if (props.onChangeLine) {

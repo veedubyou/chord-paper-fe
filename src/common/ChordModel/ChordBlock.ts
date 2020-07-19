@@ -18,7 +18,7 @@ export const ChordBlockValidator = iots.type({
 
 export type ChordBlockValidatedFields = iots.TypeOf<typeof ChordBlockValidator>;
 
-export class ChordBlock implements IDable<"ChordBlock"> {
+export class ChordBlock implements IDable<ChordBlock> {
     id: string;
     chord: string;
     lyric: string;
