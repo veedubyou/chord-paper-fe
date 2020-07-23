@@ -36,7 +36,7 @@ const SongRouter: React.FC<SongRouterProps> = (
                 />
             </Route>
             <Route key={playPath} path={playPath}>
-                <Play song={props.song} onEdit={switchToEdit} />;
+                <Play song={props.song} onEdit={switchToEdit} />
             </Route>
         </>
     );
