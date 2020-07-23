@@ -17,6 +17,8 @@ import PasteLyrics from "./tutorial/PasteLyrics";
 import RemoveChord from "./tutorial/RemoveChord";
 import RemoveLine from "./tutorial/RemoveLine";
 import Starting from "./tutorial/Start";
+import Labels from "./tutorial/Labels";
+import PlayMode from "./tutorial/PlayMode";
 
 type ExerciseEntry = {
     title: string;
@@ -94,6 +96,16 @@ const allExercises: ExerciseEntry[] = [
         title: "Copying and Pasting Lines",
         route: "/learn/copy_and_paste",
         component: CopyAndPaste,
+    },
+    {
+        title: "Labels",
+        route: "/learn/labels",
+        component: Labels,
+    },
+    {
+        title: "Play Mode",
+        route: "/learn/play_mode",
+        component: PlayMode,
     },
 ];
 
