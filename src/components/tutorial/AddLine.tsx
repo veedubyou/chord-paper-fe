@@ -11,7 +11,7 @@ const AddLine: React.FC<{}> = (): JSX.Element => {
         new ChordLine([
             new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly ap-" }),
             new ChordBlock({ chord: "B7sus4", lyric: "pear?" }),
-            new ChordBlock({ chord: "B7", lyric: " " }),
+            new ChordBlock({ chord: "B7", lyric: "\t" }),
         ]),
     ]);
 
@@ -19,7 +19,7 @@ const AddLine: React.FC<{}> = (): JSX.Element => {
         new ChordLine([
             new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly ap-" }),
             new ChordBlock({ chord: "B7sus4", lyric: "pear?" }),
-            new ChordBlock({ chord: "B7", lyric: " " }),
+            new ChordBlock({ chord: "B7", lyric: "\t" }),
         ]),
         new ChordLine([
             new ChordBlock({ chord: "", lyric: "Every time you are near" }),

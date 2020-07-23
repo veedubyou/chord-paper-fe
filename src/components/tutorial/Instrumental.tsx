@@ -9,7 +9,6 @@ import Playground from "./Playground";
 const Instrumental: React.FC<{}> = (): JSX.Element => {
     const tabExample = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "", lyric: "|" }),
             new ChordBlock({ chord: "Bm", lyric: "\t" }),
             new ChordBlock({ chord: "A", lyric: "\t|" }),
             new ChordBlock({ chord: "E", lyric: "\t" }),
@@ -21,7 +20,6 @@ const Instrumental: React.FC<{}> = (): JSX.Element => {
 
     const expectedSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "", lyric: "|" }),
             new ChordBlock({ chord: "Bm", lyric: "\t" }),
             new ChordBlock({ chord: "A", lyric: "\t|" }),
             new ChordBlock({ chord: "E", lyric: "\t" }),
@@ -50,8 +48,8 @@ const Instrumental: React.FC<{}> = (): JSX.Element => {
             </Typography>
             <LineBreak />
             <Typography>
-                This example demonstrates using tabs and the | (pipe) character
-                for annotating and organizing chords without lyrics.
+                This example demonstrates using tabs to make space to anchor
+                chords, and using the | to divide and organize them.
             </Typography>
             <Playground initialSong={tabExample} />
             <LineBreak />
@@ -61,7 +59,8 @@ const Instrumental: React.FC<{}> = (): JSX.Element => {
                 <LyricsTypography display="inline">|</LyricsTypography>{" "}
                 characters. Insert 4 tabs by editing the lyrics, and pressing
                 tab 4 times. Then divide them with{" "}
-                <LyricsTypography display="inline">|</LyricsTypography>, and add{" "}
+                <LyricsTypography display="inline">|</LyricsTypography> in the
+                middle and at the end, and add{" "}
                 <ChordTypography display="inline">Bm</ChordTypography>,{" "}
                 <ChordTypography display="inline">A</ChordTypography>,{" "}
                 <ChordTypography display="inline">E</ChordTypography>,{" "}
