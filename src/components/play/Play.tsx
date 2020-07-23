@@ -1,63 +1,32 @@
-import {
-    createMuiTheme,
-    responsiveFontSizes,
-    Theme,
-    ThemeProvider,
-} from "@material-ui/core";
-import { useTheme } from "@material-ui/styles";
+import { createMuiTheme, Theme, ThemeProvider } from "@material-ui/core";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { PlainFn } from "../../common/PlainFn";
 import PlayContent, { PlayFormatting } from "./PlayContent";
 import PlayMenu from "./PlayMenu";
 
 interface PlayProps {
     song: ChordSong;
-    onEdit?: () => void;
+    onEdit?: PlainFn;
 }
 
-const defaultFontSize = 20;
-
-const fontSizeToPx = (fontSize: string | number): number => {
-    if (typeof fontSize === "number") {
-        return fontSize;
-    }
-
-    if (!fontSize.includes("rem")) {
-        return defaultFontSize;
-    }
-    const remTokens: string[] = fontSize.split("rem");
-
-    const remSize: number = Number(remTokens[0]);
-    if (isNaN(remSize)) {
-        return defaultFontSize;
-    }
-
-    const htmlFontSize = 16;
-
-    return remSize * htmlFontSize;
-};
-
 const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
-    const theme: Theme = useTheme();
     const [formatting, setFormatting] = useState<PlayFormatting>({
         numberOfColumns: 2,
-        fontSize: fontSizeToPx(theme.typography.h6.fontSize ?? defaultFontSize),
+        fontSize: 14,
         columnMargin: 20,
     });
 
     const playTheme = (theme: Theme): Theme => {
-        return responsiveFontSizes(
-            createMuiTheme({
-                ...theme,
-                typography: {
-                    ...theme.typography,
-                    h6: {
-                        fontSize: formatting.fontSize,
-                    },
-                },
-            })
-        );
+        return createMuiTheme({
+            ...theme,
+            typography: {
+                fontFamily: theme.typography.fontFamily,
+                fontWeightRegular: theme.typography.fontWeightRegular,
+                fontSize: formatting.fontSize,
+            },
+        });
     };
 
     return (

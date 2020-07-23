@@ -12,11 +12,12 @@ import { withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import DisplaySettings from "./DisplaySettings";
 import { PlayFormatting } from "./PlayContent";
+import { PlainFn } from "../../common/PlainFn";
 
 interface PlayMenuProps {
     formatting: PlayFormatting;
     onFormattingChange?: (formatting: PlayFormatting) => void;
-    onExit?: () => void;
+    onExit?: PlainFn;
 }
 
 const MenuIcon = withStyles({

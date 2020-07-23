@@ -5,6 +5,7 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import ChordPaperBody from "./ChordPaperBody";
 import ChordPaperMenu from "./ChordPaperMenu";
 import Header from "./Header";
+import { PlainFn } from "../../common/PlainFn";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
@@ -17,7 +18,7 @@ const RootPaper = withStyles((theme: Theme) => ({
 interface ChordPaperProps {
     song: ChordSong;
     onSongChanged?: (song: ChordSong) => void;
-    onPlay?: () => void;
+    onPlay?: PlainFn;
 }
 
 const ChordPaper: React.FC<ChordPaperProps> = (

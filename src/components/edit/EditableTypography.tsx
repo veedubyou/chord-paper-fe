@@ -5,9 +5,20 @@ import React, { useState } from "react";
 import { DataTestID } from "../../common/DataTestID";
 import { inflateIfEmpty } from "../../common/Whitespace";
 import TextInput from "./TextInput";
+import { PlainFn } from "../../common/PlainFn";
+
+export interface EditControl {
+    editing: boolean;
+    onStartEdit: PlainFn;
+    onEndEdit: PlainFn;
+}
 
 interface EditableTypographyProps extends DataTestID, TypographyProps {
     children: string;
+    // provide this if you want to provide explicit control over the editability
+    // of the field. this means the parent must manage this component's editing state
+    editControl?: EditControl;
+
     onValueChange?: (newValue: string) => void;
     placeholder?: string;
 }
@@ -21,14 +32,28 @@ const PlaceholderTypography = withStyles({
 const EditableTypography: React.FC<EditableTypographyProps> = (
     props: EditableTypographyProps
 ): JSX.Element => {
-    const [editing, setEditing] = useState(false);
+    const [editingState, setEditingState] = useState(false);
+
+    const editing: boolean =
+        props.editControl !== undefined
+            ? props.editControl.editing
+            : editingState;
 
     const startEdit = () => {
-        setEditing(true);
+        if (props.editControl !== undefined) {
+            props.editControl.onStartEdit();
+        } else {
+            setEditingState(true);
+        }
     };
 
     const finishEdit = (newValue: string) => {
-        setEditing(false);
+        if (props.editControl !== undefined) {
+            props.editControl.onEndEdit();
+        } else {
+            setEditingState(false);
+        }
+
         if (props.onValueChange) {
             props.onValueChange(newValue);
         }

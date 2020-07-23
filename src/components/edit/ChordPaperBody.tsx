@@ -156,7 +156,6 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
                         key={line.id}
                         chordLine={line}
                         data-lineid={line.id}
-                        onAddLine={handleAddLine}
                         onRemoveLine={handleRemoveLine}
                         onChangeLine={handleChangeLine}
                         onJSONPaste={handleJSONPaste}

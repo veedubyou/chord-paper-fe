@@ -44,7 +44,7 @@ export const NeverGonnaGiveYouUp = (): ChordSong => {
     return new ChordSong(chordLines, {
         title: "Never Gonna Give You Up",
         performedBy: "Rick Astley",
-        composedBy: "Stock Waterman",
+        composedBy: "Stock Aitken Waterman",
         asHeardFrom: "https://www.youtube.com/watch?v=dM9zwZCOmjM",
     });
 };

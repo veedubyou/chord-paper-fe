@@ -1,21 +1,17 @@
-import {
-    makeStyles,
-    Theme,
-    TypographyVariant,
-    Typography,
-} from "@material-ui/core";
+import { makeStyles, Typography, TypographyVariant } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
 import { StyledComponentProps, withStyles } from "@material-ui/styles";
 import React, { useEffect } from "react";
+import { PlainFn } from "../../common/PlainFn";
 
-const InputTypography = withStyles((theme: Theme) => ({
+const InputTypography = withStyles({
     root: {
         width: "100%",
         backgroundColor: grey[200],
         whiteSpace: "pre",
         display: "inline-block",
     },
-}))(Typography);
+})(Typography);
 
 const useContentEditableStyle = makeStyles({
     root: {
@@ -34,10 +30,9 @@ const useContentEditableStyle = makeStyles({
 interface TextInputProps extends StyledComponentProps {
     children: string;
     onFinish?: (newValue: string) => void;
-    onSpecialBackspace?: () => void;
+    onSpecialBackspace?: PlainFn;
     onPasteOverflow?: (overflowContent: string[]) => void;
     onJSONPaste?: (jsonStr: string) => boolean;
-    width?: string;
     variant?: TypographyVariant;
 }
 

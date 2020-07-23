@@ -9,6 +9,7 @@ import UnstyledAddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import { useTheme, withStyles } from "@material-ui/styles";
 import React from "react";
 import { DataTestID } from "../../common/DataTestID";
+import { PlainFn } from "../../common/PlainFn";
 
 const HighlightableGrid = withStyles({
     root: {
@@ -40,7 +41,7 @@ const AddCircleOutlineIcon = withStyles((theme: Theme) => ({
 }))(UnstyledAddCircleOutlineIcon);
 
 interface NewLineProps extends DataTestID {
-    onAdd?: () => void;
+    onAdd?: PlainFn;
 }
 
 const NewLine: React.FC<NewLineProps> = (props: NewLineProps): JSX.Element => {

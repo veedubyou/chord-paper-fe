@@ -13,7 +13,7 @@ describe("ChordLine", () => {
 
     let c: ChordLine;
     beforeEach(() => {
-        c = new ChordLine(testBlocks());
+        c = new ChordLine(testBlocks(), "Verse");
     });
 
     describe("de/serialization", () => {
@@ -33,6 +33,7 @@ describe("ChordLine", () => {
                     { chord: "Bm", lyric: "strangers to " },
                     { chord: "Cdim", lyric: "love" },
                 ],
+                label: "Verse",
             });
         });
 
@@ -122,37 +123,73 @@ describe("ChordLine", () => {
         describe("with content", () => {
             let original: ChordLine;
             beforeEach(() => {
-                original = new ChordLine([
-                    new ChordBlock({ chord: "A7", lyric: "We're no " }),
-                    new ChordBlock({ chord: "Bm", lyric: "strangers to " }),
-                    new ChordBlock({ chord: "Cdim", lyric: "love" }),
-                ]);
+                original = new ChordLine(
+                    [
+                        new ChordBlock({ chord: "A7", lyric: "We're no " }),
+                        new ChordBlock({ chord: "Bm", lyric: "strangers to " }),
+                        new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                    ],
+                    "Verse"
+                );
             });
 
             test("passes if the same", () => {
-                const other = new ChordLine([
-                    new ChordBlock({ chord: "A7", lyric: "We're no " }),
-                    new ChordBlock({ chord: "Bm", lyric: "strangers to " }),
-                    new ChordBlock({ chord: "Cdim", lyric: "love" }),
-                ]);
+                const other = new ChordLine(
+                    [
+                        new ChordBlock({ chord: "A7", lyric: "We're no " }),
+                        new ChordBlock({ chord: "Bm", lyric: "strangers to " }),
+                        new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                    ],
+                    "Verse"
+                );
                 expect(original.contentEquals(other)).toEqual(true);
             });
 
-            test("fails if any blocks are different", () => {
+            test("fails if missing label", () => {
                 const other = new ChordLine([
                     new ChordBlock({ chord: "A7", lyric: "We're no " }),
-                    new ChordBlock({ chord: "Bm7", lyric: "strangers to " }),
+                    new ChordBlock({ chord: "Bm", lyric: "strangers to " }),
                     new ChordBlock({ chord: "Cdim", lyric: "love" }),
                 ]);
                 expect(original.contentEquals(other)).toEqual(false);
             });
 
+            test("fails if the label is different", () => {
+                const other = new ChordLine(
+                    [
+                        new ChordBlock({ chord: "A7", lyric: "We're no " }),
+                        new ChordBlock({ chord: "Bm", lyric: "strangers to " }),
+                        new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                    ],
+                    "Chorus"
+                );
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+
+            test("fails if any blocks are different", () => {
+                const other = new ChordLine(
+                    [
+                        new ChordBlock({ chord: "A7", lyric: "We're no " }),
+                        new ChordBlock({
+                            chord: "Bm7",
+                            lyric: "strangers to ",
+                        }),
+                        new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                    ],
+                    "Verse"
+                );
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+
             test("fails any blocks are out of order different", () => {
-                const other = new ChordLine([
-                    new ChordBlock({ chord: "A7", lyric: "We're no " }),
-                    new ChordBlock({ chord: "Cdim", lyric: "love" }),
-                    new ChordBlock({ chord: "Bm", lyric: "strangers to " }),
-                ]);
+                const other = new ChordLine(
+                    [
+                        new ChordBlock({ chord: "A7", lyric: "We're no " }),
+                        new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                        new ChordBlock({ chord: "Bm", lyric: "strangers to " }),
+                    ],
+                    "Verse"
+                );
                 expect(original.contentEquals(other)).toEqual(false);
             });
         });
@@ -174,6 +211,11 @@ describe("ChordLine", () => {
                         lyric: "",
                     }),
                 ]);
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+
+            test("fails there's a label", () => {
+                const other = new ChordLine(undefined, "Chorus");
                 expect(original.contentEquals(other)).toEqual(false);
             });
         });

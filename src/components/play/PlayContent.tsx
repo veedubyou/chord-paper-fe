@@ -146,7 +146,7 @@ const PlayContent: React.FC<PlayContentProps> = (
     })(Box);
 
     const lines = props.song.chordLines.map((chordLine: ChordLine) => {
-        return <PlayLine line={chordLine} />;
+        return <PlayLine chordLine={chordLine} />;
     });
 
     useEffect(() => {
