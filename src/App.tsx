@@ -131,7 +131,7 @@ function App() {
                 />
                 <SnackbarProvider>
                     <HashRouter>
-                        <AppContent />;
+                        <AppContent />
                     </HashRouter>
                 </SnackbarProvider>
             </ThemeProvider>
