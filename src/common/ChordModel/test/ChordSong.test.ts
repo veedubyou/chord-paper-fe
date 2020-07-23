@@ -250,7 +250,7 @@ describe("Chord Song", () => {
                     }
                 );
 
-                expect(original.contentEquals(other)).toEqual(false);
+                expect(original.contentEquals(other)).toEqual(true);
             });
 
             test("fails if label is different", () => {
@@ -292,7 +292,7 @@ describe("Chord Song", () => {
                     }
                 );
 
-                expect(original.contentEquals(other)).toEqual(true);
+                expect(original.contentEquals(other)).toEqual(false);
             });
 
             test("fails if any blocks are different", () => {
