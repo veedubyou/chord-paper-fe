@@ -1,5 +1,5 @@
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
-import { chordPaperFromLyrics } from "./common";
+import { chordPaperFromLyrics, selectionStub } from "./common";
 import {
     ExpectChordAndLyricFn,
     FindByTestIdChainFn,
@@ -9,22 +9,7 @@ import {
 
 afterEach(cleanup);
 
-beforeAll(() => {
-    //https://github.com/mui-org/material-ui/issues/15726#issuecomment-493124813
-    global.document.createRange = (): Range => ({
-        setStart: () => {},
-        setEnd: () => {},
-        //@ts-ignore
-        commonAncestorContainer: {
-            nodeName: "BODY",
-            ownerDocument: document,
-        },
-        selectNodeContents: () => {},
-        collapse: () => {},
-    });
-
-    global.window.getSelection = () => null;
-});
+beforeAll(selectionStub);
 
 const startEdit = async (
     findByTestIdChain: FindByTestIdChainFn,

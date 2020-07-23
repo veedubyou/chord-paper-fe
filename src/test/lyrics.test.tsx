@@ -8,7 +8,11 @@ import {
 import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordSong } from "../common/ChordModel/ChordSong";
-import { chordPaperFromLyrics, chordPaperFromSong } from "./common";
+import {
+    chordPaperFromLyrics,
+    chordPaperFromSong,
+    selectionStub,
+} from "./common";
 import {
     ExpectChordAndLyricFn,
     FindByTestIdChainFn,
@@ -21,22 +25,7 @@ import { enterKey } from "./userEvent";
 
 afterEach(cleanup);
 
-beforeAll(() => {
-    //https://github.com/mui-org/material-ui/issues/15726#issuecomment-493124813
-    global.document.createRange = (): Range => ({
-        setStart: () => {},
-        setEnd: () => {},
-        //@ts-ignore
-        commonAncestorContainer: {
-            nodeName: "BODY",
-            ownerDocument: document,
-        },
-        selectNodeContents: () => {},
-        collapse: () => {},
-    });
-
-    global.window.getSelection = () => null;
-});
+beforeAll(selectionStub);
 
 const lyrics: string[] = [
     "Never gonna give you up",

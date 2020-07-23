@@ -1,10 +1,8 @@
-import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 import { cleanup, fireEvent, render } from "@testing-library/react";
-import { SnackbarProvider } from "notistack";
-import React from "react";
 import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordSong } from "../common/ChordModel/ChordSong";
+import { chordPaperFromSong, selectionStub } from "./common";
 import {
     ExpectChordAndLyricFn,
     FindByTestIdChainFn,
@@ -12,30 +10,10 @@ import {
     getFindByTestIdChain,
 } from "./matcher";
 import { enterKey } from "./userEvent";
-import { withSongContext } from "../components/WithSongContext";
-import ChordPaper from "../components/edit/ChordPaper";
-import { chordPaperFromSong } from "./common";
-
-const Song = withSongContext(ChordPaper);
 
 afterEach(cleanup);
 
-beforeAll(() => {
-    //https://github.com/mui-org/material-ui/issues/15726#issuecomment-493124813
-    global.document.createRange = (): Range => ({
-        setStart: () => {},
-        setEnd: () => {},
-        //@ts-ignore
-        commonAncestorContainer: {
-            nodeName: "BODY",
-            ownerDocument: document,
-        },
-        selectNodeContents: () => {},
-        collapse: () => {},
-    });
-
-    global.window.getSelection = () => null;
-});
+beforeAll(selectionStub);
 
 const song = (): ChordSong => {
     const lines: ChordLine[] = [

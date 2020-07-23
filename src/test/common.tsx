@@ -8,7 +8,7 @@ import { HelmetProvider } from "react-helmet-async";
 
 const Song = withSongContext(ChordPaper);
 
-const withProviders = (children: React.ReactNode) => {
+export const withProviders = (children: React.ReactNode) => {
     return (
         <HelmetProvider>
             <ThemeProvider theme={createMuiTheme()}>
@@ -26,4 +26,21 @@ export const chordPaperFromLyrics = (lyrics: string[]) => {
 
 export const chordPaperFromSong = (song: ChordSong) => {
     return withProviders(<Song song={song} />);
+};
+
+export const selectionStub = () => {
+    //https://github.com/mui-org/material-ui/issues/15726#issuecomment-493124813
+    global.document.createRange = (): Range => ({
+        setStart: () => {},
+        setEnd: () => {},
+        //@ts-ignore
+        commonAncestorContainer: {
+            nodeName: "BODY",
+            ownerDocument: document,
+        },
+        selectNodeContents: () => {},
+        collapse: () => {},
+    });
+
+    global.window.getSelection = () => null;
 };
