@@ -68,6 +68,10 @@ export class ChordSong extends Collection<ChordLine> {
         }
 
         const jsonObj = result.right;
+        return ChordSong.fromJSONObject(jsonObj);
+    }
+
+    static fromJSONObject(jsonObj: unknown): Either<Error, ChordSong> {
         const validationResult = ChordSongValidator.decode(jsonObj);
 
         if (isLeft(validationResult)) {

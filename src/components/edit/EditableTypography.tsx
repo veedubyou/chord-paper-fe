@@ -64,6 +64,7 @@ const EditableTypography: React.FC<EditableTypographyProps> = (
             children,
             placeholder,
             onValueChange,
+            editControl,
             ...typographyProps
         } = props;
 

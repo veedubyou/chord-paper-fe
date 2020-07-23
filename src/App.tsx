@@ -18,13 +18,13 @@ import {
 } from "react-router-dom";
 import WoodBackground from "./assets/img/symphony.png";
 import About from "./components/about/About";
+import Demo from "./components/Demo";
 import SideMenu from "./components/SideMenu";
 import SongRouter from "./components/SongRouter";
 import { TutorialSwitches } from "./components/Tutorial";
 import Version from "./components/Version";
 import { withAutoSave } from "./components/WithAutoSave";
 import { withSongContext } from "./components/WithSongContext";
-import { NeverGonnaGiveYouUp } from "./NeverGonnaGiveYouUp";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -81,7 +81,6 @@ const shouldShowMenu = (path: string): boolean => {
 };
 
 const MainSong = withAutoSave(withSongContext(SongRouter));
-const DemoSong = withSongContext(SongRouter);
 
 const AppContent: React.FC<{}> = (): JSX.Element => {
     const location = useLocation();
@@ -97,7 +96,7 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
 
             <Redirect from="/demo" to="/demo/edit" exact />
             <Route key="/demo" path="/demo">
-                <DemoSong basePath="/demo" song={NeverGonnaGiveYouUp()} />
+                <Demo basePath="/demo" />
             </Route>
 
             {TutorialSwitches()}

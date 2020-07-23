@@ -1,0 +1,548 @@
+{
+    "elements": [
+        {
+            "elements": [
+                { "chord": "G^", "lyric": "\t", "type": "ChordBlock" },
+                { "chord": "F#m7", "lyric": "    ", "type": "ChordBlock" },
+                { "chord": "Em7", "lyric": "    |", "type": "ChordBlock" },
+                { "chord": "Bm7b13", "lyric": "\t", "type": "ChordBlock" },
+                { "chord": "C13", "lyric": "\t|", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine",
+            "label": "Intro"
+        },
+        {
+            "elements": [
+                { "chord": "G^", "lyric": "\t", "type": "ChordBlock" },
+                { "chord": "F#m7", "lyric": "\t|", "type": "ChordBlock" },
+                { "chord": "B7", "lyric": "\t\t|", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "Em7", "lyric": "\t", "type": "ChordBlock" },
+                { "chord": "A7", "lyric": "\t|", "type": "ChordBlock" },
+                { "chord": "F#m7", "lyric": "\t", "type": "ChordBlock" },
+                { "chord": "Bm7", "lyric": "\t|", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "Em7", "lyric": "\t", "type": "ChordBlock" },
+                { "chord": "A7", "lyric": "\t|", "type": "ChordBlock" },
+                { "chord": "F#m7", "lyric": "\t", "type": "ChordBlock" },
+                { "chord": "Bm7", "lyric": "\t|", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "Em7",
+                    "lyric": "We're no strangers to ",
+                    "type": "ChordBlock"
+                },
+                { "chord": "A7", "lyric": "love", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine",
+            "label": "Verse"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "F#m7",
+                    "lyric": "You know the rules and ",
+                    "type": "ChordBlock"
+                },
+                { "chord": "Bm7", "lyric": "so do I", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "Em7",
+                    "lyric": "A full commitment's what I'm ",
+                    "type": "ChordBlock"
+                },
+                { "chord": "C7", "lyric": "thinking of", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "Bm7",
+                    "lyric": "You wouldn't get this from ",
+                    "type": "ChordBlock"
+                },
+                {
+                    "chord": "E7",
+                    "lyric": "any other guy",
+                    "type": "ChordBlock"
+                }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "Em7",
+                    "lyric": "I just wanna ",
+                    "type": "ChordBlock"
+                },
+                {
+                    "chord": "A7",
+                    "lyric": "tell you how I'm feeling",
+                    "type": "ChordBlock"
+                },
+                { "chord": "Bm7", "lyric": "\t", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "",
+                    "lyric": "Gotta make you ",
+                    "type": "ChordBlock"
+                },
+                { "chord": "Bm7", "lyric": "understand", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                { "chord": "Em9", "lyric": "give you up", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine",
+            "label": "Chorus"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                { "chord": "A7", "lyric": "let you down", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                {
+                    "chord": "F#m7",
+                    "lyric": "run around and de-",
+                    "type": "ChordBlock"
+                },
+                { "chord": "Bm7", "lyric": "sert you", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                {
+                    "chord": "Em9",
+                    "lyric": "make you cry",
+                    "type": "ChordBlock"
+                }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                { "chord": "A7", "lyric": "say goodbye", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                {
+                    "chord": "F#m7",
+                    "lyric": "tell a lie and ",
+                    "type": "ChordBlock"
+                },
+                { "chord": "Bm7", "lyric": "hurt you", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "Em7",
+                    "lyric": "We've known each other",
+                    "type": "ChordBlock"
+                },
+                { "chord": "C7", "lyric": " for so long", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine",
+            "label": "Verse"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "Bm7",
+                    "lyric": "Your heart's been aching but ",
+                    "type": "ChordBlock"
+                },
+                {
+                    "chord": "E7",
+                    "lyric": "you're too shy to say it",
+                    "type": "ChordBlock"
+                }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "Em7",
+                    "lyric": "Inside we both know what's been ",
+                    "type": "ChordBlock"
+                },
+                { "chord": "A7", "lyric": "going on", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "Bm7",
+                    "lyric": "We know the game and we're",
+                    "type": "ChordBlock"
+                },
+                { "chord": "Bm7", "lyric": " gon-", "type": "ChordBlock" },
+                { "chord": "A7/C#", "lyric": "na ", "type": "ChordBlock" },
+                { "chord": "D7", "lyric": "play it", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "G", "lyric": "And if you ", "type": "ChordBlock" },
+                {
+                    "chord": "A",
+                    "lyric": "ask me how I'm feeling",
+                    "type": "ChordBlock"
+                },
+                { "chord": "G", "lyric": "\t", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "",
+                    "lyric": "Don't tell me you're too ",
+                    "type": "ChordBlock"
+                },
+                { "chord": "A", "lyric": "blind to see", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                {
+                    "chord": "C#m11",
+                    "lyric": "give you ",
+                    "type": "ChordBlock"
+                },
+                { "chord": "F#7", "lyric": "up", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine",
+            "label": "Chorus"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                {
+                    "chord": "Bm7",
+                    "lyric": "let you down",
+                    "type": "ChordBlock"
+                }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                { "chord": "G", "lyric": "run a-", "type": "ChordBlock" },
+                {
+                    "chord": "A",
+                    "lyric": "round and de-",
+                    "type": "ChordBlock"
+                },
+                { "chord": "F#m7", "lyric": "sert you", "type": "ChordBlock" },
+                { "chord": "Bm7", "lyric": "\t", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                { "chord": "G^", "lyric": "run a-", "type": "ChordBlock" },
+                {
+                    "chord": "F#m7",
+                    "lyric": "round and de-",
+                    "type": "ChordBlock"
+                },
+                { "chord": "B7", "lyric": "sert you", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "Em7", "lyric": "\t", "type": "ChordBlock" },
+                { "chord": "C7", "lyric": "\t|", "type": "ChordBlock" },
+                { "chord": "Bm7", "lyric": "\t", "type": "ChordBlock" },
+                { "chord": "E7", "lyric": "\t|", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine",
+            "label": "Guitar Solo"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "Em7",
+                    "lyric": "Never gonna give, never gonna give",
+                    "type": "ChordBlock"
+                },
+                { "chord": "C7", "lyric": "\t", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "Bm7",
+                    "lyric": "Never gonna give, never gonna give",
+                    "type": "ChordBlock"
+                },
+                { "chord": "Bm7", "lyric": " ", "type": "ChordBlock" },
+                { "chord": "A7/C#", "lyric": " ", "type": "ChordBlock" },
+                { "chord": "D7", "lyric": " ", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "G",
+                    "lyric": "We've known each other ",
+                    "type": "ChordBlock"
+                },
+                { "chord": "A", "lyric": "for so long", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine",
+            "label": "Verse"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "G",
+                    "lyric": "Your heart's been aching but ",
+                    "type": "ChordBlock"
+                },
+                {
+                    "chord": "A",
+                    "lyric": "you're too shy to say it",
+                    "type": "ChordBlock"
+                }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "C#m7",
+                    "lyric": "Inside we ",
+                    "type": "ChordBlock"
+                },
+                {
+                    "chord": "F#7",
+                    "lyric": "both know what's been",
+                    "type": "ChordBlock"
+                },
+                { "chord": "Bm7", "lyric": " going on", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "G", "lyric": "We know the ", "type": "ChordBlock" },
+                {
+                    "chord": "A",
+                    "lyric": "game and we're",
+                    "type": "ChordBlock"
+                },
+                { "chord": "F#m7", "lyric": " gonna ", "type": "ChordBlock" },
+                { "chord": "Bm7", "lyric": "play it", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "G",
+                    "lyric": "I just wanna ",
+                    "type": "ChordBlock"
+                },
+                {
+                    "chord": "A",
+                    "lyric": "tell you how I'm feeling",
+                    "type": "ChordBlock"
+                },
+                { "chord": "G", "lyric": "\t", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                {
+                    "chord": "",
+                    "lyric": "Gotta make you",
+                    "type": "ChordBlock"
+                },
+                { "chord": "A", "lyric": " understand", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                { "chord": "G^", "lyric": "give you ", "type": "ChordBlock" },
+                {
+                    "chord": "F#m7",
+                    "lyric": "up and de-",
+                    "type": "ChordBlock"
+                },
+                { "chord": "B7", "lyric": "sert you", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                { "chord": "Em9", "lyric": "give you up", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine",
+            "label": "Outro"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                { "chord": "A7", "lyric": "let you down", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                {
+                    "chord": "F#m7",
+                    "lyric": "run around and de-",
+                    "type": "ChordBlock"
+                },
+                { "chord": "Bm7", "lyric": "sert you", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                {
+                    "chord": "Em9",
+                    "lyric": "make you cry",
+                    "type": "ChordBlock"
+                }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                { "chord": "A7", "lyric": "say goodbye", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                {
+                    "chord": "F#m7",
+                    "lyric": "tell a lie and ",
+                    "type": "ChordBlock"
+                },
+                { "chord": "Bm7", "lyric": "hurt you", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                { "chord": "Em9", "lyric": "give you up", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                { "chord": "A7", "lyric": "let you down", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                {
+                    "chord": "F#m7",
+                    "lyric": "run around and de-",
+                    "type": "ChordBlock"
+                },
+                { "chord": "Bm7", "lyric": "sert you", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                {
+                    "chord": "Em9",
+                    "lyric": "make you cry",
+                    "type": "ChordBlock"
+                }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                { "chord": "A7", "lyric": "say goodbye", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        },
+        {
+            "elements": [
+                { "chord": "", "lyric": "Never gonna ", "type": "ChordBlock" },
+                {
+                    "chord": "F#m7",
+                    "lyric": "tell a lie and ",
+                    "type": "ChordBlock"
+                },
+                { "chord": "Bm7", "lyric": "hurt you...", "type": "ChordBlock" }
+            ],
+            "type": "ChordLine"
+        }
+    ],
+    "metadata": {
+        "title": "Never Gonna Give You Up x Plastic Love",
+        "composedBy": "Stock Aitken Waterman x Mariya Takeuchi",
+        "performedBy": "Rick Astley  x Mariya Takeuchi",
+        "asHeardFrom": "https://www.youtube.com/watch?v=dM9zwZCOmjM"
+    }
+}

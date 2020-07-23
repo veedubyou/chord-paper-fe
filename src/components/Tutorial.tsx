@@ -3,7 +3,7 @@ import UnstyledPlayArrowIcon from "@material-ui/icons/PlayArrow";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
 import { Link, Route } from "react-router-dom";
-import ErrorPage from "./edit/ErrorPage";
+import ErrorPage from "./display/ErrorPage";
 import AddChord from "./tutorial/AddChord";
 import AddLine from "./tutorial/AddLine";
 import ChordPositioning from "./tutorial/ChordPositioning";
