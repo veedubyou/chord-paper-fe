@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/chord-paper-fe/precache-manifest.963e6a0de8f65ffd125dbb6d73cc0ea9.js"
+  "/chord-paper-fe/precache-manifest.94cf893f045afe6f38b7420192c80c98.js"
 );
 
 self.addEventListener('message', (event) => {
