@@ -5,10 +5,11 @@ import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { IDable } from "../../common/ChordModel/Collection";
 import ChordSymbol, { ChordSymbolProps } from "../display/ChordSymbol";
 import { NewDNDChord } from "./ChordDroppable";
+import { PlainFn } from "../../common/PlainFn";
 
 interface DraggableChordSymbolProps extends ChordSymbolProps {
     chordBlockID: IDable<ChordBlock>;
-    onDragged?: () => void;
+    onDragged?: PlainFn;
 }
 
 const DraggableChordSymbol: React.FC<DraggableChordSymbolProps> = (

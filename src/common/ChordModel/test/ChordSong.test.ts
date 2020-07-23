@@ -174,14 +174,23 @@ describe("Chord Song", () => {
             beforeEach(() => {
                 original = new ChordSong(
                     [
-                        new ChordLine([
-                            new ChordBlock({ chord: "A7", lyric: "We're no " }),
-                            new ChordBlock({
-                                chord: "Bm",
-                                lyric: "strangers to ",
-                            }),
-                            new ChordBlock({ chord: "Cdim", lyric: "love" }),
-                        ]),
+                        new ChordLine(
+                            [
+                                new ChordBlock({
+                                    chord: "A7",
+                                    lyric: "We're no ",
+                                }),
+                                new ChordBlock({
+                                    chord: "Bm",
+                                    lyric: "strangers to ",
+                                }),
+                                new ChordBlock({
+                                    chord: "Cdim",
+                                    lyric: "love",
+                                }),
+                            ],
+                            "Verse"
+                        ),
                         new ChordLine([
                             new ChordBlock({
                                 chord: "D7b9#11",
@@ -195,7 +204,7 @@ describe("Chord Song", () => {
                     ],
                     {
                         title: "Never Gonna Give You Up",
-                        composedBy: "Stock Watchman",
+                        composedBy: "Stock Aitken Waterman",
                         performedBy: "Rick Astley",
                         asHeardFrom: "every time someone rickrolls me",
                     }
@@ -205,14 +214,23 @@ describe("Chord Song", () => {
             test("passes if the same", () => {
                 const other = new ChordSong(
                     [
-                        new ChordLine([
-                            new ChordBlock({ chord: "A7", lyric: "We're no " }),
-                            new ChordBlock({
-                                chord: "Bm",
-                                lyric: "strangers to ",
-                            }),
-                            new ChordBlock({ chord: "Cdim", lyric: "love" }),
-                        ]),
+                        new ChordLine(
+                            [
+                                new ChordBlock({
+                                    chord: "A7",
+                                    lyric: "We're no ",
+                                }),
+                                new ChordBlock({
+                                    chord: "Bm",
+                                    lyric: "strangers to ",
+                                }),
+                                new ChordBlock({
+                                    chord: "Cdim",
+                                    lyric: "love",
+                                }),
+                            ],
+                            "Verse"
+                        ),
                         new ChordLine([
                             new ChordBlock({
                                 chord: "D7b9#11",
@@ -226,7 +244,7 @@ describe("Chord Song", () => {
                     ],
                     {
                         title: "Never Gonna Give You Up",
-                        composedBy: "Stock Watchman",
+                        composedBy: "Stock Aitken Waterman",
                         performedBy: "Rick Astley",
                         asHeardFrom: "every time someone rickrolls me",
                     }
@@ -235,17 +253,26 @@ describe("Chord Song", () => {
                 expect(original.contentEquals(other)).toEqual(true);
             });
 
-            test("fails if any blocks are different", () => {
+            test("fails if label is different", () => {
                 const other = new ChordSong(
                     [
-                        new ChordLine([
-                            new ChordBlock({ chord: "Am", lyric: "We're no " }),
-                            new ChordBlock({
-                                chord: "Bm",
-                                lyric: "strangers to ",
-                            }),
-                            new ChordBlock({ chord: "Cdim", lyric: "love" }),
-                        ]),
+                        new ChordLine(
+                            [
+                                new ChordBlock({
+                                    chord: "A7",
+                                    lyric: "We're no ",
+                                }),
+                                new ChordBlock({
+                                    chord: "Bm",
+                                    lyric: "strangers to ",
+                                }),
+                                new ChordBlock({
+                                    chord: "Cdim",
+                                    lyric: "love",
+                                }),
+                            ],
+                            "Chorus"
+                        ),
                         new ChordLine([
                             new ChordBlock({
                                 chord: "D7b9#11",
@@ -259,7 +286,49 @@ describe("Chord Song", () => {
                     ],
                     {
                         title: "Never Gonna Give You Up",
-                        composedBy: "Stock Watchman",
+                        composedBy: "Stock Aitken Waterman",
+                        performedBy: "Rick Astley",
+                        asHeardFrom: "every time someone rickrolls me",
+                    }
+                );
+
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+
+            test("fails if any blocks are different", () => {
+                const other = new ChordSong(
+                    [
+                        new ChordLine(
+                            [
+                                new ChordBlock({
+                                    chord: "Am",
+                                    lyric: "We're no ",
+                                }),
+                                new ChordBlock({
+                                    chord: "Bm",
+                                    lyric: "strangers to ",
+                                }),
+                                new ChordBlock({
+                                    chord: "Cdim",
+                                    lyric: "love",
+                                }),
+                            ],
+                            "Verse"
+                        ),
+                        new ChordLine([
+                            new ChordBlock({
+                                chord: "D7b9#11",
+                                lyric: "You know the rules ",
+                            }),
+                            new ChordBlock({
+                                chord: "Eb9",
+                                lyric: "and so do I",
+                            }),
+                        ]),
+                    ],
+                    {
+                        title: "Never Gonna Give You Up",
+                        composedBy: "Stock Aitken Waterman",
                         performedBy: "Rick Astley",
                         asHeardFrom: "every time someone rickrolls me",
                     }
@@ -280,18 +349,27 @@ describe("Chord Song", () => {
                                 lyric: "and so do I",
                             }),
                         ]),
-                        new ChordLine([
-                            new ChordBlock({ chord: "A7", lyric: "We're no " }),
-                            new ChordBlock({
-                                chord: "Bm",
-                                lyric: "strangers to ",
-                            }),
-                            new ChordBlock({ chord: "Cdim", lyric: "love" }),
-                        ]),
+                        new ChordLine(
+                            [
+                                new ChordBlock({
+                                    chord: "A7",
+                                    lyric: "We're no ",
+                                }),
+                                new ChordBlock({
+                                    chord: "Bm",
+                                    lyric: "strangers to ",
+                                }),
+                                new ChordBlock({
+                                    chord: "Cdim",
+                                    lyric: "love",
+                                }),
+                            ],
+                            "Verse"
+                        ),
                     ],
                     {
                         title: "Never Gonna Give You Up",
-                        composedBy: "Stock Watchman",
+                        composedBy: "Stock Aitken Waterman",
                         performedBy: "Rick Astley",
                         asHeardFrom: "every time someone rickrolls me",
                     }

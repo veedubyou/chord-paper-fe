@@ -1,11 +1,13 @@
 import { Box, Grid, makeStyles, Theme } from "@material-ui/core";
 import red from "@material-ui/core/colors/red";
+import { withStyles } from "@material-ui/styles";
 import clsx from "clsx";
-import React, { useState, useContext } from "react";
+import React from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { IDable } from "../../common/ChordModel/Collection";
 import { DataTestID } from "../../common/DataTestID";
 import { inflatingWhitespace } from "../../common/Whitespace";
+import { lyricTypographyVariant } from "../display/Lyric";
 import ChordDroppable from "./ChordDroppable";
 import DraggableChordSymbol from "./DraggableChordSymbol";
 import {
@@ -14,11 +16,9 @@ import {
     firstTokenClassName,
     hoverChordLyricStyle,
 } from "./HighlightChordLyricStyle";
-import { lyricTypographyVariant } from "../display/Lyric";
+import { useEditingState } from "./InteractionContext";
 import TextInput from "./TextInput";
 import Token from "./Token";
-import { InteractionContext } from "./InteractionContext";
-import { withStyles } from "@material-ui/styles";
 
 const chordSymbolClassName = "ChordSymbol";
 
@@ -76,8 +76,7 @@ export interface BlockProps extends DataTestID {
 }
 
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
-    const [editing, setEditing] = useState(false);
-    const { startInteraction, endInteraction } = useContext(InteractionContext);
+    const { editing, startEdit, finishEdit } = useEditingState();
 
     let lyricTokens: string[] = props.chordBlock.lyricTokens;
 
@@ -110,8 +109,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                 props.onBlockSplit(props.chordBlock, tokenIndex);
             }
 
-            setEditing(true);
-            startInteraction();
+            startEdit();
 
             event.stopPropagation();
         };
@@ -141,8 +139,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             props.onChordChange(props.chordBlock, newChord);
         }
 
-        setEditing(false);
-        endInteraction();
+        finishEdit();
     };
 
     const lyricBlock = (lyric: string, index: number): React.ReactElement => {
@@ -181,7 +178,6 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             return (
                 <Box data-testid="ChordEdit">
                     <ChordInput
-                        width="5em"
                         variant={lyricTypographyVariant}
                         onFinish={endEdit}
                     >

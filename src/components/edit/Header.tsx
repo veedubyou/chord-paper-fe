@@ -63,7 +63,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
                     <EditableTypography
                         display="block"
                         variant="caption"
-                        placeholder="Stock Waterman"
+                        placeholder="Stock Aitken Waterman"
                         onValueChange={updateComposeHandler}
                         data-testid="ComposedBy"
                     >

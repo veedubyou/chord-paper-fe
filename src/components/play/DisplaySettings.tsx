@@ -15,6 +15,7 @@ import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import React, { ChangeEvent, useState } from "react";
 import { isWhitespace } from "../../common/Whitespace";
 import { PlayFormatting } from "./PlayContent";
+import { PlainFn } from "../../common/PlainFn";
 
 type TextFieldProps = Omit<Partial<TextFieldPropsWithVariant>, "variant">;
 
@@ -28,11 +29,12 @@ interface InputFieldSpecification {
     label: string;
     field: keyof TextSettings;
     adornment: string | null;
+    validationErrorPropsFn: (strValue: string) => Either<Error, number>;
 }
 
 interface DisplaySettingsProps {
     open: boolean;
-    onClose?: () => void;
+    onClose?: PlainFn;
     defaultSettings: PlayFormatting;
     onSubmit?: (formatting: PlayFormatting) => void;
 }
@@ -52,7 +54,7 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = (
         columnMargin: props.defaultSettings.columnMargin.toString(),
     });
 
-    const validateInt = (strValue: string): Either<Error, number> => {
+    const validateNumber = (strValue: string): Either<Error, number> => {
         if (strValue === "" || isWhitespace(strValue)) {
             return left(new Error("A value is required"));
         }
@@ -66,6 +68,18 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = (
             return left(new Error("Only positive numbers are allowed"));
         }
 
+        return right(convertedNumber);
+    };
+
+    const validateInt = (strValue: string): Either<Error, number> => {
+        const result = validateNumber(strValue);
+
+        if (isLeft(result)) {
+            return result;
+        }
+
+        const convertedNumber = result.right;
+
         const convertedInteger = Math.floor(convertedNumber);
         if (convertedNumber !== convertedInteger) {
             return left(new Error("Only integers are allowed"));
@@ -76,8 +90,8 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = (
 
     const validatedSettings = (): Either<Error, PlayFormatting> => {
         const numberOfColumnsResults = validateInt(settings.numberOfColumns);
-        const fontSizeResults = validateInt(settings.fontSize);
-        const columnMarginResults = validateInt(settings.columnMargin);
+        const fontSizeResults = validateNumber(settings.fontSize);
+        const columnMarginResults = validateNumber(settings.columnMargin);
 
         if (isLeft(numberOfColumnsResults)) {
             return numberOfColumnsResults;
@@ -127,8 +141,9 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = (
         };
     };
 
-    const intValidationErrorProps = (strValue: string): TextFieldProps => {
-        const result = validateInt(strValue);
+    const validationErrorProps = (
+        result: Either<Error, number>
+    ): TextFieldProps => {
         return {
             error: isLeft(result) ? true : undefined,
             helperText: isLeft(result) ? result.left.message : undefined,
@@ -140,16 +155,19 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = (
             label: "number of columns",
             field: "numberOfColumns",
             adornment: null,
+            validationErrorPropsFn: (val: string) => validateInt(val),
         },
         {
             label: "font size",
             field: "fontSize",
             adornment: "px",
+            validationErrorPropsFn: (val: string) => validateNumber(val),
         },
         {
             label: "column margin",
             field: "columnMargin",
             adornment: "px",
+            validationErrorPropsFn: (val: string) => validateNumber(val),
         },
     ];
 
@@ -158,7 +176,9 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = (
             label: spec.label,
             defaultValue: settings[spec.field],
             onChange: settingChangeHandler(spec.field),
-            ...intValidationErrorProps(settings[spec.field]),
+            ...validationErrorProps(
+                spec.validationErrorPropsFn(settings[spec.field])
+            ),
         };
 
         if (spec.adornment !== null) {

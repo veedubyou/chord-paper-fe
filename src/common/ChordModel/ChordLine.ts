@@ -10,10 +10,19 @@ import {
 import { replaceChordLineLyrics } from "./ChordLinePatcher";
 import { Collection, IDable } from "./Collection";
 
-export const ChordLineValidator = iots.type({
+const requiredFields = iots.type({
     elements: iots.array(ChordBlockValidator),
     type: iots.literal("ChordLine"),
 });
+
+const optionalFields = iots.partial({
+    label: iots.string,
+});
+
+export const ChordLineValidator = iots.intersection([
+    requiredFields,
+    optionalFields,
+]);
 
 export type ChordLineValidatedFields = iots.TypeOf<typeof ChordLineValidator>;
 
@@ -21,8 +30,9 @@ export class ChordLine extends Collection<ChordBlock>
     implements IDable<ChordLine> {
     id: string;
     type: "ChordLine";
+    label?: string;
 
-    constructor(elements?: ChordBlock[]) {
+    constructor(elements?: ChordBlock[], label?: string) {
         if (elements === undefined) {
             elements = [new ChordBlock({ chord: "", lyric: "" })];
         }
@@ -31,6 +41,7 @@ export class ChordLine extends Collection<ChordBlock>
 
         this.id = shortid.generate();
         this.type = "ChordLine";
+        this.label = label;
     }
 
     static fromValidatedFields(
@@ -42,7 +53,7 @@ export class ChordLine extends Collection<ChordBlock>
             }
         );
 
-        return new ChordLine(chordBlockElems);
+        return new ChordLine(chordBlockElems, validatedFields.label);
     }
 
     static deserialize(jsonStr: string): Either<Error, ChordLine> {
@@ -129,7 +140,7 @@ export class ChordLine extends Collection<ChordBlock>
     }
 
     clone(): ChordLine {
-        const clone = new ChordLine(this.elements);
+        const clone = new ChordLine(this.elements, this.label);
         clone.id = this.id;
         return clone;
     }
@@ -140,6 +151,10 @@ export class ChordLine extends Collection<ChordBlock>
 
     contentEquals(other: ChordLine): boolean {
         if (this.chordBlocks.length !== other.chordBlocks.length) {
+            return false;
+        }
+
+        if (this.label !== other.label) {
             return false;
         }
 

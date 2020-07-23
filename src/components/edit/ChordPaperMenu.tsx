@@ -13,12 +13,13 @@ import { isLeft } from "fp-ts/lib/Either";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { PlainFn } from "../../common/PlainFn";
 
 interface ChordPaperMenuProps {
     song: ChordSong;
     onLoad?: (loadedSong: ChordSong) => void;
-    onNewSong?: () => void;
-    onPlay?: () => void;
+    onNewSong?: PlainFn;
+    onPlay?: PlainFn;
 }
 
 const SpeedDial = withStyles((theme: Theme) => ({
