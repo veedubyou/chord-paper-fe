@@ -19,6 +19,7 @@ import RemoveLine from "./tutorial/RemoveLine";
 import Starting from "./tutorial/Start";
 import Labels from "./tutorial/Labels";
 import PlayMode from "./tutorial/PlayMode";
+import SplitLine from "./tutorial/SplitLine";
 
 type ExerciseEntry = {
     title: string;
@@ -91,6 +92,11 @@ const allExercises: ExerciseEntry[] = [
         title: "Merging Lines",
         route: "/learn/merge_lines",
         component: MergeLine,
+    },
+    {
+        title: "Splitting Lines",
+        route: "/learn/split_lines",
+        component: SplitLine,
     },
     {
         title: "Copying and Pasting Lines",

@@ -31,7 +31,7 @@ interface TextInputProps extends StyledComponentProps {
     children: string;
     onFinish?: (newValue: string) => void;
     onSpecialBackspace?: PlainFn;
-    onPasteOverflow?: (overflowContent: string[]) => void;
+    onTextOverflow?: (overflowContent: string[]) => void;
     onJSONPaste?: (jsonStr: string) => boolean;
     variant?: TypographyVariant;
 }
@@ -125,6 +125,28 @@ const TextInput: React.FC<TextInputProps> = (
         return true;
     };
 
+    const specialEnterHandler = (
+        event: React.KeyboardEvent<HTMLDivElement>
+    ): boolean => {
+        if (!props.onTextOverflow) {
+            return false;
+        }
+
+        const specialEnter: boolean =
+            event.key === "Enter" && (event.metaKey || event.ctrlKey);
+        if (!specialEnter) {
+            return false;
+        }
+
+        const [beforeSelection, afterSelection] = splitStringBySelection();
+
+        setValue(beforeSelection);
+        finish(beforeSelection);
+
+        props.onTextOverflow([afterSelection]);
+        return true;
+    };
+
     const splitStringBySelection = (): [string, string] => {
         const currValue = value();
 
@@ -187,9 +209,10 @@ const TextInput: React.FC<TextInputProps> = (
         const handlers: ((
             event: React.KeyboardEvent<HTMLDivElement>
         ) => boolean)[] = [
-            enterHandler,
+            specialEnterHandler,
             specialBackspaceHandler,
             tabHandler,
+            enterHandler,
             specialStylingKeysHandler,
         ];
 
@@ -228,7 +251,7 @@ const TextInput: React.FC<TextInputProps> = (
     const handlePlainTextPaste = (
         event: React.ClipboardEvent<HTMLDivElement>
     ): boolean => {
-        if (props.onPasteOverflow === undefined) {
+        if (props.onTextOverflow === undefined) {
             return false;
         }
 
@@ -254,7 +277,7 @@ const TextInput: React.FC<TextInputProps> = (
 
         setValue(newValue);
         finish(newValue);
-        props.onPasteOverflow(newPasteLines);
+        props.onTextOverflow(newPasteLines);
         return true;
     };
 

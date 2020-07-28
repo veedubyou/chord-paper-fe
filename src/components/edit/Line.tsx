@@ -39,9 +39,9 @@ interface LineProps extends DataTestID {
     "data-lineid": string;
     onChangeLine?: (id: IDable<ChordLine>) => void;
     onRemoveLine?: (id: IDable<ChordLine>) => void;
-    onPasteOverflow?: (
+    onLyricOverflow?: (
         id: IDable<ChordLine>,
-        overflowPasteContent: string[]
+        overflowLyricContent: string[]
     ) => void;
     onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
     onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;
@@ -119,7 +119,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
             onChangeLine={props.onChangeLine}
             onJSONPaste={props.onJSONPaste}
             onMergeWithPreviousLine={props.onMergeWithPreviousLine}
-            onPasteOverflow={props.onPasteOverflow}
+            onLyricOverflow={props.onLyricOverflow}
         >
             {(startEdit: PlainFn) => withHoverMenu(startEdit, menuItems)}
         </WithLyricInput>
