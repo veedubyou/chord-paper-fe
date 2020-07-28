@@ -75,7 +75,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         notifySongChanged();
     };
 
-    const handlePasteOverflow = (
+    const handleLyricOverflow = (
         id: IDable<ChordLine>,
         overflowContent: string[]
     ) => {
@@ -159,7 +159,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
                         onRemoveLine={handleRemoveLine}
                         onChangeLine={handleChangeLine}
                         onJSONPaste={handleJSONPaste}
-                        onPasteOverflow={handlePasteOverflow}
+                        onLyricOverflow={handleLyricOverflow}
                         onMergeWithPreviousLine={mergeWithPreviousLine}
                         onChordDragAndDrop={handleChordDND}
                         data-testid={`Line-${index}`}

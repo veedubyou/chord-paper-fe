@@ -20,10 +20,7 @@ interface WithLyricInputProps {
     children: (handleEdit: PlainFn) => React.ReactElement;
     chordLine: ChordLine;
     onChangeLine?: (id: IDable<ChordLine>) => void;
-    onPasteOverflow?: (
-        id: IDable<ChordLine>,
-        overflowPasteContent: string[]
-    ) => void;
+    onLyricOverflow?: (id: IDable<ChordLine>, overflowLyric: string[]) => void;
     onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
     onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;
 }
@@ -43,8 +40,8 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
             props.onChangeLine?.(props.chordLine);
         },
         pasteOverflow: (overflowContent: string[]) => {
-            if (props.onPasteOverflow) {
-                props.onPasteOverflow(props.chordLine, overflowContent);
+            if (props.onLyricOverflow) {
+                props.onLyricOverflow(props.chordLine, overflowContent);
                 finishEdit();
             }
         },
@@ -83,7 +80,7 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                     variant={lyricTypographyVariant}
                     onFinish={handlers.lyricEdit}
                     onJSONPaste={handlers.jsonPaste}
-                    onPasteOverflow={handlers.pasteOverflow}
+                    onTextOverflow={handlers.pasteOverflow}
                     onSpecialBackspace={handlers.specialBackspace}
                 >
                     {props.chordLine.lyrics}
