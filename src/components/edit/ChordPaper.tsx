@@ -3,7 +3,7 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import ChordPaperBody from "./ChordPaperBody";
-import ChordPaperMenu from "./ChordPaperMenu";
+import ChordPaperMenu from "./menu/ChordPaperMenu";
 import Header from "./Header";
 import { PlainFn } from "../../common/PlainFn";
 
@@ -26,10 +26,6 @@ const ChordPaper: React.FC<ChordPaperProps> = (
 ): JSX.Element => {
     const songChangeHandler = (song: ChordSong) => {
         props.onSongChanged?.(song);
-    };
-
-    const loadHandler = (loadedSong: ChordSong) => {
-        props.onSongChanged?.(loadedSong);
     };
 
     const newSongHandler = () => {
@@ -57,7 +53,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                 />
                 <ChordPaperMenu
                     song={props.song}
-                    onLoad={loadHandler}
+                    onSongChanged={songChangeHandler}
                     onNewSong={newSongHandler}
                     onPlay={props.onPlay}
                 />
