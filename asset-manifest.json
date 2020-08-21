@@ -1,24 +1,24 @@
 {
   "files": {
     "main.css": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css",
-    "main.js": "/chord-paper-fe/static/js/main.50c78667.chunk.js",
-    "main.js.map": "/chord-paper-fe/static/js/main.50c78667.chunk.js.map",
+    "main.js": "/chord-paper-fe/static/js/main.febf1fab.chunk.js",
+    "main.js.map": "/chord-paper-fe/static/js/main.febf1fab.chunk.js.map",
     "runtime-main.js": "/chord-paper-fe/static/js/runtime-main.3f6cd68b.js",
     "runtime-main.js.map": "/chord-paper-fe/static/js/runtime-main.3f6cd68b.js.map",
-    "static/js/2.2530ab0e.chunk.js": "/chord-paper-fe/static/js/2.2530ab0e.chunk.js",
-    "static/js/2.2530ab0e.chunk.js.map": "/chord-paper-fe/static/js/2.2530ab0e.chunk.js.map",
+    "static/js/2.420d640a.chunk.js": "/chord-paper-fe/static/js/2.420d640a.chunk.js",
+    "static/js/2.420d640a.chunk.js.map": "/chord-paper-fe/static/js/2.420d640a.chunk.js.map",
     "index.html": "/chord-paper-fe/index.html",
-    "precache-manifest.ba63e64855bb9571ff2e0bcaf43c3a4f.js": "/chord-paper-fe/precache-manifest.ba63e64855bb9571ff2e0bcaf43c3a4f.js",
+    "precache-manifest.4479df4c3a5fb04b0619243d8b4b2055.js": "/chord-paper-fe/precache-manifest.4479df4c3a5fb04b0619243d8b4b2055.js",
     "service-worker.js": "/chord-paper-fe/service-worker.js",
     "static/css/main.bea93a8b.chunk.css.map": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css.map",
-    "static/js/2.2530ab0e.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.2530ab0e.chunk.js.LICENSE.txt",
+    "static/js/2.420d640a.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.420d640a.chunk.js.LICENSE.txt",
     "static/media/index.css": "/chord-paper-fe/static/media/PoriChord.3caa9627.woff2",
     "static/media/symphony.png": "/chord-paper-fe/static/media/symphony.4ca23f9c.png"
   },
   "entrypoints": [
     "static/js/runtime-main.3f6cd68b.js",
-    "static/js/2.2530ab0e.chunk.js",
+    "static/js/2.420d640a.chunk.js",
     "static/css/main.bea93a8b.chunk.css",
-    "static/js/main.50c78667.chunk.js"
+    "static/js/main.febf1fab.chunk.js"
   ]
 }
