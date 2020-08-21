@@ -72,19 +72,14 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
             ariaLabel="SpeedDial"
         >
             <SpeedDialAction
-                icon={<SaveIcon />}
-                tooltipTitle="Save"
-                onClick={saveAction}
-            />
-            <SpeedDialAction
                 icon={<FolderOpenIcon />}
                 tooltipTitle="Load"
                 onClick={loadAction}
             />
             <SpeedDialAction
-                icon={<NoteAddIcon />}
-                tooltipTitle="New Song"
-                onClick={props.onNewSong}
+                icon={<SaveIcon />}
+                tooltipTitle="Save"
+                onClick={saveAction}
             />
             <SpeedDialAction
                 icon={<TransposeIcon />}
@@ -92,6 +87,11 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                 onClick={() => {
                     setTransposeMenuOpen(true);
                 }}
+            />
+            <SpeedDialAction
+                icon={<NoteAddIcon />}
+                tooltipTitle="New Song"
+                onClick={props.onNewSong}
             />
             <SpeedDialAction
                 icon={<PlayIcon />}
