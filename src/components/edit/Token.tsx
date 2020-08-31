@@ -20,7 +20,7 @@ const InvisibleTypography = withStyles({
     },
 })(LyricTypography);
 
-interface ChordTargetBoxProps extends StyledComponentProps {
+interface ChordTargetBoxProps {
     children: string;
     className?: string;
     onClick?: (event: React.MouseEvent<HTMLSpanElement>) => void;
@@ -33,7 +33,6 @@ const ChordTargetBox: React.FC<ChordTargetBoxProps> = (
         <InvisibleTypography
             {...lyricTypographyProps}
             onClick={props.onClick}
-            classes={props.classes}
             className={props.className}
             data-testid="ChordEditButton"
         >
