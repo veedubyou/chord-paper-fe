@@ -16,7 +16,7 @@ import {
     Switch,
     useLocation,
 } from "react-router-dom";
-import WoodBackground from "./assets/img/symphony.png";
+import Background from "./assets/img/symphony.png";
 import About from "./components/about/About";
 import Demo from "./components/Demo";
 import SideMenu from "./components/SideMenu";
@@ -71,7 +71,7 @@ const SnackbarProvider = withStyles((theme: Theme) => ({
 
 const AppLayout = withStyles({
     root: {
-        backgroundImage: `url(${WoodBackground})`,
+        backgroundImage: `url(${Background})`,
         minHeight: "100vh",
     },
 })(Grid);

@@ -1,10 +1,66 @@
 import React, { useEffect, useState } from "react";
 import ky from "ky";
-import { Typography, Box, StyledComponentProps } from "@material-ui/core";
+import {
+    Typography as UnstyledTypography,
+    Box as UnstyledBox,
+    StyledComponentProps,
+    Paper as UnstyledPaper,
+    Grid,
+    Theme,
+} from "@material-ui/core";
+import SigninIcon from "../../assets/img/google_signin.png";
+
 import { useSnackbar } from "notistack";
-import { withStyles } from "@material-ui/styles";
+import { withStyles, makeStyles } from "@material-ui/styles";
+
+const Paper = withStyles({
+    root: {
+        width: "100%",
+    },
+})(UnstyledPaper);
+
+const Box = withStyles({
+    root: {
+        width: "100%",
+    },
+})(UnstyledBox);
+
+const Typography = withStyles((theme: Theme) => ({
+    root: {
+        margin: theme.spacing(2),
+    },
+}))(UnstyledTypography);
 
 const googleSignInID = "google-sign-in";
+const googleClientID =
+    "650853277550-ta69qbfcvdl6tb5ogtnh2d07ae9rcdlf.apps.googleusercontent.com";
+
+const backendHost = ((): string => {
+    const localURL = "http://localhost:5000";
+
+    if (
+        process.env.NODE_ENV === "development" ||
+        process.env.NODE_ENV === "test"
+    ) {
+        return localURL;
+    }
+
+    const backendURL: string | undefined = process.env.REACT_APP_BACKEND_URL;
+    if (backendURL === undefined) {
+        console.error("Production build doesn't have backend URL set!");
+        return localURL;
+    }
+
+    return backendURL;
+})();
+
+const useSigninStyles = makeStyles({
+    root: {
+        maxWidth: "100%",
+        maxHeight: "100%",
+        cursor: "pointer",
+    },
+});
 
 const validateAsUser = (response: unknown): response is User => {
     if (typeof response !== "object") {
@@ -22,96 +78,107 @@ interface User {
     name: string | null;
 }
 
-interface UserInfo {
-    type: "userinfo";
-    user: User;
-}
+type UserInfoState = User | null;
 
-interface UserError {
-    type: "error";
-    error: Error;
+interface UserLoginRequest {
+    id_token: string;
 }
-
-type UserInfoState = UserInfo | UserError | null;
 
 interface LoginProps extends StyledComponentProps {}
 
 const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     const [userInfo, setUserInfo] = useState<UserInfoState>(null);
     const { enqueueSnackbar } = useSnackbar();
+    const signinStyles = useSigninStyles();
+
+    const shouldShowSigninButton = (
+        userInfo: UserInfoState
+    ): userInfo is null => {
+        return userInfo === null;
+    };
 
     useEffect(() => {
-        const handleGoogleLogin = async (user: gapi.auth2.GoogleUser) => {
-            const idToken: string = user.getAuthResponse().id_token;
-            let parsed: unknown;
+        gapi.load("auth2", () => {
+            const handleGoogleLogin = async (user: gapi.auth2.GoogleUser) => {
+                const idToken: string = user.getAuthResponse().id_token;
+                let parsed: unknown;
 
-            try {
-                parsed = await ky
-                    .post("http://localhost:5000/login", {
-                        json: { id_token: idToken },
-                    })
-                    .json();
-            } catch (e) {
-                console.error("Failed to make login request to BE", e);
-                enqueueSnackbar(
-                    "Failed to login to backend. Check console for more error details",
-                    { variant: "error" }
-                );
-                setUserInfo({ type: "error", error: e });
-                return;
-            }
+                try {
+                    const request: UserLoginRequest = {
+                        id_token: idToken,
+                    };
 
-            if (!validateAsUser(parsed)) {
-                console.error("JSON payload is not a user", parsed);
-                enqueueSnackbar(
-                    "Failed to login to backend. Check console for more error details",
-                    { variant: "error" }
-                );
-                setUserInfo({
-                    type: "error",
-                    error: new Error("malformed json"),
+                    parsed = await ky
+                        .post(backendHost + "/login", {
+                            json: request,
+                        })
+                        .json();
+                } catch (e) {
+                    console.error("Failed to make login request to BE", e);
+                    enqueueSnackbar(
+                        "Failed to login to backend. Check console for more error details",
+                        { variant: "error" }
+                    );
+
+                    return;
+                }
+
+                if (!validateAsUser(parsed)) {
+                    console.error("JSON payload is not a user", parsed);
+                    enqueueSnackbar(
+                        "Failed to login to backend. Check console for more error details",
+                        { variant: "error" }
+                    );
+
+                    return;
+                }
+
+                setUserInfo(parsed);
+            };
+
+            if (shouldShowSigninButton(userInfo)) {
+                const authClient: gapi.auth2.GoogleAuth = gapi.auth2.init({
+                    client_id: googleClientID,
+                    scope: "profile email",
                 });
 
-                return;
+                authClient.attachClickHandler(
+                    document.getElementById(googleSignInID),
+                    {},
+                    handleGoogleLogin,
+                    (failureReason: string) => {
+                        console.error(
+                            "Failed to login to Google",
+                            failureReason
+                        );
+                    }
+                );
             }
+        });
+    }, [enqueueSnackbar, userInfo, setUserInfo]);
 
-            setUserInfo({ type: "userinfo", user: parsed });
-        };
-
-        if (userInfo === null) {
-            gapi.signin2.render(googleSignInID, {
-                scope: "profile email",
-                width: 240,
-                height: 50,
-                longtitle: true,
-                theme: "light",
-                onsuccess: handleGoogleLogin,
-            });
-        }
-    }, [userInfo, enqueueSnackbar]);
-
-    if (userInfo === null) {
+    if (shouldShowSigninButton(userInfo)) {
         return (
-            <Box className={props.classes?.root}>
-                <div id={googleSignInID} />
-            </Box>
-        );
-    }
-
-    if (userInfo.type === "error") {
-        return (
-            <Box className={props.classes?.root}>
-                <Typography>
-                    An error has occurred when signing in, please refresh.
-                </Typography>
-            </Box>
+            <Paper classes={props.classes}>
+                <Box id={googleSignInID}>
+                    <img
+                        src={SigninIcon}
+                        alt="Google Signin"
+                        className={signinStyles.root}
+                    />
+                </Box>
+            </Paper>
         );
     }
 
     return (
-        <Box className={props.classes?.root}>
-            <Typography>{userInfo.user.name}</Typography>
-        </Box>
+        <Paper classes={props.classes}>
+            <Grid container>
+                <Grid item container justify="center">
+                    <Typography>Signed in as {userInfo.name}</Typography>
+                </Grid>
+            </Grid>
+        </Paper>
     );
 };
 
