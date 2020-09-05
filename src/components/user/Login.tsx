@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ky from "ky";
+import ky from "ky/umd";
 import {
     Typography as UnstyledTypography,
     Box as UnstyledBox,

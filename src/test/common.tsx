@@ -44,3 +44,19 @@ export const selectionStub = () => {
 
     global.window.getSelection = () => null;
 };
+
+export const gapiStub = () => {
+    global.window["gapi"] = {
+        load: jest.fn(),
+        auth: {} as any,
+        client: {} as any,
+        signin2: {} as any,
+        auth2: {
+            init: jest.fn(),
+            getAuthInstance: jest.fn(),
+            GoogleAuth: {} as any,
+            authorize: jest.fn(),
+            SigninOptionsBuilder: {} as any,
+        },
+    };
+};
