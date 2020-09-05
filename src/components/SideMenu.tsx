@@ -24,6 +24,7 @@ import { withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { allExerciseRoutes, ExerciseRoute } from "./Tutorial";
+import UnstyledLogin from "./user/Login";
 
 const withPointerStyle = withStyles({
     root: {
@@ -65,6 +66,14 @@ const FullHeightGrid = withStyles({
         width: "100%",
     },
 })(Grid);
+
+const Login = withStyles({
+    root: {
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+    },
+})(UnstyledLogin);
 
 const SideMenu: React.FC<{}> = (): JSX.Element => {
     const [expanded, setExpanded] = useState(false);
@@ -208,6 +217,7 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
                     </ListItem>
                 </Link>
             </List>
+            <Login />
         </Drawer>
     );
 

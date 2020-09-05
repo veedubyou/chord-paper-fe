@@ -2,6 +2,9 @@ import { fireEvent, render } from "@testing-library/react";
 import React from "react";
 import App from "../App";
 import { FindByTestIdChainFn, getFindByTestIdChain } from "./matcher";
+import { gapiStub } from "./common";
+
+beforeAll(gapiStub);
 
 describe("App side menu", () => {
     let findByTestIdChain: FindByTestIdChainFn;

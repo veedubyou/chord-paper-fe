@@ -1,4 +1,4 @@
-import { Box, StyledComponentProps, withStyles } from "@material-ui/core";
+import { Box, withStyles } from "@material-ui/core";
 import clsx from "clsx";
 import React from "react";
 import Lyric, { LyricTypography, lyricTypographyProps } from "../display/Lyric";
@@ -20,7 +20,7 @@ const InvisibleTypography = withStyles({
     },
 })(LyricTypography);
 
-interface ChordTargetBoxProps extends StyledComponentProps {
+interface ChordTargetBoxProps {
     children: string;
     className?: string;
     onClick?: (event: React.MouseEvent<HTMLSpanElement>) => void;
@@ -33,7 +33,6 @@ const ChordTargetBox: React.FC<ChordTargetBoxProps> = (
         <InvisibleTypography
             {...lyricTypographyProps}
             onClick={props.onClick}
-            classes={props.classes}
             className={props.className}
             data-testid="ChordEditButton"
         >
