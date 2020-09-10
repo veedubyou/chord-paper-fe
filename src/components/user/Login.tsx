@@ -136,11 +136,15 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 setUserInfo(parsed);
             };
 
-            if (shouldShowSigninButton(userInfo)) {
-                const authClient: gapi.auth2.GoogleAuth = gapi.auth2.init({
-                    client_id: googleClientID,
-                    scope: "profile email",
-                });
+            if (!shouldShowSigninButton(userInfo)) {
+                return;
+            }
+
+            const handleAuthInit = (authClient: gapi.auth2.GoogleAuth) => {
+                if (authClient.isSignedIn.get()) {
+                    handleGoogleLogin(authClient.currentUser.get());
+                    return;
+                }
 
                 authClient.attachClickHandler(
                     document.getElementById(googleSignInID),
@@ -153,7 +157,14 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                         );
                     }
                 );
-            }
+            };
+
+            gapi.auth2
+                .init({
+                    client_id: googleClientID,
+                    scope: "profile email",
+                })
+                .then(handleAuthInit);
         });
     }, [enqueueSnackbar, userInfo, setUserInfo]);
 
