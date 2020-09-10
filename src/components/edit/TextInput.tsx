@@ -340,6 +340,14 @@ const TextInput: React.FC<TextInputProps> = (
 
     const contentEditableStyle = useContentEditableStyle();
 
+    const spaceStyle = makeStyles({
+        root: {
+            display: "inline-block",
+            width: "3em",
+            whiteSpace: "nowrap",
+        },
+    })();
+
     return (
         <InputTypography
             classes={props.classes}
@@ -352,12 +360,16 @@ const TextInput: React.FC<TextInputProps> = (
                 className={contentEditableStyle.root}
                 ref={contentEditableRef}
                 data-testid="InnerInput"
-                onBlur={blurHandler}
+                // onBlur={blurHandler}
                 onKeyDown={keyDownHandler}
                 onPaste={handlePaste}
                 suppressContentEditableWarning
             >
                 {props.children}
+                <span className={spaceStyle.root} contentEditable="false">
+                    <span contentEditable={true}> </span>
+                </span>
+                abcde
             </span>
         </InputTypography>
     );
