@@ -80,10 +80,6 @@ interface User {
 
 type UserInfoState = User | null;
 
-interface UserLoginRequest {
-    id_token: string;
-}
-
 interface LoginProps extends StyledComponentProps {}
 
 const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
@@ -101,16 +97,16 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
         gapi.load("auth2", () => {
             const handleGoogleLogin = async (user: gapi.auth2.GoogleUser) => {
                 const idToken: string = user.getAuthResponse().id_token;
+                const userID: string = user.getId();
+
                 let parsed: unknown;
 
                 try {
-                    const request: UserLoginRequest = {
-                        id_token: idToken,
-                    };
-
                     parsed = await ky
-                        .post(backendHost + "/login", {
-                            json: request,
+                        .post(backendHost + "/login/" + userID, {
+                            headers: {
+                                Authorization: "Bearer " + idToken,
+                            },
                         })
                         .json();
                 } catch (e) {
@@ -141,11 +137,6 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
             }
 
             const handleAuthInit = (authClient: gapi.auth2.GoogleAuth) => {
-                if (authClient.isSignedIn.get()) {
-                    handleGoogleLogin(authClient.currentUser.get());
-                    return;
-                }
-
                 authClient.attachClickHandler(
                     document.getElementById(googleSignInID),
                     {},
@@ -157,6 +148,10 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                         );
                     }
                 );
+
+                if (authClient.isSignedIn.get()) {
+                    handleGoogleLogin(authClient.currentUser.get());
+                }
             };
 
             gapi.auth2
