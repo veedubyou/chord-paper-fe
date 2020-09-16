@@ -3,6 +3,12 @@ import grey from "@material-ui/core/colors/grey";
 import { StyledComponentProps, withStyles } from "@material-ui/styles";
 import React, { useEffect } from "react";
 import { PlainFn } from "../../common/PlainFn";
+import LyricTab, { useInsertLyricTab } from "../lyrics/LyricTab";
+import {
+    serializeLyrics,
+    SerializedLyrics,
+    SizedTab,
+} from "../lyrics/LyricSerialization";
 
 const InputTypography = withStyles({
     root: {
@@ -27,37 +33,30 @@ const useContentEditableStyle = makeStyles({
     },
 });
 
-interface TextInputProps extends StyledComponentProps {
+interface LyricInputProps extends StyledComponentProps {
     children: string;
-    onFinish?: (newValue: string) => void;
+    onFinish?: (newValue: SerializedLyrics) => void;
     onSpecialBackspace?: PlainFn;
     onTextOverflow?: (overflowContent: string[]) => void;
     onJSONPaste?: (jsonStr: string) => boolean;
     variant?: TypographyVariant;
 }
 
-const TextInput: React.FC<TextInputProps> = (
-    props: TextInputProps
+const LyricInput2: React.FC<LyricInputProps> = (
+    props: LyricInputProps
 ): JSX.Element => {
     const contentEditableRef: React.RefObject<HTMLSpanElement> = React.createRef();
+    const insertLyricTab = useInsertLyricTab();
 
-    const value = (): string => {
+    const value = (): SerializedLyrics => {
         if (
             contentEditableRef.current === null ||
             contentEditableRef.current.textContent === null
         ) {
-            return "";
+            return { serializedLyrics: "" };
         }
 
-        return contentEditableRef.current.textContent;
-    };
-
-    const setValue = (newValue: string) => {
-        if (contentEditableRef.current === null) {
-            return;
-        }
-
-        contentEditableRef.current.textContent = newValue;
+        return serializeLyrics(contentEditableRef.current.childNodes);
     };
 
     const enterHandler = (
@@ -72,22 +71,18 @@ const TextInput: React.FC<TextInputProps> = (
     };
 
     const selectionRange = (): Range | null => {
-        const selection = window.getSelection();
-        if (selection === null || selection.rangeCount === 0) {
-            return null;
-        }
-
-        return selection.getRangeAt(0);
-    };
-
-    const selectionOffsets = (): [number, number] | null => {
         if (contentEditableRef.current === null) {
             return null;
         }
 
         const node = contentEditableRef.current;
 
-        const range = selectionRange();
+        const selection = window.getSelection();
+        if (selection === null || selection.rangeCount === 0) {
+            return null;
+        }
+
+        const range = selection.getRangeAt(0);
         if (
             range === null ||
             !node.contains(range.startContainer) ||
@@ -96,7 +91,7 @@ const TextInput: React.FC<TextInputProps> = (
             return null;
         }
 
-        return [range.startOffset, range.endOffset];
+        return range;
     };
 
     const specialBackspaceHandler = (
@@ -112,12 +107,14 @@ const TextInput: React.FC<TextInputProps> = (
             return false;
         }
 
-        const offsets = selectionOffsets();
-        if (offsets === null) {
+        const range = selectionRange();
+        if (range === null) {
             return false;
         }
 
-        if (offsets[0] !== 0 || offsets[1] !== 0) {
+        if (!range.collapsed || range.)
+
+        if (range[0] !== 0 || range[1] !== 0) {
             return false;
         }
 
@@ -140,6 +137,7 @@ const TextInput: React.FC<TextInputProps> = (
 
         const [beforeSelection, afterSelection] = splitStringBySelection();
 
+        const serializedLyrics = serializeLyrics(beforeSelection);
         setValue(beforeSelection);
         finish(beforeSelection);
 
@@ -150,7 +148,7 @@ const TextInput: React.FC<TextInputProps> = (
     const splitStringBySelection = (): [string, string] => {
         const currValue = value();
 
-        const offsets = selectionOffsets();
+        const offsets = selectionRange();
         if (offsets === null) {
             return [value(), ""];
         }
@@ -171,7 +169,7 @@ const TextInput: React.FC<TextInputProps> = (
         }
 
         range.deleteContents();
-        range.insertNode(document.createTextNode(newContent));
+        insertLyricTab(range, SizedTab.Size2Tab);
         range.collapse(false);
         contentEditableRef.current.normalize();
         return true;
@@ -225,7 +223,7 @@ const TextInput: React.FC<TextInputProps> = (
         }
     };
 
-    const finish = (newValue: string) => {
+    const finish = (newValue: SerializedLyrics) => {
         if (props.onFinish) {
             props.onFinish(newValue);
         }
@@ -375,4 +373,4 @@ const TextInput: React.FC<TextInputProps> = (
     );
 };
 
-export default TextInput;
+export default LyricInput2;

@@ -5,7 +5,7 @@ import { IDable } from "../../common/ChordModel/Collection";
 import { PlainFn } from "../../common/PlainFn";
 import { lyricStyle, lyricTypographyVariant } from "../display/Lyric";
 import { useEditingState } from "./InteractionContext";
-import TextInput from "./TextInput";
+import LyricInput2 from "./LyricInput";
 
 const LyricInput = withStyles((theme: Theme) => ({
     root: {
@@ -14,7 +14,7 @@ const LyricInput = withStyles((theme: Theme) => ({
         borderBottomColor: theme.palette.secondary.main,
         borderBottomWidth: "2px",
     },
-}))(TextInput);
+}))(LyricInput2);
 
 interface WithLyricInputProps {
     children: (handleEdit: PlainFn) => React.ReactElement;

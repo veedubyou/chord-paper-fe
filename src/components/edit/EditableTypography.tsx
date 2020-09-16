@@ -4,7 +4,7 @@ import { withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { DataTestID } from "../../common/DataTestID";
 import { inflateIfEmpty } from "../../common/Whitespace";
-import TextInput from "./TextInput";
+import LyricInput2 from "./LyricInput";
 import { PlainFn } from "../../common/PlainFn";
 
 export interface EditControl {
@@ -13,6 +13,7 @@ export interface EditControl {
     onEndEdit: PlainFn;
 }
 
+//TODO: need fix
 interface EditableTypographyProps extends DataTestID, TypographyProps {
     children: string;
     // provide this if you want to provide explicit control over the editability
@@ -89,13 +90,13 @@ const EditableTypography: React.FC<EditableTypographyProps> = (
         }
 
         return (
-            <TextInput
+            <LyricInput2
                 variant={props.variant}
                 onFinish={finishEdit}
                 data-testid={"EditableLine"}
             >
                 {props.children}
-            </TextInput>
+            </LyricInput2>
         );
     };
 
