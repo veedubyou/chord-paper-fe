@@ -48,15 +48,21 @@ const LyricInput2: React.FC<LyricInputProps> = (
     const contentEditableRef: React.RefObject<HTMLSpanElement> = React.createRef();
     const insertLyricTab = useInsertLyricTab();
 
+    const contentEditableElement = (): HTMLSpanElement => {
+        if (contentEditableRef.current === null) {
+            throw new Error("unexpected for ref to be null");
+        }
+
+        return contentEditableRef.current;
+    };
+
     const value = (): SerializedLyrics => {
-        if (
-            contentEditableRef.current === null ||
-            contentEditableRef.current.textContent === null
-        ) {
+        const elem = contentEditableElement();
+        if (elem.textContent === null) {
             return { serializedLyrics: "" };
         }
 
-        return serializeLyrics(contentEditableRef.current.childNodes);
+        return serializeLyrics(elem.childNodes);
     };
 
     const enterHandler = (
@@ -94,6 +100,26 @@ const LyricInput2: React.FC<LyricInputProps> = (
         return range;
     };
 
+    const isSelectionInBeginning = (): boolean => {
+        const range: Range | null = selectionRange();
+        if (range === null) {
+            return false;
+        }
+
+        if (!range.collapsed) {
+            return false;
+        }
+
+        const elem = contentEditableElement();
+        const selectionInEmptyContent =
+            range.startContainer === elem && range.startOffset === 0;
+        if (selectionInEmptyContent) {
+            return true;
+        }
+
+        const selectionIn;
+    };
+
     const specialBackspaceHandler = (
         event: React.KeyboardEvent<HTMLDivElement>
     ): boolean => {
@@ -112,7 +138,7 @@ const LyricInput2: React.FC<LyricInputProps> = (
             return false;
         }
 
-        if (!range.collapsed || range.)
+        // if (!range.collapsed || range.)
 
         if (range[0] !== 0 || range[1] !== 0) {
             return false;
