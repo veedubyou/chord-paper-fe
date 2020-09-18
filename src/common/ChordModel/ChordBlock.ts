@@ -11,10 +11,6 @@ interface ChordBlockConstructorParams {
     lyric: SerializedLyrics;
 }
 
-export const SerializedLyricsValidator = iots.type({
-    serializedLyrics: iots.string,
-});
-
 export const ChordBlockValidator = iots.type({
     chord: iots.string,
     lyric: SerializedLyricsValidator,
