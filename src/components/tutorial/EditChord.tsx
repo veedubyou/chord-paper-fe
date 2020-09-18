@@ -1,6 +1,9 @@
 import { Typography } from "@material-ui/core";
 import React from "react";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
+import {
+    ChordBlock,
+    SerializedLyric,
+} from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { ChordTypography, LineBreak, LyricsTypography } from "./Common";
@@ -9,15 +12,27 @@ import Playground from "./Playground";
 const EditChord: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly " }),
-            new ChordBlock({ chord: "Bm", lyric: "appear?" }),
+            new ChordBlock({
+                chord: "C^",
+                lyric: new SerializedLyric("Why do birds suddenly "),
+            }),
+            new ChordBlock({
+                chord: "Bm",
+                lyric: new SerializedLyric("appear?"),
+            }),
         ]),
     ]);
 
     const expectedSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly " }),
-            new ChordBlock({ chord: "B7", lyric: "appear?" }),
+            new ChordBlock({
+                chord: "C^",
+                lyric: new SerializedLyric("Why do birds suddenly "),
+            }),
+            new ChordBlock({
+                chord: "B7",
+                lyric: new SerializedLyric("appear?"),
+            }),
         ]),
     ]);
 

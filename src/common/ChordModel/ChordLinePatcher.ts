@@ -1,5 +1,5 @@
 import { ChordLine } from "./ChordLine";
-import { ChordBlock } from "./ChordBlock";
+import { ChordBlock, SerializedLyric } from "./ChordBlock";
 import { DiffMatchPatch, DiffOperation } from "diff-match-patch-typescript";
 
 const differ: DiffMatchPatch = (() => {
@@ -8,6 +8,9 @@ const differ: DiffMatchPatch = (() => {
     dmp.matchThreshold = 0;
     return dmp;
 })();
+
+// we know what we're doing here - the raw serialized string is to be compared
+const rawStringGetter = (lyrics: string) => lyrics;
 
 class ChordLineIterator {
     private chordLine: ChordLine;
@@ -34,14 +37,18 @@ class ChordLineIterator {
         return this.chordLine.elements[this.currBlockIndex];
     }
 
+    private currentRawLyrics(): string {
+        return this.currentBlock().lyric.get(rawStringGetter);
+    }
+
     private currentChar(): string {
-        return this.currentBlock().lyric.charAt(this.currCharIndex);
+        return this.currentRawLyrics().charAt(this.currCharIndex);
     }
 
     private nextChar(): void {
         this.currCharIndex += 1;
 
-        if (this.currCharIndex >= this.currentBlock().lyric.length) {
+        if (this.currCharIndex >= this.currentRawLyrics().length) {
             this.currBlockIndex += 1;
             this.currCharIndex = 0;
         }
@@ -83,14 +90,19 @@ class ChordLineIterator {
 
     finish(): void {
         for (let i = 0; i < this.chordLine.elements.length; i++) {
-            this.chordLine.elements[i].lyric = this.blockBuffer[i];
+            this.chordLine.elements[i].lyric = new SerializedLyric(
+                this.blockBuffer[i]
+            );
         }
 
         if (this.prependLyrics !== "") {
             this.chordLine.elements.splice(
                 0,
                 0,
-                new ChordBlock({ chord: "", lyric: this.prependLyrics })
+                new ChordBlock({
+                    chord: "",
+                    lyric: new SerializedLyric(this.prependLyrics),
+                })
             );
         }
 
@@ -102,7 +114,7 @@ const removeOrphanedBlocksWithNoChords = (chordLine: ChordLine): void => {
     const newBlocks: ChordBlock[] = [];
 
     for (const block of chordLine.elements) {
-        if (block.lyric !== "" || block.chord !== "") {
+        if (!block.lyric.isEmpty() || block.chord !== "") {
             newBlocks.push(block);
         }
     }
@@ -114,15 +126,17 @@ const addSpacesToOrphanedBlocks = (chordLine: ChordLine): void => {
     const blocks: ChordBlock[] = chordLine.elements;
     for (let i = 0; i < blocks.length; i++) {
         const block = blocks[i];
-        if (block.lyric !== "") {
+        if (!block.lyric.isEmpty()) {
             continue;
         }
 
+        const prevBlock = blocks[i - 1];
+        const prevBlockLyric = prevBlock.lyric;
         const prevBlockHasSpaceToSteal =
             i > 0 &&
-            blocks[i - 1].lyric.length > 1 &&
-            blocks[i - 1].lyric.endsWith(" ");
-
+            prevBlockLyric.get((rawStr: string): boolean => {
+                return rawStr.length > 1 && rawStr.endsWith(" ");
+            });
         if (prevBlockHasSpaceToSteal) {
             // "steal" a space from the previous block
             // e.g. if * represents a space
@@ -138,20 +152,27 @@ const addSpacesToOrphanedBlocks = (chordLine: ChordLine): void => {
             // We're*no*
 
             // if there's no space to steal, just add one so that it's backed by a character
-            const prevBlock = blocks[i - 1];
-            const lastIndex = prevBlock.lyric.length - 1;
-            prevBlock.lyric = prevBlock.lyric.slice(0, lastIndex);
+            const modifiedRawLyric = prevBlockLyric.get(
+                (rawStr: string): string => {
+                    const lastIndex = rawStr.length - 1;
+                    return rawStr.slice(0, lastIndex);
+                }
+            );
+            prevBlock.lyric = new SerializedLyric(modifiedRawLyric);
         }
 
-        block.lyric = " ";
+        block.lyric = new SerializedLyric(" ");
     }
 };
 
 export const replaceChordLineLyrics = (
     chordLine: ChordLine,
-    newLyrics: string
+    newLyrics: SerializedLyric
 ): void => {
-    const diffs = differ.diff_main(chordLine.lyrics, newLyrics);
+    const currRawLyrics = chordLine.lyrics.get(rawStringGetter);
+    const newRawLyrics = newLyrics.get(rawStringGetter);
+
+    const diffs = differ.diff_main(currRawLyrics, newRawLyrics);
     differ.diff_cleanupSemanticLossless(diffs);
 
     const iterator = new ChordLineIterator(chordLine);

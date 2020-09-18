@@ -6,6 +6,7 @@ import {
     ChordBlock,
     ChordBlockValidatedFields,
     ChordBlockValidator,
+    SerializedLyric,
 } from "./ChordBlock";
 import { replaceChordLineLyrics } from "./ChordLinePatcher";
 import { Collection, IDable } from "./Collection";
@@ -34,7 +35,9 @@ export class ChordLine extends Collection<ChordBlock>
 
     constructor(elements?: ChordBlock[], label?: string) {
         if (elements === undefined) {
-            elements = [new ChordBlock({ chord: "", lyric: "" })];
+            elements = [
+                new ChordBlock({ chord: "", lyric: new SerializedLyric("") }),
+            ];
         }
 
         super(elements);
@@ -76,7 +79,7 @@ export class ChordLine extends Collection<ChordBlock>
         return right(this.fromValidatedFields(validationResult.right));
     }
 
-    static fromLyrics(lyrics: string): ChordLine {
+    static fromLyrics(lyrics: SerializedLyric): ChordLine {
         const block = new ChordBlock({
             chord: "",
             lyric: lyrics,
@@ -89,16 +92,16 @@ export class ChordLine extends Collection<ChordBlock>
         return this.elements;
     }
 
-    get lyrics(): string {
+    get lyrics(): SerializedLyric {
         const lyricTokens = this.chordBlocks.map(
             (chordBlock: ChordBlock) => chordBlock.lyric
         );
 
-        return lyricTokens.join("");
+        return SerializedLyric.join(lyricTokens, "");
     }
 
-    replaceLyrics(newLyrics: string): void {
-        if (newLyrics === this.lyrics) {
+    replaceLyrics(newLyrics: SerializedLyric): void {
+        if (this.lyrics.isEqual(newLyrics)) {
             return;
         }
 
@@ -127,7 +130,7 @@ export class ChordLine extends Collection<ChordBlock>
 
             if (block.chord === "" && newBlocks.length > 0) {
                 const lastIndex = newBlocks.length - 1;
-                newBlocks[lastIndex].lyric += block.lyric;
+                newBlocks[lastIndex].lyric.append(block.lyric);
             } else {
                 newBlocks.push(block);
             }

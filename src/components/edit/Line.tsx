@@ -4,7 +4,10 @@ import red from "@material-ui/core/colors/red";
 import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
 import ChatBubbleIcon from "@material-ui/icons/ChatBubbleOutline";
 import React, { useState } from "react";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
+import {
+    ChordBlock,
+    SerializedLyric,
+} from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { IDable } from "../../common/ChordModel/Collection";
 import { PlainFn } from "../../common/PlainFn";
@@ -83,7 +86,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         chordBlocks = [
             new ChordBlock({
                 chord: "",
-                lyric: "",
+                lyric: new SerializedLyric(""),
             }),
         ];
     }

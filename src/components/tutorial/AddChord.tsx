@@ -3,7 +3,10 @@ import { Typography } from "@material-ui/core";
 import Playground from "./Playground";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
+import {
+    ChordBlock,
+    SerializedLyric,
+} from "../../common/ChordModel/ChordBlock";
 import { LineBreak, LyricsTypography, ChordTypography } from "./Common";
 
 const AddChord: React.FC<{}> = (): JSX.Element => {
@@ -11,7 +14,7 @@ const AddChord: React.FC<{}> = (): JSX.Element => {
         new ChordLine([
             new ChordBlock({
                 chord: "C^",
-                lyric: "Why do birds suddenly appear?",
+                lyric: new SerializedLyric("Why do birds suddenly appear?"),
             }),
         ]),
     ]);
@@ -20,9 +23,12 @@ const AddChord: React.FC<{}> = (): JSX.Element => {
         new ChordLine([
             new ChordBlock({
                 chord: "C^",
-                lyric: "Why do birds suddenly ",
+                lyric: new SerializedLyric("Why do birds suddenly "),
             }),
-            new ChordBlock({ chord: "B7", lyric: "appear?" }),
+            new ChordBlock({
+                chord: "B7",
+                lyric: new SerializedLyric("appear?"),
+            }),
         ]),
     ]);
 

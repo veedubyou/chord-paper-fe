@@ -5,6 +5,7 @@ import { ChordSong } from "../common/ChordModel/ChordSong";
 import { withSongContext } from "../components/WithSongContext";
 import ChordPaper from "../components/edit/ChordPaper";
 import { HelmetProvider } from "react-helmet-async";
+import { SerializedLyric } from "../common/ChordModel/ChordBlock";
 
 const Song = withSongContext(ChordPaper);
 
@@ -19,7 +20,10 @@ export const withProviders = (children: React.ReactNode) => {
 };
 
 export const chordPaperFromLyrics = (lyrics: string[]) => {
-    const song = ChordSong.fromLyricsLines(lyrics);
+    const serializedLyrics = lyrics.map(
+        (line: string) => new SerializedLyric(line)
+    );
+    const song = ChordSong.fromLyricsLines(serializedLyrics);
 
     return withProviders(<Song song={song} />);
 };

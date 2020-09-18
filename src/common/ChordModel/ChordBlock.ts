@@ -7,12 +7,58 @@ import { IDable } from "./Collection";
 
 interface ChordBlockConstructorParams {
     chord: string;
-    lyric: string;
+    lyric: SerializedLyric;
+}
+
+export const SerializedLyricValidator = iots.type({
+    serializedLyric: iots.string,
+});
+
+export type SerializedLyricValidatedFields = iots.TypeOf<
+    typeof SerializedLyricValidator
+>;
+
+export class SerializedLyric {
+    private serializedLyric: string;
+
+    constructor(serializedLyrics: string) {
+        this.serializedLyric = serializedLyrics;
+    }
+
+    get<T>(transformFn: (serializedLyrics: string) => T): T {
+        return transformFn(this.serializedLyric);
+    }
+
+    append(other: SerializedLyric) {
+        this.serializedLyric += other.serializedLyric;
+    }
+
+    isEmpty(): boolean {
+        return this.serializedLyric === "";
+    }
+
+    isEqual(other: SerializedLyric): boolean {
+        return this.serializedLyric === other.serializedLyric;
+    }
+
+    static join(arr: SerializedLyric[], joinChar: string): SerializedLyric {
+        const rawLyricStrs: string[] = arr.map((container: SerializedLyric) => {
+            return container.serializedLyric;
+        });
+
+        return new SerializedLyric(rawLyricStrs.join(joinChar));
+    }
+
+    static fromValidatedFields(
+        validatedFields: SerializedLyricValidatedFields
+    ): SerializedLyric {
+        return new SerializedLyric(validatedFields.serializedLyric);
+    }
 }
 
 export const ChordBlockValidator = iots.type({
     chord: iots.string,
-    lyric: iots.string,
+    lyric: SerializedLyricValidator,
     type: iots.literal("ChordBlock"),
 });
 
@@ -21,7 +67,7 @@ export type ChordBlockValidatedFields = iots.TypeOf<typeof ChordBlockValidator>;
 export class ChordBlock implements IDable<ChordBlock> {
     id: string;
     chord: string;
-    lyric: string;
+    lyric: SerializedLyric;
     type: "ChordBlock";
 
     constructor({ chord, lyric }: ChordBlockConstructorParams) {
@@ -38,9 +84,13 @@ export class ChordBlock implements IDable<ChordBlock> {
     static fromValidatedFields(
         validatedFields: ChordBlockValidatedFields
     ): ChordBlock {
+        const serializedLyric = SerializedLyric.fromValidatedFields(
+            validatedFields.lyric
+        );
+
         return new ChordBlock({
             chord: validatedFields.chord,
-            lyric: validatedFields.lyric,
+            lyric: serializedLyric,
         });
     }
 
@@ -61,16 +111,20 @@ export class ChordBlock implements IDable<ChordBlock> {
             return left(new Error("Invalid Chord Block object"));
         }
 
+        const serializedLyric = SerializedLyric.fromValidatedFields(
+            validationResult.right.lyric
+        );
+
         return right(
             new ChordBlock({
                 chord: validationResult.right.chord,
-                lyric: validationResult.right.lyric,
+                lyric: serializedLyric,
             })
         );
     }
 
     get lyricTokens(): string[] {
-        return tokenize(this.lyric);
+        return this.lyric.get(tokenize);
     }
 
     // splits a block, and returns the block before
@@ -90,11 +144,11 @@ export class ChordBlock implements IDable<ChordBlock> {
 
         const prevBlock: ChordBlock = new ChordBlock({
             chord: this.chord,
-            lyric: prevBlockLyricTokens.join(""),
+            lyric: new SerializedLyric(prevBlockLyricTokens.join("")),
         });
 
         this.chord = "";
-        this.lyric = thisBlockLyricTokens.join("");
+        this.lyric = new SerializedLyric(thisBlockLyricTokens.join(""));
 
         return prevBlock;
     }
@@ -104,6 +158,6 @@ export class ChordBlock implements IDable<ChordBlock> {
     }
 
     isEmpty(): boolean {
-        return this.chord === "" && this.lyric === "";
+        return this.chord === "" && this.lyric.isEmpty();
     }
 }

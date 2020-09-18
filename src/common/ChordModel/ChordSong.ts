@@ -1,7 +1,7 @@
 import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
 import lodash from "lodash";
-import { ChordBlock } from "./ChordBlock";
+import { ChordBlock, SerializedLyric } from "./ChordBlock";
 import {
     ChordLine,
     ChordLineValidatedFields,
@@ -81,9 +81,9 @@ export class ChordSong extends Collection<ChordLine> {
         return right(this.fromValidatedFields(validationResult.right));
     }
 
-    static fromLyricsLines(lyricLines: string[]): ChordSong {
-        const chordLines: ChordLine[] = lyricLines.map((lyricLine: string) =>
-            ChordLine.fromLyrics(lyricLine)
+    static fromLyricsLines(lyricLines: SerializedLyric[]): ChordSong {
+        const chordLines: ChordLine[] = lyricLines.map(
+            (lyricLine: SerializedLyric) => ChordLine.fromLyrics(lyricLine)
         );
         return new ChordSong(chordLines);
     }
@@ -147,7 +147,9 @@ export class ChordSong extends Collection<ChordLine> {
         // Never GonnaGive You Up is awkward
         const prevLine = this.chordLines[index - 1];
         const lastBlockIndex = prevLine.chordBlocks.length - 1;
-        prevLine.chordBlocks[lastBlockIndex].lyric += " ";
+        prevLine.chordBlocks[lastBlockIndex].lyric.append(
+            new SerializedLyric(" ")
+        );
 
         const currLine = this.chordLines[index];
         prevLine.chordBlocks.push(...currLine.chordBlocks);

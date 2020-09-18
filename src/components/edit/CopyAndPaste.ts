@@ -52,7 +52,8 @@ const deserializeCopiedChordLines = (
 };
 
 const serializeCopiedChordLines = (chordLines: ChordLine[]): string => {
-    const payload: CopiedChordLines = {
+    //TODO: removed type annotation because of visibility mismatches
+    const payload = {
         copiedChordLines: chordLines,
     };
 
