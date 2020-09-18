@@ -37,7 +37,7 @@ interface LyricInputProps extends StyledComponentProps {
     children: string;
     onFinish?: (newValue: SerializedLyrics) => void;
     onSpecialBackspace?: PlainFn;
-    onTextOverflow?: (overflowContent: string[]) => void;
+    onLyricOverflow?: (overflowContent: SerializedLyrics[]) => void;
     onJSONPaste?: (jsonStr: string) => boolean;
     variant?: TypographyVariant;
 }
@@ -100,7 +100,7 @@ const LyricInput2: React.FC<LyricInputProps> = (
         return range;
     };
 
-    const isSelectionInBeginning = (): boolean => {
+    const isSelectionAtBeginning = (): boolean => {
         const range: Range | null = selectionRange();
         if (range === null) {
             return false;
@@ -111,13 +111,20 @@ const LyricInput2: React.FC<LyricInputProps> = (
         }
 
         const elem = contentEditableElement();
-        const selectionInEmptyContent =
-            range.startContainer === elem && range.startOffset === 0;
-        if (selectionInEmptyContent) {
+        if (range.startContainer === elem && range.startOffset === 0) {
             return true;
         }
 
-        const selectionIn;
+        if (elem.firstChild !== null) {
+            if (
+                range.startContainer === elem.firstChild &&
+                range.startOffset === 0
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     };
 
     const specialBackspaceHandler = (
@@ -133,14 +140,7 @@ const LyricInput2: React.FC<LyricInputProps> = (
             return false;
         }
 
-        const range = selectionRange();
-        if (range === null) {
-            return false;
-        }
-
-        // if (!range.collapsed || range.)
-
-        if (range[0] !== 0 || range[1] !== 0) {
+        if (!isSelectionAtBeginning()) {
             return false;
         }
 
@@ -151,7 +151,7 @@ const LyricInput2: React.FC<LyricInputProps> = (
     const specialEnterHandler = (
         event: React.KeyboardEvent<HTMLDivElement>
     ): boolean => {
-        if (!props.onTextOverflow) {
+        if (!props.onLyricOverflow) {
             return false;
         }
 
@@ -161,27 +161,49 @@ const LyricInput2: React.FC<LyricInputProps> = (
             return false;
         }
 
-        const [beforeSelection, afterSelection] = splitStringBySelection();
+        const [beforeSelection, afterSelection] = splitContentBySelection();
 
-        const serializedLyrics = serializeLyrics(beforeSelection);
-        setValue(beforeSelection);
-        finish(beforeSelection);
+        const serializedLyricsBeforeSelection: SerializedLyrics = serializeLyrics(
+            beforeSelection.cloneContents().childNodes
+        );
+        finish(serializedLyricsBeforeSelection);
 
-        props.onTextOverflow([afterSelection]);
+        const serializedLyricsAfterSelection: SerializedLyrics = serializeLyrics(
+            afterSelection.cloneContents().childNodes
+        );
+
+        props.onLyricOverflow([serializedLyricsAfterSelection]);
         return true;
     };
 
-    const splitStringBySelection = (): [string, string] => {
-        const currValue = value();
+    const splitContentBySelection = (): [Range, Range] => {
+        const currentRange: Range | null = selectionRange();
+        const elem = contentEditableElement();
 
-        const offsets = selectionRange();
-        if (offsets === null) {
-            return [value(), ""];
+        const beforeRange: Range = document.createRange();
+        const afterRange: Range = document.createRange();
+
+        if (currentRange !== null) {
+            beforeRange.setStart(elem, 0);
+            beforeRange.setEnd(
+                currentRange.startContainer,
+                currentRange.startOffset
+            );
+            afterRange.setStart(
+                currentRange.endContainer,
+                currentRange.endOffset
+            );
+            afterRange.setEnd(elem, elem.childNodes.length);
+        } else {
+            beforeRange.selectNodeContents(elem);
+            afterRange.setStart(
+                beforeRange.endContainer,
+                beforeRange.endOffset
+            );
+            afterRange.setEnd(beforeRange.endContainer, beforeRange.endOffset);
         }
 
-        const beforeSelection = currValue.slice(0, offsets[0]);
-        const afterSelection = currValue.slice(offsets[1]);
-        return [beforeSelection, afterSelection];
+        return [beforeRange, afterRange];
     };
 
     const insertTextAtSelection = (newContent: string): boolean => {
@@ -195,7 +217,8 @@ const LyricInput2: React.FC<LyricInputProps> = (
         }
 
         range.deleteContents();
-        insertLyricTab(range, SizedTab.Size2Tab);
+        range.insertNode(document.createTextNode(newContent));
+        // insertLyricTab(range, SizedTab.Size2Tab);
         range.collapse(false);
         contentEditableRef.current.normalize();
         return true;
@@ -262,7 +285,7 @@ const LyricInput2: React.FC<LyricInputProps> = (
     const composeMultilinePaste = (
         pasteContent: string[]
     ): [string, string[]] => {
-        const [beforeSelection, afterSelection] = splitStringBySelection();
+        const [beforeSelection, afterSelection] = splitContentBySelection();
         const newValue = beforeSelection + pasteContent[0];
 
         const newPasteLines = pasteContent.slice(1);
@@ -275,7 +298,7 @@ const LyricInput2: React.FC<LyricInputProps> = (
     const handlePlainTextPaste = (
         event: React.ClipboardEvent<HTMLDivElement>
     ): boolean => {
-        if (props.onTextOverflow === undefined) {
+        if (props.onLyricOverflow === undefined) {
             return false;
         }
 
@@ -299,9 +322,10 @@ const LyricInput2: React.FC<LyricInputProps> = (
 
         const [newValue, newPasteLines] = composeMultilinePaste(linesOfText);
 
-        setValue(newValue);
+        //TODO
+        // setValue(newValue);
         finish(newValue);
-        props.onTextOverflow(newPasteLines);
+        props.onLyricOverflow(newPasteLines);
         return true;
     };
 
