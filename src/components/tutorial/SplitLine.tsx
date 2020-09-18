@@ -11,7 +11,10 @@ const SplitLine: React.FC<{}> = (): JSX.Element => {
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: "Why do birds suddenly appear? Every time you are near",
+                lyric: {
+                    serializedLyrics:
+                        "Why do birds suddenly appear? Every time you are near",
+                },
             }),
         ]),
     ]);
@@ -20,13 +23,13 @@ const SplitLine: React.FC<{}> = (): JSX.Element => {
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: "Why do birds suddenly appear? ",
+                lyric: { serializedLyrics: "Why do birds suddenly appear? " },
             }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: "Every time you are near",
+                lyric: { serializedLyrics: "Every time you are near" },
             }),
         ]),
     ]);

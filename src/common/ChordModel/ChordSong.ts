@@ -8,6 +8,7 @@ import {
     ChordLineValidator,
 } from "./ChordLine";
 import { Collection, IDable } from "./Collection";
+import { SerializedLyrics } from "../../components/lyrics/LyricSerialization";
 
 const SongMetadataValidator = iots.type({
     title: iots.string,
@@ -81,9 +82,9 @@ export class ChordSong extends Collection<ChordLine> {
         return right(this.fromValidatedFields(validationResult.right));
     }
 
-    static fromLyricsLines(lyricLines: string[]): ChordSong {
-        const chordLines: ChordLine[] = lyricLines.map((lyricLine: string) =>
-            ChordLine.fromLyrics(lyricLine)
+    static fromLyricsLines(lyricLines: SerializedLyrics[]): ChordSong {
+        const chordLines: ChordLine[] = lyricLines.map(
+            (lyricLine: SerializedLyrics) => ChordLine.fromLyrics(lyricLine)
         );
         return new ChordSong(chordLines);
     }

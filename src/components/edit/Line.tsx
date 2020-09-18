@@ -13,6 +13,7 @@ import Block, { BlockProps } from "./Block";
 import WithHoverMenu, { MenuItem } from "./WithHoverMenu";
 import WithLyricInput from "./WithLyricInput";
 import WithSectionLabel from "./WithSectionLabel";
+import { SerializedLyrics } from "../lyrics/LyricSerialization";
 
 const AtomicSelectionBox = withStyles({
     root: {
@@ -41,7 +42,7 @@ interface LineProps extends DataTestID {
     onRemoveLine?: (id: IDable<ChordLine>) => void;
     onLyricOverflow?: (
         id: IDable<ChordLine>,
-        overflowLyricContent: string[]
+        overflowLyricContent: SerializedLyrics[]
     ) => void;
     onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
     onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;
@@ -83,7 +84,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         chordBlocks = [
             new ChordBlock({
                 chord: "",
-                lyric: "",
+                lyric: { serializedLyrics: "" },
             }),
         ];
     }

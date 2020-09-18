@@ -9,20 +9,35 @@ import Playground from "./Playground";
 const AddLine: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly ap-" }),
-            new ChordBlock({ chord: "B7sus4", lyric: "pear?" }),
-            new ChordBlock({ chord: "B7", lyric: "\t" }),
+            new ChordBlock({
+                chord: "C^",
+                lyric: { serializedLyrics: "Why do birds suddenly ap-" },
+            }),
+            new ChordBlock({
+                chord: "B7sus4",
+                lyric: { serializedLyrics: "pear?" },
+            }),
+            new ChordBlock({ chord: "B7", lyric: { serializedLyrics: "\t" } }),
         ]),
     ]);
 
     const expectedSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly ap-" }),
-            new ChordBlock({ chord: "B7sus4", lyric: "pear?" }),
-            new ChordBlock({ chord: "B7", lyric: "\t" }),
+            new ChordBlock({
+                chord: "C^",
+                lyric: { serializedLyrics: "Why do birds suddenly ap-" },
+            }),
+            new ChordBlock({
+                chord: "B7sus4",
+                lyric: { serializedLyrics: "pear?" },
+            }),
+            new ChordBlock({ chord: "B7", lyric: { serializedLyrics: "\t" } }),
         ]),
         new ChordLine([
-            new ChordBlock({ chord: "", lyric: "Every time you are near" }),
+            new ChordBlock({
+                chord: "",
+                lyric: { serializedLyrics: "Every time you are near" },
+            }),
         ]),
     ]);
 

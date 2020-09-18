@@ -9,10 +9,13 @@ import Playground from "./Playground";
 const Instrumental: React.FC<{}> = (): JSX.Element => {
     const tabExample = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "Bm", lyric: "\t" }),
-            new ChordBlock({ chord: "A", lyric: "\t|" }),
-            new ChordBlock({ chord: "E", lyric: "\t" }),
-            new ChordBlock({ chord: "C#m7", lyric: "\t|" }),
+            new ChordBlock({ chord: "Bm", lyric: { serializedLyrics: "\t" } }),
+            new ChordBlock({ chord: "A", lyric: { serializedLyrics: "\t|" } }),
+            new ChordBlock({ chord: "E", lyric: { serializedLyrics: "\t" } }),
+            new ChordBlock({
+                chord: "C#m7",
+                lyric: { serializedLyrics: "\t|" },
+            }),
         ]),
     ]);
 
@@ -20,10 +23,13 @@ const Instrumental: React.FC<{}> = (): JSX.Element => {
 
     const expectedSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "Bm", lyric: "\t" }),
-            new ChordBlock({ chord: "A", lyric: "\t|" }),
-            new ChordBlock({ chord: "E", lyric: "\t" }),
-            new ChordBlock({ chord: "C#m7", lyric: "\t|" }),
+            new ChordBlock({ chord: "Bm", lyric: { serializedLyrics: "\t" } }),
+            new ChordBlock({ chord: "A", lyric: { serializedLyrics: "\t|" } }),
+            new ChordBlock({ chord: "E", lyric: { serializedLyrics: "\t" } }),
+            new ChordBlock({
+                chord: "C#m7",
+                lyric: { serializedLyrics: "\t|" },
+            }),
         ]),
     ]);
 

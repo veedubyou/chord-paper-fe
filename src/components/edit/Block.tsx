@@ -17,7 +17,7 @@ import {
     hoverChordLyricStyle,
 } from "./HighlightChordLyricStyle";
 import { useEditingState } from "./InteractionContext";
-import LyricInput2 from "./LyricInput";
+import TextInput from "./TextInput";
 import Token from "./Token";
 
 const chordSymbolClassName = "ChordSymbol";
@@ -25,7 +25,6 @@ const chordSymbolClassName = "ChordSymbol";
 const blockChordSymbolClassName = "BlockChordSymbol";
 const blockChordTargetClassName = "BlockChordTarget";
 
-//TODO: fix
 const ChordInput = withStyles((theme: Theme) => ({
     root: {
         fontFamily: "PoriChord",
@@ -33,7 +32,7 @@ const ChordInput = withStyles((theme: Theme) => ({
         borderBottomColor: theme.palette.primary.main,
         borderBottomWidth: "2px",
     },
-}))(LyricInput2);
+}))(TextInput);
 
 const useFirstTokenStyle = {
     dragOver: makeStyles(

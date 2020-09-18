@@ -5,7 +5,8 @@ import { IDable } from "../../common/ChordModel/Collection";
 import { PlainFn } from "../../common/PlainFn";
 import { lyricStyle, lyricTypographyVariant } from "../display/Lyric";
 import { useEditingState } from "./InteractionContext";
-import LyricInput2 from "./LyricInput";
+import UnstyledLyricInput from "./LyricInput";
+import { SerializedLyrics } from "../lyrics/LyricSerialization";
 
 const LyricInput = withStyles((theme: Theme) => ({
     root: {
@@ -14,13 +15,16 @@ const LyricInput = withStyles((theme: Theme) => ({
         borderBottomColor: theme.palette.secondary.main,
         borderBottomWidth: "2px",
     },
-}))(LyricInput2);
+}))(UnstyledLyricInput);
 
 interface WithLyricInputProps {
     children: (handleEdit: PlainFn) => React.ReactElement;
     chordLine: ChordLine;
     onChangeLine?: (id: IDable<ChordLine>) => void;
-    onLyricOverflow?: (id: IDable<ChordLine>, overflowLyric: string[]) => void;
+    onLyricOverflow?: (
+        id: IDable<ChordLine>,
+        overflowLyric: SerializedLyrics[]
+    ) => void;
     onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
     onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;
 }
@@ -33,13 +37,13 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
     const { editing, startEdit, finishEdit } = useEditingState();
 
     const handlers = {
-        lyricEdit: (newLyrics: string) => {
+        lyricEdit: (newLyrics: SerializedLyrics) => {
             finishEdit();
 
             props.chordLine.replaceLyrics(newLyrics);
             props.onChangeLine?.(props.chordLine);
         },
-        pasteOverflow: (overflowContent: string[]) => {
+        pasteOverflow: (overflowContent: SerializedLyrics[]) => {
             if (props.onLyricOverflow) {
                 props.onLyricOverflow(props.chordLine, overflowContent);
                 finishEdit();
@@ -80,7 +84,7 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                     variant={lyricTypographyVariant}
                     onFinish={handlers.lyricEdit}
                     onJSONPaste={handlers.jsonPaste}
-                    onTextOverflow={handlers.pasteOverflow}
+                    onLyricOverflow={handlers.pasteOverflow}
                     onSpecialBackspace={handlers.specialBackspace}
                 >
                     {props.chordLine.lyrics}

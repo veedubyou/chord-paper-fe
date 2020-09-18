@@ -9,29 +9,49 @@ import Playground from "./Playground";
 const PasteLyrics: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly ap-" }),
-            new ChordBlock({ chord: "B7sus4", lyric: "pear?" }),
-            new ChordBlock({ chord: "B7", lyric: "\t" }),
+            new ChordBlock({
+                chord: "C^",
+                lyric: { serializedLyrics: "Why do birds suddenly ap-" },
+            }),
+            new ChordBlock({
+                chord: "B7sus4",
+                lyric: { serializedLyrics: "pear?" },
+            }),
+            new ChordBlock({ chord: "B7", lyric: { serializedLyrics: "\t" } }),
         ]),
         new ChordLine(),
     ]);
 
     const expectedSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly ap-" }),
-            new ChordBlock({ chord: "B7sus4", lyric: "pear?" }),
-            new ChordBlock({ chord: "B7", lyric: "\t" }),
-        ]),
-        new ChordLine([
-            new ChordBlock({ chord: "", lyric: "Every time you are near" }),
+            new ChordBlock({
+                chord: "C^",
+                lyric: { serializedLyrics: "Why do birds suddenly ap-" },
+            }),
+            new ChordBlock({
+                chord: "B7sus4",
+                lyric: { serializedLyrics: "pear?" },
+            }),
+            new ChordBlock({ chord: "B7", lyric: { serializedLyrics: "\t" } }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: "Just like me, they long to be",
+                lyric: { serializedLyrics: "Every time you are near" },
             }),
         ]),
-        new ChordLine([new ChordBlock({ chord: "", lyric: "Close to you" })]),
+        new ChordLine([
+            new ChordBlock({
+                chord: "",
+                lyric: { serializedLyrics: "Just like me, they long to be" },
+            }),
+        ]),
+        new ChordLine([
+            new ChordBlock({
+                chord: "",
+                lyric: { serializedLyrics: "Close to you" },
+            }),
+        ]),
     ]);
 
     return (

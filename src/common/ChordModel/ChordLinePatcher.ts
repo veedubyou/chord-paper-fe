@@ -1,6 +1,7 @@
 import { ChordLine } from "./ChordLine";
 import { ChordBlock } from "./ChordBlock";
 import { DiffMatchPatch, DiffOperation } from "diff-match-patch-typescript";
+import { SerializedLyrics } from "../../components/lyrics/LyricSerialization";
 
 const differ: DiffMatchPatch = (() => {
     const dmp = new DiffMatchPatch();
@@ -90,7 +91,10 @@ class ChordLineIterator {
             this.chordLine.elements.splice(
                 0,
                 0,
-                new ChordBlock({ chord: "", lyric: this.prependLyrics })
+                new ChordBlock({
+                    chord: "",
+                    lyric: { serializedLyrics: this.prependLyrics },
+                })
             );
         }
 
@@ -149,9 +153,12 @@ const addSpacesToOrphanedBlocks = (chordLine: ChordLine): void => {
 
 export const replaceChordLineLyrics = (
     chordLine: ChordLine,
-    newLyrics: string
+    newLyrics: SerializedLyrics
 ): void => {
-    const diffs = differ.diff_main(chordLine.lyrics, newLyrics);
+    const diffs = differ.diff_main(
+        chordLine.lyrics,
+        newLyrics.serializedLyrics
+    );
     differ.diff_cleanupSemanticLossless(diffs);
 
     const iterator = new ChordLineIterator(chordLine);

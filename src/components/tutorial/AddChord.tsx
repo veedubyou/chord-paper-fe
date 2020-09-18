@@ -11,7 +11,7 @@ const AddChord: React.FC<{}> = (): JSX.Element => {
         new ChordLine([
             new ChordBlock({
                 chord: "C^",
-                lyric: "Why do birds suddenly appear?",
+                lyric: { serializedLyrics: "Why do birds suddenly appear?" },
             }),
         ]),
     ]);
@@ -20,9 +20,12 @@ const AddChord: React.FC<{}> = (): JSX.Element => {
         new ChordLine([
             new ChordBlock({
                 chord: "C^",
-                lyric: "Why do birds suddenly ",
+                lyric: { serializedLyrics: "Why do birds suddenly " },
             }),
-            new ChordBlock({ chord: "B7", lyric: "appear?" }),
+            new ChordBlock({
+                chord: "B7",
+                lyric: { serializedLyrics: "appear?" },
+            }),
         ]),
     ]);
 

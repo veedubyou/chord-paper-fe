@@ -11,17 +11,17 @@ const MergeLine: React.FC<{}> = (): JSX.Element => {
         new ChordLine([
             new ChordBlock({
                 chord: "C^",
-                lyric: "Why do birds",
+                lyric: { serializedLyrics: "Why do birds" },
             }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: "suddenly ",
+                lyric: { serializedLyrics: "suddenly " },
             }),
             new ChordBlock({
                 chord: "B7",
-                lyric: "appear?",
+                lyric: { serializedLyrics: "appear?" },
             }),
         ]),
     ]);
@@ -30,11 +30,11 @@ const MergeLine: React.FC<{}> = (): JSX.Element => {
         new ChordLine([
             new ChordBlock({
                 chord: "C^",
-                lyric: "Why do birds suddenly ",
+                lyric: { serializedLyrics: "Why do birds suddenly " },
             }),
             new ChordBlock({
                 chord: "B7",
-                lyric: "appear?",
+                lyric: { serializedLyrics: "appear?" },
             }),
         ]),
     ]);

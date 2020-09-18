@@ -1,10 +1,11 @@
 import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 import { SnackbarProvider } from "notistack";
 import React from "react";
-import { ChordSong } from "../common/ChordModel/ChordSong";
-import { withSongContext } from "../components/WithSongContext";
-import ChordPaper from "../components/edit/ChordPaper";
 import { HelmetProvider } from "react-helmet-async";
+import { ChordSong } from "../common/ChordModel/ChordSong";
+import ChordPaper from "../components/edit/ChordPaper";
+import { SerializedLyrics } from "../components/lyrics/LyricSerialization";
+import { withSongContext } from "../components/WithSongContext";
 
 const Song = withSongContext(ChordPaper);
 
@@ -19,7 +20,10 @@ export const withProviders = (children: React.ReactNode) => {
 };
 
 export const chordPaperFromLyrics = (lyrics: string[]) => {
-    const song = ChordSong.fromLyricsLines(lyrics);
+    const serializedLyrics = lyrics.map(
+        (lyric: string): SerializedLyrics => ({ serializedLyrics: lyric })
+    );
+    const song = ChordSong.fromLyricsLines(serializedLyrics);
 
     return withProviders(<Song song={song} />);
 };

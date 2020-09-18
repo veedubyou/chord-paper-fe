@@ -4,8 +4,8 @@ import { withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { DataTestID } from "../../common/DataTestID";
 import { inflateIfEmpty } from "../../common/Whitespace";
-import LyricInput2 from "./LyricInput";
 import { PlainFn } from "../../common/PlainFn";
+import TextInput from "./TextInput";
 
 export interface EditControl {
     editing: boolean;
@@ -13,13 +13,11 @@ export interface EditControl {
     onEndEdit: PlainFn;
 }
 
-//TODO: need fix
 interface EditableTypographyProps extends DataTestID, TypographyProps {
     children: string;
     // provide this if you want to provide explicit control over the editability
     // of the field. this means the parent must manage this component's editing state
     editControl?: EditControl;
-
     onValueChange?: (newValue: string) => void;
     placeholder?: string;
 }
@@ -90,13 +88,13 @@ const EditableTypography: React.FC<EditableTypographyProps> = (
         }
 
         return (
-            <LyricInput2
+            <TextInput
                 variant={props.variant}
                 onFinish={finishEdit}
                 data-testid={"EditableLine"}
             >
                 {props.children}
-            </LyricInput2>
+            </TextInput>
         );
     };
 

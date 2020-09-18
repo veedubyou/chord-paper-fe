@@ -9,6 +9,7 @@ import {
 } from "./ChordBlock";
 import { replaceChordLineLyrics } from "./ChordLinePatcher";
 import { Collection, IDable } from "./Collection";
+import { SerializedLyrics } from "../../components/lyrics/LyricSerialization";
 
 const requiredFields = iots.type({
     elements: iots.array(ChordBlockValidator),
@@ -34,7 +35,9 @@ export class ChordLine extends Collection<ChordBlock>
 
     constructor(elements?: ChordBlock[], label?: string) {
         if (elements === undefined) {
-            elements = [new ChordBlock({ chord: "", lyric: "" })];
+            elements = [
+                new ChordBlock({ chord: "", lyric: { serializedLyrics: "" } }),
+            ];
         }
 
         super(elements);
@@ -76,7 +79,7 @@ export class ChordLine extends Collection<ChordBlock>
         return right(this.fromValidatedFields(validationResult.right));
     }
 
-    static fromLyrics(lyrics: string): ChordLine {
+    static fromLyrics(lyrics: SerializedLyrics): ChordLine {
         const block = new ChordBlock({
             chord: "",
             lyric: lyrics,
@@ -97,8 +100,8 @@ export class ChordLine extends Collection<ChordBlock>
         return lyricTokens.join("");
     }
 
-    replaceLyrics(newLyrics: string): void {
-        if (newLyrics === this.lyrics) {
+    replaceLyrics(newLyrics: SerializedLyrics): void {
+        if (newLyrics.serializedLyrics === this.lyrics) {
             return;
         }
 

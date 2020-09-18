@@ -42,7 +42,7 @@ interface LyricInputProps extends StyledComponentProps {
     variant?: TypographyVariant;
 }
 
-const LyricInput2: React.FC<LyricInputProps> = (
+const LyricInput: React.FC<LyricInputProps> = (
     props: LyricInputProps
 ): JSX.Element => {
     const contentEditableRef: React.RefObject<HTMLSpanElement> = React.createRef();
@@ -98,6 +98,11 @@ const LyricInput2: React.FC<LyricInputProps> = (
         }
 
         return range;
+    };
+
+    const serializedLyricsFromRange = (range: Range): SerializedLyrics => {
+        const documentFragment = range.cloneContents();
+        return serializeLyrics(documentFragment.childNodes);
     };
 
     const isSelectionAtBeginning = (): boolean => {
@@ -284,15 +289,28 @@ const LyricInput2: React.FC<LyricInputProps> = (
 
     const composeMultilinePaste = (
         pasteContent: string[]
-    ): [string, string[]] => {
+    ): [SerializedLyrics, SerializedLyrics[]] => {
         const [beforeSelection, afterSelection] = splitContentBySelection();
-        const newValue = beforeSelection + pasteContent[0];
+        const serializedLyricsForThisLine: SerializedLyrics = serializedLyricsFromRange(
+            beforeSelection
+        );
+        serializedLyricsForThisLine.serializedLyrics += pasteContent[0];
 
         const newPasteLines = pasteContent.slice(1);
-        const lastIndex = newPasteLines.length - 1;
-        newPasteLines[lastIndex] += afterSelection;
+        const remainingSerializedLyrics: SerializedLyrics[] = newPasteLines.map(
+            (line: string): SerializedLyrics => {
+                return {
+                    serializedLyrics: line,
+                };
+            }
+        );
 
-        return [newValue, newPasteLines];
+        const lastIndex = remainingSerializedLyrics.length - 1;
+        remainingSerializedLyrics[
+            lastIndex
+        ].serializedLyrics += serializedLyricsFromRange(afterSelection);
+
+        return [serializedLyricsForThisLine, remainingSerializedLyrics];
     };
 
     const handlePlainTextPaste = (
@@ -322,8 +340,6 @@ const LyricInput2: React.FC<LyricInputProps> = (
 
         const [newValue, newPasteLines] = composeMultilinePaste(linesOfText);
 
-        //TODO
-        // setValue(newValue);
         finish(newValue);
         props.onLyricOverflow(newPasteLines);
         return true;
@@ -423,4 +439,4 @@ const LyricInput2: React.FC<LyricInputProps> = (
     );
 };
 
-export default LyricInput2;
+export default LyricInput;

@@ -9,26 +9,50 @@ import { LineBreak, LyricsTypography, ChordTypography } from "./Common";
 const ChordPositioning: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly " }),
-            new ChordBlock({ chord: "", lyric: "appear?" }),
+            new ChordBlock({
+                chord: "C^",
+                lyric: { serializedLyrics: "Why do birds suddenly " },
+            }),
+            new ChordBlock({
+                chord: "",
+                lyric: { serializedLyrics: "appear?" },
+            }),
         ]),
     ]);
 
     const example = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly" }),
-            new ChordBlock({ chord: "F#7", lyric: " ap-" }),
-            new ChordBlock({ chord: "B7sus4", lyric: "pear?" }),
-            new ChordBlock({ chord: "B7", lyric: "\t" }),
+            new ChordBlock({
+                chord: "C^",
+                lyric: { serializedLyrics: "Why do birds suddenly" },
+            }),
+            new ChordBlock({
+                chord: "F#7",
+                lyric: { serializedLyrics: " ap-" },
+            }),
+            new ChordBlock({
+                chord: "B7sus4",
+                lyric: { serializedLyrics: "pear?" },
+            }),
+            new ChordBlock({ chord: "B7", lyric: { serializedLyrics: "\t" } }),
         ]),
     ]);
 
     const expectedSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly" }),
-            new ChordBlock({ chord: "F#7", lyric: " ap-" }),
-            new ChordBlock({ chord: "B7sus4", lyric: "pear?" }),
-            new ChordBlock({ chord: "B7", lyric: "\t" }),
+            new ChordBlock({
+                chord: "C^",
+                lyric: { serializedLyrics: "Why do birds suddenly" },
+            }),
+            new ChordBlock({
+                chord: "F#7",
+                lyric: { serializedLyrics: " ap-" },
+            }),
+            new ChordBlock({
+                chord: "B7sus4",
+                lyric: { serializedLyrics: "pear?" },
+            }),
+            new ChordBlock({ chord: "B7", lyric: { serializedLyrics: "\t" } }),
         ]),
     ]);
 

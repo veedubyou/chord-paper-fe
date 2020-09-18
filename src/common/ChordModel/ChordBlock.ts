@@ -2,17 +2,22 @@ import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
 import lodash from "lodash";
 import shortid from "shortid";
-import { tokenize } from "../LyricTokenizer";
+import { tokenize } from "../../components/lyrics/LyricTokenizer";
 import { IDable } from "./Collection";
+import { SerializedLyrics } from "../../components/lyrics/LyricSerialization";
 
 interface ChordBlockConstructorParams {
     chord: string;
-    lyric: string;
+    lyric: SerializedLyrics;
 }
+
+export const SerializedLyricsValidator = iots.type({
+    serializedLyrics: iots.string,
+});
 
 export const ChordBlockValidator = iots.type({
     chord: iots.string,
-    lyric: iots.string,
+    lyric: SerializedLyricsValidator,
     type: iots.literal("ChordBlock"),
 });
 
@@ -21,7 +26,7 @@ export type ChordBlockValidatedFields = iots.TypeOf<typeof ChordBlockValidator>;
 export class ChordBlock implements IDable<ChordBlock> {
     id: string;
     chord: string;
-    lyric: string;
+    lyric: SerializedLyrics;
     type: "ChordBlock";
 
     constructor({ chord, lyric }: ChordBlockConstructorParams) {
@@ -64,13 +69,19 @@ export class ChordBlock implements IDable<ChordBlock> {
         return right(
             new ChordBlock({
                 chord: validationResult.right.chord,
-                lyric: validationResult.right.lyric,
+                lyric: { serializedLyrics: validationResult.right.lyric },
             })
         );
     }
 
+    get serializedLyric(): SerializedLyrics {
+        return {
+            serializedLyrics: this.lyric,
+        };
+    }
+
     get lyricTokens(): string[] {
-        return tokenize(this.lyric);
+        return tokenize(this.serializedLyric);
     }
 
     // splits a block, and returns the block before
@@ -90,7 +101,7 @@ export class ChordBlock implements IDable<ChordBlock> {
 
         const prevBlock: ChordBlock = new ChordBlock({
             chord: this.chord,
-            lyric: prevBlockLyricTokens.join(""),
+            lyric: { serializedLyrics: prevBlockLyricTokens.join("") },
         });
 
         this.chord = "";

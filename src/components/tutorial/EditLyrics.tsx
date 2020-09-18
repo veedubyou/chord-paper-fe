@@ -9,8 +9,14 @@ import Playground from "./Playground";
 const EditLyrics: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly " }),
-            new ChordBlock({ chord: "B7", lyric: "appear?" }),
+            new ChordBlock({
+                chord: "C^",
+                lyric: { serializedLyrics: "Why do birds suddenly " },
+            }),
+            new ChordBlock({
+                chord: "B7",
+                lyric: { serializedLyrics: "appear?" },
+            }),
         ]),
     ]);
 
@@ -18,9 +24,12 @@ const EditLyrics: React.FC<{}> = (): JSX.Element => {
         new ChordLine([
             new ChordBlock({
                 chord: "C^",
-                lyric: "Why oh why do birds suddenly ",
+                lyric: { serializedLyrics: "Why oh why do birds suddenly " },
             }),
-            new ChordBlock({ chord: "B7", lyric: "appear?" }),
+            new ChordBlock({
+                chord: "B7",
+                lyric: { serializedLyrics: "appear?" },
+            }),
         ]),
     ]);
 

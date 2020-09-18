@@ -1,5 +1,6 @@
 import LyricTab from "./LyricTab";
 import React from "react";
+import * as iots from "io-ts";
 
 // for data attribute
 export const lyricTabTypeName = "lyrictabtype";
@@ -48,9 +49,31 @@ const serializedToNodeSize = {
     "<⑷>": SizedTab.Size4Tab,
 };
 
-export type SerializedLyrics = {
-    serializedLyrics: string;
-};
+export const SerializedLyricsValidator = iots.type({
+    serializedLyrics: iots.string,
+});
+
+export type SerializedLyricsValidatedFields = iots.TypeOf<
+    typeof SerializedLyricsValidator
+>;
+
+export class SerializedLyrics {
+    private serializedLyrics: string;
+
+    constructor(serializedLyrics: string) {
+        this.serializedLyrics = serializedLyrics;
+    }
+
+    get<T>(transformFn: (serializedLyrics: string) => T): T {
+        return transformFn(this.serializedLyrics);
+    }
+
+    static fromValidatedFields(
+        validatedFields: SerializedLyricsValidatedFields
+    ): SerializedLyrics {
+        return new SerializedLyrics(validatedFields.serializedLyrics);
+    }
+}
 
 const isSerializedTab = (
     serializedLyrics: string
@@ -79,16 +102,18 @@ const lyricTabTypeOfDOMNode = (node: Node): SizedTab | null => {
     return null;
 };
 
+const deserializeLyricStr = (lyrics: string): React.ReactNode => {
+    if (isSerializedTab(lyrics)) {
+        return <LyricTab type={serializedToNodeSize[lyrics]} />;
+    }
+
+    return lyrics;
+};
+
 export const deserializeLyrics = (
     container: SerializedLyrics
 ): React.ReactNode => {
-    if (isSerializedTab(container.serializedLyrics)) {
-        return (
-            <LyricTab type={serializedToNodeSize[container.serializedLyrics]} />
-        );
-    }
-
-    return container.serializedLyrics;
+    return container.get(deserializeLyricStr);
 };
 
 export const serializeLyrics = (
@@ -105,7 +130,5 @@ export const serializeLyrics = (
         }
     });
 
-    return {
-        serializedLyrics: serializedLyrics,
-    };
+    return new SerializedLyrics(serializedLyrics);
 };
