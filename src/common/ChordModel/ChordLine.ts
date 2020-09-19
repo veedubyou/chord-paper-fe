@@ -6,7 +6,7 @@ import {
     ChordBlock,
     ChordBlockValidatedFields,
     ChordBlockValidator,
-    SerializedLyric,
+    Lyric,
 } from "./ChordBlock";
 import { replaceChordLineLyrics } from "./ChordLinePatcher";
 import { Collection, IDable } from "./Collection";
@@ -35,9 +35,7 @@ export class ChordLine extends Collection<ChordBlock>
 
     constructor(elements?: ChordBlock[], label?: string) {
         if (elements === undefined) {
-            elements = [
-                new ChordBlock({ chord: "", lyric: new SerializedLyric("") }),
-            ];
+            elements = [new ChordBlock({ chord: "", lyric: new Lyric("") })];
         }
 
         super(elements);
@@ -79,7 +77,7 @@ export class ChordLine extends Collection<ChordBlock>
         return right(this.fromValidatedFields(validationResult.right));
     }
 
-    static fromLyrics(lyrics: SerializedLyric): ChordLine {
+    static fromLyrics(lyrics: Lyric): ChordLine {
         const block = new ChordBlock({
             chord: "",
             lyric: lyrics,
@@ -92,15 +90,15 @@ export class ChordLine extends Collection<ChordBlock>
         return this.elements;
     }
 
-    get lyrics(): SerializedLyric {
+    get lyrics(): Lyric {
         const lyricTokens = this.chordBlocks.map(
             (chordBlock: ChordBlock) => chordBlock.lyric
         );
 
-        return SerializedLyric.join(lyricTokens, "");
+        return Lyric.join(lyricTokens, "");
     }
 
-    replaceLyrics(newLyrics: SerializedLyric): void {
+    replaceLyrics(newLyrics: Lyric): void {
         if (this.lyrics.isEqual(newLyrics)) {
             return;
         }

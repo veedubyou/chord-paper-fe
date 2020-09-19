@@ -1,9 +1,6 @@
 import { Typography } from "@material-ui/core";
 import React from "react";
-import {
-    ChordBlock,
-    SerializedLyric,
-} from "../../common/ChordModel/ChordBlock";
+import { ChordBlock, Lyric } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { LineBreak, LyricsTypography } from "./Common";
@@ -14,79 +11,79 @@ const CopyAndPaste: React.FC<{}> = (): JSX.Element => {
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("But I'm a "),
+                lyric: new Lyric("But I'm a "),
             }),
             new ChordBlock({
                 chord: "G",
-                lyric: new SerializedLyric("creep, I'm a "),
+                lyric: new Lyric("creep, I'm a "),
             }),
             new ChordBlock({
                 chord: "B7",
-                lyric: new SerializedLyric("weirdo"),
+                lyric: new Lyric("weirdo"),
             }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("What the hell am doing "),
+                lyric: new Lyric("What the hell am doing "),
             }),
             new ChordBlock({
                 chord: "C",
-                lyric: new SerializedLyric("here? I don't be-"),
+                lyric: new Lyric("here? I don't be-"),
             }),
             new ChordBlock({
                 chord: "Cm",
-                lyric: new SerializedLyric("long here"),
+                lyric: new Lyric("long here"),
             }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("I don't care if it "),
+                lyric: new Lyric("I don't care if it "),
             }),
             new ChordBlock({
                 chord: "G",
-                lyric: new SerializedLyric("hurts, I wanna have con-"),
+                lyric: new Lyric("hurts, I wanna have con-"),
             }),
-            new ChordBlock({ chord: "B7", lyric: new SerializedLyric("trol") }),
+            new ChordBlock({ chord: "B7", lyric: new Lyric("trol") }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("I want a perfect "),
+                lyric: new Lyric("I want a perfect "),
             }),
             new ChordBlock({
                 chord: "C",
-                lyric: new SerializedLyric("body, I want a perfect "),
+                lyric: new Lyric("body, I want a perfect "),
             }),
-            new ChordBlock({ chord: "Cm", lyric: new SerializedLyric("soul") }),
+            new ChordBlock({ chord: "Cm", lyric: new Lyric("soul") }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("I want you to "),
+                lyric: new Lyric("I want you to "),
             }),
             new ChordBlock({
                 chord: "G",
-                lyric: new SerializedLyric("notice when I'm not a-"),
+                lyric: new Lyric("notice when I'm not a-"),
             }),
             new ChordBlock({
                 chord: "B7",
-                lyric: new SerializedLyric("round"),
+                lyric: new Lyric("round"),
             }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("You're so fucking "),
+                lyric: new Lyric("You're so fucking "),
             }),
             new ChordBlock({
                 chord: "C",
-                lyric: new SerializedLyric("special, I wish I was "),
+                lyric: new Lyric("special, I wish I was "),
             }),
             new ChordBlock({
                 chord: "Cm",
-                lyric: new SerializedLyric("special"),
+                lyric: new Lyric("special"),
             }),
         ]),
     ]);
@@ -95,107 +92,107 @@ const CopyAndPaste: React.FC<{}> = (): JSX.Element => {
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("But I'm a "),
+                lyric: new Lyric("But I'm a "),
             }),
             new ChordBlock({
                 chord: "G",
-                lyric: new SerializedLyric("creep, I'm a "),
+                lyric: new Lyric("creep, I'm a "),
             }),
             new ChordBlock({
                 chord: "B7",
-                lyric: new SerializedLyric("weirdo"),
+                lyric: new Lyric("weirdo"),
             }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("What the hell am doing "),
+                lyric: new Lyric("What the hell am doing "),
             }),
             new ChordBlock({
                 chord: "C",
-                lyric: new SerializedLyric("here? I don't be-"),
+                lyric: new Lyric("here? I don't be-"),
             }),
             new ChordBlock({
                 chord: "Cm",
-                lyric: new SerializedLyric("long here"),
+                lyric: new Lyric("long here"),
             }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("I don't care if it "),
+                lyric: new Lyric("I don't care if it "),
             }),
             new ChordBlock({
                 chord: "G",
-                lyric: new SerializedLyric("hurts, I wanna have con-"),
+                lyric: new Lyric("hurts, I wanna have con-"),
             }),
-            new ChordBlock({ chord: "B7", lyric: new SerializedLyric("trol") }),
+            new ChordBlock({ chord: "B7", lyric: new Lyric("trol") }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("I want a perfect "),
+                lyric: new Lyric("I want a perfect "),
             }),
             new ChordBlock({
                 chord: "C",
-                lyric: new SerializedLyric("body, I want a perfect "),
+                lyric: new Lyric("body, I want a perfect "),
             }),
-            new ChordBlock({ chord: "Cm", lyric: new SerializedLyric("soul") }),
+            new ChordBlock({ chord: "Cm", lyric: new Lyric("soul") }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("I want you to "),
+                lyric: new Lyric("I want you to "),
             }),
             new ChordBlock({
                 chord: "G",
-                lyric: new SerializedLyric("notice when I'm not a-"),
+                lyric: new Lyric("notice when I'm not a-"),
             }),
             new ChordBlock({
                 chord: "B7",
-                lyric: new SerializedLyric("round"),
+                lyric: new Lyric("round"),
             }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("You're so fucking "),
+                lyric: new Lyric("You're so fucking "),
             }),
             new ChordBlock({
                 chord: "C",
-                lyric: new SerializedLyric("special, I wish I was "),
+                lyric: new Lyric("special, I wish I was "),
             }),
             new ChordBlock({
                 chord: "Cm",
-                lyric: new SerializedLyric("special"),
+                lyric: new Lyric("special"),
             }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("But I'm a "),
+                lyric: new Lyric("But I'm a "),
             }),
             new ChordBlock({
                 chord: "G",
-                lyric: new SerializedLyric("creep, I'm a "),
+                lyric: new Lyric("creep, I'm a "),
             }),
             new ChordBlock({
                 chord: "B7",
-                lyric: new SerializedLyric("weirdo"),
+                lyric: new Lyric("weirdo"),
             }),
         ]),
         new ChordLine([
             new ChordBlock({
                 chord: "",
-                lyric: new SerializedLyric("What the hell am doing "),
+                lyric: new Lyric("What the hell am doing "),
             }),
             new ChordBlock({
                 chord: "C",
-                lyric: new SerializedLyric("here? I don't be-"),
+                lyric: new Lyric("here? I don't be-"),
             }),
             new ChordBlock({
                 chord: "Cm",
-                lyric: new SerializedLyric("long here"),
+                lyric: new Lyric("long here"),
             }),
         ]),
     ]);

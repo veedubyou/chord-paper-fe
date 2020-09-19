@@ -13,10 +13,7 @@ import DragAndDrop from "./DragAndDrop";
 import { InteractionContext, InteractionSetter } from "./InteractionContext";
 import Line from "./Line";
 import NewLine from "./NewLine";
-import {
-    ChordBlock,
-    SerializedLyric,
-} from "../../common/ChordModel/ChordBlock";
+import { ChordBlock, Lyric } from "../../common/ChordModel/ChordBlock";
 
 const useUninteractiveStyle = makeStyles({
     root: {
@@ -84,7 +81,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     ) => {
         const newChordLines = overflowContent.map((newLyricLine: string) =>
             //TODO: change this when lyric input switches over to serialized lyric
-            ChordLine.fromLyrics(new SerializedLyric(newLyricLine))
+            ChordLine.fromLyrics(new Lyric(newLyricLine))
         );
         props.song.addAfter(id, ...newChordLines);
         notifySongChanged();

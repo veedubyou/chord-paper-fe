@@ -1,9 +1,6 @@
 import { Typography } from "@material-ui/core";
 import React from "react";
-import {
-    ChordBlock,
-    SerializedLyric,
-} from "../../common/ChordModel/ChordBlock";
+import { ChordBlock, Lyric } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { LineBreak, LyricsTypography, ChordTypography } from "./Common";
@@ -12,12 +9,12 @@ import Playground from "./Playground";
 const Instrumental: React.FC<{}> = (): JSX.Element => {
     const tabExample = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "Bm", lyric: new SerializedLyric("\t") }),
-            new ChordBlock({ chord: "A", lyric: new SerializedLyric("\t|") }),
-            new ChordBlock({ chord: "E", lyric: new SerializedLyric("\t") }),
+            new ChordBlock({ chord: "Bm", lyric: new Lyric("\t") }),
+            new ChordBlock({ chord: "A", lyric: new Lyric("\t|") }),
+            new ChordBlock({ chord: "E", lyric: new Lyric("\t") }),
             new ChordBlock({
                 chord: "C#m7",
-                lyric: new SerializedLyric("\t|"),
+                lyric: new Lyric("\t|"),
             }),
         ]),
     ]);
@@ -26,12 +23,12 @@ const Instrumental: React.FC<{}> = (): JSX.Element => {
 
     const expectedSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "Bm", lyric: new SerializedLyric("\t") }),
-            new ChordBlock({ chord: "A", lyric: new SerializedLyric("\t|") }),
-            new ChordBlock({ chord: "E", lyric: new SerializedLyric("\t") }),
+            new ChordBlock({ chord: "Bm", lyric: new Lyric("\t") }),
+            new ChordBlock({ chord: "A", lyric: new Lyric("\t|") }),
+            new ChordBlock({ chord: "E", lyric: new Lyric("\t") }),
             new ChordBlock({
                 chord: "C#m7",
-                lyric: new SerializedLyric("\t|"),
+                lyric: new Lyric("\t|"),
             }),
         ]),
     ]);

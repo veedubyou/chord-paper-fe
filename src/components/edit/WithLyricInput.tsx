@@ -6,7 +6,7 @@ import { PlainFn } from "../../common/PlainFn";
 import { lyricStyle, lyricTypographyVariant } from "../display/Lyric";
 import { useEditingState } from "./InteractionContext";
 import TextInput from "./TextInput";
-import { SerializedLyric } from "../../common/ChordModel/ChordBlock";
+import { Lyric } from "../../common/ChordModel/ChordBlock";
 
 const LyricInput = withStyles((theme: Theme) => ({
     root: {
@@ -39,7 +39,7 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
 
             //TODO replace with serialized lyric in all handlers
 
-            props.chordLine.replaceLyrics(new SerializedLyric(newLyrics));
+            props.chordLine.replaceLyrics(new Lyric(newLyrics));
             props.onChangeLine?.(props.chordLine);
         },
         pasteOverflow: (overflowContent: string[]) => {

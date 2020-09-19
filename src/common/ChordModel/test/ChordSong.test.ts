@@ -1,22 +1,34 @@
 import { getOrElse, isLeft } from "fp-ts/lib/Either";
 import { ChordLine } from "../ChordLine";
-import { ChordBlock } from "../ChordBlock";
+import { ChordBlock, Lyric } from "../ChordBlock";
 import { ChordSong } from "../ChordSong";
 
 describe("Chord Song", () => {
     const testLines = (): ChordLine[] => {
         return [
             new ChordLine([
-                new ChordBlock({ chord: "A7", lyric: "We're no " }),
-                new ChordBlock({ chord: "Bm", lyric: "strangers to " }),
-                new ChordBlock({ chord: "Cdim", lyric: "love" }),
+                new ChordBlock({
+                    chord: "A7",
+                    lyric: new Lyric("We're no "),
+                }),
+                new ChordBlock({
+                    chord: "Bm",
+                    lyric: new Lyric("strangers to "),
+                }),
+                new ChordBlock({
+                    chord: "Cdim",
+                    lyric: new Lyric("love"),
+                }),
             ]),
             new ChordLine([
                 new ChordBlock({
                     chord: "D7b9#11",
-                    lyric: "You know the rules ",
+                    lyric: new Lyric("You know the rules "),
                 }),
-                new ChordBlock({ chord: "Eb9", lyric: "and so do I" }),
+                new ChordBlock({
+                    chord: "Eb9",
+                    lyric: new Lyric("and so do I"),
+                }),
             ]),
         ];
     };
@@ -102,8 +114,8 @@ describe("Chord Song", () => {
 
     test("fromLyricLines", () => {
         const song = ChordSong.fromLyricsLines([
-            "A full commitment's what I'm thinking of",
-            "You wouldn't get this from any other guy",
+            new Lyric("A full commitment's what I'm thinking of"),
+            new Lyric("You wouldn't get this from any other guy"),
         ]);
 
         expect(song.chordLines).toHaveLength(2);
@@ -178,15 +190,15 @@ describe("Chord Song", () => {
                             [
                                 new ChordBlock({
                                     chord: "A7",
-                                    lyric: "We're no ",
+                                    lyric: new Lyric("We're no "),
                                 }),
                                 new ChordBlock({
                                     chord: "Bm",
-                                    lyric: "strangers to ",
+                                    lyric: new Lyric("strangers to "),
                                 }),
                                 new ChordBlock({
                                     chord: "Cdim",
-                                    lyric: "love",
+                                    lyric: new Lyric("love"),
                                 }),
                             ],
                             "Verse"
@@ -194,11 +206,11 @@ describe("Chord Song", () => {
                         new ChordLine([
                             new ChordBlock({
                                 chord: "D7b9#11",
-                                lyric: "You know the rules ",
+                                lyric: new Lyric("You know the rules "),
                             }),
                             new ChordBlock({
                                 chord: "Eb9",
-                                lyric: "and so do I",
+                                lyric: new Lyric("and so do I"),
                             }),
                         ]),
                     ],
@@ -218,15 +230,15 @@ describe("Chord Song", () => {
                             [
                                 new ChordBlock({
                                     chord: "A7",
-                                    lyric: "We're no ",
+                                    lyric: new Lyric("We're no "),
                                 }),
                                 new ChordBlock({
                                     chord: "Bm",
-                                    lyric: "strangers to ",
+                                    lyric: new Lyric("strangers to "),
                                 }),
                                 new ChordBlock({
                                     chord: "Cdim",
-                                    lyric: "love",
+                                    lyric: new Lyric("love"),
                                 }),
                             ],
                             "Verse"
@@ -234,11 +246,11 @@ describe("Chord Song", () => {
                         new ChordLine([
                             new ChordBlock({
                                 chord: "D7b9#11",
-                                lyric: "You know the rules ",
+                                lyric: new Lyric("You know the rules "),
                             }),
                             new ChordBlock({
                                 chord: "Eb9",
-                                lyric: "and so do I",
+                                lyric: new Lyric("and so do I"),
                             }),
                         ]),
                     ],
@@ -260,15 +272,15 @@ describe("Chord Song", () => {
                             [
                                 new ChordBlock({
                                     chord: "A7",
-                                    lyric: "We're no ",
+                                    lyric: new Lyric("We're no "),
                                 }),
                                 new ChordBlock({
                                     chord: "Bm",
-                                    lyric: "strangers to ",
+                                    lyric: new Lyric("strangers to "),
                                 }),
                                 new ChordBlock({
                                     chord: "Cdim",
-                                    lyric: "love",
+                                    lyric: new Lyric("love"),
                                 }),
                             ],
                             "Chorus"
@@ -276,11 +288,11 @@ describe("Chord Song", () => {
                         new ChordLine([
                             new ChordBlock({
                                 chord: "D7b9#11",
-                                lyric: "You know the rules ",
+                                lyric: new Lyric("You know the rules "),
                             }),
                             new ChordBlock({
                                 chord: "Eb9",
-                                lyric: "and so do I",
+                                lyric: new Lyric("and so do I"),
                             }),
                         ]),
                     ],
@@ -302,15 +314,15 @@ describe("Chord Song", () => {
                             [
                                 new ChordBlock({
                                     chord: "Am",
-                                    lyric: "We're no ",
+                                    lyric: new Lyric("We're no "),
                                 }),
                                 new ChordBlock({
                                     chord: "Bm",
-                                    lyric: "strangers to ",
+                                    lyric: new Lyric("strangers to "),
                                 }),
                                 new ChordBlock({
                                     chord: "Cdim",
-                                    lyric: "love",
+                                    lyric: new Lyric("love"),
                                 }),
                             ],
                             "Verse"
@@ -318,11 +330,11 @@ describe("Chord Song", () => {
                         new ChordLine([
                             new ChordBlock({
                                 chord: "D7b9#11",
-                                lyric: "You know the rules ",
+                                lyric: new Lyric("You know the rules "),
                             }),
                             new ChordBlock({
                                 chord: "Eb9",
-                                lyric: "and so do I",
+                                lyric: new Lyric("and so do I"),
                             }),
                         ]),
                     ],
@@ -342,26 +354,26 @@ describe("Chord Song", () => {
                         new ChordLine([
                             new ChordBlock({
                                 chord: "D7b9#11",
-                                lyric: "You know the rules ",
+                                lyric: new Lyric("You know the rules "),
                             }),
                             new ChordBlock({
                                 chord: "Eb9",
-                                lyric: "and so do I",
+                                lyric: new Lyric("and so do I"),
                             }),
                         ]),
                         new ChordLine(
                             [
                                 new ChordBlock({
                                     chord: "A7",
-                                    lyric: "We're no ",
+                                    lyric: new Lyric("We're no "),
                                 }),
                                 new ChordBlock({
                                     chord: "Bm",
-                                    lyric: "strangers to ",
+                                    lyric: new Lyric("strangers to "),
                                 }),
                                 new ChordBlock({
                                     chord: "Cdim",
-                                    lyric: "love",
+                                    lyric: new Lyric("love"),
                                 }),
                             ],
                             "Verse"
@@ -393,7 +405,7 @@ describe("Chord Song", () => {
                     new ChordLine([
                         new ChordBlock({
                             chord: "Am",
-                            lyric: "",
+                            lyric: new Lyric(""),
                         }),
                     ]),
                 ]);

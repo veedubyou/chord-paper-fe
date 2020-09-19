@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render } from "@testing-library/react";
-import { ChordBlock } from "../common/ChordModel/ChordBlock";
+import { ChordBlock, Lyric } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { chordPaperFromSong, selectionStub } from "./common";
@@ -18,12 +18,12 @@ beforeAll(selectionStub);
 const song = (): ChordSong => {
     const lines: ChordLine[] = [
         new ChordLine([
-            new ChordBlock({ chord: "C", lyric: "Fly me " }),
-            new ChordBlock({ chord: "D", lyric: "to the moon" }),
+            new ChordBlock({ chord: "C", lyric: new Lyric("Fly me ") }),
+            new ChordBlock({ chord: "D", lyric: new Lyric("to the moon") }),
         ]),
         new ChordLine([
-            new ChordBlock({ chord: "", lyric: "And let me play " }),
-            new ChordBlock({ chord: "E", lyric: "among the stars" }),
+            new ChordBlock({ chord: "", lyric: new Lyric("And let me play ") }),
+            new ChordBlock({ chord: "E", lyric: new Lyric("among the stars") }),
         ]),
     ];
 

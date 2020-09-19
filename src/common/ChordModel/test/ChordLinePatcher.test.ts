@@ -1,14 +1,20 @@
 import { replaceChordLineLyrics } from "../ChordLinePatcher";
 import { ChordLine } from "../ChordLine";
-import { ChordBlock } from "../ChordBlock";
+import { ChordBlock, Lyric } from "../ChordBlock";
 
 describe("ChordLinePatcher", () => {
     let chordLine: ChordLine;
 
     beforeEach(() => {
         chordLine = new ChordLine([
-            new ChordBlock({ chord: "F", lyric: "It's your fault " }),
-            new ChordBlock({ chord: "C", lyric: "that I'm in trouble" }),
+            new ChordBlock({
+                chord: "F",
+                lyric: new Lyric("It's your fault "),
+            }),
+            new ChordBlock({
+                chord: "C",
+                lyric: new Lyric("that I'm in trouble"),
+            }),
         ]);
     });
 
@@ -16,15 +22,15 @@ describe("ChordLinePatcher", () => {
         test("it doesn't change anything", () => {
             replaceChordLineLyrics(
                 chordLine,
-                "It's your fault that I'm in trouble"
+                new Lyric("It's your fault that I'm in trouble")
             );
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: "It's your fault ",
+                lyric: new Lyric("It's your fault "),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
-                lyric: "that I'm in trouble",
+                lyric: new Lyric("that I'm in trouble"),
             });
         });
     });
@@ -33,32 +39,32 @@ describe("ChordLinePatcher", () => {
         test("replacing a word at the beginning of the block", () => {
             replaceChordLineLyrics(
                 chordLine,
-                "It's your fault so I'm in trouble"
+                new Lyric("It's your fault so I'm in trouble")
             );
 
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: "It's your fault ",
+                lyric: new Lyric("It's your fault "),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
-                lyric: "so I'm in trouble",
+                lyric: new Lyric("so I'm in trouble"),
             });
         });
 
         test("insertions deletions and replacements everywhere", () => {
             replaceChordLineLyrics(
                 chordLine,
-                "Not really my fault that I am trooble"
+                new Lyric("Not really my fault that I am trooble")
             );
 
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: "Not really my fault ",
+                lyric: new Lyric("Not really my fault "),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
-                lyric: "that I am trooble",
+                lyric: new Lyric("that I am trooble"),
             });
         });
     });
@@ -67,32 +73,32 @@ describe("ChordLinePatcher", () => {
         test("adding a word in the middle of the block", () => {
             replaceChordLineLyrics(
                 chordLine,
-                "It's really your fault that I'm in trouble"
+                new Lyric("It's really your fault that I'm in trouble")
             );
 
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: "It's really your fault ",
+                lyric: new Lyric("It's really your fault "),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
-                lyric: "that I'm in trouble",
+                lyric: new Lyric("that I'm in trouble"),
             });
         });
 
         test("adding a word in the end of the block", () => {
             replaceChordLineLyrics(
                 chordLine,
-                "It's your fault really that I'm in trouble"
+                new Lyric("It's your fault really that I'm in trouble")
             );
 
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: "It's your fault really ",
+                lyric: new Lyric("It's your fault really "),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
-                lyric: "that I'm in trouble",
+                lyric: new Lyric("that I'm in trouble"),
             });
         });
 
@@ -100,44 +106,47 @@ describe("ChordLinePatcher", () => {
             test("with a chord at the beginning", () => {
                 replaceChordLineLyrics(
                     chordLine,
-                    "Verse: It's your fault that I'm in trouble"
+                    new Lyric("Verse: It's your fault that I'm in trouble")
                 );
 
                 expect(chordLine.elements[0]).toMatchObject({
                     chord: "",
-                    lyric: "Verse: ",
+                    lyric: new Lyric("Verse: "),
                 });
                 expect(chordLine.elements[1]).toMatchObject({
                     chord: "F",
-                    lyric: "It's your fault ",
+                    lyric: new Lyric("It's your fault "),
                 });
                 expect(chordLine.elements[2]).toMatchObject({
                     chord: "C",
-                    lyric: "that I'm in trouble",
+                    lyric: new Lyric("that I'm in trouble"),
                 });
             });
 
             test("with no chord at the beginning", () => {
                 chordLine = new ChordLine([
-                    new ChordBlock({ chord: "", lyric: "It's your fault " }),
+                    new ChordBlock({
+                        chord: "",
+                        lyric: new Lyric("It's your fault "),
+                    }),
                     new ChordBlock({
                         chord: "C",
-                        lyric: "that I'm in trouble",
+                        lyric: new Lyric("that I'm in trouble"),
                     }),
                 ]);
 
                 replaceChordLineLyrics(
                     chordLine,
-                    "Verse: It's your fault that I'm in trouble"
+                    new Lyric("Verse: It's your fault that I'm in trouble")
                 );
 
                 expect(chordLine.elements[0]).toMatchObject({
                     chord: "",
-                    lyric: "Verse: It's your fault ",
+                    lyric: new Lyric("Verse: It's your fault "),
                 });
                 expect(chordLine.elements[1]).toMatchObject({
                     chord: "C",
-                    lyric: "that I'm in trouble",
+                    lyric: new Lyric("that I'm in trouble"),
                 });
             });
         });
@@ -145,74 +154,86 @@ describe("ChordLinePatcher", () => {
 
     describe("removal", () => {
         test("removing a word from the middle", () => {
-            replaceChordLineLyrics(chordLine, "It's your that I'm in trouble");
+            replaceChordLineLyrics(
+                chordLine,
+                new Lyric("It's your that I'm in trouble")
+            );
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: "It's your ",
+                lyric: new Lyric("It's your "),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
-                lyric: "that I'm in trouble",
+                lyric: new Lyric("that I'm in trouble"),
             });
         });
 
         test("removing a word from the end", () => {
-            replaceChordLineLyrics(chordLine, "It's your fault that I'm in");
+            replaceChordLineLyrics(
+                chordLine,
+                new Lyric("It's your fault that I'm in")
+            );
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: "It's your fault ",
+                lyric: new Lyric("It's your fault "),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
-                lyric: "that I'm in",
+                lyric: new Lyric("that I'm in"),
             });
         });
 
         test("removing a word from the beginning", () => {
-            replaceChordLineLyrics(chordLine, "your fault that I'm in trouble");
+            replaceChordLineLyrics(
+                chordLine,
+                new Lyric("your fault that I'm in trouble")
+            );
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: "your fault ",
+                lyric: new Lyric("your fault "),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
-                lyric: "that I'm in trouble",
+                lyric: new Lyric("that I'm in trouble"),
             });
         });
 
         test("removing random characters everywhere", () => {
-            replaceChordLineLyrics(chordLine, "It your fut hat I'm trouble");
+            replaceChordLineLyrics(
+                chordLine,
+                new Lyric("It your fut hat I'm trouble")
+            );
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: "It your fut ",
+                lyric: new Lyric("It your fut "),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
-                lyric: "hat I'm trouble",
+                lyric: new Lyric("hat I'm trouble"),
             });
         });
 
         test("removing the first block, causing it to be replaced with a string", () => {
-            replaceChordLineLyrics(chordLine, "that I'm in trouble");
+            replaceChordLineLyrics(chordLine, new Lyric("that I'm in trouble"));
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: " ",
+                lyric: new Lyric(" "),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
-                lyric: "that I'm in trouble",
+                lyric: new Lyric("that I'm in trouble"),
             });
         });
 
         test("removing the second block, causing it to steal a space from the first", () => {
-            replaceChordLineLyrics(chordLine, "It's your fault ");
+            replaceChordLineLyrics(chordLine, new Lyric("It's your fault "));
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: "It's your fault",
+                lyric: new Lyric("It's your fault"),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
-                lyric: " ",
+                lyric: new Lyric(" "),
             });
         });
     });
