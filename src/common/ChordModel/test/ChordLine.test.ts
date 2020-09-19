@@ -35,14 +35,15 @@ describe("ChordLine", () => {
 
         test("deserializing a serialized chordline", () => {
             const json = JSON.stringify(c);
+
             const results = ChordLine.deserialize(json);
 
             const deserialized: ChordLine = getOrElse(failLine)(results);
             expect(deserialized).toMatchObject({
                 elements: [
-                    { chord: "A7", lyric: "We're no " },
-                    { chord: "Bm", lyric: "strangers to " },
-                    { chord: "Cdim", lyric: "love" },
+                    { chord: "A7", lyric: new Lyric("We're no ") },
+                    { chord: "Bm", lyric: new Lyric("strangers to ") },
+                    { chord: "Cdim", lyric: new Lyric("love") },
                 ],
                 label: "Verse",
             });
@@ -55,7 +56,7 @@ describe("ChordLine", () => {
 
         test("missing a nested field", () => {
             const results = ChordLine.deserialize(
-                `{"elements":[{"lyric":"We're no ","type":"ChordBlock"},{"chord":"Bm","lyric":"strangers to ","type":"ChordBlock"},{"chord":"Cdim","lyric":"love","type":"ChordBlock"}],"type":"ChordLine"}`
+                `{"elements":[{"lyric":{"serializedLyric":"We're no "},"type":"ChordBlock"},{"chord":"Bm","lyric":{"serializedLyric":"strangers to "},"type":"ChordBlock"},{"chord":"Cdim","lyric":{"serializedLyric":"love"},"type":"ChordBlock"}],"type":"ChordLine","label":"Verse"}`
             );
             expect(isLeft(results)).toEqual(true);
         });

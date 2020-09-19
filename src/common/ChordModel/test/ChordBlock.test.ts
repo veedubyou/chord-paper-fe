@@ -1,14 +1,17 @@
 import { getOrElse, isLeft } from "fp-ts/lib/Either";
-import { ChordBlock } from "../ChordBlock";
+import { ChordBlock, Lyric } from "../ChordBlock";
 
 describe("ChordBlock", () => {
     describe("de/serialization", () => {
         const testBlock = (): ChordBlock => {
-            return new ChordBlock({ chord: "A7", lyric: "We're no " });
+            return new ChordBlock({
+                chord: "A7",
+                lyric: new Lyric("We're no "),
+            });
         };
         const failBlock = (): ChordBlock => {
             expect(false).toEqual(true);
-            return new ChordBlock({ chord: "", lyric: "" });
+            return new ChordBlock({ chord: "", lyric: new Lyric("") });
         };
 
         test("serializes and deserializes correctly", () => {
@@ -19,7 +22,7 @@ describe("ChordBlock", () => {
             const deserialized: ChordBlock = getOrElse(failBlock)(result);
             expect(deserialized).toMatchObject({
                 chord: "A7",
-                lyric: "We're no ",
+                lyric: new Lyric("We're no "),
             });
         });
 
@@ -60,14 +63,14 @@ describe("ChordBlock", () => {
             beforeEach(() => {
                 original = new ChordBlock({
                     chord: "A7",
-                    lyric: "Twinkle twinkle little star",
+                    lyric: new Lyric("Twinkle twinkle little star"),
                 });
             });
 
             test("passes if the same", () => {
                 const other = new ChordBlock({
                     chord: "A7",
-                    lyric: "Twinkle twinkle little star",
+                    lyric: new Lyric("Twinkle twinkle little star"),
                 });
                 expect(original.contentEquals(other)).toEqual(true);
             });
@@ -75,7 +78,7 @@ describe("ChordBlock", () => {
             test("fails if chords different", () => {
                 const other = new ChordBlock({
                     chord: "Am",
-                    lyric: "Twinkle twinkle little star",
+                    lyric: new Lyric("Twinkle twinkle little star"),
                 });
                 expect(original.contentEquals(other)).toEqual(false);
             });
@@ -83,7 +86,7 @@ describe("ChordBlock", () => {
             test("fails if lyrics different", () => {
                 const other = new ChordBlock({
                     chord: "A7",
-                    lyric: "Twinkle twinkle little planet",
+                    lyric: new Lyric("Twinkle twinkle little planet"),
                 });
                 expect(original.contentEquals(other)).toEqual(false);
             });
@@ -94,13 +97,13 @@ describe("ChordBlock", () => {
             beforeEach(() => {
                 original = new ChordBlock({
                     chord: "",
-                    lyric: "",
+                    lyric: new Lyric(""),
                 });
             });
             test("passes if the same", () => {
                 const other = new ChordBlock({
                     chord: "",
-                    lyric: "",
+                    lyric: new Lyric(""),
                 });
                 expect(original.contentEquals(other)).toEqual(true);
             });
@@ -108,7 +111,7 @@ describe("ChordBlock", () => {
             test("fails if chords different", () => {
                 const other = new ChordBlock({
                     chord: "Am",
-                    lyric: "",
+                    lyric: new Lyric(""),
                 });
                 expect(original.contentEquals(other)).toEqual(false);
             });
@@ -116,7 +119,7 @@ describe("ChordBlock", () => {
             test("fails if lyrics different", () => {
                 const other = new ChordBlock({
                     chord: "",
-                    lyric: "Twinkle twinkle little planet",
+                    lyric: new Lyric("Twinkle twinkle little planet"),
                 });
                 expect(original.contentEquals(other)).toEqual(false);
             });
@@ -127,7 +130,7 @@ describe("ChordBlock", () => {
         test("actually empty", () => {
             const block = new ChordBlock({
                 chord: "",
-                lyric: "",
+                lyric: new Lyric(""),
             });
 
             expect(block.isEmpty()).toEqual(true);
@@ -136,7 +139,7 @@ describe("ChordBlock", () => {
         test("only lyric empty", () => {
             const block = new ChordBlock({
                 chord: "A7",
-                lyric: "",
+                lyric: new Lyric(""),
             });
 
             expect(block.isEmpty()).toEqual(false);
@@ -145,7 +148,7 @@ describe("ChordBlock", () => {
         test("only chord empty", () => {
             const block = new ChordBlock({
                 chord: "",
-                lyric: "Never",
+                lyric: new Lyric("Never"),
             });
 
             expect(block.isEmpty()).toEqual(false);
@@ -154,7 +157,7 @@ describe("ChordBlock", () => {
         test("nothing empty", () => {
             const block = new ChordBlock({
                 chord: "A7",
-                lyric: "Never",
+                lyric: new Lyric("Never"),
             });
 
             expect(block.isEmpty()).toEqual(false);

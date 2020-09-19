@@ -74,18 +74,32 @@ describe("Chord Song", () => {
                 elements: [
                     {
                         elements: [
-                            { chord: "A7", lyric: "We're no " },
-                            { chord: "Bm", lyric: "strangers to " },
-                            { chord: "Cdim", lyric: "love" },
+                            {
+                                chord: "A7",
+                                lyric: { serializedLyric: "We're no " },
+                            },
+                            {
+                                chord: "Bm",
+                                lyric: { serializedLyric: "strangers to " },
+                            },
+                            {
+                                chord: "Cdim",
+                                lyric: { serializedLyric: "love" },
+                            },
                         ],
                     },
                     {
                         elements: [
                             {
                                 chord: "D7b9#11",
-                                lyric: "You know the rules ",
+                                lyric: {
+                                    serializedLyric: "You know the rules ",
+                                },
                             },
-                            { chord: "Eb9", lyric: "and so do I" },
+                            {
+                                chord: "Eb9",
+                                lyric: { serializedLyric: "and so do I" },
+                            },
                         ],
                     },
                 ],
@@ -99,14 +113,14 @@ describe("Chord Song", () => {
 
         test("missing a nested field", () => {
             const results = ChordLine.deserialize(
-                `{"elements":[{"elements":[{"chord":"A7","lyric":"We're no ","type":"ChordBlock"},{"chord":"Bm","lyric":"strangers to ","type":"ChordBlock"},{"chord":"Cdim","lyric":"love","type":"ChordBlock"}],"type":"ChordLine"},{"elements":[{"lyric":"You know the rules ","type":"ChordBlock"},{"chord":"Eb9","lyric":"and so do I","type":"ChordBlock"}],"type":"ChordLine"}],"metadata":{"title":"Never Gonna Give You Up","composedBy":"Me","performedBy":"Rick Astley","asHeardFrom":"A Rickroll from my youth"}}`
+                `{"elements":[{"elements":[{"lyric":{"serializedLyric":"We're no "},"type":"ChordBlock"},{"chord":"Bm","lyric":{"serializedLyric":"strangers to "},"type":"ChordBlock"},{"chord":"Cdim","lyric":{"serializedLyric":"love"},"type":"ChordBlock"}],"type":"ChordLine"},{"elements":[{"chord":"D7b9#11","lyric":{"serializedLyric":"You know the rules "},"type":"ChordBlock"},{"chord":"Eb9","lyric":{"serializedLyric":"and so do I"},"type":"ChordBlock"}],"type":"ChordLine"}],"metadata":{"title":"Never Gonna Give You Up","composedBy":"Me","performedBy":"Rick Astley","asHeardFrom":"A Rickroll from my youth"}}`
             );
             expect(isLeft(results)).toEqual(true);
         });
 
         test("missing metadata field", () => {
             const results = ChordSong.deserialize(
-                `{"elements":[{"elements":[{"chord":"A7","lyric":"We're no ","type":"ChordBlock"},{"chord":"Bm","lyric":"strangers to ","type":"ChordBlock"},{"chord":"Cdim","lyric":"love","type":"ChordBlock"}],"type":"ChordLine"},{"elements":[{"chord":"D7b9#11","lyric":"You know the rules ","type":"ChordBlock"},{"chord":"Eb9","lyric":"and so do I","type":"ChordBlock"}],"type":"ChordLine"}],"metadata":{"title":"Never Gonna Give You Up","composedBy":"Me","performedBy":"Rick Astley"}}`
+                `{"elements":[{"elements":[{"chord":"A7","lyric":{"serializedLyric":"We're no "},"type":"ChordBlock"},{"chord":"Bm","lyric":{"serializedLyric":"strangers to "},"type":"ChordBlock"},{"chord":"Cdim","lyric":{"serializedLyric":"love"},"type":"ChordBlock"}],"type":"ChordLine"},{"elements":[{"chord":"D7b9#11","lyric":{"serializedLyric":"You know the rules "},"type":"ChordBlock"},{"chord":"Eb9","lyric":{"serializedLyric":"and so do I"},"type":"ChordBlock"}],"type":"ChordLine"}],"metadata":{"title":"Never Gonna Give You Up","composedBy":"Me","performedBy":"Rick Astley"}}`
             );
             expect(isLeft(results)).toEqual(true);
         });
@@ -122,13 +136,13 @@ describe("Chord Song", () => {
         expect(song.chordLines[0].chordBlocks).toHaveLength(1);
         expect(song.chordLines[0].chordBlocks[0].chord).toEqual("");
         expect(song.chordLines[0].chordBlocks[0].lyric).toEqual(
-            "A full commitment's what I'm thinking of"
+            new Lyric("A full commitment's what I'm thinking of")
         );
 
         expect(song.chordLines[1].chordBlocks).toHaveLength(1);
         expect(song.chordLines[1].chordBlocks[0].chord).toEqual("");
         expect(song.chordLines[1].chordBlocks[0].lyric).toEqual(
-            "You wouldn't get this from any other guy"
+            new Lyric("You wouldn't get this from any other guy")
         );
     });
 
@@ -141,18 +155,18 @@ describe("Chord Song", () => {
             expect(c.elements).toMatchObject([
                 {
                     elements: [
-                        { chord: "A7", lyric: "We're no " },
-                        { chord: "Bm", lyric: "strangers to " },
-                        { chord: "Cdim", lyric: "love" },
+                        { chord: "A7", lyric: new Lyric("We're no ") },
+                        { chord: "Bm", lyric: new Lyric("strangers to ") },
+                        { chord: "Cdim", lyric: new Lyric("love") },
                     ],
                 },
                 {
                     elements: [
                         {
                             chord: "D7b9#11",
-                            lyric: "You know the rules ",
+                            lyric: new Lyric("You know the rules "),
                         },
-                        { chord: "Eb9", lyric: "and so do I" },
+                        { chord: "Eb9", lyric: new Lyric("and so do I") },
                     ],
                 },
             ]);
@@ -166,14 +180,14 @@ describe("Chord Song", () => {
             expect(c.elements).toMatchObject([
                 {
                     elements: [
-                        { chord: "A7", lyric: "We're no " },
-                        { chord: "Bm", lyric: "strangers to " },
-                        { chord: "Cdim", lyric: "love " },
+                        { chord: "A7", lyric: new Lyric("We're no ") },
+                        { chord: "Bm", lyric: new Lyric("strangers to ") },
+                        { chord: "Cdim", lyric: new Lyric("love ") },
                         {
                             chord: "D7b9#11",
-                            lyric: "You know the rules ",
+                            lyric: new Lyric("You know the rules "),
                         },
-                        { chord: "Eb9", lyric: "and so do I" },
+                        { chord: "Eb9", lyric: new Lyric("and so do I") },
                     ],
                 },
             ]);

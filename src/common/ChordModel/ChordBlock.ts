@@ -54,7 +54,8 @@ export class Lyric {
 
 export const ChordBlockValidator = iots.type({
     chord: iots.string,
-    lyric: LyricValidator,
+    //TODO: collapse into only lyric struct after all songs converted to new schema
+    lyric: iots.union([iots.string, LyricValidator]),
     type: iots.literal("ChordBlock"),
 });
 
@@ -80,9 +81,15 @@ export class ChordBlock implements IDable<ChordBlock> {
     static fromValidatedFields(
         validatedFields: ChordBlockValidatedFields
     ): ChordBlock {
-        const serializedLyric = Lyric.fromValidatedFields(
-            validatedFields.lyric
-        );
+        const unionLyric = validatedFields.lyric;
+        let serializedLyric: Lyric;
+
+        //TODO: collapse into only lyric struct after all songs converted to new schema
+        if (typeof unionLyric === "string") {
+            serializedLyric = new Lyric(unionLyric);
+        } else {
+            serializedLyric = Lyric.fromValidatedFields(unionLyric);
+        }
 
         return new ChordBlock({
             chord: validatedFields.chord,
@@ -107,9 +114,15 @@ export class ChordBlock implements IDable<ChordBlock> {
             return left(new Error("Invalid Chord Block object"));
         }
 
-        const serializedLyric = Lyric.fromValidatedFields(
-            validationResult.right.lyric
-        );
+        const unionLyric = validationResult.right.lyric;
+        let serializedLyric: Lyric;
+
+        //TODO: collapse into only lyric struct after all songs converted to new schema
+        if (typeof unionLyric === "string") {
+            serializedLyric = new Lyric(unionLyric);
+        } else {
+            serializedLyric = Lyric.fromValidatedFields(unionLyric);
+        }
 
         return right(
             new ChordBlock({
@@ -150,7 +163,7 @@ export class ChordBlock implements IDable<ChordBlock> {
     }
 
     contentEquals(other: ChordBlock): boolean {
-        return this.chord === other.chord && this.lyric === other.lyric;
+        return this.chord === other.chord && this.lyric.isEqual(other.lyric);
     }
 
     isEmpty(): boolean {

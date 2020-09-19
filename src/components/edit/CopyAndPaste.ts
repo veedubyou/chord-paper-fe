@@ -13,7 +13,13 @@ const CopiedChordLinesValidator = iots.type({
     copiedChordLines: iots.array(ChordLineValidator),
 });
 
-type CopiedChordLines = iots.TypeOf<typeof CopiedChordLinesValidator>;
+type CopiedChordLinesValidatedFields = iots.TypeOf<
+    typeof CopiedChordLinesValidator
+>;
+
+interface CopiedChordLines {
+    copiedChordLines: ChordLine[];
+}
 
 const deserializeCopiedChordLines = (
     jsonStr: string
@@ -52,8 +58,7 @@ const deserializeCopiedChordLines = (
 };
 
 const serializeCopiedChordLines = (chordLines: ChordLine[]): string => {
-    //TODO: removed type annotation because of visibility mismatches
-    const payload = {
+    const payload: CopiedChordLines = {
         copiedChordLines: chordLines,
     };
 
