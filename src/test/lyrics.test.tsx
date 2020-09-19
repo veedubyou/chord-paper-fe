@@ -5,7 +5,7 @@ import {
     render,
     waitForElementToBeRemoved,
 } from "@testing-library/react";
-import { ChordBlock } from "../common/ChordModel/ChordBlock";
+import { ChordBlock, Lyric } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import {
@@ -116,7 +116,7 @@ describe("Plain text edit action", () => {
     describe("Starting with some lyrics", () => {
         beforeEach(async () => {
             const song = ChordSong.fromLyricsLines([
-                "We've known each other for so long",
+                new Lyric("We've known each other for so long"),
             ]);
 
             const findByTestId = getFindByTestId(song);
@@ -144,8 +144,14 @@ describe("Edit action with chords", () => {
     beforeEach(async () => {
         const song = new ChordSong([
             new ChordLine([
-                new ChordBlock({ chord: "F", lyric: "It's your fault " }),
-                new ChordBlock({ chord: "C", lyric: "that I'm in trouble" }),
+                new ChordBlock({
+                    chord: "F",
+                    lyric: new Lyric("It's your fault "),
+                }),
+                new ChordBlock({
+                    chord: "C",
+                    lyric: new Lyric("that I'm in trouble"),
+                }),
             ]),
         ]);
 

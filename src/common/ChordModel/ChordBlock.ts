@@ -7,12 +7,55 @@ import { IDable } from "./Collection";
 
 interface ChordBlockConstructorParams {
     chord: string;
-    lyric: string;
+    lyric: Lyric;
+}
+
+export const LyricValidator = iots.type({
+    serializedLyric: iots.string,
+});
+
+export type LyricValidatedFields = iots.TypeOf<typeof LyricValidator>;
+
+export class Lyric {
+    private serializedLyric: string;
+
+    constructor(serializedLyrics: string) {
+        this.serializedLyric = serializedLyrics;
+    }
+
+    get<T>(transformFn: (serializedLyrics: string) => T): T {
+        return transformFn(this.serializedLyric);
+    }
+
+    append(other: Lyric) {
+        this.serializedLyric += other.serializedLyric;
+    }
+
+    isEmpty(): boolean {
+        return this.serializedLyric === "";
+    }
+
+    isEqual(other: Lyric): boolean {
+        return this.serializedLyric === other.serializedLyric;
+    }
+
+    static join(arr: Lyric[], joinChar: string): Lyric {
+        const rawLyricStrs: string[] = arr.map((container: Lyric) => {
+            return container.serializedLyric;
+        });
+
+        return new Lyric(rawLyricStrs.join(joinChar));
+    }
+
+    static fromValidatedFields(validatedFields: LyricValidatedFields): Lyric {
+        return new Lyric(validatedFields.serializedLyric);
+    }
 }
 
 export const ChordBlockValidator = iots.type({
     chord: iots.string,
-    lyric: iots.string,
+    //TODO: collapse into only lyric struct after all songs converted to new schema
+    lyric: iots.union([iots.string, LyricValidator]),
     type: iots.literal("ChordBlock"),
 });
 
@@ -21,7 +64,7 @@ export type ChordBlockValidatedFields = iots.TypeOf<typeof ChordBlockValidator>;
 export class ChordBlock implements IDable<ChordBlock> {
     id: string;
     chord: string;
-    lyric: string;
+    lyric: Lyric;
     type: "ChordBlock";
 
     constructor({ chord, lyric }: ChordBlockConstructorParams) {
@@ -38,9 +81,19 @@ export class ChordBlock implements IDable<ChordBlock> {
     static fromValidatedFields(
         validatedFields: ChordBlockValidatedFields
     ): ChordBlock {
+        const unionLyric = validatedFields.lyric;
+        let serializedLyric: Lyric;
+
+        //TODO: collapse into only lyric struct after all songs converted to new schema
+        if (typeof unionLyric === "string") {
+            serializedLyric = new Lyric(unionLyric);
+        } else {
+            serializedLyric = Lyric.fromValidatedFields(unionLyric);
+        }
+
         return new ChordBlock({
             chord: validatedFields.chord,
-            lyric: validatedFields.lyric,
+            lyric: serializedLyric,
         });
     }
 
@@ -61,16 +114,26 @@ export class ChordBlock implements IDable<ChordBlock> {
             return left(new Error("Invalid Chord Block object"));
         }
 
+        const unionLyric = validationResult.right.lyric;
+        let serializedLyric: Lyric;
+
+        //TODO: collapse into only lyric struct after all songs converted to new schema
+        if (typeof unionLyric === "string") {
+            serializedLyric = new Lyric(unionLyric);
+        } else {
+            serializedLyric = Lyric.fromValidatedFields(unionLyric);
+        }
+
         return right(
             new ChordBlock({
                 chord: validationResult.right.chord,
-                lyric: validationResult.right.lyric,
+                lyric: serializedLyric,
             })
         );
     }
 
     get lyricTokens(): string[] {
-        return tokenize(this.lyric);
+        return this.lyric.get(tokenize);
     }
 
     // splits a block, and returns the block before
@@ -90,20 +153,20 @@ export class ChordBlock implements IDable<ChordBlock> {
 
         const prevBlock: ChordBlock = new ChordBlock({
             chord: this.chord,
-            lyric: prevBlockLyricTokens.join(""),
+            lyric: new Lyric(prevBlockLyricTokens.join("")),
         });
 
         this.chord = "";
-        this.lyric = thisBlockLyricTokens.join("");
+        this.lyric = new Lyric(thisBlockLyricTokens.join(""));
 
         return prevBlock;
     }
 
     contentEquals(other: ChordBlock): boolean {
-        return this.chord === other.chord && this.lyric === other.lyric;
+        return this.chord === other.chord && this.lyric.isEqual(other.lyric);
     }
 
     isEmpty(): boolean {
-        return this.chord === "" && this.lyric === "";
+        return this.chord === "" && this.lyric.isEmpty();
     }
 }

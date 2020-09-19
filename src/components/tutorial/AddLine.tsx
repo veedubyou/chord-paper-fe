@@ -1,6 +1,6 @@
 import { Typography } from "@material-ui/core";
 import React from "react";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
+import { ChordBlock, Lyric } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { LineBreak, LyricsTypography } from "./Common";
@@ -9,20 +9,35 @@ import Playground from "./Playground";
 const AddLine: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly ap-" }),
-            new ChordBlock({ chord: "B7sus4", lyric: "pear?" }),
-            new ChordBlock({ chord: "B7", lyric: "\t" }),
+            new ChordBlock({
+                chord: "C^",
+                lyric: new Lyric("Why do birds suddenly ap-"),
+            }),
+            new ChordBlock({
+                chord: "B7sus4",
+                lyric: new Lyric("pear?"),
+            }),
+            new ChordBlock({ chord: "B7", lyric: new Lyric("\t") }),
         ]),
     ]);
 
     const expectedSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "C^", lyric: "Why do birds suddenly ap-" }),
-            new ChordBlock({ chord: "B7sus4", lyric: "pear?" }),
-            new ChordBlock({ chord: "B7", lyric: "\t" }),
+            new ChordBlock({
+                chord: "C^",
+                lyric: new Lyric("Why do birds suddenly ap-"),
+            }),
+            new ChordBlock({
+                chord: "B7sus4",
+                lyric: new Lyric("pear?"),
+            }),
+            new ChordBlock({ chord: "B7", lyric: new Lyric("\t") }),
         ]),
         new ChordLine([
-            new ChordBlock({ chord: "", lyric: "Every time you are near" }),
+            new ChordBlock({
+                chord: "",
+                lyric: new Lyric("Every time you are near"),
+            }),
         ]),
     ]);
 

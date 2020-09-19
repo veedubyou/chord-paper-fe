@@ -11,6 +11,9 @@ interface PlayBlockProps {
 const PlayBlock: React.FC<PlayBlockProps> = (
     props: PlayBlockProps
 ): JSX.Element => {
+    //TODO: fix this shit
+    const lyric: string = props.block.lyric.get((rawStr: string) => rawStr);
+
     return (
         <Box display="inline-block">
             <Grid container direction="column" component="span">
@@ -18,7 +21,7 @@ const PlayBlock: React.FC<PlayBlockProps> = (
                     <ChordSymbol>{props.block.chord}</ChordSymbol>
                 </Grid>
                 <Grid item>
-                    <Lyric data-testid="lyric">{props.block.lyric}</Lyric>
+                    <Lyric data-testid="lyric">{lyric}</Lyric>
                 </Grid>
             </Grid>
         </Box>
