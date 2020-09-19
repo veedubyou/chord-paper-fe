@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "4184df8fc07bafef6d2c81799b78513a",
+    "revision": "e37ec08ea45b39d9224cfadcfc76b3dd",
     "url": "/chord-paper-fe/index.html"
   },
   {
-    "revision": "13e64129ee604c6df2bb",
+    "revision": "e4bcfb1d79bb3c10fbcf",
     "url": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css"
   },
   {
-    "revision": "27acc39bbf212d26252f",
-    "url": "/chord-paper-fe/static/js/2.f64c081e.chunk.js"
+    "revision": "ef7a26b7782031eb9e7a",
+    "url": "/chord-paper-fe/static/js/2.2f9b63d6.chunk.js"
   },
   {
     "revision": "a29f87f1be8b10bf92c1ffe46c947dc6",
-    "url": "/chord-paper-fe/static/js/2.f64c081e.chunk.js.LICENSE.txt"
+    "url": "/chord-paper-fe/static/js/2.2f9b63d6.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "13e64129ee604c6df2bb",
-    "url": "/chord-paper-fe/static/js/main.3f64e6e6.chunk.js"
+    "revision": "e4bcfb1d79bb3c10fbcf",
+    "url": "/chord-paper-fe/static/js/main.e42be03f.chunk.js"
   },
   {
     "revision": "82d5071ff5416278aa5e",
