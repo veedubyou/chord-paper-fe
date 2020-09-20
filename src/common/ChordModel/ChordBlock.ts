@@ -27,8 +27,12 @@ export class Lyric {
         return transformFn(this.serializedLyric);
     }
 
-    append(other: Lyric) {
-        this.serializedLyric += other.serializedLyric;
+    append(other: Lyric | string) {
+        if (typeof other === "string") {
+            this.serializedLyric += other;
+        } else {
+            this.serializedLyric += other.serializedLyric;
+        }
     }
 
     isEmpty(): boolean {

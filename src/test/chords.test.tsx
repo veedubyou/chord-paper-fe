@@ -2,18 +2,16 @@ import { cleanup, fireEvent, render } from "@testing-library/react";
 import { ChordBlock, Lyric } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordSong } from "../common/ChordModel/ChordSong";
-import { chordPaperFromSong, selectionStub } from "./common";
+import { chordPaperFromSong } from "./common";
 import {
     ExpectChordAndLyricFn,
     FindByTestIdChainFn,
     getExpectChordAndLyric,
     getFindByTestIdChain,
 } from "./matcher";
-import { enterKey } from "./userEvent";
+import { enterKey, changeInputText } from "./userEvent";
 
 afterEach(cleanup);
-
-beforeAll(selectionStub);
 
 const song = (): ChordSong => {
     const lines: ChordLine[] = [
@@ -90,12 +88,12 @@ describe("Changing the chord", () => {
                 "NoneditableLine",
                 "Block-1",
                 "ChordEdit",
+                "TextInput",
                 "InnerInput"
             );
 
-        fireEvent.change(await chordEdit(), {
-            target: { textContent: "F7" },
-        });
+        changeInputText(await chordEdit(), "F7");
+
         enterKey(await chordEdit());
 
         await expectChordAndLyric("F7", "to the moon", [
@@ -105,22 +103,22 @@ describe("Changing the chord", () => {
         ]);
     });
 
+    //todo?
     test("it gets merged with previous block when chords are cleared", async () => {
         const chordEdit = await findByTestIdChain(
             "Line-0",
             "NoneditableLine",
             "Block-1",
             "ChordEdit",
+            "TextInput",
             "InnerInput"
         );
 
-        fireEvent.change(chordEdit, {
-            target: { textContent: "" },
-        });
+        changeInputText(chordEdit, "");
 
         enterKey(chordEdit);
 
-        expectChordAndLyric("C", "Fly me to the moon", [
+        await expectChordAndLyric("C", "Fly me to the moon", [
             "Line-0",
             "NoneditableLine",
             "Block-0",
@@ -156,14 +154,13 @@ describe("inserting a chord", () => {
                 "NoneditableLine",
                 "Block-2", // the block should be split, so the chord happens on the next block
                 "ChordEdit",
+                "TextInput",
                 "InnerInput"
             );
     });
 
     test("it splits the block", async () => {
-        fireEvent.change(await chordEdit(), {
-            target: { textContent: "Am7" },
-        });
+        changeInputText(await chordEdit(), "Am7");
 
         enterKey(await chordEdit());
 
@@ -181,9 +178,7 @@ describe("inserting a chord", () => {
     });
 
     test("it makes no changes if no input after all", async () => {
-        fireEvent.change(await chordEdit(), {
-            target: { textContent: "" },
-        });
+        changeInputText(await chordEdit(), "");
 
         enterKey(await chordEdit());
 

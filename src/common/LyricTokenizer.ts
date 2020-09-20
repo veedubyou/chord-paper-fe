@@ -1,5 +1,5 @@
 export const tokenize = (lineOfLyrics: string): string[] => {
-    const matches = lineOfLyrics.match(/((\w|')+|[^\w'])/g);
+    const matches = lineOfLyrics.match(/((<⑴>)|(<⑵>)|(<⑷>)|(\w|')+|[^\w'])/g);
     if (matches === null) {
         return [];
     }

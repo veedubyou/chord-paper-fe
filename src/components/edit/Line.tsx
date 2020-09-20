@@ -41,7 +41,7 @@ interface LineProps extends DataTestID {
     onRemoveLine?: (id: IDable<ChordLine>) => void;
     onLyricOverflow?: (
         id: IDable<ChordLine>,
-        overflowLyricContent: string[]
+        overflowLyricContent: Lyric[]
     ) => void;
     onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
     onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;

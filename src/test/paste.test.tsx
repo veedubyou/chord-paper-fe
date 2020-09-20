@@ -1,15 +1,14 @@
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
-import { chordPaperFromLyrics, selectionStub } from "./common";
+import { chordPaperFromLyrics } from "./common";
 import {
     ExpectChordAndLyricFn,
     FindByTestIdChainFn,
     getExpectChordAndLyric,
     getFindByTestIdChain,
 } from "./matcher";
+import { changeContentEditableText } from "./userEvent";
 
 afterEach(cleanup);
-
-beforeAll(selectionStub);
 
 const startEdit = async (
     findByTestIdChain: FindByTestIdChainFn,
@@ -63,19 +62,20 @@ describe("Pasting Lyrics", () => {
         const pasteMultipleLinesTests = (carriageReturn: boolean) => {
             describe("pasting multiple lines", () => {
                 beforeEach(async () => {
-                    const inputElemFn = async () =>
+                    const contentEditableElemFn = async () =>
                         await findByTestIdChain(
                             "Line-0",
-                            "EditableLine",
+                            "LyricInput",
                             "InnerInput"
                         );
 
-                    fireEvent.change(await inputElemFn(), {
-                        target: { textContent: "" },
-                    });
+                    changeContentEditableText(
+                        await contentEditableElemFn(),
+                        ""
+                    );
 
                     await act(async () => {
-                        (await inputElemFn()).dispatchEvent(
+                        (await contentEditableElemFn()).dispatchEvent(
                             pasteEvent(["ABC", "as easy as"], carriageReturn)
                         );
                     });
@@ -134,7 +134,7 @@ describe("Pasting Lyrics", () => {
                 beforeEach(async () => {
                     const input = await findByTestIdChain(
                         "Line-0",
-                        "EditableLine",
+                        "LyricInput",
                         "InnerInput"
                     );
 
