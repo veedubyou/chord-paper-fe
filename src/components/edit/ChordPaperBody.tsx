@@ -13,7 +13,8 @@ import DragAndDrop from "./DragAndDrop";
 import { InteractionContext, InteractionSetter } from "./InteractionContext";
 import Line from "./Line";
 import NewLine from "./NewLine";
-import { ChordBlock, Lyric } from "../../common/ChordModel/ChordBlock";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
+import { Lyric } from "../../common/ChordModel/Lyric";
 
 const useUninteractiveStyle = makeStyles({
     root: {

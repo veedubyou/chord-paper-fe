@@ -5,6 +5,7 @@ import clsx from "clsx";
 import React from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { IDable } from "../../common/ChordModel/Collection";
+import { Lyric } from "../../common/ChordModel/Lyric";
 import { DataTestID } from "../../common/DataTestID";
 import { inflatingWhitespace } from "../../common/Whitespace";
 import { lyricTypographyVariant } from "../display/Lyric";
@@ -78,10 +79,10 @@ export interface BlockProps extends DataTestID {
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     const { editing, startEdit, finishEdit } = useEditingState();
 
-    let lyricTokens: string[] = props.chordBlock.lyricTokens;
+    let lyricTokens: Lyric[] = props.chordBlock.lyricTokens;
 
     if (lyricTokens.length === 0) {
-        lyricTokens = [inflatingWhitespace()];
+        lyricTokens = [new Lyric(inflatingWhitespace())];
     }
 
     const firstTokenStyle = {
@@ -142,7 +143,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         finishEdit();
     };
 
-    const lyricBlock = (lyric: string, index: number): React.ReactElement => {
+    const lyricBlock = (lyric: Lyric, index: number): React.ReactElement => {
         // every above lyric target above after the first should get its own highlightable outline chord target box
         // the first one will depend if it has a chord above it.
         // if it does not, then treat it the same as all other tokens
@@ -169,7 +170,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         );
     };
 
-    const lyricBlocks = lyricTokens.map((lyricToken: string, index: number) =>
+    const lyricBlocks = lyricTokens.map((lyricToken: Lyric, index: number) =>
         lyricBlock(lyricToken, index)
     );
 

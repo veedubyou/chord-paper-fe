@@ -1,9 +1,10 @@
 import { Typography, withStyles } from "@material-ui/core";
 import ChatBubbleIcon from "@material-ui/icons/ChatBubbleOutline";
 import React from "react";
-import { ChordBlock, Lyric } from "../../common/ChordModel/ChordBlock";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { Lyric } from "../../common/ChordModel/Lyric";
 import { sectionLabelStyle } from "../display/SectionLabel";
 import { LineBreak } from "./Common";
 import Playground from "./Playground";

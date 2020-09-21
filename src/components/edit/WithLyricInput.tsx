@@ -6,7 +6,7 @@ import { PlainFn } from "../../common/PlainFn";
 import { lyricStyle, lyricTypographyVariant } from "../display/Lyric";
 import { useEditingState } from "./InteractionContext";
 import UnstyledLyricInput from "./LyricInput";
-import { Lyric } from "../../common/ChordModel/ChordBlock";
+import { Lyric } from "../../common/ChordModel/Lyric";
 
 const LyricInput = withStyles((theme: Theme) => ({
     root: {
@@ -73,11 +73,6 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
         return lineElement;
     }
 
-    //TODO fix this shit
-    const lyrics: string = props.chordLine.lyrics.get(
-        (rawStr: string) => rawStr
-    );
-
     // using a css trick to overlay the lyrics edit input over
     // the noneditable lyrics line so chords are still showing
     return (
@@ -91,7 +86,7 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                     onLyricOverflow={handlers.pasteOverflow}
                     onSpecialBackspace={handlers.specialBackspace}
                 >
-                    {lyrics}
+                    {props.chordLine.lyrics}
                 </LyricInput>
             </Box>
         </>

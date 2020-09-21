@@ -1,12 +1,17 @@
 import { Box, withStyles } from "@material-ui/core";
 import clsx from "clsx";
 import React from "react";
-import Lyric, { LyricTypography, lyricTypographyProps } from "../display/Lyric";
+import LyricDisplay, {
+    LyricTypography,
+    lyricTypographyProps,
+} from "../display/Lyric";
 import {
     chordSymbolClassName,
     chordTargetClassName,
     firstTokenClassName,
 } from "./HighlightChordLyricStyle";
+import { Lyric } from "../../common/ChordModel/Lyric";
+import { deserializeLyrics } from "../lyrics/Serialization";
 
 const InvisibleTypography = withStyles({
     root: {
@@ -21,7 +26,7 @@ const InvisibleTypography = withStyles({
 })(LyricTypography);
 
 interface ChordTargetBoxProps {
-    children: string;
+    children: React.ReactNode;
     className?: string;
     onClick?: (event: React.MouseEvent<HTMLSpanElement>) => void;
 }
@@ -42,7 +47,7 @@ const ChordTargetBox: React.FC<ChordTargetBoxProps> = (
 };
 
 interface TokenProps {
-    children: string;
+    children: Lyric;
     index: number;
     className?: string;
     invisibleTarget?: { onClick: ChordTargetBoxProps["onClick"] };
@@ -54,12 +59,14 @@ const Token: React.FC<TokenProps> = (props: TokenProps): JSX.Element => {
             return null;
         }
 
+        const content: React.ReactNode[] = deserializeLyrics(props.children);
+
         return (
             <ChordTargetBox
                 className={clsx(chordTargetClassName, chordSymbolClassName)}
                 onClick={props.invisibleTarget.onClick}
             >
-                {props.children}
+                {content}
             </ChordTargetBox>
         );
     };
@@ -68,9 +75,12 @@ const Token: React.FC<TokenProps> = (props: TokenProps): JSX.Element => {
         props.index === 0 ? firstTokenClassName : undefined;
 
     const lyricBlock = (
-        <Lyric className={lyricClassName} data-testid={`Token-${props.index}`}>
+        <LyricDisplay
+            className={lyricClassName}
+            data-testid={`Token-${props.index}`}
+        >
             {props.children}
-        </Lyric>
+        </LyricDisplay>
     );
 
     return (

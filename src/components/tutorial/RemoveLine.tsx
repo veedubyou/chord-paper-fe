@@ -2,9 +2,10 @@ import { Typography, withStyles } from "@material-ui/core";
 import red from "@material-ui/core/colors/red";
 import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
 import React from "react";
-import { ChordBlock, Lyric } from "../../common/ChordModel/ChordBlock";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { Lyric } from "../../common/ChordModel/Lyric";
 import { LineBreak } from "./Common";
 import Playground from "./Playground";
 

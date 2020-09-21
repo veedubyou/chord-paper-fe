@@ -1,7 +1,8 @@
 import { cleanup, fireEvent, render } from "@testing-library/react";
-import { ChordBlock, Lyric } from "../common/ChordModel/ChordBlock";
+import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordSong } from "../common/ChordModel/ChordSong";
+import { Lyric } from "../common/ChordModel/Lyric";
 import { chordPaperFromSong } from "./common";
 import {
     ExpectChordAndLyricFn,
@@ -9,7 +10,7 @@ import {
     getExpectChordAndLyric,
     getFindByTestIdChain,
 } from "./matcher";
-import { enterKey, changeInputText } from "./userEvent";
+import { changeInputText, enterKey } from "./userEvent";
 
 afterEach(cleanup);
 

@@ -2,8 +2,8 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 import { SnackbarProvider } from "notistack";
 import React from "react";
 import { HelmetProvider } from "react-helmet-async";
-import { Lyric } from "../common/ChordModel/ChordBlock";
 import { ChordSong } from "../common/ChordModel/ChordSong";
+import { Lyric } from "../common/ChordModel/Lyric";
 import ChordPaper from "../components/edit/ChordPaper";
 import { withSongContext } from "../components/WithSongContext";
 

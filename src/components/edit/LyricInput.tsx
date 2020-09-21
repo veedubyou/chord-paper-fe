@@ -2,10 +2,11 @@ import { makeStyles, Typography, TypographyVariant } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
 import { StyledComponentProps, withStyles } from "@material-ui/styles";
 import React, { useEffect } from "react";
+import { Lyric } from "../../common/ChordModel/Lyric";
 import { PlainFn } from "../../common/PlainFn";
-import LyricTab, { useInsertLyricTab } from "../lyrics/LyricTab";
-import { serializeLyrics, SizedTab } from "../lyrics/LyricSerialization";
-import { Lyric } from "../../common/ChordModel/ChordBlock";
+import { deserializeLyrics, serializeLyrics } from "../lyrics/Serialization";
+import { SizedTab } from "../lyrics/Tab";
+import { useDomLyricTab } from "../lyrics/Tab";
 
 const InputTypography = withStyles({
     root: {
@@ -31,7 +32,7 @@ const useContentEditableStyle = makeStyles({
 });
 
 interface LyricInputProps extends StyledComponentProps {
-    children: string;
+    children: Lyric;
     onFinish?: (newValue: Lyric) => void;
     onSpecialBackspace?: PlainFn;
     onLyricOverflow?: (overflowContent: Lyric[]) => void;
@@ -43,7 +44,7 @@ const LyricInput: React.FC<LyricInputProps> = (
     props: LyricInputProps
 ): JSX.Element => {
     const contentEditableRef: React.RefObject<HTMLSpanElement> = React.createRef();
-    const insertLyricTab = useInsertLyricTab();
+    const domLyricTab = useDomLyricTab();
 
     const contentEditableElement = (): HTMLSpanElement => {
         if (contentEditableRef.current === null) {
@@ -208,7 +209,7 @@ const LyricInput: React.FC<LyricInputProps> = (
         return [beforeRange, afterRange];
     };
 
-    const insertTextAtSelection = (newContent: string): boolean => {
+    const insertNodeAtSelection = (node: Node): boolean => {
         if (contentEditableRef.current === null) {
             return false;
         }
@@ -219,11 +220,19 @@ const LyricInput: React.FC<LyricInputProps> = (
         }
 
         range.deleteContents();
-        range.insertNode(document.createTextNode(newContent));
-        // insertLyricTab(range, SizedTab.Size2Tab);
+        range.insertNode(node);
         range.collapse(false);
         contentEditableRef.current.normalize();
         return true;
+    };
+
+    const insertTextAtSelection = (newContent: string): boolean => {
+        return insertNodeAtSelection(document.createTextNode(newContent));
+    };
+
+    const insertSizedTabAtSelection = (sizedTab: SizedTab): boolean => {
+        const domNode = domLyricTab(sizedTab);
+        return insertNodeAtSelection(domNode);
     };
 
     const tabHandler = (
@@ -233,7 +242,8 @@ const LyricInput: React.FC<LyricInputProps> = (
             return false;
         }
 
-        return insertTextAtSelection("\t");
+        //TODO: make this depend on stuff
+        return insertSizedTabAtSelection(SizedTab.Size2Tab);
     };
 
     const specialStylingKeysHandler = (
@@ -399,13 +409,7 @@ const LyricInput: React.FC<LyricInputProps> = (
 
     const contentEditableStyle = useContentEditableStyle();
 
-    const spaceStyle = makeStyles({
-        root: {
-            display: "inline-block",
-            width: "3em",
-            whiteSpace: "nowrap",
-        },
-    })();
+    const lyricContent = deserializeLyrics(props.children);
 
     return (
         <InputTypography
@@ -424,7 +428,7 @@ const LyricInput: React.FC<LyricInputProps> = (
                 onPaste={handlePaste}
                 suppressContentEditableWarning
             >
-                {props.children}
+                {lyricContent}
             </span>
         </InputTypography>
     );

@@ -5,9 +5,10 @@ import {
     render,
     waitForElementToBeRemoved,
 } from "@testing-library/react";
-import { ChordBlock, Lyric } from "../common/ChordModel/ChordBlock";
+import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordSong } from "../common/ChordModel/ChordSong";
+import { Lyric } from "../common/ChordModel/Lyric";
 import { chordPaperFromLyrics, chordPaperFromSong } from "./common";
 import {
     ExpectChordAndLyricFn,
