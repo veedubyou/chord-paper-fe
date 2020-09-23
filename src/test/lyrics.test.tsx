@@ -129,6 +129,10 @@ describe("Plain text edit action", () => {
     });
 });
 
+describe("Tab spacing", () => {
+    let findByTestIdChain: FindByTestIdChainFn;
+    let asyncExpectChordAndLyric: ExpectChordAndLyricFn;
+
     const clickFirstLine = async () => {
         const line = await findByTestIdChain("Line-0", "NoneditableLine");
         expect(line).toBeInTheDocument();

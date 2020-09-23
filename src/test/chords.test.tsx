@@ -3,7 +3,7 @@ import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { Lyric } from "../common/ChordModel/Lyric";
-import { chordPaperFromSong } from "./common";
+import { chordPaperFromLyrics, chordPaperFromSong } from "./common";
 import {
     ExpectChordAndLyricFn,
     FindByTestIdChainFn,
@@ -187,5 +187,93 @@ describe("inserting a chord", () => {
             "NoneditableLine",
             "Block-1",
         ]);
+    });
+});
+
+describe("inserting a chord at a tab block", () => {
+    let findByTestIdChain: FindByTestIdChainFn;
+    let expectChordAndLyric: ExpectChordAndLyricFn;
+
+    beforeEach(async () => {
+        const { findByTestId } = render(
+            chordPaperFromLyrics([
+                "I<⑵>never loved you fully in the way I could",
+            ])
+        );
+        findByTestIdChain = getFindByTestIdChain(findByTestId);
+        expectChordAndLyric = getExpectChordAndLyric(findByTestId);
+    });
+
+    test("it inserts the chord at the tab space and treats it as an atomic token", async () => {
+        const insertChordAtTab = async () => {
+            const editButton = await findByTestIdChain(
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
+                "TokenBox-1",
+                "ChordEditButton"
+            );
+
+            expect(editButton).toBeInTheDocument();
+            fireEvent.click(editButton);
+
+            const chordEdit = async () =>
+                await findByTestIdChain(
+                    "Line-0",
+                    "NoneditableLine",
+                    "Block-1", // the block should be split, so the chord happens on the next block
+                    "ChordEdit",
+                    "TextInput",
+                    "InnerInput"
+                );
+            changeInputText(await chordEdit(), "Am7");
+            enterKey(await chordEdit());
+        };
+
+        const insertChordAtLyricAfterTab = async () => {
+            const editButton = await findByTestIdChain(
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
+                "TokenBox-1",
+                "ChordEditButton"
+            );
+
+            expect(editButton).toBeInTheDocument();
+            fireEvent.click(editButton);
+
+            const chordEdit = async () =>
+                await findByTestIdChain(
+                    "Line-0",
+                    "NoneditableLine",
+                    "Block-2", // the block should be split, so the chord happens on the next block
+                    "ChordEdit",
+                    "TextInput",
+                    "InnerInput"
+                );
+            changeInputText(await chordEdit(), "D");
+            enterKey(await chordEdit());
+        };
+
+        await insertChordAtTab();
+        await insertChordAtLyricAfterTab();
+
+        await expectChordAndLyric("", "I", [
+            "Line-0",
+            "NoneditableLine",
+            "Block-0",
+        ]);
+
+        await expectChordAndLyric("Am7", "<⑵>", [
+            "Line-0",
+            "NoneditableLine",
+            "Block-1",
+        ]);
+
+        await expectChordAndLyric(
+            "D",
+            "never loved you fully in the way I could",
+            ["Line-0", "NoneditableLine", "Block-2"]
+        );
     });
 });
