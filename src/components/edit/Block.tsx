@@ -32,6 +32,7 @@ const ChordInput = withStyles((theme: Theme) => ({
         borderBottom: "solid",
         borderBottomColor: theme.palette.primary.main,
         borderBottomWidth: "2px",
+        width: "4em",
     },
 }))(TextInput);
 

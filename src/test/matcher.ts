@@ -1,4 +1,5 @@
-import { MatcherFunction, within, waitFor } from "@testing-library/react";
+import { MatcherFunction, waitFor, within } from "@testing-library/react";
+import { findTabType, lyricTabTypeOfDOMNode } from "../components/lyrics/Tab";
 
 // looks in all the descendents, finds all the qualifying elements
 // for each qualifying node, return its text content
@@ -6,10 +7,11 @@ import { MatcherFunction, within, waitFor } from "@testing-library/react";
 
 const mergeText = (
     element: Element,
-    shouldScanText: (element: Element) => boolean
+    scanTextFn: (element: Element) => string | null
 ): string | null => {
-    if (shouldScanText(element)) {
-        return element.textContent;
+    const result = scanTextFn(element);
+    if (result !== null) {
+        return result;
     }
 
     const childrenText: string[] = [];
@@ -19,7 +21,7 @@ const mergeText = (
             continue;
         }
 
-        const childText = mergeText(child, shouldScanText);
+        const childText = mergeText(child, scanTextFn);
         if (childText === null) {
             continue;
         }
@@ -35,13 +37,28 @@ const mergeText = (
 };
 
 export const lyricsInElement = (parentElement: Element): string | null => {
-    return mergeText(parentElement, (elem: Element): boolean => {
+    return mergeText(parentElement, (elem: Element): string | null => {
         const testID = elem.getAttribute("data-testid");
         if (testID === null) {
-            return false;
+            return null;
         }
 
-        return testID.startsWith("Token-");
+        const isTokenAttribute = testID.startsWith("Token-");
+        if (!testID.startsWith("Token-")) {
+            return null;
+        }
+
+        const firstElemChild = elem.firstElementChild;
+        if (firstElemChild !== null) {
+            const sizedTab = lyricTabTypeOfDOMNode(firstElemChild);
+            if (sizedTab === null) {
+                return null;
+            }
+
+            return findTabType("sizedTab", sizedTab).serializedStr;
+        }
+
+        return elem.textContent;
     });
 };
 

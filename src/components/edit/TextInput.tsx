@@ -62,6 +62,7 @@ const TextInput: React.FC<TextInputProps> = (
                 opacity: 1,
                 background: grey[100],
             },
+            className: props.classes?.root,
         };
 
         if (props.width !== undefined && inputProps.style) {
@@ -75,7 +76,6 @@ const TextInput: React.FC<TextInputProps> = (
         <TextField
             autoFocus
             variant="filled"
-            classes={props.classes}
             inputProps={{
                 "data-testid": "InnerInput",
                 ...browserInputProps(),

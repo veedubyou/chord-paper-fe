@@ -37,8 +37,6 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
         lyricEdit: (newLyrics: Lyric) => {
             finishEdit();
 
-            //TODO replace with serialized lyric in all handlers
-
             props.chordLine.replaceLyrics(newLyrics);
             props.onChangeLine?.(props.chordLine);
         },

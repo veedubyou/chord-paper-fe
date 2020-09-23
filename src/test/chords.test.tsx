@@ -104,7 +104,6 @@ describe("Changing the chord", () => {
         ]);
     });
 
-    //todo?
     test("it gets merged with previous block when chords are cleared", async () => {
         const chordEdit = await findByTestIdChain(
             "Line-0",

@@ -8,13 +8,12 @@ export const dataAttributeTabName: "data-lyrictabtype" = "data-lyrictabtype";
 export enum SizedTab {
     Size1Tab = 1,
     Size2Tab = 2,
-    Size4Tab = 4,
 }
 
 export interface LyricTabType {
     sizedTab: SizedTab;
-    serializedStr: "<⑴>" | "<⑵>" | "<⑷>";
-    [dataAttributeTabName]: "1" | "2" | "4";
+    serializedStr: "<⑴>" | "<⑵>";
+    [dataAttributeTabName]: "1" | "2";
 }
 
 export const allTabTypes: LyricTabType[] = [
@@ -27,11 +26,6 @@ export const allTabTypes: LyricTabType[] = [
         sizedTab: SizedTab.Size2Tab,
         serializedStr: "<⑵>",
         [dataAttributeTabName]: "2",
-    },
-    {
-        sizedTab: SizedTab.Size4Tab,
-        serializedStr: "<⑷>",
-        [dataAttributeTabName]: "4",
     },
 ];
 
@@ -74,36 +68,27 @@ export const lyricTabTypeOfDOMNode = (node: Node): SizedTab | null => {
     return null;
 };
 
-const useSize1Style = makeStyles({
-    root: {
-        display: "inline-block",
-        width: "1em",
-    },
-});
+const makeSizeStyle = (size: number) => {
+    const sizeBasis = 1.5;
 
-const useSize2Style = makeStyles({
-    root: {
-        display: "inline-block",
-        width: "2em",
-    },
-});
+    return makeStyles({
+        root: {
+            display: "inline-block",
+            width: `${sizeBasis * size}em`,
+        },
+    });
+};
 
-const useSize4Style = makeStyles({
-    root: {
-        display: "inline-block",
-        width: "4em",
-    },
-});
+const useSize1Style = makeSizeStyle(1);
+const useSize2Style = makeSizeStyle(2);
 
 const useSizeMap = () => {
     const size1Style = useSize1Style();
     const size2Style = useSize2Style();
-    const size4Style = useSize4Style();
 
     return {
         [SizedTab.Size1Tab]: size1Style,
         [SizedTab.Size2Tab]: size2Style,
-        [SizedTab.Size4Tab]: size4Style,
     };
 };
 

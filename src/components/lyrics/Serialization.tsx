@@ -7,10 +7,13 @@ import Tab, {
     SizedTab,
 } from "./Tab";
 
-const deserializeLyricStr = (lyrics: string): React.ReactElement | string => {
+const deserializeLyricStr = (
+    lyrics: string,
+    tokenIndex: number
+): React.ReactElement | string => {
     if (isValidTabValue("serializedStr", lyrics)) {
         const tabType = findTabType("serializedStr", lyrics);
-        return <Tab type={tabType.sizedTab} />;
+        return <Tab key={tokenIndex} type={tabType.sizedTab} />;
     }
 
     return lyrics;
@@ -22,9 +25,10 @@ export const deserializeLyrics = (
     const nodes: (React.ReactElement | string)[] = [];
     const tokens: Lyric[] = lyric.tokenize();
 
-    for (const token of tokens) {
-        const node: React.ReactElement | string = token.get(
-            deserializeLyricStr
+    for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i];
+        const node: React.ReactElement | string = token.get((lyrics: string) =>
+            deserializeLyricStr(lyrics, i)
         );
 
         // merge strings where possible

@@ -242,8 +242,15 @@ const LyricInput: React.FC<LyricInputProps> = (
             return false;
         }
 
-        //TODO: make this depend on stuff
-        return insertSizedTabAtSelection(SizedTab.Size2Tab);
+        let sizedTab: SizedTab;
+
+        if (event.shiftKey) {
+            sizedTab = SizedTab.Size2Tab;
+        } else {
+            sizedTab = SizedTab.Size1Tab;
+        }
+
+        return insertSizedTabAtSelection(sizedTab);
     };
 
     const specialStylingKeysHandler = (
