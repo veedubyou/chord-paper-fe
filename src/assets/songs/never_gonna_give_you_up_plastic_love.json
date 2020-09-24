@@ -24,7 +24,7 @@
                     "type": "ChordBlock"
                 },
                 {
-                    "chord": "Bm7b13",
+                    "chord": "Bm7b13/D",
                     "lyric": {
                         "serializedLyric": "<⑵>"
                     },
@@ -683,7 +683,7 @@
                     "type": "ChordBlock"
                 },
                 {
-                    "chord": "C7",
+                    "chord": "A7",
                     "lyric": {
                         "serializedLyric": "<⑵>"
                     },
