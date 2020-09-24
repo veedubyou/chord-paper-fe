@@ -83,6 +83,7 @@ type UserInfoState = User | null;
 interface LoginProps extends StyledComponentProps {}
 
 const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
+    const [gapiLoaded, setGapiLoaded] = useState<boolean>(false);
     const [userInfo, setUserInfo] = useState<UserInfoState>(null);
     const { enqueueSnackbar } = useSnackbar();
     const signinStyles = useSigninStyles();
@@ -94,6 +95,24 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     };
 
     useEffect(() => {
+        if (gapiLoaded) {
+            return;
+        }
+
+        if (window["gapi"] !== undefined) {
+            setGapiLoaded(true);
+        } else {
+            enqueueSnackbar("gapi is not loaded, working offline only", {
+                variant: "error",
+            });
+        }
+    }, [gapiLoaded, enqueueSnackbar]);
+
+    useEffect(() => {
+        if (!gapiLoaded) {
+            return;
+        }
+
         gapi.load("auth2", () => {
             const handleGoogleLogin = async (user: gapi.auth2.GoogleUser) => {
                 const idToken: string = user.getAuthResponse().id_token;
@@ -161,7 +180,11 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 })
                 .then(handleAuthInit);
         });
-    }, [enqueueSnackbar, userInfo, setUserInfo]);
+    }, [enqueueSnackbar, userInfo, setUserInfo, gapiLoaded]);
+
+    if (!gapiLoaded) {
+        return <div></div>;
+    }
 
     if (shouldShowSigninButton(userInfo)) {
         return (
