@@ -2,54 +2,12 @@ import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
 import lodash from "lodash";
 import shortid from "shortid";
-import { tokenize } from "../LyricTokenizer";
 import { IDable } from "./Collection";
+import { Lyric, LyricValidator } from "./Lyric";
 
 interface ChordBlockConstructorParams {
     chord: string;
     lyric: Lyric;
-}
-
-export const LyricValidator = iots.type({
-    serializedLyric: iots.string,
-});
-
-export type LyricValidatedFields = iots.TypeOf<typeof LyricValidator>;
-
-export class Lyric {
-    private serializedLyric: string;
-
-    constructor(serializedLyrics: string) {
-        this.serializedLyric = serializedLyrics;
-    }
-
-    get<T>(transformFn: (serializedLyrics: string) => T): T {
-        return transformFn(this.serializedLyric);
-    }
-
-    append(other: Lyric) {
-        this.serializedLyric += other.serializedLyric;
-    }
-
-    isEmpty(): boolean {
-        return this.serializedLyric === "";
-    }
-
-    isEqual(other: Lyric): boolean {
-        return this.serializedLyric === other.serializedLyric;
-    }
-
-    static join(arr: Lyric[], joinChar: string): Lyric {
-        const rawLyricStrs: string[] = arr.map((container: Lyric) => {
-            return container.serializedLyric;
-        });
-
-        return new Lyric(rawLyricStrs.join(joinChar));
-    }
-
-    static fromValidatedFields(validatedFields: LyricValidatedFields): Lyric {
-        return new Lyric(validatedFields.serializedLyric);
-    }
 }
 
 export const ChordBlockValidator = iots.type({
@@ -132,8 +90,8 @@ export class ChordBlock implements IDable<ChordBlock> {
         );
     }
 
-    get lyricTokens(): string[] {
-        return this.lyric.get(tokenize);
+    get lyricTokens(): Lyric[] {
+        return this.lyric.tokenize();
     }
 
     // splits a block, and returns the block before
@@ -148,16 +106,16 @@ export class ChordBlock implements IDable<ChordBlock> {
         }
 
         const tokens = this.lyricTokens;
-        const prevBlockLyricTokens: string[] = tokens.slice(0, splitIndex);
-        const thisBlockLyricTokens: string[] = tokens.slice(splitIndex);
+        const prevBlockLyricTokens: Lyric[] = tokens.slice(0, splitIndex);
+        const thisBlockLyricTokens: Lyric[] = tokens.slice(splitIndex);
 
         const prevBlock: ChordBlock = new ChordBlock({
             chord: this.chord,
-            lyric: new Lyric(prevBlockLyricTokens.join("")),
+            lyric: Lyric.join(prevBlockLyricTokens, ""),
         });
 
         this.chord = "";
-        this.lyric = new Lyric(thisBlockLyricTokens.join(""));
+        this.lyric = Lyric.join(thisBlockLyricTokens, "");
 
         return prevBlock;
     }

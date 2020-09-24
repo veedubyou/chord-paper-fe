@@ -5,8 +5,8 @@ import { IDable } from "../../common/ChordModel/Collection";
 import { PlainFn } from "../../common/PlainFn";
 import { lyricStyle, lyricTypographyVariant } from "../display/Lyric";
 import { useEditingState } from "./InteractionContext";
-import TextInput from "./TextInput";
-import { Lyric } from "../../common/ChordModel/ChordBlock";
+import UnstyledLyricInput from "./LyricInput";
+import { Lyric } from "../../common/ChordModel/Lyric";
 
 const LyricInput = withStyles((theme: Theme) => ({
     root: {
@@ -15,13 +15,13 @@ const LyricInput = withStyles((theme: Theme) => ({
         borderBottomColor: theme.palette.secondary.main,
         borderBottomWidth: "2px",
     },
-}))(TextInput);
+}))(UnstyledLyricInput);
 
 interface WithLyricInputProps {
     children: (handleEdit: PlainFn) => React.ReactElement;
     chordLine: ChordLine;
     onChangeLine?: (id: IDable<ChordLine>) => void;
-    onLyricOverflow?: (id: IDable<ChordLine>, overflowLyric: string[]) => void;
+    onLyricOverflow?: (id: IDable<ChordLine>, overflowLyric: Lyric[]) => void;
     onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
     onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;
 }
@@ -34,15 +34,13 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
     const { editing, startEdit, finishEdit } = useEditingState();
 
     const handlers = {
-        lyricEdit: (newLyrics: string) => {
+        lyricEdit: (newLyrics: Lyric) => {
             finishEdit();
 
-            //TODO replace with serialized lyric in all handlers
-
-            props.chordLine.replaceLyrics(new Lyric(newLyrics));
+            props.chordLine.replaceLyrics(newLyrics);
             props.onChangeLine?.(props.chordLine);
         },
-        pasteOverflow: (overflowContent: string[]) => {
+        pasteOverflow: (overflowContent: Lyric[]) => {
             if (props.onLyricOverflow) {
                 props.onLyricOverflow(props.chordLine, overflowContent);
                 finishEdit();
@@ -73,11 +71,6 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
         return lineElement;
     }
 
-    //TODO fix this shit
-    const lyrics: string = props.chordLine.lyrics.get(
-        (rawStr: string) => rawStr
-    );
-
     // using a css trick to overlay the lyrics edit input over
     // the noneditable lyrics line so chords are still showing
     return (
@@ -88,10 +81,10 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                     variant={lyricTypographyVariant}
                     onFinish={handlers.lyricEdit}
                     onJSONPaste={handlers.jsonPaste}
-                    onTextOverflow={handlers.pasteOverflow}
+                    onLyricOverflow={handlers.pasteOverflow}
                     onSpecialBackspace={handlers.specialBackspace}
                 >
-                    {lyrics}
+                    {props.chordLine.lyrics}
                 </LyricInput>
             </Box>
         </>

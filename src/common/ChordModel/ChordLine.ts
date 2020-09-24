@@ -6,10 +6,10 @@ import {
     ChordBlock,
     ChordBlockValidatedFields,
     ChordBlockValidator,
-    Lyric,
 } from "./ChordBlock";
 import { replaceChordLineLyrics } from "./ChordLinePatcher";
 import { Collection, IDable } from "./Collection";
+import { Lyric } from "./Lyric";
 
 const requiredFields = iots.type({
     elements: iots.array(ChordBlockValidator),

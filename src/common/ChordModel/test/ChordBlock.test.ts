@@ -1,5 +1,6 @@
 import { getOrElse, isLeft } from "fp-ts/lib/Either";
-import { ChordBlock, Lyric } from "../ChordBlock";
+import { ChordBlock } from "../ChordBlock";
+import { Lyric } from "../Lyric";
 
 describe("ChordBlock", () => {
     describe("de/serialization", () => {

@@ -2,12 +2,10 @@ import { cleanup, render } from "@testing-library/react";
 import React from "react";
 import { MemoryRouter, Redirect, Route, Switch } from "react-router-dom";
 import Demo from "../components/Demo";
-import { selectionStub, withProviders } from "./common";
+import { withProviders } from "./common";
 import { getExpectChordAndLyric } from "./matcher";
 
 afterEach(cleanup);
-
-beforeAll(selectionStub);
 
 const demo = () => {
     return withProviders(

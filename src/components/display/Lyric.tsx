@@ -1,12 +1,13 @@
-import { Typography, withStyles, createStyles } from "@material-ui/core";
+import { createStyles, Typography, withStyles } from "@material-ui/core";
 import clsx from "clsx";
 import React from "react";
+import { Lyric } from "../../common/ChordModel/Lyric";
 import { DataTestID } from "../../common/DataTestID";
-import { isWhitespace } from "../../common/Whitespace";
 import {
     spaceClassName,
     wordClassName,
 } from "../edit/HighlightChordLyricStyle";
+import { deserializeLyrics } from "../lyrics/Serialization";
 
 export const lyricTypographyVariant: "h6" = "h6";
 
@@ -17,7 +18,6 @@ export const lyricTypographyProps = {
 
 export const lyricStyle = createStyles({
     root: {
-        tabSize: 16,
         whiteSpace: "pre",
         wordSpacing: ".15em",
         display: "inline-block",
@@ -26,17 +26,19 @@ export const lyricStyle = createStyles({
 
 export const LyricTypography = withStyles(lyricStyle)(Typography);
 
-interface LyricProps extends DataTestID {
-    children: string;
+interface LyricTypographyProps extends DataTestID {
+    children: Lyric;
     className?: string;
 }
 
-const Lyric: React.FC<LyricProps> = (props: LyricProps): JSX.Element => {
+const LyricDisplay: React.FC<LyricTypographyProps> = (
+    props: LyricTypographyProps
+): JSX.Element => {
     const customClassName = props.className ?? "";
 
     const className = clsx({
-        [spaceClassName]: isWhitespace(props.children),
-        [wordClassName]: !isWhitespace(props.children),
+        [spaceClassName]: props.children.isEntirelySpace(),
+        [wordClassName]: !props.children.isEntirelySpace(),
         [customClassName]: props.className !== undefined,
     });
 
@@ -46,9 +48,9 @@ const Lyric: React.FC<LyricProps> = (props: LyricProps): JSX.Element => {
             className={className}
             data-testid={props["data-testid"]}
         >
-            {props.children}
+            {deserializeLyrics(props.children)}
         </LyricTypography>
     );
 };
 
-export default Lyric;
+export default LyricDisplay;

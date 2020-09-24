@@ -4,11 +4,12 @@ import red from "@material-ui/core/colors/red";
 import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
 import ChatBubbleIcon from "@material-ui/icons/ChatBubbleOutline";
 import React, { useState } from "react";
-import { ChordBlock, Lyric } from "../../common/ChordModel/ChordBlock";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { IDable } from "../../common/ChordModel/Collection";
-import { PlainFn } from "../../common/PlainFn";
+import { Lyric } from "../../common/ChordModel/Lyric";
 import { DataTestID } from "../../common/DataTestID";
+import { PlainFn } from "../../common/PlainFn";
 import Block, { BlockProps } from "./Block";
 import WithHoverMenu, { MenuItem } from "./WithHoverMenu";
 import WithLyricInput from "./WithLyricInput";
@@ -41,7 +42,7 @@ interface LineProps extends DataTestID {
     onRemoveLine?: (id: IDable<ChordLine>) => void;
     onLyricOverflow?: (
         id: IDable<ChordLine>,
-        overflowLyricContent: string[]
+        overflowLyricContent: Lyric[]
     ) => void;
     onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
     onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;

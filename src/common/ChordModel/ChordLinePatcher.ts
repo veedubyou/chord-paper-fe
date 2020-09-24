@@ -1,6 +1,7 @@
 import { ChordLine } from "./ChordLine";
-import { ChordBlock, Lyric } from "./ChordBlock";
+import { ChordBlock } from "./ChordBlock";
 import { DiffMatchPatch, DiffOperation } from "diff-match-patch-typescript";
+import { Lyric } from "./Lyric";
 
 const differ: DiffMatchPatch = (() => {
     const dmp = new DiffMatchPatch();

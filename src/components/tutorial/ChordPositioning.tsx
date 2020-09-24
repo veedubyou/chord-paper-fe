@@ -3,8 +3,9 @@ import { Typography } from "@material-ui/core";
 import Playground from "./Playground";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { ChordBlock, Lyric } from "../../common/ChordModel/ChordBlock";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { LineBreak, LyricsTypography, ChordTypography } from "./Common";
+import { Lyric } from "../../common/ChordModel/Lyric";
 
 const ChordPositioning: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong([
@@ -34,7 +35,7 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
                 chord: "B7sus4",
                 lyric: new Lyric("pear?"),
             }),
-            new ChordBlock({ chord: "B7", lyric: new Lyric("\t") }),
+            new ChordBlock({ chord: "B7", lyric: new Lyric("<⑴>") }),
         ]),
     ]);
 
@@ -52,7 +53,7 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
                 chord: "B7sus4",
                 lyric: new Lyric("pear?"),
             }),
-            new ChordBlock({ chord: "B7", lyric: new Lyric("\t") }),
+            new ChordBlock({ chord: "B7", lyric: new Lyric("<⑴>") }),
         ]),
     ]);
 

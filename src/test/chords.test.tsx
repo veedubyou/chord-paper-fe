@@ -1,19 +1,18 @@
 import { cleanup, fireEvent, render } from "@testing-library/react";
-import { ChordBlock, Lyric } from "../common/ChordModel/ChordBlock";
+import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordSong } from "../common/ChordModel/ChordSong";
-import { chordPaperFromSong, selectionStub } from "./common";
+import { Lyric } from "../common/ChordModel/Lyric";
+import { chordPaperFromLyrics, chordPaperFromSong } from "./common";
 import {
     ExpectChordAndLyricFn,
     FindByTestIdChainFn,
     getExpectChordAndLyric,
     getFindByTestIdChain,
 } from "./matcher";
-import { enterKey } from "./userEvent";
+import { changeInputText, enterKey } from "./userEvent";
 
 afterEach(cleanup);
-
-beforeAll(selectionStub);
 
 const song = (): ChordSong => {
     const lines: ChordLine[] = [
@@ -90,12 +89,12 @@ describe("Changing the chord", () => {
                 "NoneditableLine",
                 "Block-1",
                 "ChordEdit",
+                "TextInput",
                 "InnerInput"
             );
 
-        fireEvent.change(await chordEdit(), {
-            target: { textContent: "F7" },
-        });
+        changeInputText(await chordEdit(), "F7");
+
         enterKey(await chordEdit());
 
         await expectChordAndLyric("F7", "to the moon", [
@@ -111,16 +110,15 @@ describe("Changing the chord", () => {
             "NoneditableLine",
             "Block-1",
             "ChordEdit",
+            "TextInput",
             "InnerInput"
         );
 
-        fireEvent.change(chordEdit, {
-            target: { textContent: "" },
-        });
+        changeInputText(chordEdit, "");
 
         enterKey(chordEdit);
 
-        expectChordAndLyric("C", "Fly me to the moon", [
+        await expectChordAndLyric("C", "Fly me to the moon", [
             "Line-0",
             "NoneditableLine",
             "Block-0",
@@ -156,14 +154,13 @@ describe("inserting a chord", () => {
                 "NoneditableLine",
                 "Block-2", // the block should be split, so the chord happens on the next block
                 "ChordEdit",
+                "TextInput",
                 "InnerInput"
             );
     });
 
     test("it splits the block", async () => {
-        fireEvent.change(await chordEdit(), {
-            target: { textContent: "Am7" },
-        });
+        changeInputText(await chordEdit(), "Am7");
 
         enterKey(await chordEdit());
 
@@ -181,9 +178,7 @@ describe("inserting a chord", () => {
     });
 
     test("it makes no changes if no input after all", async () => {
-        fireEvent.change(await chordEdit(), {
-            target: { textContent: "" },
-        });
+        changeInputText(await chordEdit(), "");
 
         enterKey(await chordEdit());
 
@@ -192,5 +187,93 @@ describe("inserting a chord", () => {
             "NoneditableLine",
             "Block-1",
         ]);
+    });
+});
+
+describe("inserting a chord at a tab block", () => {
+    let findByTestIdChain: FindByTestIdChainFn;
+    let expectChordAndLyric: ExpectChordAndLyricFn;
+
+    beforeEach(async () => {
+        const { findByTestId } = render(
+            chordPaperFromLyrics([
+                "I<⑵>never loved you fully in the way I could",
+            ])
+        );
+        findByTestIdChain = getFindByTestIdChain(findByTestId);
+        expectChordAndLyric = getExpectChordAndLyric(findByTestId);
+    });
+
+    test("it inserts the chord at the tab space and treats it as an atomic token", async () => {
+        const insertChordAtTab = async () => {
+            const editButton = await findByTestIdChain(
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
+                "TokenBox-1",
+                "ChordEditButton"
+            );
+
+            expect(editButton).toBeInTheDocument();
+            fireEvent.click(editButton);
+
+            const chordEdit = async () =>
+                await findByTestIdChain(
+                    "Line-0",
+                    "NoneditableLine",
+                    "Block-1", // the block should be split, so the chord happens on the next block
+                    "ChordEdit",
+                    "TextInput",
+                    "InnerInput"
+                );
+            changeInputText(await chordEdit(), "Am7");
+            enterKey(await chordEdit());
+        };
+
+        const insertChordAtLyricAfterTab = async () => {
+            const editButton = await findByTestIdChain(
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
+                "TokenBox-1",
+                "ChordEditButton"
+            );
+
+            expect(editButton).toBeInTheDocument();
+            fireEvent.click(editButton);
+
+            const chordEdit = async () =>
+                await findByTestIdChain(
+                    "Line-0",
+                    "NoneditableLine",
+                    "Block-2", // the block should be split, so the chord happens on the next block
+                    "ChordEdit",
+                    "TextInput",
+                    "InnerInput"
+                );
+            changeInputText(await chordEdit(), "D");
+            enterKey(await chordEdit());
+        };
+
+        await insertChordAtTab();
+        await insertChordAtLyricAfterTab();
+
+        await expectChordAndLyric("", "I", [
+            "Line-0",
+            "NoneditableLine",
+            "Block-0",
+        ]);
+
+        await expectChordAndLyric("Am7", "<⑵>", [
+            "Line-0",
+            "NoneditableLine",
+            "Block-1",
+        ]);
+
+        await expectChordAndLyric(
+            "D",
+            "never loved you fully in the way I could",
+            ["Line-0", "NoneditableLine", "Block-2"]
+        );
     });
 });

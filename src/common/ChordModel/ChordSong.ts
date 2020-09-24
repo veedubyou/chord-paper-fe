@@ -1,13 +1,14 @@
 import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
 import lodash from "lodash";
-import { ChordBlock, Lyric } from "./ChordBlock";
+import { ChordBlock } from "./ChordBlock";
 import {
     ChordLine,
     ChordLineValidatedFields,
     ChordLineValidator,
 } from "./ChordLine";
 import { Collection, IDable } from "./Collection";
+import { Lyric } from "./Lyric";
 
 const SongMetadataValidator = iots.type({
     title: iots.string,

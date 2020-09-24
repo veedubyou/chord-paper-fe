@@ -5,14 +5,11 @@ import {
     render,
     waitForElementToBeRemoved,
 } from "@testing-library/react";
-import { ChordBlock, Lyric } from "../common/ChordModel/ChordBlock";
+import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordSong } from "../common/ChordModel/ChordSong";
-import {
-    chordPaperFromLyrics,
-    chordPaperFromSong,
-    selectionStub,
-} from "./common";
+import { Lyric } from "../common/ChordModel/Lyric";
+import { chordPaperFromLyrics, chordPaperFromSong } from "./common";
 import {
     ExpectChordAndLyricFn,
     FindByTestIdChainFn,
@@ -21,11 +18,9 @@ import {
     lyricsInElement,
     matchLyric,
 } from "./matcher";
-import { enterKey } from "./userEvent";
+import { changeContentEditableText, enterKey, tabKey } from "./userEvent";
 
 afterEach(cleanup);
-
-beforeAll(selectionStub);
 
 const lyrics: string[] = [
     "Never gonna give you up",
@@ -68,7 +63,7 @@ describe("Rendering initial lyrics", () => {
 
 describe("Plain text edit action", () => {
     let findByTestIdChain: FindByTestIdChainFn;
-    let expectChordAndLyric: ExpectChordAndLyricFn;
+    let asyncExpectChordAndLyric: ExpectChordAndLyricFn;
 
     const clickFirstLine = async () => {
         const line = await findByTestIdChain("Line-0", "NoneditableLine");
@@ -78,17 +73,13 @@ describe("Plain text edit action", () => {
     };
 
     const changeLyric = async (newLyric: string) => {
-        const findInputElem = async (): Promise<HTMLElement> => {
-            return findByTestIdChain("Line-0", "EditableLine", "InnerInput");
+        const findContentEditableElem = async (): Promise<HTMLElement> => {
+            return findByTestIdChain("Line-0", "LyricInput", "InnerInput");
         };
 
-        expect(await findInputElem()).toBeInTheDocument();
-
-        fireEvent.change(await findInputElem(), {
-            target: { textContent: newLyric },
-        });
-
-        enterKey(await findInputElem());
+        expect(await findContentEditableElem()).toBeInTheDocument();
+        changeContentEditableText(await findContentEditableElem(), newLyric);
+        enterKey(await findContentEditableElem());
     };
 
     describe("From an empty song", () => {
@@ -97,7 +88,7 @@ describe("Plain text edit action", () => {
 
             const findByTestId = getFindByTestId(song);
             findByTestIdChain = getFindByTestIdChain(findByTestId);
-            expectChordAndLyric = getExpectChordAndLyric(findByTestId);
+            asyncExpectChordAndLyric = getExpectChordAndLyric(findByTestId);
 
             await clickFirstLine();
         });
@@ -105,7 +96,7 @@ describe("Plain text edit action", () => {
         test("inserting new lyrics", async () => {
             await changeLyric("Never Gonna Give You Up");
 
-            await expectChordAndLyric("", "Never Gonna Give You Up", [
+            await asyncExpectChordAndLyric("", "Never Gonna Give You Up", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -121,7 +112,7 @@ describe("Plain text edit action", () => {
 
             const findByTestId = getFindByTestId(song);
             findByTestIdChain = getFindByTestIdChain(findByTestId);
-            expectChordAndLyric = getExpectChordAndLyric(findByTestId);
+            asyncExpectChordAndLyric = getExpectChordAndLyric(findByTestId);
 
             await clickFirstLine();
         });
@@ -129,12 +120,76 @@ describe("Plain text edit action", () => {
         test("inserting new lyrics", async () => {
             await changeLyric("Never Gonna Give You Up");
 
-            await expectChordAndLyric("", "Never Gonna Give You Up", [
+            await asyncExpectChordAndLyric("", "Never Gonna Give You Up", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
             ]);
         });
+    });
+});
+
+describe("Tab spacing", () => {
+    let findByTestIdChain: FindByTestIdChainFn;
+    let asyncExpectChordAndLyric: ExpectChordAndLyricFn;
+
+    const clickFirstLine = async () => {
+        const line = await findByTestIdChain("Line-0", "NoneditableLine");
+        expect(line).toBeInTheDocument();
+        fireEvent.mouseOver(line);
+        fireEvent.click(line);
+    };
+
+    const testTab = (
+        startingLyrics: string,
+        expectedLyrics: string,
+        action: (elem: Element) => void
+    ) => {
+        beforeEach(async () => {
+            const song = ChordSong.fromLyricsLines([new Lyric(startingLyrics)]);
+
+            const findByTestId = getFindByTestId(song);
+            findByTestIdChain = getFindByTestIdChain(findByTestId);
+            asyncExpectChordAndLyric = getExpectChordAndLyric(findByTestId);
+
+            await clickFirstLine();
+        });
+
+        test("inserting a tab", async () => {
+            const findContentEditableElem = async (): Promise<HTMLElement> => {
+                return findByTestIdChain("Line-0", "LyricInput", "InnerInput");
+            };
+
+            expect(await findContentEditableElem()).toBeInTheDocument();
+            action(await findContentEditableElem());
+            enterKey(await findContentEditableElem());
+
+            await asyncExpectChordAndLyric("", expectedLyrics, [
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
+            ]);
+        });
+    };
+
+    describe("size 1 tab", () => {
+        const tabAction = (elem: Element) => tabKey(elem, false);
+
+        testTab(
+            "Put some old bay on it and now it's a crab claw",
+            "Put some old bay on it and now it's a crab claw<⑴>",
+            tabAction
+        );
+    });
+
+    describe("size 2 tab", () => {
+        const tabAction = (elem: Element) => tabKey(elem, true);
+
+        testTab(
+            "Put some old bay on it and now it's a crab claw",
+            "Put some old bay on it and now it's a crab claw<⑵>",
+            tabAction
+        );
     });
 });
 
@@ -168,14 +223,12 @@ describe("Edit action with chords", () => {
 
     const changeLyric = async (newLyric: string) => {
         const findInputElem = async (): Promise<HTMLElement> => {
-            return findByTestIdChain("Line-0", "EditableLine", "InnerInput");
+            return findByTestIdChain("Line-0", "LyricInput", "InnerInput");
         };
 
         expect(await findInputElem()).toBeInTheDocument();
 
-        fireEvent.change(await findInputElem(), {
-            target: { textContent: newLyric },
-        });
+        changeContentEditableText(await findInputElem(), newLyric);
 
         enterKey(await findInputElem());
     };
