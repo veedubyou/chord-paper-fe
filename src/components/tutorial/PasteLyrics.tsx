@@ -18,7 +18,7 @@ const PasteLyrics: React.FC<{}> = (): JSX.Element => {
                 chord: "B7sus4",
                 lyric: new Lyric("pear?"),
             }),
-            new ChordBlock({ chord: "B7", lyric: new Lyric("\t") }),
+            new ChordBlock({ chord: "B7", lyric: new Lyric("<⑴>") }),
         ]),
         new ChordLine(),
     ]);
@@ -33,7 +33,7 @@ const PasteLyrics: React.FC<{}> = (): JSX.Element => {
                 chord: "B7sus4",
                 lyric: new Lyric("pear?"),
             }),
-            new ChordBlock({ chord: "B7", lyric: new Lyric("\t") }),
+            new ChordBlock({ chord: "B7", lyric: new Lyric("<⑴>") }),
         ]),
         new ChordLine([
             new ChordBlock({

@@ -5,35 +5,35 @@
                 {
                     "chord": "G^",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
                     "lyric": {
-                        "serializedLyric": "    "
+                        "serializedLyric": "<⑴>"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Em7",
                     "lyric": {
-                        "serializedLyric": "    |"
+                        "serializedLyric": "<⑴>|"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7b13",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "C13",
                     "lyric": {
-                        "serializedLyric": "\t|"
+                        "serializedLyric": "<⑵>|"
                     },
                     "type": "ChordBlock"
                 }
@@ -46,21 +46,21 @@
                 {
                     "chord": "G^",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
                     "lyric": {
-                        "serializedLyric": "\t|"
+                        "serializedLyric": "<⑵>|"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "B7",
                     "lyric": {
-                        "serializedLyric": "\t\t|"
+                        "serializedLyric": "<⑵><⑵>|"
                     },
                     "type": "ChordBlock"
                 }
@@ -72,28 +72,28 @@
                 {
                     "chord": "Em7",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7",
                     "lyric": {
-                        "serializedLyric": "\t|"
+                        "serializedLyric": "<⑵>|"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
                     "lyric": {
-                        "serializedLyric": "\t|"
+                        "serializedLyric": "<⑵>|"
                     },
                     "type": "ChordBlock"
                 }
@@ -105,28 +105,28 @@
                 {
                     "chord": "Em7",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7",
                     "lyric": {
-                        "serializedLyric": "\t|"
+                        "serializedLyric": "<⑵>|"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
                     "lyric": {
-                        "serializedLyric": "\t|"
+                        "serializedLyric": "<⑵>|"
                     },
                     "type": "ChordBlock"
                 }
@@ -229,7 +229,7 @@
                 {
                     "chord": "Bm7",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 }
@@ -494,7 +494,7 @@
                 {
                     "chord": "G",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 }
@@ -599,7 +599,7 @@
                 {
                     "chord": "Bm7",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 }
@@ -644,28 +644,28 @@
                 {
                     "chord": "Em7",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "C7",
                     "lyric": {
-                        "serializedLyric": "\t|"
+                        "serializedLyric": "<⑵>|"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "E7",
                     "lyric": {
-                        "serializedLyric": "\t|"
+                        "serializedLyric": "<⑵>|"
                     },
                     "type": "ChordBlock"
                 }
@@ -685,7 +685,7 @@
                 {
                     "chord": "C7",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 }
@@ -842,7 +842,7 @@
                 {
                     "chord": "G",
                     "lyric": {
-                        "serializedLyric": "\t"
+                        "serializedLyric": "<⑵>"
                     },
                     "type": "ChordBlock"
                 }
