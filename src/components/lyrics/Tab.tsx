@@ -92,7 +92,9 @@ const useSizeMap = () => {
     };
 };
 
-export const useDomLyricTab = (): ((sizeType: SizedTab) => Node) => {
+export type DomLyricTabFn = (sizeType: SizedTab) => Node;
+
+export const useDomLyricTab = (): DomLyricTabFn => {
     const sizeMap = useSizeMap();
 
     return (sizeType: SizedTab): Node => {
