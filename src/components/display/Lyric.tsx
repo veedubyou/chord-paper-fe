@@ -48,7 +48,7 @@ const LyricDisplay: React.FC<LyricTypographyProps> = (
             className={className}
             data-testid={props["data-testid"]}
         >
-            {deserializeLyrics(props.children)}
+            {deserializeLyrics(props.children, false)}
         </LyricTypography>
     );
 };

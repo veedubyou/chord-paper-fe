@@ -10,7 +10,7 @@ import {
     getExpectChordAndLyric,
     getFindByTestIdChain,
 } from "./matcher";
-import { changeInputText, enterKey } from "./userEvent";
+import { changeInputText, KeyOptions, pressKey } from "./userEvent";
 
 afterEach(cleanup);
 
@@ -95,7 +95,7 @@ describe("Changing the chord", () => {
 
         changeInputText(await chordEdit(), "F7");
 
-        enterKey(await chordEdit());
+        pressKey(await chordEdit(), KeyOptions.enter);
 
         await expectChordAndLyric("F7", "to the moon", [
             "Line-0",
@@ -116,7 +116,7 @@ describe("Changing the chord", () => {
 
         changeInputText(chordEdit, "");
 
-        enterKey(chordEdit);
+        pressKey(chordEdit, KeyOptions.enter);
 
         await expectChordAndLyric("C", "Fly me to the moon", [
             "Line-0",
@@ -162,7 +162,7 @@ describe("inserting a chord", () => {
     test("it splits the block", async () => {
         changeInputText(await chordEdit(), "Am7");
 
-        enterKey(await chordEdit());
+        pressKey(await chordEdit(), KeyOptions.enter);
 
         await expectChordAndLyric("D", "to ", [
             "Line-0",
@@ -180,7 +180,7 @@ describe("inserting a chord", () => {
     test("it makes no changes if no input after all", async () => {
         changeInputText(await chordEdit(), "");
 
-        enterKey(await chordEdit());
+        pressKey(await chordEdit(), KeyOptions.enter);
 
         await expectChordAndLyric("D", "to the moon", [
             "Line-0",
@@ -227,7 +227,7 @@ describe("inserting a chord at a tab block", () => {
                     "InnerInput"
                 );
             changeInputText(await chordEdit(), "Am7");
-            enterKey(await chordEdit());
+            pressKey(await chordEdit(), KeyOptions.enter);
         };
 
         const insertChordAtLyricAfterTab = async () => {
@@ -252,7 +252,7 @@ describe("inserting a chord at a tab block", () => {
                     "InnerInput"
                 );
             changeInputText(await chordEdit(), "D");
-            enterKey(await chordEdit());
+            pressKey(await chordEdit(), KeyOptions.enter);
         };
 
         await insertChordAtTab();

@@ -5,7 +5,7 @@ import { IDable } from "../../common/ChordModel/Collection";
 import { PlainFn } from "../../common/PlainFn";
 import { lyricStyle, lyricTypographyVariant } from "../display/Lyric";
 import { useEditingState } from "./InteractionContext";
-import UnstyledLyricInput from "./LyricInput";
+import UnstyledLyricInput from "./lyric_input/LyricInput";
 import { Lyric } from "../../common/ChordModel/Lyric";
 
 const LyricInput = withStyles((theme: Theme) => ({

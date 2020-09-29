@@ -59,7 +59,10 @@ const Token: React.FC<TokenProps> = (props: TokenProps): JSX.Element => {
             return null;
         }
 
-        const content: React.ReactNode[] = deserializeLyrics(props.children);
+        const content: React.ReactNode[] = deserializeLyrics(
+            props.children,
+            false
+        );
 
         return (
             <ChordTargetBox
