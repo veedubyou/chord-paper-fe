@@ -7,26 +7,32 @@ export const dataSetTabName = "lyrictabtype";
 export const dataAttributeTabName: "data-lyrictabtype" = "data-lyrictabtype";
 
 export enum SizedTab {
-    Size1Tab = 1,
-    Size2Tab = 2,
+    SmallTab,
+    MediumTab,
+    LargeTab,
 }
 
 export interface LyricTabType {
     sizedTab: SizedTab;
-    serializedStr: "<⑴>" | "<⑵>";
-    [dataAttributeTabName]: "1" | "2";
+    serializedStr: "<⑴>" | "<⑵>" | "<⑷>";
+    [dataAttributeTabName]: "1" | "2" | "4";
 }
 
 export const allTabTypes: LyricTabType[] = [
     {
-        sizedTab: SizedTab.Size1Tab,
+        sizedTab: SizedTab.SmallTab,
         serializedStr: "<⑴>",
         [dataAttributeTabName]: "1",
     },
     {
-        sizedTab: SizedTab.Size2Tab,
+        sizedTab: SizedTab.MediumTab,
         serializedStr: "<⑵>",
         [dataAttributeTabName]: "2",
+    },
+    {
+        sizedTab: SizedTab.LargeTab,
+        serializedStr: "<⑷>",
+        [dataAttributeTabName]: "4",
     },
 ];
 
@@ -84,6 +90,22 @@ const makeSizeStyle = (size: number) => {
     return makeStyles(sizeStyleFn(size));
 };
 
+const makeSizeMap = {
+    [SizedTab.SmallTab]: makeSizeStyle(1),
+    [SizedTab.MediumTab]: makeSizeStyle(2),
+    [SizedTab.LargeTab]: makeSizeStyle(4),
+};
+
+const useSizeMap = () => {
+    // listing explicitly instead of using a loop to let
+    // typescript know the available keys
+    return {
+        [SizedTab.SmallTab]: makeSizeMap[SizedTab.SmallTab](),
+        [SizedTab.MediumTab]: makeSizeMap[SizedTab.MediumTab](),
+        [SizedTab.LargeTab]: makeSizeMap[SizedTab.LargeTab](),
+    };
+};
+
 const makeEditingSizeStyle = (size: number) => {
     const style = sizeStyleFn(size);
 
@@ -99,29 +121,19 @@ const makeEditingSizeStyle = (size: number) => {
     });
 };
 
-const useSize1Style = makeSizeStyle(1);
-const useSize2Style = makeSizeStyle(2);
-
-const useEditingSize1Style = makeEditingSizeStyle(1);
-const useEditingSize2Style = makeEditingSizeStyle(2);
-
-const useSizeMap = () => {
-    const size1Style = useSize1Style();
-    const size2Style = useSize2Style();
-
-    return {
-        [SizedTab.Size1Tab]: size1Style,
-        [SizedTab.Size2Tab]: size2Style,
-    };
+const makeEditingSizeMap = {
+    [SizedTab.SmallTab]: makeEditingSizeStyle(1),
+    [SizedTab.MediumTab]: makeEditingSizeStyle(2),
+    [SizedTab.LargeTab]: makeEditingSizeStyle(4),
 };
 
 const useEditingSizeMap = () => {
-    const size1Style = useEditingSize1Style();
-    const size2Style = useEditingSize2Style();
-
+    // listing explicitly instead of using a loop to let
+    // typescript know the available keys
     return {
-        [SizedTab.Size1Tab]: size1Style,
-        [SizedTab.Size2Tab]: size2Style,
+        [SizedTab.SmallTab]: makeEditingSizeMap[SizedTab.SmallTab](),
+        [SizedTab.MediumTab]: makeEditingSizeMap[SizedTab.MediumTab](),
+        [SizedTab.LargeTab]: makeEditingSizeMap[SizedTab.LargeTab](),
     };
 };
 
@@ -134,7 +146,9 @@ export const useDomLyricTab = (): DomLyricTabFn => {
         const node = document.createElement("span");
         node.className = sizeMap[sizeType].root;
         node.contentEditable = "false";
-        node.dataset[dataSetTabName] = sizeType.toString();
+
+        const tabType = findTabType("sizedTab", sizeType);
+        node.dataset[dataSetTabName] = tabType[dataAttributeTabName];
 
         return node;
     };
@@ -150,12 +164,13 @@ const Tab: React.FC<TabProps> = (props: TabProps): JSX.Element => {
     const editingSizeMap = useEditingSizeMap();
 
     const sizeMap = props.edit ? editingSizeMap : normalSizeMap;
+    const tabType = findTabType("sizedTab", props.type);
 
     return (
         <span
             className={sizeMap[props.type].root}
             contentEditable="false"
-            data-lyrictabtype={props.type.toString()}
+            data-lyrictabtype={tabType[dataAttributeTabName]}
         ></span>
     );
 };

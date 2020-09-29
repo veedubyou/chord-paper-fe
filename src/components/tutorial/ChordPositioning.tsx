@@ -35,7 +35,7 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
                 chord: "B7sus4",
                 lyric: new Lyric("pear?"),
             }),
-            new ChordBlock({ chord: "B7", lyric: new Lyric("<⑴>") }),
+            new ChordBlock({ chord: "B7", lyric: new Lyric("<⑵>") }),
         ]),
     ]);
 
@@ -53,7 +53,7 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
                 chord: "B7sus4",
                 lyric: new Lyric("pear?"),
             }),
-            new ChordBlock({ chord: "B7", lyric: new Lyric("<⑴>") }),
+            new ChordBlock({ chord: "B7", lyric: new Lyric("<⑵>") }),
         ]),
     ]);
 
