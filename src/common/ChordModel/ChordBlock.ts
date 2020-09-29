@@ -12,8 +12,7 @@ interface ChordBlockConstructorParams {
 
 export const ChordBlockValidator = iots.type({
     chord: iots.string,
-    //TODO: collapse into only lyric struct after all songs converted to new schema
-    lyric: iots.union([iots.string, LyricValidator]),
+    lyric: LyricValidator,
     type: iots.literal("ChordBlock"),
 });
 
@@ -40,14 +39,7 @@ export class ChordBlock implements IDable<ChordBlock> {
         validatedFields: ChordBlockValidatedFields
     ): ChordBlock {
         const unionLyric = validatedFields.lyric;
-        let serializedLyric: Lyric;
-
-        //TODO: collapse into only lyric struct after all songs converted to new schema
-        if (typeof unionLyric === "string") {
-            serializedLyric = new Lyric(unionLyric);
-        } else {
-            serializedLyric = Lyric.fromValidatedFields(unionLyric);
-        }
+        const serializedLyric = Lyric.fromValidatedFields(unionLyric);
 
         return new ChordBlock({
             chord: validatedFields.chord,
@@ -73,14 +65,7 @@ export class ChordBlock implements IDable<ChordBlock> {
         }
 
         const unionLyric = validationResult.right.lyric;
-        let serializedLyric: Lyric;
-
-        //TODO: collapse into only lyric struct after all songs converted to new schema
-        if (typeof unionLyric === "string") {
-            serializedLyric = new Lyric(unionLyric);
-        } else {
-            serializedLyric = Lyric.fromValidatedFields(unionLyric);
-        }
+        const serializedLyric = Lyric.fromValidatedFields(unionLyric);
 
         return right(
             new ChordBlock({
