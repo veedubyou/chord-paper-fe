@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 import React from "react";
+import blueGrey from "@material-ui/core/colors/blueGrey";
 
 // for data attribute
 export const dataSetTabName = "lyrictabtype";
@@ -68,19 +69,41 @@ export const lyricTabTypeOfDOMNode = (node: Node): SizedTab | null => {
     return null;
 };
 
-const makeSizeStyle = (size: number) => {
-    const sizeBasis = 1.5;
+const sizeBasis = 1.5;
 
-    return makeStyles({
+const sizeStyleFn = (size: number) => {
+    return {
         root: {
             display: "inline-block",
             width: `${sizeBasis * size}em`,
+        },
+    };
+};
+
+const makeSizeStyle = (size: number) => {
+    return makeStyles(sizeStyleFn(size));
+};
+
+const makeEditingSizeStyle = (size: number) => {
+    const style = sizeStyleFn(size);
+
+    return makeStyles({
+        root: {
+            backgroundColor: blueGrey[100],
+            "&:before": {
+                content: '"\\a0"',
+            },
+            margin: "0.05em",
+            ...style.root,
         },
     });
 };
 
 const useSize1Style = makeSizeStyle(1);
 const useSize2Style = makeSizeStyle(2);
+
+const useEditingSize1Style = makeEditingSizeStyle(1);
+const useEditingSize2Style = makeEditingSizeStyle(2);
 
 const useSizeMap = () => {
     const size1Style = useSize1Style();
@@ -92,10 +115,20 @@ const useSizeMap = () => {
     };
 };
 
+const useEditingSizeMap = () => {
+    const size1Style = useEditingSize1Style();
+    const size2Style = useEditingSize2Style();
+
+    return {
+        [SizedTab.Size1Tab]: size1Style,
+        [SizedTab.Size2Tab]: size2Style,
+    };
+};
+
 export type DomLyricTabFn = (sizeType: SizedTab) => Node;
 
 export const useDomLyricTab = (): DomLyricTabFn => {
-    const sizeMap = useSizeMap();
+    const sizeMap = useEditingSizeMap();
 
     return (sizeType: SizedTab): Node => {
         const node = document.createElement("span");
@@ -109,17 +142,21 @@ export const useDomLyricTab = (): DomLyricTabFn => {
 
 interface TabProps {
     type: SizedTab;
+    edit: boolean;
 }
 
 const Tab: React.FC<TabProps> = (props: TabProps): JSX.Element => {
-    const sizeMap = useSizeMap();
+    const normalSizeMap = useSizeMap();
+    const editingSizeMap = useEditingSizeMap();
+
+    const sizeMap = props.edit ? editingSizeMap : normalSizeMap;
 
     return (
         <span
             className={sizeMap[props.type].root}
             contentEditable="false"
             data-lyrictabtype={props.type.toString()}
-        />
+        ></span>
     );
 };
 

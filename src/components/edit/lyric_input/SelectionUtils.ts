@@ -102,7 +102,7 @@ export const insertNodeAtSelection = (
     return true;
 };
 
-const childIndex = (parent: Node, child: Node): number | null => {
+export const childIndex = (parent: Node, child: Node): number | null => {
     const childNodes = parent.childNodes;
     for (let i = 0; i < childNodes.length; i++) {
         if (child === childNodes.item(i)) {
@@ -114,7 +114,7 @@ const childIndex = (parent: Node, child: Node): number | null => {
 };
 
 //todo name
-export const nodeBefore = (
+export const nodeBeforeSelection = (
     ref: React.RefObject<HTMLSpanElement>
 ): Node | null => {
     const elem = contentEditableElement(ref);
@@ -131,6 +131,8 @@ export const nodeBefore = (
 
         targetNodeIndex = range.startOffset - 1;
     } else {
+        // we'd like to step outside of the childnode
+        // startOffset of 0 is the only condition we are looking for
         if (range.startOffset !== 0) {
             return null;
         }
@@ -141,6 +143,42 @@ export const nodeBefore = (
         }
 
         targetNodeIndex = currNodeIndex - 1;
+    }
+
+    return elem.childNodes.item(targetNodeIndex);
+};
+
+export const nodeAfterSelection = (
+    ref: React.RefObject<HTMLSpanElement>
+): Node | null => {
+    const elem = contentEditableElement(ref);
+    const range = selectionRange(ref);
+    if (range === null) {
+        return null;
+    }
+
+    const childCount = elem.childNodes.length;
+    let targetNodeIndex: number;
+    if (range.endContainer === elem) {
+        if (range.endOffset === childCount) {
+            return null;
+        }
+
+        targetNodeIndex = range.endOffset;
+    } else {
+        if (range.endContainer.nodeType === range.endContainer.TEXT_NODE) {
+            const textNode = range.endContainer as Text;
+            if (range.endOffset !== textNode.length) {
+                return null;
+            }
+        }
+
+        const currNodeIndex = childIndex(elem, range.endContainer);
+        if (currNodeIndex === null || currNodeIndex === childCount) {
+            return null;
+        }
+
+        targetNodeIndex = currNodeIndex + 1;
     }
 
     return elem.childNodes.item(targetNodeIndex);

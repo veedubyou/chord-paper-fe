@@ -9,6 +9,7 @@ import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { Lyric } from "../common/ChordModel/Lyric";
+import { contentEditableElement } from "../components/edit/lyric_input/SelectionUtils";
 import { chordPaperFromLyrics, chordPaperFromSong } from "./common";
 import {
     ExpectChordAndLyricFn,
@@ -18,7 +19,7 @@ import {
     lyricsInElement,
     matchLyric,
 } from "./matcher";
-import { changeContentEditableText, enterKey, tabKey } from "./userEvent";
+import { changeContentEditableText, KeyOptions, pressKey } from "./userEvent";
 
 afterEach(cleanup);
 
@@ -79,7 +80,7 @@ describe("Plain text edit action", () => {
 
         expect(await findContentEditableElem()).toBeInTheDocument();
         changeContentEditableText(await findContentEditableElem(), newLyric);
-        enterKey(await findContentEditableElem());
+        pressKey(await findContentEditableElem(), KeyOptions.enter);
     };
 
     describe("From an empty song", () => {
@@ -133,6 +134,16 @@ describe("Tab spacing", () => {
     let findByTestIdChain: FindByTestIdChainFn;
     let asyncExpectChordAndLyric: ExpectChordAndLyricFn;
 
+    beforeEach(async () => {
+        const song = ChordSong.fromLyricsLines([
+            new Lyric("Put some old bay on it and now it's a crab claw"),
+        ]);
+
+        const findByTestId = getFindByTestId(song);
+        findByTestIdChain = getFindByTestIdChain(findByTestId);
+        asyncExpectChordAndLyric = getExpectChordAndLyric(findByTestId);
+    });
+
     const clickFirstLine = async () => {
         const line = await findByTestIdChain("Line-0", "NoneditableLine");
         expect(line).toBeInTheDocument();
@@ -140,56 +151,143 @@ describe("Tab spacing", () => {
         fireEvent.click(line);
     };
 
-    const testTab = (
-        startingLyrics: string,
-        expectedLyrics: string,
-        action: (elem: Element) => void
-    ) => {
-        beforeEach(async () => {
-            const song = ChordSong.fromLyricsLines([new Lyric(startingLyrics)]);
-
-            const findByTestId = getFindByTestId(song);
-            findByTestIdChain = getFindByTestIdChain(findByTestId);
-            asyncExpectChordAndLyric = getExpectChordAndLyric(findByTestId);
-
-            await clickFirstLine();
-        });
-
-        test("inserting a tab", async () => {
-            const findContentEditableElem = async (): Promise<HTMLElement> => {
-                return findByTestIdChain("Line-0", "LyricInput", "InnerInput");
-            };
-
-            expect(await findContentEditableElem()).toBeInTheDocument();
-            action(await findContentEditableElem());
-            enterKey(await findContentEditableElem());
-
-            await asyncExpectChordAndLyric("", expectedLyrics, [
-                "Line-0",
-                "NoneditableLine",
-                "Block-0",
-            ]);
-        });
+    const contentEditableElem = async (): Promise<HTMLElement> => {
+        return findByTestIdChain("Line-0", "LyricInput", "InnerInput");
     };
 
-    describe("size 1 tab", () => {
-        const tabAction = (elem: Element) => tabKey(elem, false);
+    describe("simple insertion", () => {
+        const testTab = (
+            expectedLyrics: string,
+            action: (elem: Element) => void
+        ) => {
+            beforeEach(async () => {
+                await clickFirstLine();
+            });
 
-        testTab(
-            "Put some old bay on it and now it's a crab claw",
-            "Put some old bay on it and now it's a crab claw<⑴>",
-            tabAction
-        );
+            test("inserting a tab", async () => {
+                expect(await contentEditableElem()).toBeInTheDocument();
+                action(await contentEditableElem());
+                pressKey(await contentEditableElem(), KeyOptions.enter);
+
+                await asyncExpectChordAndLyric("", expectedLyrics, [
+                    "Line-0",
+                    "NoneditableLine",
+                    "Block-0",
+                ]);
+            });
+        };
+
+        describe("size 1 tab", () => {
+            const tabAction = (elem: Element) => pressKey(elem, KeyOptions.tab);
+
+            testTab(
+                "Put some old bay on it and now it's a crab claw<⑴>",
+                tabAction
+            );
+        });
+
+        describe("size 2 tab", () => {
+            const tabAction = (elem: Element) =>
+                pressKey(elem, KeyOptions.tab, true);
+
+            testTab(
+                "Put some old bay on it and now it's a crab claw<⑵>",
+                tabAction
+            );
+        });
     });
 
-    describe("size 2 tab", () => {
-        const tabAction = (elem: Element) => tabKey(elem, true);
+    describe("backspacing a tab", () => {
+        test("inserting a tab and then backspacing again removes the tab", async () => {
+            const insertTab = async () => {
+                await clickFirstLine();
+                expect(await contentEditableElem()).toBeInTheDocument();
+                pressKey(await contentEditableElem(), KeyOptions.tab);
+                pressKey(await contentEditableElem(), KeyOptions.enter);
+            };
 
-        testTab(
-            "Put some old bay on it and now it's a crab claw",
-            "Put some old bay on it and now it's a crab claw<⑵>",
-            tabAction
+            const backspaceTab = async () => {
+                await clickFirstLine();
+                expect(await contentEditableElem()).toBeInTheDocument();
+                pressKey(await contentEditableElem(), KeyOptions.backspace);
+                pressKey(await contentEditableElem(), KeyOptions.enter);
+            };
+
+            await insertTab();
+            await asyncExpectChordAndLyric(
+                "",
+                "Put some old bay on it and now it's a crab claw<⑴>",
+                ["Line-0", "NoneditableLine", "Block-0"]
+            );
+
+            await backspaceTab();
+            await asyncExpectChordAndLyric(
+                "",
+                "Put some old bay on it and now it's a crab claw",
+                ["Line-0", "NoneditableLine", "Block-0"]
+            );
+        });
+    });
+
+    test("navigating around tabs", async () => {
+        const insertTab = async () => {
+            await clickFirstLine();
+            expect(await contentEditableElem()).toBeInTheDocument();
+            pressKey(await contentEditableElem(), KeyOptions.tab);
+        };
+
+        const backspaceTab = async () => {
+            await clickFirstLine();
+            expect(await contentEditableElem()).toBeInTheDocument();
+            pressKey(await contentEditableElem(), KeyOptions.backspace);
+            pressKey(await contentEditableElem(), KeyOptions.enter);
+        };
+
+        await insertTab();
+        // expect that there is 1 text node and 1 tab node
+        expect((await contentEditableElem()).childNodes.length).toEqual(2);
+
+        const selection = document.getSelection();
+        if (selection === null) {
+            throw new Error("selection can't be null");
+        }
+
+        const beforeNavigationRange = selection.getRangeAt(0);
+        expect(beforeNavigationRange.startContainer).toEqual(
+            await contentEditableElem()
         );
+        expect(beforeNavigationRange.endContainer).toEqual(
+            await contentEditableElem()
+        );
+
+        expect(beforeNavigationRange.startOffset).toEqual(2);
+        expect(beforeNavigationRange.endOffset).toEqual(2);
+
+        pressKey(await contentEditableElem(), KeyOptions.left);
+
+        const afterLeftNavigationRange = selection.getRangeAt(0);
+        expect(afterLeftNavigationRange.startContainer).toEqual(
+            await contentEditableElem()
+        );
+        expect(afterLeftNavigationRange.endContainer).toEqual(
+            await contentEditableElem()
+        );
+
+        expect(afterLeftNavigationRange.startOffset).toEqual(1);
+        expect(afterLeftNavigationRange.endOffset).toEqual(1);
+
+        pressKey(await contentEditableElem(), KeyOptions.right);
+
+        const afterRightNavigationRange = selection.getRangeAt(0);
+        expect(afterRightNavigationRange.startContainer).toEqual(
+            await contentEditableElem()
+        );
+        expect(afterRightNavigationRange.endContainer).toEqual(
+            await contentEditableElem()
+        );
+
+        expect(afterRightNavigationRange.startOffset).toEqual(2);
+        expect(afterRightNavigationRange.endOffset).toEqual(2);
     });
 });
 
@@ -230,7 +328,7 @@ describe("Edit action with chords", () => {
 
         changeContentEditableText(await findInputElem(), newLyric);
 
-        enterKey(await findInputElem());
+        pressKey(await findInputElem(), KeyOptions.enter);
     };
 
     describe("no op", () => {

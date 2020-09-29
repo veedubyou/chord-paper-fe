@@ -29,6 +29,7 @@ const useContentEditableStyle = makeStyles({
         pointerEvents: "auto",
         userSelect: "text",
         outline: "none",
+        wordSpacing: ".15em",
         // this prevent the span height from collapsing if there's no content
         "&:empty:before": {
             content: '"\\a0"',
@@ -104,7 +105,7 @@ const LyricInput: React.FC<LyricInputProps> = (
     };
 
     const contentEditableStyle = useContentEditableStyle();
-    const lyricContent = deserializeLyrics(props.children);
+    const lyricContent = deserializeLyrics(props.children, true);
 
     useFocusAndPlaceCaretEffect(contentEditableRef);
     useSelectionChangeEffect();
@@ -121,7 +122,7 @@ const LyricInput: React.FC<LyricInputProps> = (
                 className={contentEditableStyle.root}
                 ref={contentEditableRef}
                 data-testid="InnerInput"
-                // onBlur={handleBlur}
+                onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
                 onPaste={handlePaste}
                 suppressContentEditableWarning

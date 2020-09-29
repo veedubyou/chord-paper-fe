@@ -1,50 +1,55 @@
 import { fireEvent } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 
-export const enterKey = (element: Element): void => {
-    act(() => {
-        fireEvent.keyDown(element, {
-            key: "Enter",
-            keyCode: 13,
-            charCode: 13,
-        });
+type KeyOption = typeof fireEvent.keyDown extends (
+    arg1: any,
+    args: infer U
+) => any
+    ? U
+    : never;
 
-        fireEvent.keyPress(element, {
-            key: "Enter",
-            keyCode: 13,
-            charCode: 13,
-        });
-
-        fireEvent.keyUp(element, {
-            key: "Enter",
-            keyCode: 13,
-            charCode: 13,
-        });
-    });
+export const KeyOptions = {
+    enter: {
+        key: "Enter",
+        keyCode: 13,
+        charCode: 13,
+    },
+    tab: {
+        key: "Tab",
+        keyCode: 9,
+        charCode: 0,
+    },
+    left: {
+        key: "ArrowLeft",
+        keyCode: 37,
+        charCode: 0,
+    },
+    right: {
+        key: "ArrowRight",
+        keyCode: 39,
+        charCode: 0,
+    },
+    backspace: {
+        key: "Backspace",
+        keyCode: 8,
+        charCode: 0,
+    },
 };
 
-export const tabKey = (element: Element, shift: boolean): void => {
+export const pressKey = (
+    element: Element,
+    keyOptions: KeyOption,
+    shift?: boolean
+): void => {
+    const key = {
+        shiftKey: shift,
+        ...keyOptions,
+    };
+
     act(() => {
-        fireEvent.keyDown(element, {
-            key: "Tab",
-            keyCode: 9,
-            charCode: 0,
-            shiftKey: shift,
-        });
-
-        fireEvent.keyPress(element, {
-            key: "Tab",
-            keyCode: 9,
-            charCode: 0,
-            shiftKey: shift,
-        });
-
-        fireEvent.keyUp(element, {
-            key: "Tab",
-            keyCode: 9,
-            charCode: 0,
-            shiftKey: shift,
-        });
+        fireEvent.keyDown(element, key);
+        fireEvent.keyPress(element, key);
+        fireEvent.keyUp(element, key);
     });
 };
 

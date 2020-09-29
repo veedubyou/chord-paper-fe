@@ -8,16 +8,22 @@ import {
     useDomLyricTab,
 } from "../../lyrics/Tab";
 import {
+    childIndex,
+    contentEditableElement,
     insertNodeAtSelection,
     isSelectionAtBeginning,
-    nodeBefore,
+    nodeAfterSelection,
+    nodeBeforeSelection,
     splitContentBySelection,
 } from "./SelectionUtils";
 
-type HandlerFn = (event: React.KeyboardEvent<HTMLDivElement>) => boolean;
+type ContentEditableElement = HTMLSpanElement;
+type HandlerFn = (
+    event: React.KeyboardEvent<ContentEditableElement>
+) => boolean;
 
 const enterHandler = (callback: PlainFn): HandlerFn => {
-    return (event: React.KeyboardEvent<HTMLDivElement>): boolean => {
+    return (event: React.KeyboardEvent<ContentEditableElement>): boolean => {
         if (event.key !== "Enter") {
             return false;
         }
@@ -28,10 +34,10 @@ const enterHandler = (callback: PlainFn): HandlerFn => {
 };
 
 const specialBackspaceHandler = (
-    ref: React.RefObject<HTMLSpanElement>,
+    ref: React.RefObject<ContentEditableElement>,
     callback: PlainFn
 ): HandlerFn => {
-    return (event: React.KeyboardEvent<HTMLDivElement>): boolean => {
+    return (event: React.KeyboardEvent<ContentEditableElement>): boolean => {
         const specialBackspace: boolean =
             event.key === "Backspace" && (event.metaKey || event.ctrlKey);
         if (!specialBackspace) {
@@ -48,10 +54,10 @@ const specialBackspaceHandler = (
 };
 
 const specialEnterHandler = (
-    ref: React.RefObject<HTMLSpanElement>,
+    ref: React.RefObject<ContentEditableElement>,
     callback: (beforeSelection: Lyric, afterSelection: Lyric) => void
 ): HandlerFn => {
-    return (event: React.KeyboardEvent<HTMLSpanElement>): boolean => {
+    return (event: React.KeyboardEvent<ContentEditableElement>): boolean => {
         const specialEnter: boolean =
             event.key === "Enter" && (event.metaKey || event.ctrlKey);
         if (!specialEnter) {
@@ -78,10 +84,10 @@ const specialEnterHandler = (
 };
 
 const tabHandler = (
-    ref: React.RefObject<HTMLSpanElement>,
+    ref: React.RefObject<ContentEditableElement>,
     domLyricTab: DomLyricTabFn
 ): HandlerFn => {
-    return (event: React.KeyboardEvent<HTMLDivElement>): boolean => {
+    return (event: React.KeyboardEvent<ContentEditableElement>): boolean => {
         if (event.key !== "Tab") {
             return false;
         }
@@ -100,7 +106,7 @@ const tabHandler = (
 };
 
 const specialStylingKeysHandler = (): HandlerFn => {
-    return (event: React.KeyboardEvent<HTMLDivElement>): boolean => {
+    return (event: React.KeyboardEvent<ContentEditableElement>): boolean => {
         if (!event.metaKey && !event.ctrlKey) {
             return false;
         }
@@ -117,13 +123,13 @@ const specialStylingKeysHandler = (): HandlerFn => {
     };
 };
 
-const backspaceHandler = (ref: React.RefObject<HTMLSpanElement>) => {
-    return (event: React.KeyboardEvent<HTMLDivElement>): boolean => {
+const backspaceHandler = (ref: React.RefObject<ContentEditableElement>) => {
+    return (event: React.KeyboardEvent<ContentEditableElement>): boolean => {
         if (event.key !== "Backspace") {
             return false;
         }
 
-        const node: Node | null = nodeBefore(ref);
+        const node: Node | null = nodeBeforeSelection(ref);
 
         if (node === null || lyricTabTypeOfDOMNode(node) === null) {
             return false;
@@ -139,8 +145,69 @@ const backspaceHandler = (ref: React.RefObject<HTMLSpanElement>) => {
     };
 };
 
+const directionKeyHandler = (ref: React.RefObject<ContentEditableElement>) => {
+    return (event: React.KeyboardEvent<ContentEditableElement>): boolean => {
+        const elem = contentEditableElement(ref);
+        const selection = window.getSelection();
+
+        if (selection === null) {
+            return false;
+        }
+
+        if (event.shiftKey || event.metaKey || event.ctrlKey) {
+            return false;
+        }
+
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
+            return false;
+        }
+
+        let nodeIndex: number;
+
+        if (event.key === "ArrowLeft") {
+            const node: Node | null = nodeBeforeSelection(ref);
+            if (node === null || lyricTabTypeOfDOMNode(node) === null) {
+                return false;
+            }
+
+            const childNodeIndex = childIndex(elem, node);
+            if (childNodeIndex === null) {
+                console.error(
+                    "Unexpected - node cannot be found inside contenteditable element"
+                );
+                return false;
+            }
+
+            // navigate to before this node by setting the selection offset to this node index
+
+            nodeIndex = childNodeIndex;
+        } else {
+            // ArrowRight
+            const node: Node | null = nodeAfterSelection(ref);
+            if (node === null || lyricTabTypeOfDOMNode(node) === null) {
+                return false;
+            }
+
+            const childNodeIndex = childIndex(elem, node);
+            if (childNodeIndex === null) {
+                console.error(
+                    "Unexpected - node cannot be found inside contenteditable element"
+                );
+                return false;
+            }
+
+            // navigate to before this node by setting the selection offset to this node index
+            nodeIndex = childNodeIndex + 1;
+        }
+
+        selection.setBaseAndExtent(elem, nodeIndex, elem, nodeIndex);
+
+        return true;
+    };
+};
+
 export interface KeyDownHandlerProps {
-    contentEditableRef: React.RefObject<HTMLSpanElement>;
+    contentEditableRef: React.RefObject<ContentEditableElement>;
     enterCallback: PlainFn;
     specialBackspaceCallback: PlainFn;
     specialEnterCallback: (
@@ -164,10 +231,21 @@ export const useKeyDownHandler = (props: KeyDownHandlerProps) => {
         tabHandler(props.contentEditableRef, domLyricTab),
         enterHandler(props.enterCallback),
         backspaceHandler(props.contentEditableRef),
+        directionKeyHandler(props.contentEditableRef),
         specialStylingKeysHandler(),
     ];
 
-    return (event: React.KeyboardEvent<HTMLDivElement>) => {
+    return (event: React.KeyboardEvent<ContentEditableElement>) => {
+        setTimeout(() => {
+            const selection = document.getSelection();
+            if (selection !== null) {
+                const range = selection.getRangeAt(0);
+                console.log(range.startContainer);
+                console.log(range.startOffset);
+                console.log(range.endOffset);
+            }
+        }, 100);
+
         for (const handler of handlers) {
             const handled: boolean = handler(event);
             if (handled) {

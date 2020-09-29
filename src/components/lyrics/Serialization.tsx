@@ -9,18 +9,20 @@ import Tab, {
 
 const deserializeLyricStr = (
     lyrics: string,
-    tokenIndex: number
+    tokenIndex: number,
+    edit: boolean
 ): React.ReactElement | string => {
     if (isValidTabValue("serializedStr", lyrics)) {
         const tabType = findTabType("serializedStr", lyrics);
-        return <Tab key={tokenIndex} type={tabType.sizedTab} />;
+        return <Tab key={tokenIndex} type={tabType.sizedTab} edit={edit} />;
     }
 
     return lyrics;
 };
 
 export const deserializeLyrics = (
-    lyric: Lyric
+    lyric: Lyric,
+    edit: boolean
 ): (React.ReactElement | string)[] => {
     const nodes: (React.ReactElement | string)[] = [];
     const tokens: Lyric[] = lyric.tokenize();
@@ -28,7 +30,7 @@ export const deserializeLyrics = (
     for (let i = 0; i < tokens.length; i++) {
         const token = tokens[i];
         const node: React.ReactElement | string = token.get((lyrics: string) =>
-            deserializeLyricStr(lyrics, i)
+            deserializeLyricStr(lyrics, i, edit)
         );
 
         // merge strings where possible
