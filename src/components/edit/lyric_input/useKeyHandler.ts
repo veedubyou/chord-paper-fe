@@ -95,9 +95,11 @@ const tabHandler = (
         let sizedTab: SizedTab;
 
         if (event.shiftKey) {
-            sizedTab = SizedTab.Size2Tab;
+            sizedTab = SizedTab.LargeTab;
+        } else if (event.altKey) {
+            sizedTab = SizedTab.SmallTab;
         } else {
-            sizedTab = SizedTab.Size1Tab;
+            sizedTab = SizedTab.MediumTab;
         }
 
         const domNode = domLyricTab(sizedTab);
@@ -236,16 +238,6 @@ export const useKeyDownHandler = (props: KeyDownHandlerProps) => {
     ];
 
     return (event: React.KeyboardEvent<ContentEditableElement>) => {
-        setTimeout(() => {
-            const selection = document.getSelection();
-            if (selection !== null) {
-                const range = selection.getRangeAt(0);
-                console.log(range.startContainer);
-                console.log(range.startOffset);
-                console.log(range.endOffset);
-            }
-        }, 100);
-
         for (const handler of handlers) {
             const handled: boolean = handler(event);
             if (handled) {

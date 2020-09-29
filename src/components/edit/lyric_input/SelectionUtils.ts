@@ -113,7 +113,6 @@ export const childIndex = (parent: Node, child: Node): number | null => {
     return null;
 };
 
-//todo name
 export const nodeBeforeSelection = (
     ref: React.RefObject<HTMLSpanElement>
 ): Node | null => {

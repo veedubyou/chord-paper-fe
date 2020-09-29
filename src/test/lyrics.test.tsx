@@ -19,7 +19,7 @@ import {
     lyricsInElement,
     matchLyric,
 } from "./matcher";
-import { changeContentEditableText, KeyOptions, pressKey } from "./userEvent";
+import { changeContentEditableText, Keys, pressKey } from "./userEvent";
 
 afterEach(cleanup);
 
@@ -80,7 +80,7 @@ describe("Plain text edit action", () => {
 
         expect(await findContentEditableElem()).toBeInTheDocument();
         changeContentEditableText(await findContentEditableElem(), newLyric);
-        pressKey(await findContentEditableElem(), KeyOptions.enter);
+        pressKey(await findContentEditableElem(), Keys.enter);
     };
 
     describe("From an empty song", () => {
@@ -167,7 +167,7 @@ describe("Tab spacing", () => {
             test("inserting a tab", async () => {
                 expect(await contentEditableElem()).toBeInTheDocument();
                 action(await contentEditableElem());
-                pressKey(await contentEditableElem(), KeyOptions.enter);
+                pressKey(await contentEditableElem(), Keys.enter);
 
                 await asyncExpectChordAndLyric("", expectedLyrics, [
                     "Line-0",
@@ -177,8 +177,9 @@ describe("Tab spacing", () => {
             });
         };
 
-        describe("size 1 tab", () => {
-            const tabAction = (elem: Element) => pressKey(elem, KeyOptions.tab);
+        describe("small tab", () => {
+            const tabAction = (elem: Element) =>
+                pressKey(elem, Keys.tab, { altKey: true });
 
             testTab(
                 "Put some old bay on it and now it's a crab claw<⑴>",
@@ -186,12 +187,21 @@ describe("Tab spacing", () => {
             );
         });
 
-        describe("size 2 tab", () => {
-            const tabAction = (elem: Element) =>
-                pressKey(elem, KeyOptions.tab, true);
+        describe("medium tab", () => {
+            const tabAction = (elem: Element) => pressKey(elem, Keys.tab);
 
             testTab(
                 "Put some old bay on it and now it's a crab claw<⑵>",
+                tabAction
+            );
+        });
+
+        describe("large tab", () => {
+            const tabAction = (elem: Element) =>
+                pressKey(elem, Keys.tab, { shiftKey: true });
+
+            testTab(
+                "Put some old bay on it and now it's a crab claw<⑷>",
                 tabAction
             );
         });
@@ -202,21 +212,21 @@ describe("Tab spacing", () => {
             const insertTab = async () => {
                 await clickFirstLine();
                 expect(await contentEditableElem()).toBeInTheDocument();
-                pressKey(await contentEditableElem(), KeyOptions.tab);
-                pressKey(await contentEditableElem(), KeyOptions.enter);
+                pressKey(await contentEditableElem(), Keys.tab);
+                pressKey(await contentEditableElem(), Keys.enter);
             };
 
             const backspaceTab = async () => {
                 await clickFirstLine();
                 expect(await contentEditableElem()).toBeInTheDocument();
-                pressKey(await contentEditableElem(), KeyOptions.backspace);
-                pressKey(await contentEditableElem(), KeyOptions.enter);
+                pressKey(await contentEditableElem(), Keys.backspace);
+                pressKey(await contentEditableElem(), Keys.enter);
             };
 
             await insertTab();
             await asyncExpectChordAndLyric(
                 "",
-                "Put some old bay on it and now it's a crab claw<⑴>",
+                "Put some old bay on it and now it's a crab claw<⑵>",
                 ["Line-0", "NoneditableLine", "Block-0"]
             );
 
@@ -233,14 +243,7 @@ describe("Tab spacing", () => {
         const insertTab = async () => {
             await clickFirstLine();
             expect(await contentEditableElem()).toBeInTheDocument();
-            pressKey(await contentEditableElem(), KeyOptions.tab);
-        };
-
-        const backspaceTab = async () => {
-            await clickFirstLine();
-            expect(await contentEditableElem()).toBeInTheDocument();
-            pressKey(await contentEditableElem(), KeyOptions.backspace);
-            pressKey(await contentEditableElem(), KeyOptions.enter);
+            pressKey(await contentEditableElem(), Keys.tab);
         };
 
         await insertTab();
@@ -263,7 +266,7 @@ describe("Tab spacing", () => {
         expect(beforeNavigationRange.startOffset).toEqual(2);
         expect(beforeNavigationRange.endOffset).toEqual(2);
 
-        pressKey(await contentEditableElem(), KeyOptions.left);
+        pressKey(await contentEditableElem(), Keys.left);
 
         const afterLeftNavigationRange = selection.getRangeAt(0);
         expect(afterLeftNavigationRange.startContainer).toEqual(
@@ -276,7 +279,7 @@ describe("Tab spacing", () => {
         expect(afterLeftNavigationRange.startOffset).toEqual(1);
         expect(afterLeftNavigationRange.endOffset).toEqual(1);
 
-        pressKey(await contentEditableElem(), KeyOptions.right);
+        pressKey(await contentEditableElem(), Keys.right);
 
         const afterRightNavigationRange = selection.getRangeAt(0);
         expect(afterRightNavigationRange.startContainer).toEqual(
@@ -328,7 +331,7 @@ describe("Edit action with chords", () => {
 
         changeContentEditableText(await findInputElem(), newLyric);
 
-        pressKey(await findInputElem(), KeyOptions.enter);
+        pressKey(await findInputElem(), Keys.enter);
     };
 
     describe("no op", () => {

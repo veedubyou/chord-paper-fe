@@ -10,9 +10,9 @@ import Playground from "./Playground";
 const Instrumental: React.FC<{}> = (): JSX.Element => {
     const tabExample = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "Bm", lyric: new Lyric("<⑴>") }),
-            new ChordBlock({ chord: "A", lyric: new Lyric("<⑴>") }),
-            new ChordBlock({ chord: "E", lyric: new Lyric("<⑵>") }),
+            new ChordBlock({ chord: "Bm", lyric: new Lyric("<⑵>") }),
+            new ChordBlock({ chord: "A", lyric: new Lyric("<⑵>") }),
+            new ChordBlock({ chord: "E", lyric: new Lyric("<⑷>") }),
         ]),
     ]);
 
@@ -20,9 +20,9 @@ const Instrumental: React.FC<{}> = (): JSX.Element => {
 
     const expectedSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "Bm", lyric: new Lyric("<⑴>") }),
-            new ChordBlock({ chord: "A", lyric: new Lyric("<⑴>") }),
-            new ChordBlock({ chord: "E", lyric: new Lyric("<⑵>") }),
+            new ChordBlock({ chord: "Bm", lyric: new Lyric("<⑵>") }),
+            new ChordBlock({ chord: "A", lyric: new Lyric("<⑵>") }),
+            new ChordBlock({ chord: "E", lyric: new Lyric("<⑷>") }),
         ]),
     ]);
 
@@ -40,19 +40,27 @@ const Instrumental: React.FC<{}> = (): JSX.Element => {
             <Typography>
                 You can do this by hitting{" "}
                 <LyricsTypography display="inline">tab</LyricsTypography> when
-                editting lyrics, for a single sized tab, or{" "}
+                editting lyrics, for a normal sized tab, or{" "}
+                <LyricsTypography display="inline">
+                    ALT/OPTION + tab
+                </LyricsTypography>{" "}
+                for a small sized tab, or{" "}
                 <LyricsTypography display="inline">
                     SHIFT + tab
                 </LyricsTypography>{" "}
-                for a double sized tab.
+                for a large sized tab.
             </Typography>
             <Playground initialSong={tabExample} />
             <LineBreak />
             <Typography>
                 Let's replicate the example from above using{" "}
                 <LyricsTypography display="inline">tab</LyricsTypography>s.
-                Start by editing the lyrics. Insert a Insert two single sized
-                tabs with the tab key, and a double sized tab using shift + tab
+                Start by editing the lyrics. Insert two normal sized tabs with
+                the <LyricsTypography display="inline">tab</LyricsTypography>{" "}
+                key, and a large sized tab using{" "}
+                <LyricsTypography display="inline">
+                    SHIFT + tab
+                </LyricsTypography>{" "}
                 key. Then add{" "}
                 <ChordTypography display="inline">Bm</ChordTypography>,{" "}
                 <ChordTypography display="inline">A</ChordTypography>,{" "}

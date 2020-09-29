@@ -56,12 +56,16 @@ describe("lyric tokenizer", () => {
         });
 
         describe("serialized tab", () => {
-            test("size 1", () => {
+            test("small size", () => {
                 expect(new Lyric("<⑴>").isEntirelySpace()).toEqual(true);
             });
 
-            test("size 2", () => {
+            test("medium size", () => {
                 expect(new Lyric("<⑵>").isEntirelySpace()).toEqual(true);
+            });
+
+            test("large size", () => {
+                expect(new Lyric("<⑷>").isEntirelySpace()).toEqual(true);
             });
         });
 
@@ -78,7 +82,7 @@ describe("lyric tokenizer", () => {
         });
 
         test("serialized tab mixed with letters", () => {
-            expect(new Lyric("a<⑵>").isEntirelySpace()).toEqual(false);
+            expect(new Lyric("a<⑷>").isEntirelySpace()).toEqual(false);
         });
     });
 
@@ -227,7 +231,7 @@ describe("lyric tokenizer", () => {
                 });
             });
 
-            test("size 1 tab", () => {
+            test("small tab", () => {
                 const results = tokenize("Never gonna give you up <⑴>");
                 expect(results).toEqual([
                     "Never",
@@ -244,13 +248,29 @@ describe("lyric tokenizer", () => {
                 ]);
             });
 
-            test("size 2 tab", () => {
+            test("medium tab", () => {
                 const results = tokenize("Never gonna<⑵>give you up");
                 expect(results).toEqual([
                     "Never",
                     " ",
                     "gonna",
                     "<⑵>",
+                    "give",
+                    " ",
+                    "you",
+                    " ",
+                    "up",
+                ]);
+            });
+
+            test("large tab", () => {
+                const results = tokenize("<⑷>Never gonna give you up");
+                expect(results).toEqual([
+                    "<⑷>",
+                    "Never",
+                    " ",
+                    "gonna",
+                    " ",
                     "give",
                     " ",
                     "you",

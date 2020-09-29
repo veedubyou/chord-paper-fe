@@ -1,14 +1,16 @@
 import { fireEvent } from "@testing-library/react";
 import { act } from "react-dom/test-utils";
 
-type KeyOption = typeof fireEvent.keyDown extends (
-    arg1: any,
-    args: infer U
-) => any
+type Key = typeof fireEvent.keyDown extends (arg1: any, args: infer U) => any
     ? U
     : never;
 
-export const KeyOptions = {
+type KeyOption = {
+    shiftKey?: boolean;
+    altKey?: boolean;
+};
+
+export const Keys = {
     enter: {
         key: "Enter",
         keyCode: 13,
@@ -38,18 +40,18 @@ export const KeyOptions = {
 
 export const pressKey = (
     element: Element,
-    keyOptions: KeyOption,
-    shift?: boolean
+    key: Key,
+    option?: KeyOption
 ): void => {
-    const key = {
-        shiftKey: shift,
-        ...keyOptions,
+    const eventKey = {
+        ...option,
+        ...key,
     };
 
     act(() => {
-        fireEvent.keyDown(element, key);
-        fireEvent.keyPress(element, key);
-        fireEvent.keyUp(element, key);
+        fireEvent.keyDown(element, eventKey);
+        fireEvent.keyPress(element, eventKey);
+        fireEvent.keyUp(element, eventKey);
     });
 };
 
