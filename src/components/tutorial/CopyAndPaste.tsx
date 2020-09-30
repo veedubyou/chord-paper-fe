@@ -212,12 +212,12 @@ const CopyAndPaste: React.FC<{}> = (): JSX.Element => {
             <Typography>
                 The easiest way to copy is to drag down from some empty space on
                 the left of the line you wish to start copying from, then
-                pressing (CTRL or CMD) + C, or right click -> copy.
+                pressing (CTRL or CMD) + C, or right click {"->"} copy.
             </Typography>
             <LineBreak />
             <Typography>
                 To paste, click to edit a lyric line, and press (CTRL or CMD) +
-                V, or right click -> paste.
+                V, or right click {"->"} paste.
             </Typography>
             <LineBreak />
             <Typography>
