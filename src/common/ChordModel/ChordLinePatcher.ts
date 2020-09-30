@@ -2,6 +2,7 @@ import { ChordLine } from "./ChordLine";
 import { ChordBlock } from "./ChordBlock";
 import { DiffMatchPatch, DiffOperation } from "diff-match-patch-typescript";
 import { Lyric } from "./Lyric";
+import { findTabType, SizedTab } from "../../components/lyrics/Tab";
 
 const differ: DiffMatchPatch = (() => {
     const dmp = new DiffMatchPatch();
@@ -121,7 +122,10 @@ const removeOrphanedBlocksWithNoChords = (chordLine: ChordLine): void => {
     chordLine.elements = newBlocks;
 };
 
-const addSpacesToOrphanedBlocks = (chordLine: ChordLine): void => {
+const orphanTab: string = findTabType("sizedTab", SizedTab.SmallTab)
+    .serializedStr;
+
+const addTabsToOrphanedBlocks = (chordLine: ChordLine): void => {
     const blocks: ChordBlock[] = chordLine.elements;
     for (let i = 0; i < blocks.length; i++) {
         const block = blocks[i];
@@ -129,39 +133,7 @@ const addSpacesToOrphanedBlocks = (chordLine: ChordLine): void => {
             continue;
         }
 
-        const prevBlockHasSpaceToSteal =
-            i > 0 &&
-            blocks[i - 1].lyric.get((rawStr: string): boolean => {
-                return rawStr.length > 1 && rawStr.endsWith(" ");
-            });
-
-        if (prevBlockHasSpaceToSteal) {
-            // "steal" a space from the previous block
-            // e.g. if * represents a space
-            // G        A
-            // We're*no*strangers
-            // replaced with
-            // We're*no*
-            // instead of adding two spaces consecutively, like
-            // G        A
-            // We're*no**
-            // we'll just relegate one of the unused spaces for the orphaned block, like
-            // G       A
-            // We're*no*
-
-            // if there's no space to steal, just add one so that it's backed by a character
-            const prevBlock = blocks[i - 1];
-
-            const modifiedRawLyric = prevBlock.lyric.get(
-                (rawStr: string): string => {
-                    const lastIndex = rawStr.length - 1;
-                    return rawStr.slice(0, lastIndex);
-                }
-            );
-            prevBlock.lyric = new Lyric(modifiedRawLyric);
-        }
-
-        block.lyric = new Lyric(" ");
+        block.lyric = new Lyric(orphanTab);
     }
 };
 
@@ -200,5 +172,5 @@ export const replaceChordLineLyrics = (
     iterator.finish();
 
     removeOrphanedBlocksWithNoChords(chordLine);
-    addSpacesToOrphanedBlocks(chordLine);
+    addTabsToOrphanedBlocks(chordLine);
 };
