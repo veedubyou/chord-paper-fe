@@ -4,37 +4,27 @@
             "elements": [
                 {
                     "chord": "G^",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "<⑴>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Em7",
-                    "lyric": {
-                        "serializedLyric": "<⑴>|"
-                    },
+                    "lyric": { "serializedLyric": "|" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7b13/D",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "C13",
-                    "lyric": {
-                        "serializedLyric": "<⑵>|"
-                    },
+                    "lyric": { "serializedLyric": "|" },
                     "type": "ChordBlock"
                 }
             ],
@@ -45,23 +35,17 @@
             "elements": [
                 {
                     "chord": "G^",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>|"
-                    },
+                    "lyric": { "serializedLyric": "|" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "B7",
-                    "lyric": {
-                        "serializedLyric": "<⑵><⑵>|"
-                    },
+                    "lyric": { "serializedLyric": "|" },
                     "type": "ChordBlock"
                 }
             ],
@@ -71,30 +55,22 @@
             "elements": [
                 {
                     "chord": "Em7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>|"
-                    },
+                    "lyric": { "serializedLyric": "|" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>|"
-                    },
+                    "lyric": { "serializedLyric": "|" },
                     "type": "ChordBlock"
                 }
             ],
@@ -104,30 +80,22 @@
             "elements": [
                 {
                     "chord": "Em7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>|"
-                    },
+                    "lyric": { "serializedLyric": "|" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>|"
-                    },
+                    "lyric": { "serializedLyric": "|" },
                     "type": "ChordBlock"
                 }
             ],
@@ -137,16 +105,12 @@
             "elements": [
                 {
                     "chord": "Em7",
-                    "lyric": {
-                        "serializedLyric": "We're no strangers to "
-                    },
+                    "lyric": { "serializedLyric": "We're no strangers to " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7",
-                    "lyric": {
-                        "serializedLyric": "love"
-                    },
+                    "lyric": { "serializedLyric": "love" },
                     "type": "ChordBlock"
                 }
             ],
@@ -157,16 +121,12 @@
             "elements": [
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "You know the rules and "
-                    },
+                    "lyric": { "serializedLyric": "You know the rules and " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "so do I"
-                    },
+                    "lyric": { "serializedLyric": "so do I" },
                     "type": "ChordBlock"
                 }
             ],
@@ -183,9 +143,7 @@
                 },
                 {
                     "chord": "C7",
-                    "lyric": {
-                        "serializedLyric": "thinking of"
-                    },
+                    "lyric": { "serializedLyric": "thinking of" },
                     "type": "ChordBlock"
                 }
             ],
@@ -202,9 +160,7 @@
                 },
                 {
                     "chord": "E7",
-                    "lyric": {
-                        "serializedLyric": "any other guy"
-                    },
+                    "lyric": { "serializedLyric": "any other guy" },
                     "type": "ChordBlock"
                 }
             ],
@@ -214,23 +170,17 @@
             "elements": [
                 {
                     "chord": "Em7",
-                    "lyric": {
-                        "serializedLyric": "I just wanna "
-                    },
+                    "lyric": { "serializedLyric": "I just wanna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7",
-                    "lyric": {
-                        "serializedLyric": "tell you how I'm feeling"
-                    },
+                    "lyric": { "serializedLyric": "tell you how I'm feeling" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 }
             ],
@@ -240,16 +190,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Gotta make you "
-                    },
+                    "lyric": { "serializedLyric": "Gotta make you " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "understand"
-                    },
+                    "lyric": { "serializedLyric": "understand" },
                     "type": "ChordBlock"
                 }
             ],
@@ -259,16 +205,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Em9",
-                    "lyric": {
-                        "serializedLyric": "give you up"
-                    },
+                    "lyric": { "serializedLyric": "give you up" },
                     "type": "ChordBlock"
                 }
             ],
@@ -279,16 +221,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7",
-                    "lyric": {
-                        "serializedLyric": "let you down"
-                    },
+                    "lyric": { "serializedLyric": "let you down" },
                     "type": "ChordBlock"
                 }
             ],
@@ -298,23 +236,17 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "run around and de-"
-                    },
+                    "lyric": { "serializedLyric": "run around and de-" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "sert you"
-                    },
+                    "lyric": { "serializedLyric": "sert you" },
                     "type": "ChordBlock"
                 }
             ],
@@ -324,16 +256,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Em9",
-                    "lyric": {
-                        "serializedLyric": "make you cry"
-                    },
+                    "lyric": { "serializedLyric": "make you cry" },
                     "type": "ChordBlock"
                 }
             ],
@@ -343,16 +271,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7",
-                    "lyric": {
-                        "serializedLyric": "say goodbye"
-                    },
+                    "lyric": { "serializedLyric": "say goodbye" },
                     "type": "ChordBlock"
                 }
             ],
@@ -362,23 +286,17 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "tell a lie and "
-                    },
+                    "lyric": { "serializedLyric": "tell a lie and " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "hurt you"
-                    },
+                    "lyric": { "serializedLyric": "hurt you" },
                     "type": "ChordBlock"
                 }
             ],
@@ -388,16 +306,12 @@
             "elements": [
                 {
                     "chord": "Em7",
-                    "lyric": {
-                        "serializedLyric": "We've known each other"
-                    },
+                    "lyric": { "serializedLyric": "We've known each other" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "C7",
-                    "lyric": {
-                        "serializedLyric": " for so long"
-                    },
+                    "lyric": { "serializedLyric": " for so long" },
                     "type": "ChordBlock"
                 }
             ],
@@ -415,9 +329,7 @@
                 },
                 {
                     "chord": "E7",
-                    "lyric": {
-                        "serializedLyric": "you're too shy to say it"
-                    },
+                    "lyric": { "serializedLyric": "you're too shy to say it" },
                     "type": "ChordBlock"
                 }
             ],
@@ -434,9 +346,7 @@
                 },
                 {
                     "chord": "A7",
-                    "lyric": {
-                        "serializedLyric": "going on"
-                    },
+                    "lyric": { "serializedLyric": "going on" },
                     "type": "ChordBlock"
                 }
             ],
@@ -453,23 +363,17 @@
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": " gon-"
-                    },
+                    "lyric": { "serializedLyric": " gon-" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7/C#",
-                    "lyric": {
-                        "serializedLyric": "na "
-                    },
+                    "lyric": { "serializedLyric": "na " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "D7",
-                    "lyric": {
-                        "serializedLyric": "play it"
-                    },
+                    "lyric": { "serializedLyric": "play it" },
                     "type": "ChordBlock"
                 }
             ],
@@ -479,23 +383,17 @@
             "elements": [
                 {
                     "chord": "G",
-                    "lyric": {
-                        "serializedLyric": "And if you "
-                    },
+                    "lyric": { "serializedLyric": "And if you " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A",
-                    "lyric": {
-                        "serializedLyric": "ask me how I'm feeling"
-                    },
+                    "lyric": { "serializedLyric": "ask me how I'm feeling" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "G",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 }
             ],
@@ -505,16 +403,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Don't tell me you're too "
-                    },
+                    "lyric": { "serializedLyric": "Don't tell me you're too " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A",
-                    "lyric": {
-                        "serializedLyric": "blind to see"
-                    },
+                    "lyric": { "serializedLyric": "blind to see" },
                     "type": "ChordBlock"
                 }
             ],
@@ -524,23 +418,17 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "C#m11",
-                    "lyric": {
-                        "serializedLyric": "give you "
-                    },
+                    "lyric": { "serializedLyric": "give you " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#7",
-                    "lyric": {
-                        "serializedLyric": "up"
-                    },
+                    "lyric": { "serializedLyric": "up" },
                     "type": "ChordBlock"
                 }
             ],
@@ -551,16 +439,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "let you down"
-                    },
+                    "lyric": { "serializedLyric": "let you down" },
                     "type": "ChordBlock"
                 }
             ],
@@ -570,37 +454,27 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "G",
-                    "lyric": {
-                        "serializedLyric": "run a-"
-                    },
+                    "lyric": { "serializedLyric": "run a-" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A",
-                    "lyric": {
-                        "serializedLyric": "round and de-"
-                    },
+                    "lyric": { "serializedLyric": "round and de-" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "sert you"
-                    },
+                    "lyric": { "serializedLyric": "sert you" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 }
             ],
@@ -610,30 +484,22 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "G^",
-                    "lyric": {
-                        "serializedLyric": "run a-"
-                    },
+                    "lyric": { "serializedLyric": "run a-" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "round and de-"
-                    },
+                    "lyric": { "serializedLyric": "round and de-" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "B7",
-                    "lyric": {
-                        "serializedLyric": "sert you"
-                    },
+                    "lyric": { "serializedLyric": "sert you" },
                     "type": "ChordBlock"
                 }
             ],
@@ -643,30 +509,22 @@
             "elements": [
                 {
                     "chord": "Em7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "C7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>|"
-                    },
+                    "lyric": { "serializedLyric": "|" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "E7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>|"
-                    },
+                    "lyric": { "serializedLyric": "|" },
                     "type": "ChordBlock"
                 }
             ],
@@ -684,9 +542,7 @@
                 },
                 {
                     "chord": "A7",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 }
             ],
@@ -703,23 +559,17 @@
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": " "
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7/C#",
-                    "lyric": {
-                        "serializedLyric": " "
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "D7",
-                    "lyric": {
-                        "serializedLyric": " "
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 }
             ],
@@ -729,16 +579,12 @@
             "elements": [
                 {
                     "chord": "G",
-                    "lyric": {
-                        "serializedLyric": "We've known each other "
-                    },
+                    "lyric": { "serializedLyric": "We've known each other " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A",
-                    "lyric": {
-                        "serializedLyric": "for so long"
-                    },
+                    "lyric": { "serializedLyric": "for so long" },
                     "type": "ChordBlock"
                 }
             ],
@@ -756,9 +602,7 @@
                 },
                 {
                     "chord": "A",
-                    "lyric": {
-                        "serializedLyric": "you're too shy to say it"
-                    },
+                    "lyric": { "serializedLyric": "you're too shy to say it" },
                     "type": "ChordBlock"
                 }
             ],
@@ -768,23 +612,17 @@
             "elements": [
                 {
                     "chord": "C#m7",
-                    "lyric": {
-                        "serializedLyric": "Inside we "
-                    },
+                    "lyric": { "serializedLyric": "Inside we " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#7",
-                    "lyric": {
-                        "serializedLyric": "both know what's been"
-                    },
+                    "lyric": { "serializedLyric": "both know what's been" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": " going on"
-                    },
+                    "lyric": { "serializedLyric": " going on" },
                     "type": "ChordBlock"
                 }
             ],
@@ -794,30 +632,22 @@
             "elements": [
                 {
                     "chord": "G",
-                    "lyric": {
-                        "serializedLyric": "We know the "
-                    },
+                    "lyric": { "serializedLyric": "We know the " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A",
-                    "lyric": {
-                        "serializedLyric": "game and we're"
-                    },
+                    "lyric": { "serializedLyric": "game and we're" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": " gonna "
-                    },
+                    "lyric": { "serializedLyric": " gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "play it"
-                    },
+                    "lyric": { "serializedLyric": "play it" },
                     "type": "ChordBlock"
                 }
             ],
@@ -827,23 +657,17 @@
             "elements": [
                 {
                     "chord": "G",
-                    "lyric": {
-                        "serializedLyric": "I just wanna "
-                    },
+                    "lyric": { "serializedLyric": "I just wanna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A",
-                    "lyric": {
-                        "serializedLyric": "tell you how I'm feeling"
-                    },
+                    "lyric": { "serializedLyric": "tell you how I'm feeling" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "G",
-                    "lyric": {
-                        "serializedLyric": "<⑵>"
-                    },
+                    "lyric": { "serializedLyric": "" },
                     "type": "ChordBlock"
                 }
             ],
@@ -853,16 +677,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Gotta make you"
-                    },
+                    "lyric": { "serializedLyric": "Gotta make you" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A",
-                    "lyric": {
-                        "serializedLyric": " understand"
-                    },
+                    "lyric": { "serializedLyric": " understand" },
                     "type": "ChordBlock"
                 }
             ],
@@ -872,30 +692,22 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "G^",
-                    "lyric": {
-                        "serializedLyric": "give you "
-                    },
+                    "lyric": { "serializedLyric": "give you " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "up and de-"
-                    },
+                    "lyric": { "serializedLyric": "up and de-" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "B7",
-                    "lyric": {
-                        "serializedLyric": "sert you"
-                    },
+                    "lyric": { "serializedLyric": "sert you" },
                     "type": "ChordBlock"
                 }
             ],
@@ -905,16 +717,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Em9",
-                    "lyric": {
-                        "serializedLyric": "give you up"
-                    },
+                    "lyric": { "serializedLyric": "give you up" },
                     "type": "ChordBlock"
                 }
             ],
@@ -925,16 +733,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7",
-                    "lyric": {
-                        "serializedLyric": "let you down"
-                    },
+                    "lyric": { "serializedLyric": "let you down" },
                     "type": "ChordBlock"
                 }
             ],
@@ -944,23 +748,17 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "run around and de-"
-                    },
+                    "lyric": { "serializedLyric": "run around and de-" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "sert you"
-                    },
+                    "lyric": { "serializedLyric": "sert you" },
                     "type": "ChordBlock"
                 }
             ],
@@ -970,16 +768,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Em9",
-                    "lyric": {
-                        "serializedLyric": "make you cry"
-                    },
+                    "lyric": { "serializedLyric": "make you cry" },
                     "type": "ChordBlock"
                 }
             ],
@@ -989,16 +783,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7",
-                    "lyric": {
-                        "serializedLyric": "say goodbye"
-                    },
+                    "lyric": { "serializedLyric": "say goodbye" },
                     "type": "ChordBlock"
                 }
             ],
@@ -1008,23 +798,17 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "tell a lie and "
-                    },
+                    "lyric": { "serializedLyric": "tell a lie and " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "hurt you"
-                    },
+                    "lyric": { "serializedLyric": "hurt you" },
                     "type": "ChordBlock"
                 }
             ],
@@ -1034,16 +818,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Em9",
-                    "lyric": {
-                        "serializedLyric": "give you up"
-                    },
+                    "lyric": { "serializedLyric": "give you up" },
                     "type": "ChordBlock"
                 }
             ],
@@ -1053,16 +833,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7",
-                    "lyric": {
-                        "serializedLyric": "let you down"
-                    },
+                    "lyric": { "serializedLyric": "let you down" },
                     "type": "ChordBlock"
                 }
             ],
@@ -1072,23 +848,17 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "run around and de-"
-                    },
+                    "lyric": { "serializedLyric": "run around and de-" },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "sert you"
-                    },
+                    "lyric": { "serializedLyric": "sert you" },
                     "type": "ChordBlock"
                 }
             ],
@@ -1098,16 +868,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Em9",
-                    "lyric": {
-                        "serializedLyric": "make you cry"
-                    },
+                    "lyric": { "serializedLyric": "make you cry" },
                     "type": "ChordBlock"
                 }
             ],
@@ -1117,16 +883,12 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "A7",
-                    "lyric": {
-                        "serializedLyric": "say goodbye"
-                    },
+                    "lyric": { "serializedLyric": "say goodbye" },
                     "type": "ChordBlock"
                 }
             ],
@@ -1136,23 +898,17 @@
             "elements": [
                 {
                     "chord": "",
-                    "lyric": {
-                        "serializedLyric": "Never gonna "
-                    },
+                    "lyric": { "serializedLyric": "Never gonna " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "F#m7",
-                    "lyric": {
-                        "serializedLyric": "tell a lie and "
-                    },
+                    "lyric": { "serializedLyric": "tell a lie and " },
                     "type": "ChordBlock"
                 },
                 {
                     "chord": "Bm7",
-                    "lyric": {
-                        "serializedLyric": "hurt you..."
-                    },
+                    "lyric": { "serializedLyric": "hurt you..." },
                     "type": "ChordBlock"
                 }
             ],

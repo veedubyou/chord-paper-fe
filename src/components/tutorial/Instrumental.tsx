@@ -10,9 +10,9 @@ import Playground from "./Playground";
 const Instrumental: React.FC<{}> = (): JSX.Element => {
     const tabExample = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "Bm", lyric: new Lyric("<⑵>") }),
-            new ChordBlock({ chord: "A", lyric: new Lyric("<⑵>") }),
-            new ChordBlock({ chord: "E", lyric: new Lyric("<⑷>") }),
+            new ChordBlock({ chord: "Bm", lyric: new Lyric("\ue200") }),
+            new ChordBlock({ chord: "A", lyric: new Lyric("\ue200") }),
+            new ChordBlock({ chord: "E", lyric: new Lyric("\ue400") }),
         ]),
     ]);
 
@@ -20,9 +20,9 @@ const Instrumental: React.FC<{}> = (): JSX.Element => {
 
     const expectedSong = new ChordSong([
         new ChordLine([
-            new ChordBlock({ chord: "Bm", lyric: new Lyric("<⑵>") }),
-            new ChordBlock({ chord: "A", lyric: new Lyric("<⑵>") }),
-            new ChordBlock({ chord: "E", lyric: new Lyric("<⑷>") }),
+            new ChordBlock({ chord: "Bm", lyric: new Lyric("\ue200") }),
+            new ChordBlock({ chord: "A", lyric: new Lyric("\ue200") }),
+            new ChordBlock({ chord: "E", lyric: new Lyric("\ue400") }),
         ]),
     ]);
 

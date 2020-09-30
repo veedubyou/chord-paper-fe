@@ -14,24 +14,24 @@ export enum SizedTab {
 
 export interface LyricTabType {
     sizedTab: SizedTab;
-    serializedStr: "<⑴>" | "<⑵>" | "<⑷>";
+    serializedStr: "\ue100" | "\ue200" | "\ue400";
     [dataAttributeTabName]: "1" | "2" | "4";
 }
 
 export const allTabTypes: LyricTabType[] = [
     {
         sizedTab: SizedTab.SmallTab,
-        serializedStr: "<⑴>",
+        serializedStr: "\ue100",
         [dataAttributeTabName]: "1",
     },
     {
         sizedTab: SizedTab.MediumTab,
-        serializedStr: "<⑵>",
+        serializedStr: "\ue200",
         [dataAttributeTabName]: "2",
     },
     {
         sizedTab: SizedTab.LargeTab,
-        serializedStr: "<⑷>",
+        serializedStr: "\ue400",
         [dataAttributeTabName]: "4",
     },
 ];

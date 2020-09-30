@@ -181,7 +181,7 @@ describe("Tab spacing", () => {
                 pressKey(elem, Keys.tab, { altKey: true });
 
             testTab(
-                "Put some old bay on it and now it's a crab claw<⑴>",
+                "Put some old bay on it and now it's a crab claw\ue100",
                 tabAction
             );
         });
@@ -190,7 +190,7 @@ describe("Tab spacing", () => {
             const tabAction = (elem: Element) => pressKey(elem, Keys.tab);
 
             testTab(
-                "Put some old bay on it and now it's a crab claw<⑵>",
+                "Put some old bay on it and now it's a crab claw\ue200",
                 tabAction
             );
         });
@@ -200,7 +200,7 @@ describe("Tab spacing", () => {
                 pressKey(elem, Keys.tab, { shiftKey: true });
 
             testTab(
-                "Put some old bay on it and now it's a crab claw<⑷>",
+                "Put some old bay on it and now it's a crab claw\ue400",
                 tabAction
             );
         });
@@ -225,7 +225,7 @@ describe("Tab spacing", () => {
             await insertTab();
             await asyncExpectChordAndLyric(
                 "",
-                "Put some old bay on it and now it's a crab claw<⑵>",
+                "Put some old bay on it and now it's a crab claw\ue200",
                 ["Line-0", "NoneditableLine", "Block-0"]
             );
 
@@ -509,7 +509,7 @@ describe("Edit action with chords", () => {
         test("removing the first block, causing it to be replaced with a tab", async () => {
             await changeLyric("that I'm in trouble");
 
-            await expectChordAndLyric("F", "<⑴>", [
+            await expectChordAndLyric("F", "\ue100", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -531,7 +531,7 @@ describe("Edit action with chords", () => {
                 "Block-0",
             ]);
 
-            await expectChordAndLyric("C", "<⑴>", [
+            await expectChordAndLyric("C", "\ue100", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-1",
