@@ -57,24 +57,24 @@ describe("lyric tokenizer", () => {
 
         describe("serialized tab", () => {
             test("small size", () => {
-                expect(new Lyric("<⑴>").isEntirelySpace()).toEqual(true);
+                expect(new Lyric("\ue100").isEntirelySpace()).toEqual(true);
             });
 
             test("medium size", () => {
-                expect(new Lyric("<⑵>").isEntirelySpace()).toEqual(true);
+                expect(new Lyric("\ue200").isEntirelySpace()).toEqual(true);
             });
 
             test("large size", () => {
-                expect(new Lyric("<⑷>").isEntirelySpace()).toEqual(true);
+                expect(new Lyric("\ue400").isEntirelySpace()).toEqual(true);
             });
         });
 
         test("mixed space and serialized tab", () => {
-            expect(new Lyric(" <⑴>").isEntirelySpace()).toEqual(false);
+            expect(new Lyric(" \ue100").isEntirelySpace()).toEqual(false);
         });
 
         test("multiple serialized tab", () => {
-            expect(new Lyric("<⑵><⑵>").isEntirelySpace()).toEqual(false);
+            expect(new Lyric("\ue200\ue200").isEntirelySpace()).toEqual(false);
         });
 
         test("space mixed with letters", () => {
@@ -82,7 +82,7 @@ describe("lyric tokenizer", () => {
         });
 
         test("serialized tab mixed with letters", () => {
-            expect(new Lyric("a<⑷>").isEntirelySpace()).toEqual(false);
+            expect(new Lyric("a\ue400").isEntirelySpace()).toEqual(false);
         });
     });
 
@@ -175,64 +175,8 @@ describe("lyric tokenizer", () => {
         });
 
         describe("serialized tabs", () => {
-            describe("broken/invalid tabs", () => {
-                test("Missing starting tag", () => {
-                    const results = tokenize("Never gonna give you up ⑴>");
-                    expect(results).toEqual([
-                        "Never",
-                        " ",
-                        "gonna",
-                        " ",
-                        "give",
-                        " ",
-                        "you",
-                        " ",
-                        "up",
-                        " ",
-                        "⑴",
-                        ">",
-                    ]);
-                });
-
-                test("Missing ending tag", () => {
-                    const results = tokenize("Never gonna give you up <⑴");
-                    expect(results).toEqual([
-                        "Never",
-                        " ",
-                        "gonna",
-                        " ",
-                        "give",
-                        " ",
-                        "you",
-                        " ",
-                        "up",
-                        " ",
-                        "<",
-                        "⑴",
-                    ]);
-                });
-
-                test("Missing enclosed content", () => {
-                    const results = tokenize("Never gonna give you up <>");
-                    expect(results).toEqual([
-                        "Never",
-                        " ",
-                        "gonna",
-                        " ",
-                        "give",
-                        " ",
-                        "you",
-                        " ",
-                        "up",
-                        " ",
-                        "<",
-                        ">",
-                    ]);
-                });
-            });
-
             test("small tab", () => {
-                const results = tokenize("Never gonna give you up <⑴>");
+                const results = tokenize("Never gonna give you up \ue100");
                 expect(results).toEqual([
                     "Never",
                     " ",
@@ -244,17 +188,17 @@ describe("lyric tokenizer", () => {
                     " ",
                     "up",
                     " ",
-                    "<⑴>",
+                    "\ue100",
                 ]);
             });
 
             test("medium tab", () => {
-                const results = tokenize("Never gonna<⑵>give you up");
+                const results = tokenize("Never gonna\ue200give you up");
                 expect(results).toEqual([
                     "Never",
                     " ",
                     "gonna",
-                    "<⑵>",
+                    "\ue200",
                     "give",
                     " ",
                     "you",
@@ -264,9 +208,9 @@ describe("lyric tokenizer", () => {
             });
 
             test("large tab", () => {
-                const results = tokenize("<⑷>Never gonna give you up");
+                const results = tokenize("\ue400Never gonna give you up");
                 expect(results).toEqual([
-                    "<⑷>",
+                    "\ue400",
                     "Never",
                     " ",
                     "gonna",

@@ -197,7 +197,7 @@ describe("inserting a chord at a tab block", () => {
     beforeEach(async () => {
         const { findByTestId } = render(
             chordPaperFromLyrics([
-                "I<⑵>never loved you fully in the way I could",
+                "I\ue200never loved you fully in the way I could",
             ])
         );
         findByTestIdChain = getFindByTestIdChain(findByTestId);
@@ -264,7 +264,7 @@ describe("inserting a chord at a tab block", () => {
             "Block-0",
         ]);
 
-        await expectChordAndLyric("Am7", "<⑵>", [
+        await expectChordAndLyric("Am7", "\ue200", [
             "Line-0",
             "NoneditableLine",
             "Block-1",

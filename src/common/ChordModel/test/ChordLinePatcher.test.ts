@@ -218,7 +218,7 @@ describe("ChordLinePatcher", () => {
             replaceChordLineLyrics(chordLine, new Lyric("that I'm in trouble"));
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: new Lyric("<⑴>"),
+                lyric: new Lyric("\ue100"),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
@@ -234,7 +234,7 @@ describe("ChordLinePatcher", () => {
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
-                lyric: new Lyric("<⑴>"),
+                lyric: new Lyric("\ue100"),
             });
         });
     });
