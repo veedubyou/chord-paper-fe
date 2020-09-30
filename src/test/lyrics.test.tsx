@@ -9,7 +9,6 @@ import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { Lyric } from "../common/ChordModel/Lyric";
-import { contentEditableElement } from "../components/edit/lyric_input/SelectionUtils";
 import { chordPaperFromLyrics, chordPaperFromSong } from "./common";
 import {
     ExpectChordAndLyricFn,
@@ -507,10 +506,10 @@ describe("Edit action with chords", () => {
             ]);
         });
 
-        test("removing the first block, causing it to be replaced with a space", async () => {
+        test("removing the first block, causing it to be replaced with a tab", async () => {
             await changeLyric("that I'm in trouble");
 
-            await expectChordAndLyric("F", " ", [
+            await expectChordAndLyric("F", "<⑴>", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-0",
@@ -523,7 +522,7 @@ describe("Edit action with chords", () => {
             ]);
         });
 
-        test("removing the second block, causing it to steal a space from the first", async () => {
+        test("removing the second block, causing it to be replaced with a tab", async () => {
             await changeLyric("It's your fault");
 
             await expectChordAndLyric("F", "It's your fault", [
@@ -532,7 +531,7 @@ describe("Edit action with chords", () => {
                 "Block-0",
             ]);
 
-            await expectChordAndLyric("C", " ", [
+            await expectChordAndLyric("C", "<⑴>", [
                 "Line-0",
                 "NoneditableLine",
                 "Block-1",

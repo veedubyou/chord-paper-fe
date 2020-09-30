@@ -214,11 +214,11 @@ describe("ChordLinePatcher", () => {
             });
         });
 
-        test("removing the first block, causing it to be replaced with a string", () => {
+        test("removing the first block, causing it to be replaced with a tab", () => {
             replaceChordLineLyrics(chordLine, new Lyric("that I'm in trouble"));
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: new Lyric(" "),
+                lyric: new Lyric("<⑴>"),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
@@ -226,15 +226,15 @@ describe("ChordLinePatcher", () => {
             });
         });
 
-        test("removing the second block, causing it to steal a space from the first", () => {
+        test("removing the second block, causing it to replaced with a tab", () => {
             replaceChordLineLyrics(chordLine, new Lyric("It's your fault "));
             expect(chordLine.elements[0]).toMatchObject({
                 chord: "F",
-                lyric: new Lyric("It's your fault"),
+                lyric: new Lyric("It's your fault "),
             });
             expect(chordLine.elements[1]).toMatchObject({
                 chord: "C",
-                lyric: new Lyric(" "),
+                lyric: new Lyric("<⑴>"),
             });
         });
     });
