@@ -178,7 +178,7 @@ describe("Tab spacing", () => {
 
         describe("small tab", () => {
             const tabAction = (elem: Element) =>
-                pressKey(elem, Keys.tab, { altKey: true });
+                pressKey(elem, Keys.space, { shiftKey: true });
 
             testTab(
                 "Put some old bay on it and now it's a crab claw\ue100",

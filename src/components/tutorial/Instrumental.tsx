@@ -42,7 +42,7 @@ const Instrumental: React.FC<{}> = (): JSX.Element => {
                 <LyricsTypography display="inline">tab</LyricsTypography> when
                 editting lyrics, for a normal sized tab, or{" "}
                 <LyricsTypography display="inline">
-                    ALT/OPTION + tab
+                    SHIFT + space
                 </LyricsTypography>{" "}
                 for a small sized tab, or{" "}
                 <LyricsTypography display="inline">
