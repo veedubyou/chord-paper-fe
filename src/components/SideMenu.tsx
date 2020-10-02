@@ -1,7 +1,7 @@
 import {
     Collapse,
     Divider,
-    Drawer,
+    Drawer as UnstyledDrawer,
     Grid,
     List,
     ListItem,
@@ -20,11 +20,11 @@ import UnstyledMenuIcon from "@material-ui/icons/Menu";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import PetsIcon from "@material-ui/icons/Pets";
 import StoreIcon from "@material-ui/icons/Store";
-import { withStyles } from "@material-ui/styles";
+import { makeStyles, withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { allExerciseRoutes, ExerciseRoute } from "./Tutorial";
-import UnstyledLogin from "./user/Login";
+import Login from "./user/Login";
 
 const withPointerStyle = withStyles({
     root: {
@@ -34,6 +34,13 @@ const withPointerStyle = withStyles({
 
 const MenuIcon = withPointerStyle(UnstyledMenuIcon);
 const CloseIcon = withPointerStyle(UnstyledCloseIcon);
+
+const Drawer = withStyles({
+    root: {
+        display: "flex",
+        flexDirection: "column",
+    },
+})(UnstyledDrawer);
 
 const VerticalGridItem = withStyles({
     root: {
@@ -67,17 +74,16 @@ const FullHeightGrid = withStyles({
     },
 })(Grid);
 
-const Login = withStyles({
+const useFillerStyle = makeStyles({
     root: {
-        position: "absolute",
-        bottom: 0,
-        left: 0,
+        flexGrow: 1,
     },
-})(UnstyledLogin);
+});
 
 const SideMenu: React.FC<{}> = (): JSX.Element => {
     const [expanded, setExpanded] = useState(false);
     const [learnSubmenuOpen, setLearnSubMenuOpen] = useState(false);
+    const fillerStyle = useFillerStyle();
 
     const typographyProps = {
         variant: "h6" as "h6",
@@ -217,6 +223,7 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
                     </ListItem>
                 </Link>
             </List>
+            <div className={fillerStyle.root} />
             <Login />
         </Drawer>
     );
