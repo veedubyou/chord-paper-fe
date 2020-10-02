@@ -36,6 +36,11 @@ export const Keys = {
         keyCode: 8,
         charCode: 0,
     },
+    space: {
+        key: " ",
+        keyCode: 32,
+        charCode: 0,
+    },
 };
 
 export const pressKey = (

@@ -88,18 +88,16 @@ const tabHandler = (
     domLyricTab: DomLyricTabFn
 ): HandlerFn => {
     return (event: React.KeyboardEvent<ContentEditableElement>): boolean => {
-        if (event.key !== "Tab") {
-            return false;
-        }
-
         let sizedTab: SizedTab;
 
-        if (event.shiftKey) {
+        if (event.key === "Tab" && !event.shiftKey) {
+            sizedTab = SizedTab.MediumTab;
+        } else if (event.key === "Tab" && event.shiftKey) {
             sizedTab = SizedTab.LargeTab;
-        } else if (event.altKey) {
+        } else if (event.key === " " && event.shiftKey) {
             sizedTab = SizedTab.SmallTab;
         } else {
-            sizedTab = SizedTab.MediumTab;
+            return false;
         }
 
         const domNode = domLyricTab(sizedTab);
