@@ -52,6 +52,7 @@ const PlayContent: React.FC<PlayContentProps> = (
         window.scrollTo({
             left: nextPos,
             top: 0,
+            behavior: "smooth",
         });
     };
 
