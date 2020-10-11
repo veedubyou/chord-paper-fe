@@ -116,13 +116,12 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
         gapi.load("auth2", () => {
             const handleGoogleLogin = async (user: gapi.auth2.GoogleUser) => {
                 const idToken: string = user.getAuthResponse().id_token;
-                const userID: string = user.getId();
 
                 let parsed: unknown;
 
                 try {
                     parsed = await ky
-                        .post(backendHost + "/login/" + userID, {
+                        .post(backendHost + "/login", {
                             headers: {
                                 Authorization: "Bearer " + idToken,
                             },
