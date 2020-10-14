@@ -12,6 +12,8 @@ import SigninIcon from "../../assets/img/google_signin.png";
 
 import { useSnackbar } from "notistack";
 import { withStyles, makeStyles } from "@material-ui/styles";
+import { backendHost } from "../../common/backend";
+import { deserializeUser, User, UserContext } from "./userContext";
 
 const Paper = withStyles({
     root: {
@@ -35,25 +37,6 @@ const googleSignInID = "google-sign-in";
 const googleClientID =
     "650853277550-ta69qbfcvdl6tb5ogtnh2d07ae9rcdlf.apps.googleusercontent.com";
 
-const backendHost = ((): string => {
-    const localURL = "http://localhost:5000";
-
-    if (
-        process.env.NODE_ENV === "development" ||
-        process.env.NODE_ENV === "test"
-    ) {
-        return localURL;
-    }
-
-    const backendURL: string | undefined = process.env.REACT_APP_BACKEND_URL;
-    if (backendURL === undefined) {
-        console.error("Production build doesn't have backend URL set!");
-        return localURL;
-    }
-
-    return backendURL;
-})();
-
 const useSigninStyles = makeStyles({
     root: {
         maxWidth: "100%",
@@ -62,36 +45,18 @@ const useSigninStyles = makeStyles({
     },
 });
 
-const validateAsUser = (response: unknown): response is User => {
-    if (typeof response !== "object") {
-        return false;
-    }
-
-    if (response === null || response === undefined) {
-        return false;
-    }
-
-    return "name" in response;
-};
-
-interface User {
-    name: string | null;
+interface LoginProps extends StyledComponentProps {
+    onUserChanged: (user: User) => void;
 }
-
-type UserInfoState = User | null;
-
-interface LoginProps extends StyledComponentProps {}
 
 const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     const [gapiLoaded, setGapiLoaded] = useState<boolean>(false);
-    const [userInfo, setUserInfo] = useState<UserInfoState>(null);
     const { enqueueSnackbar } = useSnackbar();
     const signinStyles = useSigninStyles();
+    const user: User | null = React.useContext(UserContext);
 
-    const shouldShowSigninButton = (
-        userInfo: UserInfoState
-    ): userInfo is null => {
-        return userInfo === null;
+    const showSigninButton = (user: User | null): user is null => {
+        return user === null;
     };
 
     useEffect(() => {
@@ -137,7 +102,9 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                     return;
                 }
 
-                if (!validateAsUser(parsed)) {
+                const parsedUser = deserializeUser(parsed, idToken);
+
+                if (parsedUser === null) {
                     console.error("JSON payload is not a user", parsed);
                     enqueueSnackbar(
                         "Failed to login to backend. Check console for more error details",
@@ -147,10 +114,10 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                     return;
                 }
 
-                setUserInfo(parsed);
+                props.onUserChanged(parsedUser);
             };
 
-            if (!shouldShowSigninButton(userInfo)) {
+            if (!showSigninButton(user)) {
                 return;
             }
 
@@ -179,13 +146,13 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 })
                 .then(handleAuthInit);
         });
-    }, [enqueueSnackbar, userInfo, setUserInfo, gapiLoaded]);
+    }, [enqueueSnackbar, user, props, gapiLoaded]);
 
     if (!gapiLoaded) {
         return <div></div>;
     }
 
-    if (shouldShowSigninButton(userInfo)) {
+    if (showSigninButton(user)) {
         return (
             <Paper classes={props.classes}>
                 <Box id={googleSignInID}>
@@ -203,7 +170,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
         <Paper classes={props.classes}>
             <Grid container>
                 <Grid item container justify="center">
-                    <Typography>Signed in as {userInfo.name}</Typography>
+                    <Typography>Signed in as {user.name}</Typography>
                 </Grid>
             </Grid>
         </Paper>
