@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import { SnackbarProvider as UnstyledSnackbarProvider } from "notistack";
-import React from "react";
+import React, { useState } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import {
     HashRouter,
@@ -17,13 +17,15 @@ import {
     useLocation,
 } from "react-router-dom";
 import Background from "./assets/img/symphony.png";
+import { ChordSong } from "./common/ChordModel/ChordSong";
 import About from "./components/about/About";
 import Demo from "./components/Demo";
 import SideMenu from "./components/SideMenu";
+import SongFetcher from "./components/SongFetcher";
 import SongRouter from "./components/SongRouter";
 import { TutorialSwitches } from "./components/Tutorial";
+import { User, UserContext } from "./components/user/userContext";
 import Version from "./components/Version";
-import { withAutoSave } from "./components/WithAutoSave";
 import { withSongContext } from "./components/WithSongContext";
 
 const createTheme = (): Theme => {
@@ -77,24 +79,31 @@ const AppLayout = withStyles({
 })(Grid);
 
 const shouldShowMenu = (path: string): boolean => {
-    return !["/song/play", "/demo/play"].includes(path);
+    const result = path.match(/\/(song|demo)\/.+\/play/i);
+    return result === null;
 };
 
-const MainSong = withAutoSave(withSongContext(SongRouter));
+const MainSong = withSongContext(SongRouter);
 
 const AppContent: React.FC<{}> = (): JSX.Element => {
+    const [user, setUser] = useState<User | null>(null);
+
+    const handleUserChanged = (newUser: User) => setUser(newUser);
+
     const location = useLocation();
 
     const routes = (
         <Switch>
-            <Redirect from="/" to="/song" exact />
+            <Redirect from="/" to="/song/new" exact />
 
-            <Redirect from="/song" to="/song/edit" exact />
-            <Route key="/song" path="/song">
-                <MainSong basePath="/song" />
+            <Route key="/song/:id" path="/song/:id">
+                <SongFetcher basePath="/song">
+                    {(song: ChordSong, path: string) => (
+                        <MainSong song={song} basePath={path} />
+                    )}
+                </SongFetcher>
             </Route>
 
-            <Redirect from="/demo" to="/demo/edit" exact />
             <Route key="/demo" path="/demo">
                 <Demo basePath="/demo" />
             </Route>
@@ -108,15 +117,17 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
     );
 
     return (
-        <>
-            {shouldShowMenu(location.pathname) && <SideMenu />}
+        <UserContext.Provider value={user}>
+            {shouldShowMenu(location.pathname) && (
+                <SideMenu onUserChanged={handleUserChanged} />
+            )}
             <AppLayout container>
                 <Grid item container justify="center">
                     {routes}
                 </Grid>
             </AppLayout>
             <Version />
-        </>
+        </UserContext.Provider>
     );
 };
 

@@ -37,10 +37,14 @@ describe("Chord Song", () => {
     let c: ChordSong;
     beforeEach(() => {
         c = new ChordSong(testLines(), {
-            title: "Never Gonna Give You Up",
-            composedBy: "Me",
-            performedBy: "Rick Astley",
-            asHeardFrom: "A Rickroll from my youth",
+            id: "idiomatic",
+            owner: "Crick Ghastley",
+            metadata: {
+                title: "Never Gonna Give You Up",
+                composedBy: "Me",
+                performedBy: "Rick Astley",
+                asHeardFrom: "A Rickroll from my youth",
+            },
         });
     });
 
@@ -66,6 +70,8 @@ describe("Chord Song", () => {
 
             const deserialized: ChordSong = getOrElse(failSong)(results);
             expect(deserialized).toMatchObject({
+                id: "idiomatic",
+                owner: "Crick Ghastley",
                 metadata: {
                     title: "Never Gonna Give You Up",
                     composedBy: "Me",

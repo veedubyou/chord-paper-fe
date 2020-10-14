@@ -1,6 +1,7 @@
 import React from "react";
-import { Route, useHistory } from "react-router-dom";
+import { Redirect, Route, useHistory } from "react-router-dom";
 import { ChordSong } from "../common/ChordModel/ChordSong";
+import { MultiFC, transformToFC } from "../common/FunctionalComponent";
 import ChordPaper from "./edit/ChordPaper";
 import Play from "./play/Play";
 
@@ -10,9 +11,9 @@ interface SongRouterProps {
     onSongChanged?: (song: ChordSong) => void;
 }
 
-const SongRouter: React.FC<SongRouterProps> = (
+const SongRouter: MultiFC<SongRouterProps> = (
     props: SongRouterProps
-): JSX.Element => {
+): JSX.Element[] => {
     const history = useHistory();
 
     const editPath = `${props.basePath}/edit`;
@@ -26,20 +27,24 @@ const SongRouter: React.FC<SongRouterProps> = (
         history.push(playPath);
     };
 
-    return (
-        <>
-            <Route key={editPath} path={editPath}>
-                <ChordPaper
-                    song={props.song}
-                    onSongChanged={props.onSongChanged}
-                    onPlay={switchToPlay}
-                />
-            </Route>
-            <Route key={playPath} path={playPath}>
-                <Play song={props.song} onEdit={switchToEdit} />
-            </Route>
-        </>
-    );
+    return [
+        <Redirect
+            key="redirect-base"
+            from={props.basePath}
+            to={editPath}
+            exact
+        />,
+        <Route key={editPath} path={editPath}>
+            <ChordPaper
+                song={props.song}
+                onSongChanged={props.onSongChanged}
+                onPlay={switchToPlay}
+            />
+        </Route>,
+        <Route key={playPath} path={playPath}>
+            <Play song={props.song} onEdit={switchToEdit} />
+        </Route>,
+    ];
 };
 
-export default SongRouter;
+export default transformToFC(SongRouter);

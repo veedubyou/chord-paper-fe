@@ -4,6 +4,7 @@ import NoteAddIcon from "@material-ui/icons/NoteAdd";
 import PlayIcon from "@material-ui/icons/PlayArrow";
 import SaveIcon from "@material-ui/icons/Save";
 import TransposeIcon from "@material-ui/icons/ImportExport";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {
     SpeedDial as UnstyledSpeedDial,
     SpeedDialAction,
@@ -17,6 +18,7 @@ import { PlainFn } from "../../../common/PlainFn";
 import { useLoadMenuAction } from "./load";
 import { useSaveMenuAction } from "./save";
 import TransposeMenu from "./TransposeMenu";
+import { useCloudSaveAction } from "./cloudSave";
 
 interface ChordPaperMenuProps {
     song: ChordSong;
@@ -41,6 +43,7 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     const { enqueueSnackbar } = useSnackbar();
     const loadAction = useLoadMenuAction(props.onSongChanged, enqueueSnackbar);
     const saveAction = useSaveMenuAction(props.song);
+    const cloudSaveAction = useCloudSaveAction(props.song);
 
     const openMenu = () => {
         setOpen(true);
@@ -92,6 +95,11 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                 icon={<NoteAddIcon />}
                 tooltipTitle="New Song"
                 onClick={props.onNewSong}
+            />
+            <SpeedDialAction
+                icon={<CloudUploadIcon />}
+                tooltipTitle="Save to Cloud"
+                onClick={cloudSaveAction}
             />
             <SpeedDialAction
                 icon={<PlayIcon />}

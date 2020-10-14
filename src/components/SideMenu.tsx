@@ -25,6 +25,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { allExerciseRoutes, ExerciseRoute } from "./Tutorial";
 import Login from "./user/Login";
+import { User } from "./user/userContext";
 
 const withPointerStyle = withStyles({
     root: {
@@ -80,7 +81,13 @@ const useFillerStyle = makeStyles({
     },
 });
 
-const SideMenu: React.FC<{}> = (): JSX.Element => {
+interface SideMenuProps {
+    onUserChanged: (user: User) => void;
+}
+
+const SideMenu: React.FC<SideMenuProps> = (
+    props: SideMenuProps
+): JSX.Element => {
     const [expanded, setExpanded] = useState(false);
     const [learnSubmenuOpen, setLearnSubMenuOpen] = useState(false);
     const fillerStyle = useFillerStyle();
@@ -224,7 +231,7 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
                 </Link>
             </List>
             <div className={fillerStyle.root} />
-            <Login />
+            <Login onUserChanged={props.onUserChanged} />
         </Drawer>
     );
 

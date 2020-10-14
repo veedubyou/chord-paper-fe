@@ -20,31 +20,38 @@ const SongMetadataValidator = iots.type({
 type SongMetadata = iots.TypeOf<typeof SongMetadataValidator>;
 
 const ChordSongValidator = iots.type({
+    //TODO: undo the optionality of these fields once all songs are migrated
+    id: iots.union([iots.string, iots.undefined]),
+    owner: iots.union([iots.string, iots.undefined]),
     elements: iots.array(ChordLineValidator),
     metadata: SongMetadataValidator,
 });
 type ChordSongValidatedFields = iots.TypeOf<typeof ChordSongValidator>;
 
+export interface ChordSongFields {
+    id?: string;
+    owner?: string;
+    metadata?: SongMetadata;
+}
+
 export class ChordSong extends Collection<ChordLine> {
+    id: string;
+    owner: string;
     metadata: SongMetadata;
 
-    constructor(elements?: ChordLine[], metadata?: SongMetadata) {
-        if (elements === undefined) {
-            elements = [new ChordLine()];
-        }
+    constructor(input_elements?: ChordLine[], fields?: ChordSongFields) {
+        const elements = input_elements ?? [new ChordLine()];
 
         super(elements);
 
-        if (metadata !== undefined) {
-            this.metadata = metadata;
-        } else {
-            this.metadata = {
-                title: "",
-                composedBy: "",
-                performedBy: "",
-                asHeardFrom: "",
-            };
-        }
+        this.id = fields?.id ?? "";
+        this.owner = fields?.owner ?? "";
+        this.metadata = fields?.metadata ?? {
+            title: "",
+            composedBy: "",
+            performedBy: "",
+            asHeardFrom: "",
+        };
     }
 
     static fromValidatedFields(
@@ -55,7 +62,11 @@ export class ChordSong extends Collection<ChordLine> {
                 return ChordLine.fromValidatedFields(chordLineValidatedFields);
             }
         );
-        return new ChordSong(chordLines, validatedFields.metadata);
+        return new ChordSong(chordLines, {
+            id: validatedFields.id,
+            owner: validatedFields.owner,
+            metadata: validatedFields.metadata,
+        });
     }
 
     static deserialize(jsonStr: string): Either<Error, ChordSong> {
@@ -126,7 +137,11 @@ export class ChordSong extends Collection<ChordLine> {
     }
 
     clone(): ChordSong {
-        return new ChordSong(this.elements, this.metadata);
+        return new ChordSong(this.elements, {
+            id: this.id,
+            owner: this.owner,
+            metadata: this.metadata,
+        });
     }
 
     toJSON(): object {
