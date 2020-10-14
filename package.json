@@ -63,5 +63,10 @@
         "jest-environment-jsdom-sixteen": "^1.0.3",
         "prettier": "2.0.5",
         "ts-jest": "^26.0.0"
+    },
+    "jest": {
+        "moduleNameMapper": {
+            "ky": "ky/umd"
+        }
     }
 }

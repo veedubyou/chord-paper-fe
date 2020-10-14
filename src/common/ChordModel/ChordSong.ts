@@ -87,7 +87,6 @@ export class ChordSong extends Collection<ChordLine> {
         const validationResult = ChordSongValidator.decode(jsonObj);
 
         if (isLeft(validationResult)) {
-            console.error(validationResult.left);
             return left(new Error("Invalid Chord Song object"));
         }
 

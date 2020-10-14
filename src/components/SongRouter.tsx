@@ -28,7 +28,12 @@ const SongRouter: MultiFC<SongRouterProps> = (
     };
 
     return [
-        <Redirect from={props.basePath} to={editPath} exact />,
+        <Redirect
+            key="redirect-base"
+            from={props.basePath}
+            to={editPath}
+            exact
+        />,
         <Route key={editPath} path={editPath}>
             <ChordPaper
                 song={props.song}

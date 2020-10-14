@@ -5,17 +5,20 @@ import { HelmetProvider } from "react-helmet-async";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { Lyric } from "../common/ChordModel/Lyric";
 import ChordPaper from "../components/edit/ChordPaper";
+import { UserContext } from "../components/user/userContext";
 import { withSongContext } from "../components/WithSongContext";
 
 const Song = withSongContext(ChordPaper);
 
 export const withProviders = (children: React.ReactNode) => {
     return (
-        <HelmetProvider>
-            <ThemeProvider theme={createMuiTheme()}>
-                <SnackbarProvider>{children}</SnackbarProvider>
-            </ThemeProvider>
-        </HelmetProvider>
+        <UserContext.Provider value={null}>
+            <HelmetProvider>
+                <ThemeProvider theme={createMuiTheme()}>
+                    <SnackbarProvider>{children}</SnackbarProvider>
+                </ThemeProvider>
+            </HelmetProvider>
+        </UserContext.Provider>
     );
 };
 
