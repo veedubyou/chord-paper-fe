@@ -23,6 +23,7 @@ import StoreIcon from "@material-ui/icons/Store";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { demoPath, songPath } from "../common/paths";
 import { allExerciseRoutes, ExerciseRoute } from "./Tutorial";
 import Login from "./user/Login";
 import { User } from "./user/userContext";
@@ -181,8 +182,8 @@ const SideMenu: React.FC<SideMenuProps> = (
             <Divider />
             <List>
                 <Link
-                    key="/song"
-                    to="/song"
+                    key={songPath.URL()}
+                    to={songPath.URL()}
                     style={linkStyle}
                     data-testid="Menu-HomeButton"
                 >
@@ -197,8 +198,8 @@ const SideMenu: React.FC<SideMenuProps> = (
                     </ListItem>
                 </Link>
                 <Link
-                    key="/demo"
-                    to="/demo"
+                    key={demoPath.URL()}
+                    to={demoPath.URL()}
                     style={linkStyle}
                     data-testid="Menu-DemoButton"
                 >

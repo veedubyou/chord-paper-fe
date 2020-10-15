@@ -20,6 +20,16 @@ import Background from "./assets/img/symphony.png";
 import { ChordSong } from "./common/ChordModel/ChordSong";
 import About from "./components/about/About";
 import Demo from "./components/Demo";
+import {
+    aboutPath,
+    DemoModePath,
+    demoPath,
+    newSongPath,
+    rootPath,
+    SongIDModePath,
+    songPath,
+} from "./common/paths";
+
 import SideMenu from "./components/SideMenu";
 import SongFetcher from "./components/SongFetcher";
 import SongRouter from "./components/SongRouter";
@@ -78,11 +88,6 @@ const AppLayout = withStyles({
     },
 })(Grid);
 
-const shouldShowMenu = (path: string): boolean => {
-    const result = path.match(/\/(song|demo)\/.+\/play/i);
-    return result === null;
-};
-
 const MainSong = withSongContext(SongRouter);
 
 const AppContent: React.FC<{}> = (): JSX.Element => {
@@ -91,36 +96,46 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
     const handleUserChanged = (newUser: User) => setUser(newUser);
 
     const location = useLocation();
+    const loadSongPath = songPath.withID(":id");
+
+    const isFullScreen =
+        SongIDModePath.isPlayMode(location.pathname) ||
+        DemoModePath.isPlayMode(location.pathname);
 
     const routes = (
         <Switch>
-            <Redirect from="/" to="/song/new" exact />
+            <Redirect from={rootPath.URL()} to={newSongPath.URL()} exact />
 
-            <Route key="/song/:id" path="/song/:id">
-                <SongFetcher basePath="/song">
-                    {(song: ChordSong, path: string) => (
-                        <MainSong song={song} basePath={path} />
+            <Route key={newSongPath.URL()} path={newSongPath.URL()}>
+                <MainSong song={new ChordSong()} path={newSongPath} />
+            </Route>
+
+            <Route key={loadSongPath.URL()} path={loadSongPath.URL()}>
+                <SongFetcher>
+                    {(song: ChordSong) => (
+                        <MainSong
+                            song={song}
+                            path={loadSongPath.parent().withID(song.id)}
+                        />
                     )}
                 </SongFetcher>
             </Route>
 
-            <Route key="/demo" path="/demo">
-                <Demo basePath="/demo" />
+            <Route key={demoPath.URL()} path={demoPath.URL()}>
+                <Demo />
             </Route>
 
             {TutorialSwitches()}
-            <Route key="/about" exact path="/about">
+            <Route key={aboutPath.URL()} path={aboutPath.URL()} exact>
                 <About />
             </Route>
-            <Redirect to="/" />
+            <Redirect to={rootPath.URL()} />
         </Switch>
     );
 
     return (
         <UserContext.Provider value={user}>
-            {shouldShowMenu(location.pathname) && (
-                <SideMenu onUserChanged={handleUserChanged} />
-            )}
+            {!isFullScreen && <SideMenu onUserChanged={handleUserChanged} />}
             <AppLayout container>
                 <Grid item container justify="center">
                     {routes}
