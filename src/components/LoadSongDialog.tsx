@@ -115,6 +115,14 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
     };
 
     const summaryCards = (summaries: SongSummary[]): React.ReactElement => {
+        if (summaries.length === 0) {
+            return (
+                <Typography>
+                    You don't have any songs saved. GET TO IT
+                </Typography>
+            );
+        }
+
         return <List>{summaries.map(summaryListItem)}</List>;
     };
 
@@ -132,6 +140,18 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
             return wrapInDialog(<LinearProgress />);
         }
         case "loaded": {
+            if (user.user_id === "109453974626961032486") {
+                const yt = (
+                    <iframe
+                        title="roll"
+                        width="800"
+                        height="640"
+                        src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                    ></iframe>
+                );
+                return wrapInDialog(yt);
+            }
+
             return wrapInDialog(summaryCards(fetchState.item));
         }
     }
