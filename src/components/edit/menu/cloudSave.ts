@@ -1,10 +1,8 @@
 import { isLeft } from "fp-ts/lib/These";
-import ky from "ky";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { backendHost } from "../../../common/backend";
-
+import { createSong, updateSong } from "../../../common/backend";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { songPath } from "../../../common/paths";
 import { User, UserContext } from "../../user/userContext";
@@ -14,22 +12,16 @@ export const useCloudSaveAction = (song: ChordSong) => {
     const { enqueueSnackbar } = useSnackbar();
     const history = useHistory();
 
-    const createSong = async (user: User) => {
+    const createNewSong = async (user: User) => {
         song.owner = user.user_id;
 
-        let parsed: unknown;
+        const createResult = await createSong(song, user.google_auth_token);
 
-        try {
-            parsed = await ky
-                .post(`${backendHost}/songs`, {
-                    json: song,
-                    headers: {
-                        Authorization: "Bearer " + user.google_auth_token,
-                    },
-                })
-                .json();
-        } catch (e) {
-            console.error("Failed to make create song request to BE", e);
+        if (isLeft(createResult)) {
+            console.error(
+                "Failed to make create song request to BE",
+                createResult.left
+            );
             enqueueSnackbar(
                 "Failed to save song to backend. Check console for more error details",
                 { variant: "error" }
@@ -38,11 +30,11 @@ export const useCloudSaveAction = (song: ChordSong) => {
             return;
         }
 
-        let result = ChordSong.fromJSONObject(parsed);
+        let deserializeResult = ChordSong.fromJSONObject(createResult.right);
 
-        if (isLeft(result)) {
+        if (isLeft(deserializeResult)) {
             console.error("Backend response does not match song format");
-            console.log(parsed);
+            console.log(createResult.right);
             enqueueSnackbar(
                 "A failure happened. Check console for more error details",
                 { variant: "error" }
@@ -50,24 +42,20 @@ export const useCloudSaveAction = (song: ChordSong) => {
             return;
         }
 
-        song.id = result.right.id;
+        song.id = deserializeResult.right.id;
         //TODO: this code is super fucked, but this will all go away soon
         // when auto save happens
         history.push(songPath.withID(song.id).withMode("edit").URL());
     };
 
-    const updateSong = async (user: User) => {
-        try {
-            await ky
-                .put(`${backendHost}/songs/${song.id}`, {
-                    json: song,
-                    headers: {
-                        Authorization: "Bearer " + user.google_auth_token,
-                    },
-                })
-                .json();
-        } catch (e) {
-            console.error("Failed to make update song request to BE", e);
+    const updateExistingSong = async (user: User) => {
+        const updateResult = await updateSong(song, user.google_auth_token);
+
+        if (isLeft(updateResult)) {
+            console.error(
+                "Failed to make update song request to BE",
+                updateResult.left
+            );
             enqueueSnackbar(
                 "Failed to save song to backend. Check console for more error details",
                 { variant: "error" }
@@ -86,9 +74,9 @@ export const useCloudSaveAction = (song: ChordSong) => {
         }
 
         if (song.isUnsaved()) {
-            await createSong(user);
+            await createNewSong(user);
         } else {
-            await updateSong(user);
+            await updateExistingSong(user);
         }
     };
 };
