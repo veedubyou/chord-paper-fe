@@ -16,6 +16,7 @@ import UnstyledCloseIcon from "@material-ui/icons/Close";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import FreeBreakfastIcon from "@material-ui/icons/FreeBreakfast";
+import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
 import UnstyledMenuIcon from "@material-ui/icons/Menu";
 import MusicNoteIcon from "@material-ui/icons/MusicNote";
 import PetsIcon from "@material-ui/icons/Pets";
@@ -24,6 +25,7 @@ import { makeStyles, withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { demoPath, songPath } from "../common/paths";
+import LoadSongDialog from "./LoadSongDialog";
 import { allExerciseRoutes, ExerciseRoute } from "./Tutorial";
 import Login from "./user/Login";
 import { User } from "./user/userContext";
@@ -90,6 +92,8 @@ const SideMenu: React.FC<SideMenuProps> = (
     props: SideMenuProps
 ): JSX.Element => {
     const [expanded, setExpanded] = useState(false);
+    const [showLoadSongsDialog, setShowLoadSongsDialog] = useState(false);
+
     const [learnSubmenuOpen, setLearnSubMenuOpen] = useState(false);
     const fillerStyle = useFillerStyle();
 
@@ -187,16 +191,29 @@ const SideMenu: React.FC<SideMenuProps> = (
                     style={linkStyle}
                     data-testid="Menu-HomeButton"
                 >
-                    <ListItem key="Song" button>
+                    <ListItem key="New Song" button>
                         <ListItemIcon>
                             <MusicNoteIcon />
                         </ListItemIcon>
                         <ListItemText
-                            primary="Song"
+                            primary="New Song"
                             primaryTypographyProps={typographyProps}
                         />
                     </ListItem>
                 </Link>
+                <ListItem
+                    key="Load Song"
+                    button
+                    onClick={(event: unknown) => setShowLoadSongsDialog(true)}
+                >
+                    <ListItemIcon>
+                        <LibraryMusicIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                        primary="Load Song"
+                        primaryTypographyProps={typographyProps}
+                    />
+                </ListItem>
                 <Link
                     key={demoPath.URL()}
                     to={demoPath.URL()}
@@ -240,6 +257,12 @@ const SideMenu: React.FC<SideMenuProps> = (
         <>
             {collapsedMenu}
             {expandedMenu}
+            {showLoadSongsDialog && (
+                <LoadSongDialog
+                    open
+                    onClose={() => setShowLoadSongsDialog(false)}
+                />
+            )}
         </>
     );
 };
