@@ -38,7 +38,7 @@ const ListSongSummaryValidator = iots.array(SongSummaryValidator);
 
 type SongSummaryValidatedFields = iots.TypeOf<typeof SongSummaryValidator>;
 
-export class SongSummary {
+export class SongSummary implements SongSummaryValidatedFields {
     id: string;
     owner: string;
     metadata: SongMetadata;
