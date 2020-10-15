@@ -115,6 +115,14 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
     };
 
     const summaryCards = (summaries: SongSummary[]): React.ReactElement => {
+        if (summaries.length === 0) {
+            return (
+                <Typography>
+                    You don't have any songs saved. GET TO IT
+                </Typography>
+            );
+        }
+
         return <List>{summaries.map(summaryListItem)}</List>;
     };
 
