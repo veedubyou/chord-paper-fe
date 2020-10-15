@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from "react";
-import ky from "ky/umd";
 import {
-    Typography as UnstyledTypography,
     Box as UnstyledBox,
-    StyledComponentProps,
-    Paper as UnstyledPaper,
     Grid,
+    Paper as UnstyledPaper,
+    StyledComponentProps,
     Theme,
+    Typography as UnstyledTypography,
 } from "@material-ui/core";
-import SigninIcon from "../../assets/img/google_signin.png";
-
+import { makeStyles, withStyles } from "@material-ui/styles";
+import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
-import { withStyles, makeStyles } from "@material-ui/styles";
-import { backendHost } from "../../common/backend";
+import React, { useEffect, useState } from "react";
+import SigninIcon from "../../assets/img/google_signin.png";
+import { login } from "../../common/backend";
 import { deserializeUser, User, UserContext } from "./userContext";
 
 const Paper = withStyles({
@@ -82,18 +81,13 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
             const handleGoogleLogin = async (user: gapi.auth2.GoogleUser) => {
                 const idToken: string = user.getAuthResponse().id_token;
 
-                let parsed: unknown;
+                let loginResult = await login(idToken);
 
-                try {
-                    parsed = await ky
-                        .post(backendHost + "/login", {
-                            headers: {
-                                Authorization: "Bearer " + idToken,
-                            },
-                        })
-                        .json();
-                } catch (e) {
-                    console.error("Failed to make login request to BE", e);
+                if (isLeft(loginResult)) {
+                    console.error(
+                        "Failed to make login request to BE",
+                        loginResult.left
+                    );
                     enqueueSnackbar(
                         "Failed to login to backend. Check console for more error details",
                         { variant: "error" }
@@ -102,10 +96,13 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                     return;
                 }
 
-                const parsedUser = deserializeUser(parsed, idToken);
+                const parsedUser = deserializeUser(loginResult.right, idToken);
 
                 if (parsedUser === null) {
-                    console.error("JSON payload is not a user", parsed);
+                    console.error(
+                        "JSON payload is not a user",
+                        loginResult.right
+                    );
                     enqueueSnackbar(
                         "Failed to login to backend. Check console for more error details",
                         { variant: "error" }

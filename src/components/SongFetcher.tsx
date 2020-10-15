@@ -1,12 +1,11 @@
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { makeStyles } from "@material-ui/styles";
 import { isLeft } from "fp-ts/lib/These";
-import ky from "ky";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { backendHost } from "../common/backend";
-import { ChordSong } from "../common/ChordModel/ChordSong";
 import ErrorImage from "../assets/img/error.jpeg";
-import { makeStyles } from "@material-ui/styles";
+import { getSong } from "../common/backend";
+import { ChordSong } from "../common/ChordModel/ChordSong";
 
 interface IDParams {
     id: string;
@@ -52,16 +51,14 @@ const SongFetcher: React.FC<SongFetcherProps> = (
     const errorStyles = useErrorStyles();
 
     const fetchSong = async () => {
-        let parsed: unknown;
+        let fetchResult = await getSong(id);
 
-        try {
-            parsed = await ky.get(backendHost + "/songs/" + id).json();
-        } catch (e) {
-            setFetchState({ state: "error", error: e });
+        if (isLeft(fetchResult)) {
+            setFetchState({ state: "error", error: fetchResult.left });
             return;
         }
 
-        const result = ChordSong.fromJSONObject(parsed);
+        const result = ChordSong.fromJSONObject(fetchResult.right);
         if (isLeft(result)) {
             setFetchState({
                 state: "error",
