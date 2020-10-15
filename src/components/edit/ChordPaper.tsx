@@ -28,10 +28,6 @@ const ChordPaper: React.FC<ChordPaperProps> = (
         props.onSongChanged?.(song);
     };
 
-    const newSongHandler = () => {
-        props.onSongChanged?.(new ChordSong());
-    };
-
     return (
         <>
             <Helmet>
@@ -54,7 +50,6 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                 <ChordPaperMenu
                     song={props.song}
                     onSongChanged={songChangeHandler}
-                    onNewSong={newSongHandler}
                     onPlay={props.onPlay}
                 />
             </RootPaper>

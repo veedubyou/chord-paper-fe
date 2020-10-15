@@ -55,6 +55,27 @@ export const getSong = async (
     return right(parsed);
 };
 
+export const getSongsForUser = async (
+    userID: string,
+    authToken: string
+): Promise<Either<Error, unknown>> => {
+    let parsed: unknown;
+
+    try {
+        parsed = await ky
+            .get(`${backendHost}/users/${userID}/songs`, {
+                headers: {
+                    Authorization: "Bearer " + authToken,
+                },
+            })
+            .json();
+    } catch (e) {
+        return left(e);
+    }
+
+    return right(parsed);
+};
+
 export const createSong = async (
     song: ChordSong,
     authToken: string

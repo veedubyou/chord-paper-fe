@@ -1,10 +1,9 @@
 import { Theme } from "@material-ui/core";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import FolderOpenIcon from "@material-ui/icons/FolderOpen";
-import NoteAddIcon from "@material-ui/icons/NoteAdd";
+import TransposeIcon from "@material-ui/icons/ImportExport";
 import PlayIcon from "@material-ui/icons/PlayArrow";
 import SaveIcon from "@material-ui/icons/Save";
-import TransposeIcon from "@material-ui/icons/ImportExport";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {
     SpeedDial as UnstyledSpeedDial,
     SpeedDialAction,
@@ -15,15 +14,14 @@ import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { PlainFn } from "../../../common/PlainFn";
+import { useCloudSaveAction } from "./cloudSave";
 import { useLoadMenuAction } from "./load";
 import { useSaveMenuAction } from "./save";
 import TransposeMenu from "./TransposeMenu";
-import { useCloudSaveAction } from "./cloudSave";
 
 interface ChordPaperMenuProps {
     song: ChordSong;
     onSongChanged: (song: ChordSong) => void;
-    onNewSong?: PlainFn;
     onPlay?: PlainFn;
 }
 
@@ -90,11 +88,6 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                 onClick={() => {
                     setTransposeMenuOpen(true);
                 }}
-            />
-            <SpeedDialAction
-                icon={<NoteAddIcon />}
-                tooltipTitle="New Song"
-                onClick={props.onNewSong}
             />
             <SpeedDialAction
                 icon={<CloudUploadIcon />}

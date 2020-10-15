@@ -28,13 +28,67 @@ const ChordSongValidator = iots.type({
 });
 type ChordSongValidatedFields = iots.TypeOf<typeof ChordSongValidator>;
 
+const SongSummaryValidator = iots.type({
+    id: iots.string,
+    owner: iots.string,
+    metadata: SongMetadataValidator,
+});
+
+const ListSongSummaryValidator = iots.array(SongSummaryValidator);
+
+type SongSummaryValidatedFields = iots.TypeOf<typeof SongSummaryValidator>;
+
+export class SongSummary {
+    id: string;
+    owner: string;
+    metadata: SongMetadata;
+
+    constructor(fields?: ChordSongFields) {
+        this.id = fields?.id ?? "";
+        this.owner = fields?.owner ?? "";
+        this.metadata = fields?.metadata ?? {
+            title: "",
+            composedBy: "",
+            performedBy: "",
+            asHeardFrom: "",
+        };
+    }
+
+    static fromJSONObject(jsonObj: unknown): Either<Error, SongSummary> {
+        const validationResult = SongSummaryValidator.decode(jsonObj);
+
+        if (isLeft(validationResult)) {
+            return left(new Error("Invalid Song Summary object"));
+        }
+
+        return right(new SongSummary({ ...validationResult.right }));
+    }
+
+    static fromJSONList(jsonList: unknown): Either<Error, SongSummary[]> {
+        const validationResult = ListSongSummaryValidator.decode(jsonList);
+
+        if (isLeft(validationResult)) {
+            return left(new Error("Invalid Song Summary list"));
+        }
+
+        const songSummaryList: SongSummary[] = validationResult.right.map(
+            (fields: SongSummaryValidatedFields): SongSummary => {
+                return new SongSummary({ ...fields });
+            }
+        );
+
+        return right(songSummaryList);
+    }
+}
+
 export interface ChordSongFields {
     id?: string;
     owner?: string;
     metadata?: SongMetadata;
 }
 
-export class ChordSong extends Collection<ChordLine> {
+export class ChordSong extends Collection<ChordLine>
+    implements SongSummaryValidatedFields {
     id: string;
     owner: string;
     metadata: SongMetadata;
