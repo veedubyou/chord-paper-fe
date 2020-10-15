@@ -1,6 +1,6 @@
 import { isWhitespace } from "../Whitespace";
 
-fdescribe("isWhitespace", () => {
+describe("isWhitespace", () => {
     test("normal space", () => {
         expect(isWhitespace(" ")).toEqual(true);
     });

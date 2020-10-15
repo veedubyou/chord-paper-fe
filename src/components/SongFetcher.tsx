@@ -39,8 +39,7 @@ const useErrorStyles = makeStyles({
 });
 
 interface SongFetcherProps {
-    basePath: string;
-    children: (song: ChordSong, path: string) => JSX.Element;
+    children: (song: ChordSong) => JSX.Element;
 }
 
 const SongFetcher: React.FC<SongFetcherProps> = (
@@ -51,10 +50,6 @@ const SongFetcher: React.FC<SongFetcherProps> = (
     });
     const { id } = useParams<IDParams>();
     const errorStyles = useErrorStyles();
-
-    if (id === "new") {
-        return props.children(new ChordSong(), props.basePath + "/new");
-    }
 
     const fetchSong = async () => {
         let parsed: unknown;
@@ -98,7 +93,7 @@ const SongFetcher: React.FC<SongFetcherProps> = (
             return <CircularProgress size={200} thickness={1} />;
         }
         case "loaded": {
-            return props.children(fetchState.song, props.basePath + "/" + id);
+            return props.children(fetchState.song);
         }
     }
 };
