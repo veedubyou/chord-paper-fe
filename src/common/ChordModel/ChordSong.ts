@@ -148,6 +148,10 @@ export class ChordSong extends Collection<ChordLine> {
         return this;
     }
 
+    isUnsaved(): boolean {
+        return this.id === "";
+    }
+
     mergeLineWithPrevious(idable: IDable<ChordLine>): boolean {
         const index = this.indexOf(idable.id);
         // no previous line to merge with, just bail
