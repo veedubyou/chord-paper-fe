@@ -6,28 +6,22 @@ import { useHistory } from "react-router-dom";
 import { backendHost } from "../../../common/backend";
 
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { UserContext } from "../../user/userContext";
+import { songPath } from "../../../common/paths";
+import { User, UserContext } from "../../user/userContext";
 
 export const useCloudSaveAction = (song: ChordSong) => {
     const user = React.useContext(UserContext);
     const { enqueueSnackbar } = useSnackbar();
     const history = useHistory();
 
-    return async () => {
-        if (user === null) {
-            enqueueSnackbar("You must log in to save your song", {
-                variant: "error",
-            });
-            return;
-        }
-
+    const createSong = async (user: User) => {
         song.owner = user.user_id;
 
         let parsed: unknown;
 
         try {
             parsed = await ky
-                .post(backendHost + "/songs", {
+                .post(`${backendHost}/songs`, {
                     json: song,
                     headers: {
                         Authorization: "Bearer " + user.google_auth_token,
@@ -37,7 +31,7 @@ export const useCloudSaveAction = (song: ChordSong) => {
         } catch (e) {
             console.error("Failed to make create song request to BE", e);
             enqueueSnackbar(
-                "Failed to create song to backend. Check console for more error details",
+                "Failed to save song to backend. Check console for more error details",
                 { variant: "error" }
             );
 
@@ -59,6 +53,42 @@ export const useCloudSaveAction = (song: ChordSong) => {
         song.id = result.right.id;
         //TODO: this code is super fucked, but this will all go away soon
         // when auto save happens
-        history.push("/song/" + song.id + "/edit");
+        history.push(songPath.withID(song.id).withMode("edit").URL());
+    };
+
+    const updateSong = async (user: User) => {
+        try {
+            await ky
+                .put(`${backendHost}/songs/${song.id}`, {
+                    json: song,
+                    headers: {
+                        Authorization: "Bearer " + user.google_auth_token,
+                    },
+                })
+                .json();
+        } catch (e) {
+            console.error("Failed to make update song request to BE", e);
+            enqueueSnackbar(
+                "Failed to save song to backend. Check console for more error details",
+                { variant: "error" }
+            );
+
+            return;
+        }
+    };
+
+    return async () => {
+        if (user === null) {
+            enqueueSnackbar("You must log in to save your song", {
+                variant: "error",
+            });
+            return;
+        }
+
+        if (song.isUnsaved()) {
+            await createSong(user);
+        } else {
+            await updateSong(user);
+        }
     };
 };
