@@ -63,7 +63,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
 
     const lastSavedAt: React.ReactNode =
         props.song.lastSavedAt === null ? null : (
-            <LastSavedAt date={props.song.lastSavedAt.toLocaleString()} />
+            <LastSavedAt lastSaved={props.song.lastSavedAt} />
         );
 
     const details = (
