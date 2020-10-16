@@ -41,6 +41,8 @@ const ListSongSummaryValidator = iots.array(SongSummaryValidator);
 
 type SongSummaryValidatedFields = iots.TypeOf<typeof SongSummaryValidator>;
 
+export type ChordSongFields = Partial<SongSummaryValidatedFields>;
+
 export class SongSummary implements SongSummaryValidatedFields {
     id: string;
     owner: string;
@@ -84,13 +86,6 @@ export class SongSummary implements SongSummaryValidatedFields {
 
         return right(songSummaryList);
     }
-}
-
-export interface ChordSongFields {
-    id?: string;
-    owner?: string;
-    lastSavedAt?: Date | null;
-    metadata?: SongMetadata;
 }
 
 export class ChordSong extends Collection<ChordLine>
