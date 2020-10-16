@@ -14,7 +14,7 @@ import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { PlainFn } from "../../../common/PlainFn";
-import { useCloudSaveAction } from "./cloudSave";
+import { useCloudCreateSong } from "./cloudSave";
 import { useLoadMenuAction } from "./load";
 import { useSaveMenuAction } from "./save";
 import TransposeMenu from "./TransposeMenu";
@@ -41,7 +41,7 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     const { enqueueSnackbar } = useSnackbar();
     const loadAction = useLoadMenuAction(props.onSongChanged, enqueueSnackbar);
     const saveAction = useSaveMenuAction(props.song);
-    const cloudSaveAction = useCloudSaveAction(props.song);
+    const cloudSaveAction = useCloudCreateSong(props.song);
 
     const openMenu = () => {
         setOpen(true);
@@ -89,11 +89,13 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                     setTransposeMenuOpen(true);
                 }}
             />
-            <SpeedDialAction
-                icon={<CloudUploadIcon />}
-                tooltipTitle="Save to Cloud"
-                onClick={cloudSaveAction}
-            />
+            {props.song.isUnsaved() && (
+                <SpeedDialAction
+                    icon={<CloudUploadIcon />}
+                    tooltipTitle="Save to Cloud"
+                    onClick={cloudSaveAction}
+                />
+            )}
             <SpeedDialAction
                 icon={<PlayIcon />}
                 tooltipTitle="Play Mode"
