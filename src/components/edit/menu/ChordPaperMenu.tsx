@@ -18,6 +18,7 @@ import { useCloudCreateSong } from "./cloudSave";
 import { useLoadMenuAction } from "./load";
 import { useSaveMenuAction } from "./save";
 import TransposeMenu from "./TransposeMenu";
+import useKonamiCode from "react-use-konami";
 
 interface ChordPaperMenuProps {
     song: ChordSong;
@@ -38,6 +39,7 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
 ): JSX.Element => {
     const [open, setOpen] = useState(false);
     const [transposeMenuOpen, setTransposeMenuOpen] = useState(false);
+    const [offlineMode, setOfflineMode] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
     const loadAction = useLoadMenuAction(props.onSongChanged, enqueueSnackbar);
     const saveAction = useSaveMenuAction(props.song);
@@ -50,6 +52,13 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     const closeMenu = () => {
         setOpen(false);
     };
+
+    useKonamiCode(() => {
+        setOfflineMode(true);
+        enqueueSnackbar("Local save and load buttons are enabled!", {
+            variant: "info",
+        });
+    });
 
     if (transposeMenuOpen) {
         return (
@@ -72,16 +81,20 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
             onClose={closeMenu}
             ariaLabel="SpeedDial"
         >
-            <SpeedDialAction
-                icon={<FolderOpenIcon />}
-                tooltipTitle="Load"
-                onClick={loadAction}
-            />
-            <SpeedDialAction
-                icon={<SaveIcon />}
-                tooltipTitle="Save"
-                onClick={saveAction}
-            />
+            {offlineMode && (
+                <SpeedDialAction
+                    icon={<FolderOpenIcon />}
+                    tooltipTitle="Load"
+                    onClick={loadAction}
+                />
+            )}
+            {offlineMode && (
+                <SpeedDialAction
+                    icon={<SaveIcon />}
+                    tooltipTitle="Save"
+                    onClick={saveAction}
+                />
+            )}
             <SpeedDialAction
                 icon={<TransposeIcon />}
                 tooltipTitle="Transpose"
