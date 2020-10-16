@@ -55,7 +55,6 @@ export const withCloud = <P extends SongProps>(
 
                 dirty = false;
 
-                console.log("executing saveee");
                 const result = await updateSong(song, user.google_auth_token);
                 if (isLeft(result)) {
                     //TODO: expose more error detail
