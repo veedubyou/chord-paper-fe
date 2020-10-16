@@ -24,7 +24,7 @@ const ChordSongValidator = iots.type({
     //TODO: undo the optionality of these fields once all songs are migrated
     id: iots.union([iots.string, iots.undefined]),
     owner: iots.union([iots.string, iots.undefined]),
-    lastSavedAt: iots.union([DateFromISOString, iots.null]),
+    lastSavedAt: iots.union([DateFromISOString, iots.null, iots.undefined]),
     elements: iots.array(ChordLineValidator),
     metadata: SongMetadataValidator,
 });
@@ -33,13 +33,15 @@ type ChordSongValidatedFields = iots.TypeOf<typeof ChordSongValidator>;
 const SongSummaryValidator = iots.type({
     id: iots.string,
     owner: iots.string,
-    lastSavedAt: iots.union([DateFromISOString, iots.null]),
+    lastSavedAt: iots.union([DateFromISOString, iots.null, iots.undefined]),
     metadata: SongMetadataValidator,
 });
 
 const ListSongSummaryValidator = iots.array(SongSummaryValidator);
 
 type SongSummaryValidatedFields = iots.TypeOf<typeof SongSummaryValidator>;
+
+export type ChordSongFields = Partial<SongSummaryValidatedFields>;
 
 export class SongSummary implements SongSummaryValidatedFields {
     id: string;
@@ -84,13 +86,6 @@ export class SongSummary implements SongSummaryValidatedFields {
 
         return right(songSummaryList);
     }
-}
-
-export interface ChordSongFields {
-    id?: string;
-    owner?: string;
-    lastSavedAt?: Date | null;
-    metadata?: SongMetadata;
 }
 
 export class ChordSong extends Collection<ChordLine>
