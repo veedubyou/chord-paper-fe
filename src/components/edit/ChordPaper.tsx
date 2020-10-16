@@ -9,6 +9,7 @@ import { PlainFn } from "../../common/PlainFn";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
+        position: "relative",
         margin: theme.spacing(5),
         minHeight: theme.spacing(92),
         minWidth: theme.spacing(92),

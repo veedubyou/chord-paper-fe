@@ -1,8 +1,17 @@
 import { Box, Grid, Theme, Typography } from "@material-ui/core";
-import { useTheme } from "@material-ui/styles";
+import { useTheme, withStyles } from "@material-ui/styles";
 import React from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
+import UnstyledLastSavedAt from "../display/LastSavedAt";
 import EditableTypography from "./EditableTypography";
+
+const LastSavedAt = withStyles((theme: Theme) => ({
+    root: {
+        position: "absolute",
+        top: theme.spacing(2),
+        right: theme.spacing(2),
+    },
+}))(UnstyledLastSavedAt);
 
 interface HeaderProps {
     song: ChordSong;
@@ -51,6 +60,11 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
             </EditableTypography>
         </Box>
     );
+
+    const lastSavedAt: React.ReactNode =
+        props.song.lastSavedAt === null ? null : (
+            <LastSavedAt date={props.song.lastSavedAt.toLocaleString()} />
+        );
 
     const details = (
         <Grid container justify="center">
@@ -112,6 +126,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
             paddingRight={theme.spacing(0.5)}
             data-testid="Header"
         >
+            {lastSavedAt}
             {title}
             {details}
         </Box>

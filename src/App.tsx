@@ -37,6 +37,7 @@ import { TutorialSwitches } from "./components/Tutorial";
 import { User, UserContext } from "./components/user/userContext";
 import Version from "./components/Version";
 import { withSongContext } from "./components/WithSongContext";
+import { withCloud } from "./components/WithCloud";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -88,7 +89,7 @@ const AppLayout = withStyles({
     },
 })(Grid);
 
-const MainSong = withSongContext(SongRouter);
+const MainSong = withSongContext(withCloud(SongRouter));
 
 const AppContent: React.FC<{}> = (): JSX.Element => {
     const [user, setUser] = useState<User | null>(null);

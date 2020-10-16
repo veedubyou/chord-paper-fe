@@ -2,12 +2,12 @@ import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { createSong, updateSong } from "../../../common/backend";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
+import { createSong } from "../../../common/backend";
 import { songPath } from "../../../common/paths";
 import { User, UserContext } from "../../user/userContext";
+import { ChordSong } from "../../../common/ChordModel/ChordSong";
 
-export const useCloudSaveAction = (song: ChordSong) => {
+export const useCloudCreateSong = (song: ChordSong) => {
     const user = React.useContext(UserContext);
     const { enqueueSnackbar } = useSnackbar();
     const history = useHistory();
@@ -43,46 +43,9 @@ export const useCloudSaveAction = (song: ChordSong) => {
         }
 
         const deserializedSong = deserializeResult.right;
-
-        song.id = deserializedSong.id;
-        song.lastSavedAt = deserializedSong.lastSavedAt;
-
-        //TODO: this code is super fucked, but this will all go away soon
-        // when auto save happens
-        history.push(songPath.withID(song.id).withMode("edit").URL());
-    };
-
-    const updateExistingSong = async (user: User) => {
-        const updateResult = await updateSong(song, user.google_auth_token);
-
-        if (isLeft(updateResult)) {
-            console.error(
-                "Failed to make update song request to BE",
-                updateResult.left
-            );
-            enqueueSnackbar(
-                "Failed to save song to backend. Check console for more error details",
-                { variant: "error" }
-            );
-
-            return;
-        }
-
-        let deserializeResult = ChordSong.fromJSONObject(updateResult.right);
-
-        if (isLeft(deserializeResult)) {
-            console.error("Backend response does not match song format");
-            console.log(deserializeResult.left);
-            console.log(updateResult.right);
-            enqueueSnackbar(
-                "A failure happened. Check console for more error details",
-                { variant: "error" }
-            );
-            return;
-        }
-
-        const deserializedSong = deserializeResult.right;
-        song.lastSavedAt = deserializedSong.lastSavedAt;
+        history.push(
+            songPath.withID(deserializedSong.id).withMode("edit").URL()
+        );
     };
 
     return async () => {
@@ -95,8 +58,6 @@ export const useCloudSaveAction = (song: ChordSong) => {
 
         if (song.isUnsaved()) {
             await createNewSong(user);
-        } else {
-            await updateExistingSong(user);
         }
     };
 };

@@ -2,6 +2,7 @@ import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
 import { DateFromISOString } from "io-ts-types";
 import lodash from "lodash";
+import { User } from "../../components/user/userContext";
 import { ChordBlock } from "./ChordBlock";
 import {
     ChordLine,
@@ -204,6 +205,18 @@ export class ChordSong extends Collection<ChordLine>
 
     isUnsaved(): boolean {
         return this.id === "";
+    }
+
+    isOwner(user: User | null): boolean {
+        if (this.owner === "") {
+            return false;
+        }
+
+        if (user === null) {
+            return false;
+        }
+
+        return this.owner === user.user_id;
     }
 
     mergeLineWithPrevious(idable: IDable<ChordLine>): boolean {
