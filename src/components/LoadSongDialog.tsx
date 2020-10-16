@@ -2,6 +2,7 @@ import {
     Dialog,
     DialogContent,
     DialogTitle,
+    Divider,
     LinearProgress,
     List,
     ListItem,
@@ -105,12 +106,15 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
                 : "(Untitled)";
 
         return (
-            <ListItem key={summary.id} button onClick={navigateToSong}>
-                <ListItemText
-                    primary={title}
-                    secondary={details}
-                ></ListItemText>
-            </ListItem>
+            <>
+                <ListItem key={summary.id} button onClick={navigateToSong}>
+                    <ListItemText
+                        primary={title}
+                        secondary={details}
+                    ></ListItemText>
+                </ListItem>
+                <Divider key={`${summary.id}-divider`} />
+            </>
         );
     };
 
