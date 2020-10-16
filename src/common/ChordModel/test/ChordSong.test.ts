@@ -45,6 +45,7 @@ describe("Chord Song", () => {
                 performedBy: "Rick Astley",
                 asHeardFrom: "A Rickroll from my youth",
             },
+            lastSavedAt: new Date(),
         });
     });
 
@@ -204,7 +205,11 @@ describe("Chord Song", () => {
     describe("contentEquals", () => {
         describe("with content", () => {
             let original: ChordSong;
+            let now: Date;
+
             beforeEach(() => {
+                now = new Date("2020-10-16T11:57:09.952Z");
+
                 original = new ChordSong(
                     [
                         new ChordLine(
@@ -236,10 +241,15 @@ describe("Chord Song", () => {
                         ]),
                     ],
                     {
-                        title: "Never Gonna Give You Up",
-                        composedBy: "Stock Aitken Waterman",
-                        performedBy: "Rick Astley",
-                        asHeardFrom: "every time someone rickrolls me",
+                        id: "idiomatic",
+                        owner: "Crick Ghastley",
+                        lastSavedAt: now,
+                        metadata: {
+                            title: "Never Gonna Give You Up",
+                            composedBy: "Stock Aitken Waterman",
+                            performedBy: "Rick Astley",
+                            asHeardFrom: "every time someone rickrolls me",
+                        },
                     }
                 );
             });
@@ -276,10 +286,15 @@ describe("Chord Song", () => {
                         ]),
                     ],
                     {
-                        title: "Never Gonna Give You Up",
-                        composedBy: "Stock Aitken Waterman",
-                        performedBy: "Rick Astley",
-                        asHeardFrom: "every time someone rickrolls me",
+                        id: "idiomatic",
+                        owner: "Crick Ghastley",
+                        lastSavedAt: now,
+                        metadata: {
+                            title: "Never Gonna Give You Up",
+                            composedBy: "Stock Aitken Waterman",
+                            performedBy: "Rick Astley",
+                            asHeardFrom: "every time someone rickrolls me",
+                        },
                     }
                 );
 
@@ -318,10 +333,15 @@ describe("Chord Song", () => {
                         ]),
                     ],
                     {
-                        title: "Never Gonna Give You Up",
-                        composedBy: "Stock Aitken Waterman",
-                        performedBy: "Rick Astley",
-                        asHeardFrom: "every time someone rickrolls me",
+                        id: "idiomatic",
+                        owner: "Crick Ghastley",
+                        lastSavedAt: now,
+                        metadata: {
+                            title: "Never Gonna Give You Up",
+                            composedBy: "Stock Aitken Waterman",
+                            performedBy: "Rick Astley",
+                            asHeardFrom: "every time someone rickrolls me",
+                        },
                     }
                 );
 
@@ -360,10 +380,15 @@ describe("Chord Song", () => {
                         ]),
                     ],
                     {
-                        title: "Never Gonna Give You Up",
-                        composedBy: "Stock Aitken Waterman",
-                        performedBy: "Rick Astley",
-                        asHeardFrom: "every time someone rickrolls me",
+                        id: "idiomatic",
+                        owner: "Crick Ghastley",
+                        lastSavedAt: now,
+                        metadata: {
+                            title: "Never Gonna Give You Up",
+                            composedBy: "Stock Aitken Waterman",
+                            performedBy: "Rick Astley",
+                            asHeardFrom: "every time someone rickrolls me",
+                        },
                     }
                 );
                 expect(original.contentEquals(other)).toEqual(false);
@@ -401,10 +426,15 @@ describe("Chord Song", () => {
                         ),
                     ],
                     {
-                        title: "Never Gonna Give You Up",
-                        composedBy: "Stock Aitken Waterman",
-                        performedBy: "Rick Astley",
-                        asHeardFrom: "every time someone rickrolls me",
+                        id: "idiomatic",
+                        owner: "Crick Ghastley",
+                        lastSavedAt: now,
+                        metadata: {
+                            title: "Never Gonna Give You Up",
+                            composedBy: "Stock Aitken Waterman",
+                            performedBy: "Rick Astley",
+                            asHeardFrom: "every time someone rickrolls me",
+                        },
                     }
                 );
                 expect(original.contentEquals(other)).toEqual(false);
