@@ -194,9 +194,7 @@ export class ChordSong extends Collection<ChordLine>
 
     clone(): ChordSong {
         return new ChordSong(this.elements, {
-            id: this.id,
-            owner: this.owner,
-            metadata: this.metadata,
+            ...this,
         });
     }
 
