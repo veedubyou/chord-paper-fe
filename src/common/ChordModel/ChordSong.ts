@@ -24,7 +24,7 @@ const ChordSongValidator = iots.type({
     //TODO: undo the optionality of these fields once all songs are migrated
     id: iots.union([iots.string, iots.undefined]),
     owner: iots.union([iots.string, iots.undefined]),
-    lastSavedAt: iots.union([DateFromISOString, iots.null]),
+    lastSavedAt: iots.union([DateFromISOString, iots.null, iots.undefined]),
     elements: iots.array(ChordLineValidator),
     metadata: SongMetadataValidator,
 });
@@ -33,7 +33,7 @@ type ChordSongValidatedFields = iots.TypeOf<typeof ChordSongValidator>;
 const SongSummaryValidator = iots.type({
     id: iots.string,
     owner: iots.string,
-    lastSavedAt: iots.union([DateFromISOString, iots.null]),
+    lastSavedAt: iots.union([DateFromISOString, iots.null, iots.undefined]),
     metadata: SongMetadataValidator,
 });
 
