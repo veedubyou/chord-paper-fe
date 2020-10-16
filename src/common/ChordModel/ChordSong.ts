@@ -21,10 +21,9 @@ const SongMetadataValidator = iots.type({
 type SongMetadata = iots.TypeOf<typeof SongMetadataValidator>;
 
 const ChordSongValidator = iots.type({
-    //TODO: undo the optionality of these fields once all songs are migrated
-    id: iots.union([iots.string, iots.undefined]),
-    owner: iots.union([iots.string, iots.undefined]),
-    lastSavedAt: iots.union([DateFromISOString, iots.null, iots.undefined]),
+    id: iots.string,
+    owner: iots.string,
+    lastSavedAt: iots.union([DateFromISOString, iots.null]),
     elements: iots.array(ChordLineValidator),
     metadata: SongMetadataValidator,
 });
@@ -33,7 +32,7 @@ type ChordSongValidatedFields = iots.TypeOf<typeof ChordSongValidator>;
 const SongSummaryValidator = iots.type({
     id: iots.string,
     owner: iots.string,
-    lastSavedAt: iots.union([DateFromISOString, iots.null, iots.undefined]),
+    lastSavedAt: iots.union([DateFromISOString, iots.null]),
     metadata: SongMetadataValidator,
 });
 
@@ -41,7 +40,7 @@ const ListSongSummaryValidator = iots.array(SongSummaryValidator);
 
 type SongSummaryValidatedFields = iots.TypeOf<typeof SongSummaryValidator>;
 
-export type ChordSongFields = Partial<SongSummaryValidatedFields>;
+export type ChordSongFields = SongSummaryValidatedFields;
 
 export class SongSummary implements SongSummaryValidatedFields {
     id: string;
@@ -50,15 +49,23 @@ export class SongSummary implements SongSummaryValidatedFields {
     metadata: SongMetadata;
 
     constructor(fields?: ChordSongFields) {
-        this.id = fields?.id ?? "";
-        this.owner = fields?.owner ?? "";
-        this.metadata = fields?.metadata ?? {
-            title: "",
-            composedBy: "",
-            performedBy: "",
-            asHeardFrom: "",
-        };
-        this.lastSavedAt = fields?.lastSavedAt ?? null;
+        if (fields === undefined) {
+            this.id = "";
+            this.owner = "";
+            this.metadata = {
+                title: "",
+                composedBy: "",
+                performedBy: "",
+                asHeardFrom: "",
+            };
+            this.lastSavedAt = null;
+            return;
+        }
+
+        this.id = fields.id;
+        this.owner = fields.owner;
+        this.metadata = fields.metadata;
+        this.lastSavedAt = fields.lastSavedAt;
     }
 
     static fromJSONObject(jsonObj: unknown): Either<Error, SongSummary> {
@@ -100,16 +107,23 @@ export class ChordSong extends Collection<ChordLine>
 
         super(elements);
 
-        this.id = fields?.id ?? "";
-        this.owner = fields?.owner ?? "";
-        this.metadata = fields?.metadata ?? {
-            title: "",
-            composedBy: "",
-            performedBy: "",
-            asHeardFrom: "",
-        };
+        if (fields === undefined) {
+            this.id = "";
+            this.owner = "";
+            this.metadata = {
+                title: "",
+                composedBy: "",
+                performedBy: "",
+                asHeardFrom: "",
+            };
+            this.lastSavedAt = null;
+            return;
+        }
 
-        this.lastSavedAt = fields?.lastSavedAt ?? null;
+        this.id = fields.id;
+        this.owner = fields.owner;
+        this.metadata = fields.metadata;
+        this.lastSavedAt = fields.lastSavedAt;
     }
 
     static fromValidatedFields(
