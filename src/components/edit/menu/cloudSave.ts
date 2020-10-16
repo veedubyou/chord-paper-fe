@@ -42,7 +42,11 @@ export const useCloudSaveAction = (song: ChordSong) => {
             return;
         }
 
-        song.id = deserializeResult.right.id;
+        const deserializedSong = deserializeResult.right;
+
+        song.id = deserializedSong.id;
+        song.lastSavedAt = deserializedSong.lastSavedAt;
+
         //TODO: this code is super fucked, but this will all go away soon
         // when auto save happens
         history.push(songPath.withID(song.id).withMode("edit").URL());
@@ -63,6 +67,22 @@ export const useCloudSaveAction = (song: ChordSong) => {
 
             return;
         }
+
+        let deserializeResult = ChordSong.fromJSONObject(updateResult.right);
+
+        if (isLeft(deserializeResult)) {
+            console.error("Backend response does not match song format");
+            console.log(deserializeResult.left);
+            console.log(updateResult.right);
+            enqueueSnackbar(
+                "A failure happened. Check console for more error details",
+                { variant: "error" }
+            );
+            return;
+        }
+
+        const deserializedSong = deserializeResult.right;
+        song.lastSavedAt = deserializedSong.lastSavedAt;
     };
 
     return async () => {

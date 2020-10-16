@@ -50,6 +50,23 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
         );
     }
 
+    const summarySortFn = (a: SongSummary, b: SongSummary): number => {
+        if (a.lastSavedAt === b.lastSavedAt) {
+            return 0;
+        }
+
+        // sort in reverse order - most recently saved should come first
+        if (a.lastSavedAt === null) {
+            return 1;
+        }
+
+        if (b.lastSavedAt === null) {
+            return -1;
+        }
+
+        return a.lastSavedAt < b.lastSavedAt ? 1 : -1;
+    };
+
     const loadSummaries = async () => {
         const result = await getSongsForUser(
             user.user_id,
@@ -66,7 +83,10 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
             return;
         }
 
-        setFetchState({ state: "loaded", item: summariesResult.right });
+        const summaries = summariesResult.right;
+        summaries.sort(summarySortFn);
+
+        setFetchState({ state: "loaded", item: summaries });
     };
 
     const summaryListItem = (summary: SongSummary): React.ReactElement => {
@@ -96,6 +116,11 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
             <>
                 {detailElement(summary.metadata.performedBy, "Performed by")}
                 {detailElement(summary.metadata.composedBy, "Composed by")}
+                {summary.lastSavedAt !== null && (
+                    <Typography display="block" variant="caption">
+                        {`Last Saved At: ${summary.lastSavedAt.toLocaleString()}`}
+                    </Typography>
+                )}
             </>
         );
 
