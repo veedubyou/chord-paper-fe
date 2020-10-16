@@ -1,5 +1,6 @@
 import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
+import { DateFromISOString } from "io-ts-types";
 import lodash from "lodash";
 import { ChordBlock } from "./ChordBlock";
 import {
@@ -23,6 +24,7 @@ const ChordSongValidator = iots.type({
     //TODO: undo the optionality of these fields once all songs are migrated
     id: iots.union([iots.string, iots.undefined]),
     owner: iots.union([iots.string, iots.undefined]),
+    lastSavedAt: iots.union([DateFromISOString, iots.null]),
     elements: iots.array(ChordLineValidator),
     metadata: SongMetadataValidator,
 });
@@ -31,6 +33,7 @@ type ChordSongValidatedFields = iots.TypeOf<typeof ChordSongValidator>;
 const SongSummaryValidator = iots.type({
     id: iots.string,
     owner: iots.string,
+    lastSavedAt: iots.union([DateFromISOString, iots.null]),
     metadata: SongMetadataValidator,
 });
 
@@ -41,6 +44,7 @@ type SongSummaryValidatedFields = iots.TypeOf<typeof SongSummaryValidator>;
 export class SongSummary implements SongSummaryValidatedFields {
     id: string;
     owner: string;
+    lastSavedAt: Date | null;
     metadata: SongMetadata;
 
     constructor(fields?: ChordSongFields) {
@@ -52,6 +56,7 @@ export class SongSummary implements SongSummaryValidatedFields {
             performedBy: "",
             asHeardFrom: "",
         };
+        this.lastSavedAt = fields?.lastSavedAt ?? null;
     }
 
     static fromJSONObject(jsonObj: unknown): Either<Error, SongSummary> {
@@ -84,6 +89,7 @@ export class SongSummary implements SongSummaryValidatedFields {
 export interface ChordSongFields {
     id?: string;
     owner?: string;
+    lastSavedAt?: Date | null;
     metadata?: SongMetadata;
 }
 
@@ -91,6 +97,7 @@ export class ChordSong extends Collection<ChordLine>
     implements SongSummaryValidatedFields {
     id: string;
     owner: string;
+    lastSavedAt: Date | null;
     metadata: SongMetadata;
 
     constructor(input_elements?: ChordLine[], fields?: ChordSongFields) {
@@ -106,6 +113,8 @@ export class ChordSong extends Collection<ChordLine>
             performedBy: "",
             asHeardFrom: "",
         };
+
+        this.lastSavedAt = fields?.lastSavedAt ?? null;
     }
 
     static fromValidatedFields(
@@ -117,9 +126,7 @@ export class ChordSong extends Collection<ChordLine>
             }
         );
         return new ChordSong(chordLines, {
-            id: validatedFields.id,
-            owner: validatedFields.owner,
-            metadata: validatedFields.metadata,
+            ...validatedFields,
         });
     }
 
