@@ -1,6 +1,17 @@
-import { StyledComponentProps, Typography } from "@material-ui/core";
+import {
+    StyledComponentProps,
+    Typography as UnstyledTypography,
+} from "@material-ui/core";
+import grey from "@material-ui/core/colors/grey";
+import { withStyles } from "@material-ui/styles";
+import { DateTime, Duration } from "luxon";
 import React, { useEffect, useState } from "react";
-import { DateTime } from "luxon";
+
+const Typography = withStyles({
+    root: {
+        color: grey[600],
+    },
+})(UnstyledTypography);
 
 interface LastSavedAtProps extends StyledComponentProps {
     lastSaved: Date;
@@ -13,9 +24,16 @@ const LastSavedAt: React.FC<LastSavedAtProps> = (
 
     const timeDescription = (): string => {
         const lastSaved = DateTime.fromJSDate(props.lastSaved);
-        const hoursSinceSaved: number = lastSaved.diffNow().as("hours");
+        const sinceSaved: Duration = lastSaved.diffNow();
+
+        const hoursSinceSaved: number = sinceSaved.as("hour");
         if (hoursSinceSaved <= -1) {
             return lastSaved.toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS);
+        }
+
+        const secondsSinceSaved: number = lastSaved.diffNow().as("second");
+        if (secondsSinceSaved >= -1) {
+            return "just now";
         }
 
         const relativeDescription = lastSaved.toRelative();
