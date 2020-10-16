@@ -9,12 +9,12 @@ interface LastSavedAtProps extends StyledComponentProps {
 const LastSavedAt: React.FC<LastSavedAtProps> = (
     props: LastSavedAtProps
 ): JSX.Element => {
-    const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
+    const [, setLastRefreshed] = useState<Date>(new Date());
 
     const timeDescription = (): string => {
         const lastSaved = DateTime.fromJSDate(props.lastSaved);
-        const durationSinceSaved = lastSaved.diffNow();
-        if (durationSinceSaved.as("hours") >= 1) {
+        const hoursSinceSaved: number = lastSaved.diffNow().as("hours");
+        if (hoursSinceSaved <= -1) {
             return lastSaved.toLocaleString(DateTime.DATETIME_MED_WITH_SECONDS);
         }
 
@@ -27,7 +27,7 @@ const LastSavedAt: React.FC<LastSavedAtProps> = (
     };
 
     useEffect(() => {
-        const interval = setInterval(() => setLastRefreshed(new Date()), 10000);
+        const interval = setInterval(() => setLastRefreshed(new Date()), 30000);
         return () => clearInterval(interval);
     }, [setLastRefreshed]);
 
