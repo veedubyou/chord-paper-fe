@@ -19,6 +19,7 @@ import { useLoadMenuAction } from "./load";
 import { useSaveMenuAction } from "./save";
 import TransposeMenu from "./TransposeMenu";
 import useKonamiCode from "react-use-konami";
+import { UserContext } from "../../user/userContext";
 
 interface ChordPaperMenuProps {
     song: ChordSong;
@@ -41,6 +42,8 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     const [transposeMenuOpen, setTransposeMenuOpen] = useState(false);
     const [offlineMode, setOfflineMode] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
+
+    const user = React.useContext(UserContext);
     const loadAction = useLoadMenuAction(props.onSongChanged, enqueueSnackbar);
     const saveAction = useSaveMenuAction(props.song);
     const cloudSaveAction = useCloudCreateSong(props.song);
@@ -102,11 +105,11 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                     setTransposeMenuOpen(true);
                 }}
             />
-            {props.song.isUnsaved() && (
+            {props.song.isUnsaved() && user !== null && (
                 <SpeedDialAction
                     icon={<CloudUploadIcon />}
                     tooltipTitle="Save to Cloud"
-                    onClick={cloudSaveAction}
+                    onClick={() => cloudSaveAction(user)}
                 />
             )}
             <SpeedDialAction

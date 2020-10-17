@@ -28,7 +28,7 @@ import { demoPath, songPath } from "../common/paths";
 import LoadSongDialog from "./LoadSongDialog";
 import { allExerciseRoutes, ExerciseRoute } from "./Tutorial";
 import Login from "./user/Login";
-import { User } from "./user/userContext";
+import { User, UserContext } from "./user/userContext";
 
 const withPointerStyle = withStyles({
     root: {
@@ -91,6 +91,7 @@ interface SideMenuProps {
 const SideMenu: React.FC<SideMenuProps> = (
     props: SideMenuProps
 ): JSX.Element => {
+    const user = React.useContext(UserContext);
     const [expanded, setExpanded] = useState(false);
     const [showLoadSongsDialog, setShowLoadSongsDialog] = useState(false);
 
@@ -201,19 +202,23 @@ const SideMenu: React.FC<SideMenuProps> = (
                         />
                     </ListItem>
                 </Link>
-                <ListItem
-                    key="Load Song"
-                    button
-                    onClick={(event: unknown) => setShowLoadSongsDialog(true)}
-                >
-                    <ListItemIcon>
-                        <LibraryMusicIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                        primary="Load Song"
-                        primaryTypographyProps={typographyProps}
-                    />
-                </ListItem>
+                {user !== null && (
+                    <ListItem
+                        key="Load Song"
+                        button
+                        onClick={(event: unknown) =>
+                            setShowLoadSongsDialog(true)
+                        }
+                    >
+                        <ListItemIcon>
+                            <LibraryMusicIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                            primary="Load Song"
+                            primaryTypographyProps={typographyProps}
+                        />
+                    </ListItem>
+                )}
                 <Link
                     key={demoPath.URL()}
                     to={demoPath.URL()}
