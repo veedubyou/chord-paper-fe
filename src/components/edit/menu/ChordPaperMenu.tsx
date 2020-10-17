@@ -87,14 +87,14 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
             {offlineMode && (
                 <SpeedDialAction
                     icon={<FolderOpenIcon />}
-                    tooltipTitle="Load"
+                    tooltipTitle="Load from computer"
                     onClick={loadAction}
                 />
             )}
             {offlineMode && (
                 <SpeedDialAction
                     icon={<SaveIcon />}
-                    tooltipTitle="Save"
+                    tooltipTitle="Save to computer"
                     onClick={saveAction}
                 />
             )}
