@@ -1,14 +1,12 @@
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
-import React from "react";
 import { useHistory } from "react-router-dom";
 import { createSong } from "../../../common/backend";
-import { songPath } from "../../../common/paths";
-import { User, UserContext } from "../../user/userContext";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
+import { songPath } from "../../../common/paths";
+import { User } from "../../user/userContext";
 
 export const useCloudCreateSong = (song: ChordSong) => {
-    const user = React.useContext(UserContext);
     const { enqueueSnackbar } = useSnackbar();
     const history = useHistory();
 
@@ -48,14 +46,7 @@ export const useCloudCreateSong = (song: ChordSong) => {
         );
     };
 
-    return async () => {
-        if (user === null) {
-            enqueueSnackbar("You must log in to save your song", {
-                variant: "error",
-            });
-            return;
-        }
-
+    return async (user: User) => {
         if (song.isUnsaved()) {
             await createNewSong(user);
         }
