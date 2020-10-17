@@ -20,6 +20,7 @@ import Starting from "./tutorial/Start";
 import Labels from "./tutorial/Labels";
 import PlayMode from "./tutorial/PlayMode";
 import SplitLine from "./tutorial/SplitLine";
+import Saving from "./tutorial/Saving";
 
 type ExerciseEntry = {
     title: string;
@@ -112,6 +113,11 @@ const allExercises: ExerciseEntry[] = [
         title: "Play Mode",
         route: "/learn/play_mode",
         component: PlayMode,
+    },
+    {
+        title: "Saving and Loading",
+        route: "/learn/saving",
+        component: Saving,
     },
 ];
 
