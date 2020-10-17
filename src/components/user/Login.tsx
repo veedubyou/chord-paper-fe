@@ -1,34 +1,30 @@
 import {
-    Box as UnstyledBox,
     Grid,
     Paper as UnstyledPaper,
     StyledComponentProps,
     Theme,
     Typography as UnstyledTypography,
 } from "@material-ui/core";
+import grey from "@material-ui/core/colors/grey";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
-import SigninIcon from "../../assets/img/google_signin.png";
+import SigninIcon from "../../assets/img/google_signin.svg";
 import { login } from "../../common/backend";
 import { deserializeUser, User, UserContext } from "./userContext";
 
 const Paper = withStyles({
     root: {
         width: "100%",
+        cursor: "pointer",
     },
 })(UnstyledPaper);
-
-const Box = withStyles({
-    root: {
-        width: "100%",
-    },
-})(UnstyledBox);
 
 const Typography = withStyles((theme: Theme) => ({
     root: {
         margin: theme.spacing(2),
+        color: grey[600],
     },
 }))(UnstyledTypography);
 
@@ -38,9 +34,8 @@ const googleClientID =
 
 const useSigninStyles = makeStyles({
     root: {
-        maxWidth: "100%",
-        maxHeight: "100%",
-        cursor: "pointer",
+        display: "inline-block",
+        objectFit: "contain",
     },
 });
 
@@ -54,7 +49,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     const signinStyles = useSigninStyles();
     const user: User | null = React.useContext(UserContext);
 
-    const showSigninButton = (user: User | null): user is null => {
+    const userNotSignedIn = (user: User | null): user is null => {
         return user === null;
     };
 
@@ -114,7 +109,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 props.onUserChanged(parsedUser);
             };
 
-            if (!showSigninButton(user)) {
+            if (!userNotSignedIn(user)) {
                 return;
             }
 
@@ -149,25 +144,32 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
         return <div></div>;
     }
 
-    if (showSigninButton(user)) {
-        return (
-            <Paper classes={props.classes}>
-                <Box id={googleSignInID}>
+    const userDescription = (user: User | null): string => {
+        if (userNotSignedIn(user)) {
+            return "Sign In";
+        }
+
+        if (user.name === null) {
+            return "You Logged In But Who Are You???";
+        }
+
+        return user.name;
+    };
+
+    return (
+        <Paper id={googleSignInID} classes={props.classes}>
+            <Grid container alignItems="center" justify="center">
+                <Grid item>
                     <img
                         src={SigninIcon}
                         alt="Google Signin"
                         className={signinStyles.root}
                     />
-                </Box>
-            </Paper>
-        );
-    }
-
-    return (
-        <Paper classes={props.classes}>
-            <Grid container>
-                <Grid item container justify="center">
-                    <Typography>Signed in as {user.name}</Typography>
+                </Grid>
+                <Grid item>
+                    <Typography variant="h6" display="inline">
+                        {userDescription(user)}
+                    </Typography>
                 </Grid>
             </Grid>
         </Paper>
