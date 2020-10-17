@@ -12,7 +12,8 @@ const Saving: React.FC<{}> = (): JSX.Element => {
                 You can save and load your songs if you have logged in. When you
                 want to save your song to the cloud, hover to the bottom right
                 menu and click <CloudUploadIcon /> to commit the song. After the
-                song is saved once, it will save any changes automatically.
+                song is saved once, it will continue to save any changes
+                automatically.
             </Typography>
             <LineBreak />
             <Typography>
