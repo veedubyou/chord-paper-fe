@@ -73,8 +73,17 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
         }
 
         gapi.load("auth2", () => {
-            const handleGoogleLogin = async (user: gapi.auth2.GoogleUser) => {
-                const idToken: string = user.getAuthResponse().id_token;
+            const handleGoogleLogin = async (
+                currentUser: gapi.auth2.CurrentUser
+            ) => {
+                const idToken: string = currentUser.get().getAuthResponse()
+                    .id_token;
+
+                const expiresAt = currentUser.get().getAuthResponse()
+                    .expires_at;
+
+                console.log("expires at");
+                console.log(new Date(expiresAt));
 
                 let loginResult = await login(idToken);
 
@@ -91,7 +100,10 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                     return;
                 }
 
-                const parsedUser = deserializeUser(loginResult.right, idToken);
+                const parsedUser = deserializeUser(
+                    loginResult.right,
+                    currentUser
+                );
 
                 if (parsedUser === null) {
                     console.error(
@@ -117,7 +129,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 authClient.attachClickHandler(
                     document.getElementById(googleSignInID),
                     {},
-                    handleGoogleLogin,
+                    () => handleGoogleLogin(authClient.currentUser),
                     (failureReason: string) => {
                         console.error(
                             "Failed to login to Google",
@@ -127,7 +139,11 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 );
 
                 if (authClient.isSignedIn.get()) {
-                    handleGoogleLogin(authClient.currentUser.get());
+                    authClient.currentUser.listen(() => {
+                        console.log("listener invoked");
+                        console.log(new Date());
+                    });
+                    handleGoogleLogin(authClient.currentUser);
                 }
             };
 

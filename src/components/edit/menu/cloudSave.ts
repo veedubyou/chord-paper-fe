@@ -11,9 +11,9 @@ export const useCloudCreateSong = (song: ChordSong) => {
     const history = useHistory();
 
     const createNewSong = async (user: User) => {
-        song.owner = user.user_id;
+        song.owner = user.userID;
 
-        const createResult = await createSong(song, user.google_auth_token);
+        const createResult = await createSong(song, user.authToken);
 
         if (isLeft(createResult)) {
             console.error(

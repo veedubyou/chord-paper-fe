@@ -69,10 +69,7 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
     };
 
     const loadSummaries = async () => {
-        const result = await getSongsForUser(
-            user.user_id,
-            user.google_auth_token
-        );
+        const result = await getSongsForUser(user.userID, user.authToken);
         if (isLeft(result)) {
             setFetchState({ state: "error", error: result.left });
             return;

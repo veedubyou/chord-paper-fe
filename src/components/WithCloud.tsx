@@ -55,7 +55,7 @@ export const withCloud = <P extends SongProps>(
 
                 dirty = false;
 
-                const result = await updateSong(song, user.google_auth_token);
+                const result = await updateSong(song, user.authToken);
                 if (isLeft(result)) {
                     //TODO: expose more error detail
                     showError("Failed to auto save the song");

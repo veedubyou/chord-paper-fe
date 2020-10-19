@@ -230,7 +230,7 @@ export class ChordSong extends Collection<ChordLine>
             return false;
         }
 
-        return this.owner === user.user_id;
+        return this.owner === user.userID;
     }
 
     mergeLineWithPrevious(idable: IDable<ChordLine>): boolean {
