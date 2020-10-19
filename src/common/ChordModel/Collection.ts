@@ -26,6 +26,10 @@ export abstract class Collection<T extends IDable<T>> {
         return index;
     }
 
+    protected multiIndexOf(ids: string[]): number[] {
+        return ids.map(this.indexOf);
+    }
+
     abstract clone(): Collection<T>;
 
     // adds a element after the specified id
@@ -42,6 +46,18 @@ export abstract class Collection<T extends IDable<T>> {
         const index = this.indexOf(idable.id);
         const removed = this.elements.splice(index, 1);
         return removed[0];
+    }
+
+    removeMultiple(idables: IDable<T>[]): T[] {
+        const removed = idables.map(
+            (idable: IDable<T>): T => {
+                const index = this.indexOf(idable.id);
+                const removedElement = this.elements.splice(index, 1);
+                return removedElement[0];
+            }
+        );
+
+        return removed;
     }
 
     get(idable: IDable<T>): T {

@@ -15,6 +15,7 @@ import Line from "./Line";
 import NewLine from "./NewLine";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { Lyric } from "../../common/ChordModel/Lyric";
+import { useBatchLineDelete } from "./BatchDelete";
 
 const useUninteractiveStyle = makeStyles({
     root: {
@@ -39,6 +40,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     const [interacting, setInteracting] = useState(false);
     const handleCopy = useLineCopyHandler(props.song);
     const handleLinePaste = useLinePasteHandler(props.song);
+    const handleBatchLineDelete = useBatchLineDelete(props.song);
 
     const interactionContextValue: InteractionSetter = {
         startInteraction: () => {
@@ -92,6 +94,16 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         jsonStr: string
     ): boolean => {
         const handled = handleLinePaste(id, jsonStr);
+        if (!handled) {
+            return false;
+        }
+
+        notifySongChanged();
+        return true;
+    };
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        const handled = handleBatchLineDelete(event);
         if (!handled) {
             return false;
         }
@@ -196,9 +208,11 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         <DragAndDrop>
             <InteractionContext.Provider value={interactionContextValue}>
                 <Paper
+                    onKeyDown={allowInteraction ? handleKeyDown : undefined}
                     onCopy={allowInteraction ? handleCopy : undefined}
                     className={paperClassName}
                     elevation={0}
+                    tabIndex={0}
                 >
                     <Grid container justify="center">
                         <Grid item xs={10}>
