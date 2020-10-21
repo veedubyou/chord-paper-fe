@@ -21,8 +21,6 @@ export class User {
         this.name = name;
 
         this.authToken = googleUser.get().getAuthResponse().id_token;
-        console.log("original auth token");
-        console.log(this.authToken);
 
         this.googleUser.listen(() => {
             this.refreshAuthToken.call(this);
@@ -31,9 +29,6 @@ export class User {
 
     private refreshAuthToken() {
         this.authToken = this.getNewAuthToken();
-        console.log("getting new auth token");
-        console.log(new Date());
-        console.log(this.authToken);
     }
 
     private getNewAuthToken(): string {
