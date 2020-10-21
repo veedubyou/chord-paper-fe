@@ -79,12 +79,6 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 const idToken: string = currentUser.get().getAuthResponse()
                     .id_token;
 
-                const expiresAt = currentUser.get().getAuthResponse()
-                    .expires_at;
-
-                console.log("expires at");
-                console.log(new Date(expiresAt));
-
                 let loginResult = await login(idToken);
 
                 if (isLeft(loginResult)) {
@@ -139,10 +133,6 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 );
 
                 if (authClient.isSignedIn.get()) {
-                    authClient.currentUser.listen(() => {
-                        console.log("listener invoked");
-                        console.log(new Date());
-                    });
                     handleGoogleLogin(authClient.currentUser);
                 }
             };
