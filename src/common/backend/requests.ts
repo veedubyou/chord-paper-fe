@@ -1,6 +1,6 @@
 import { Either, left, right } from "fp-ts/lib/Either";
 import ky from "ky";
-import { ChordSong } from "./ChordModel/ChordSong";
+import { ChordSong } from "../ChordModel/ChordSong";
 
 const backendHost = ((): string => {
     const localURL = "http://localhost:5000";

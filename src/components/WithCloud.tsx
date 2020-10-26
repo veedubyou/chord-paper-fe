@@ -2,7 +2,8 @@ import { isLeft } from "fp-ts/lib/Either";
 import isOnline from "is-online";
 import { useSnackbar } from "notistack";
 import React, { useEffect } from "react";
-import { updateSong } from "../common/backend";
+import { useErrorMessage } from "../common/backend/errors";
+import { updateSong } from "../common/backend/requests";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { User, UserContext } from "./user/userContext";
 
@@ -18,6 +19,7 @@ export const withCloud = <P extends SongProps>(
 ): React.FC<P> => {
     return (props: P): JSX.Element => {
         const user: User | null = React.useContext(UserContext);
+        const showError = useErrorMessage();
         const { enqueueSnackbar } = useSnackbar();
 
         const handleSongChanged = (song: ChordSong) => {
@@ -35,11 +37,12 @@ export const withCloud = <P extends SongProps>(
                 );
             };
 
-            const showError = (msg: string) => {
-                enqueueSnackbar(msg, {
-                    variant: "error",
-                });
-
+            const handleError = async (error: Error | string) => {
+                if (typeof error === "string") {
+                    enqueueSnackbar(error, { variant: "error" });
+                } else {
+                    await showError(error);
+                }
                 // set dirty back to true to try again later
                 dirty = true;
             };
@@ -57,8 +60,7 @@ export const withCloud = <P extends SongProps>(
 
                 const result = await updateSong(song, user.authToken);
                 if (isLeft(result)) {
-                    //TODO: expose more error detail
-                    showError("Failed to auto save the song");
+                    await handleError(result.left);
                     return;
                 }
 
@@ -66,7 +68,7 @@ export const withCloud = <P extends SongProps>(
                     result.right
                 );
                 if (isLeft(deserializeResult)) {
-                    showError(
+                    await handleError(
                         "Song results from backend can't be deserialized"
                     );
                     return;
@@ -78,7 +80,7 @@ export const withCloud = <P extends SongProps>(
 
             const interval = setInterval(() => save(props.song), 10000);
             return () => clearInterval(interval);
-        }, [props, user, enqueueSnackbar]);
+        }, [props, user, enqueueSnackbar, showError]);
 
         // https://github.com/microsoft/TypeScript/issues/35858
         const originalComponentProps = {
