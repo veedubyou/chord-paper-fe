@@ -2,7 +2,8 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { isLeft } from "fp-ts/lib/These";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { getSong } from "../common/backend";
+import { useErrorMessage } from "../common/backend/errors";
+import { getSong } from "../common/backend/requests";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { FetchState } from "../common/fetch";
 import ErrorImage from "./display/ErrorImage";
@@ -19,6 +20,7 @@ interface InternalFetcherProps {
 const InternalFetcher: React.FC<InternalFetcherProps> = (
     props: InternalFetcherProps
 ): JSX.Element => {
+    const showError = useErrorMessage();
     const [fetchState, setFetchState] = useState<FetchState<ChordSong>>({
         state: "not-started",
     });
@@ -50,7 +52,7 @@ const InternalFetcher: React.FC<InternalFetcherProps> = (
             return <></>;
         }
         case "error": {
-            console.error(fetchState.error);
+            showError(fetchState.error);
             return <ErrorImage />;
         }
         case "loading": {

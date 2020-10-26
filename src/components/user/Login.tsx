@@ -11,7 +11,8 @@ import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import SigninIcon from "../../assets/img/google_signin.svg";
-import { login } from "../../common/backend";
+import { useErrorMessage } from "../../common/backend/errors";
+import { login } from "../../common/backend/requests";
 import { deserializeUser, User, UserContext } from "./userContext";
 
 const Paper = withStyles({
@@ -46,6 +47,7 @@ interface LoginProps extends StyledComponentProps {
 const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     const [gapiLoaded, setGapiLoaded] = useState<boolean>(false);
     const { enqueueSnackbar } = useSnackbar();
+    const showError = useErrorMessage();
     const signinStyles = useSigninStyles();
     const user: User | null = React.useContext(UserContext);
 
@@ -82,14 +84,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 let loginResult = await login(idToken);
 
                 if (isLeft(loginResult)) {
-                    console.error(
-                        "Failed to make login request to BE",
-                        loginResult.left
-                    );
-                    enqueueSnackbar(
-                        "Failed to login to backend. Check console for more error details",
-                        { variant: "error" }
-                    );
+                    await showError(loginResult.left);
 
                     return;
                 }
@@ -144,7 +139,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 })
                 .then(handleAuthInit);
         });
-    }, [enqueueSnackbar, user, props, gapiLoaded]);
+    }, [enqueueSnackbar, user, props, gapiLoaded, showError]);
 
     if (!gapiLoaded) {
         return <div></div>;

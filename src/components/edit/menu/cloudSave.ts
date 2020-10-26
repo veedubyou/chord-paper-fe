@@ -1,13 +1,15 @@
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import { useHistory } from "react-router-dom";
-import { createSong } from "../../../common/backend";
+import { useErrorMessage } from "../../../common/backend/errors";
+import { createSong } from "../../../common/backend/requests";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { songPath } from "../../../common/paths";
 import { User } from "../../user/userContext";
 
 export const useCloudCreateSong = (song: ChordSong) => {
     const { enqueueSnackbar } = useSnackbar();
+    const showError = useErrorMessage();
     const history = useHistory();
 
     const createNewSong = async (user: User) => {
@@ -16,15 +18,7 @@ export const useCloudCreateSong = (song: ChordSong) => {
         const createResult = await createSong(song, user.authToken);
 
         if (isLeft(createResult)) {
-            console.error(
-                "Failed to make create song request to BE",
-                createResult.left
-            );
-            enqueueSnackbar(
-                "Failed to save song to backend. Check console for more error details",
-                { variant: "error" }
-            );
-
+            await showError(createResult.left);
             return;
         }
 
