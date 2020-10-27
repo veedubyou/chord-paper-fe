@@ -77,21 +77,21 @@ export const useErrorMessage = () => {
 
             case "get_songs_for_user_not_allowed": {
                 showErrorMsg(
-                    "You don't have permission to see this user's songs"
+                    "Loading songs failed: You don't have permission to see this user's songs"
                 );
                 break;
             }
 
             case "update_song_owner_not_allowed": {
                 showErrorMsg(
-                    "You don't have permission to update this user's songs"
+                    "Autosave failed: You don't have permission to update this user's songs"
                 );
                 break;
             }
 
             case "update_song_wrong_id": {
                 showErrorMsg(
-                    "Update failed: There is a mismatch of song IDs. Please refresh and try again"
+                    "Autosave failed: There is a mismatch of song IDs. Please refresh and try again"
                 );
                 break;
             }
