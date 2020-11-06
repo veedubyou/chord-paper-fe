@@ -213,6 +213,16 @@ export class ChordSong extends Collection<ChordLine>
         });
     }
 
+    // deep clone clones only the contents of the song, not the ownership information
+    // i.e. not ID, not owner ID, not last saved, etc
+    deepClone(): ChordSong {
+        const clone = lodash.cloneDeep(this);
+        clone.id = "";
+        clone.owner = "";
+        clone.lastSavedAt = null;
+        return clone;
+    }
+
     toJSON(): object {
         return this;
     }

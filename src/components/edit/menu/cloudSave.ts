@@ -7,12 +7,12 @@ import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { songPath } from "../../../common/paths";
 import { User } from "../../user/userContext";
 
-export const useCloudCreateSong = (song: ChordSong) => {
+export const useCloudCreateSong = () => {
     const { enqueueSnackbar } = useSnackbar();
     const showError = useErrorMessage();
     const history = useHistory();
 
-    const createNewSong = async (user: User) => {
+    const createNewSong = async (song: ChordSong, user: User) => {
         song.owner = user.userID;
 
         const createResult = await createSong(song, user.authToken);
@@ -40,9 +40,9 @@ export const useCloudCreateSong = (song: ChordSong) => {
         );
     };
 
-    return async (user: User) => {
+    return async (song: ChordSong, user: User) => {
         if (song.isUnsaved()) {
-            await createNewSong(user);
+            await createNewSong(song, user);
         }
     };
 };

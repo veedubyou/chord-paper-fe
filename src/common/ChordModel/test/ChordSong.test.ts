@@ -59,6 +59,33 @@ describe("Chord Song", () => {
         });
     });
 
+    describe("deepClone", () => {
+        let clone: ChordSong;
+        beforeEach(() => {
+            clone = c.deepClone();
+        });
+
+        test("has no id", () => {
+            expect(clone.id).toEqual("");
+        });
+
+        test("has no owner", () => {
+            expect(clone.owner).toEqual("");
+        });
+
+        test("has no last saved time", () => {
+            expect(clone.lastSavedAt).toEqual(null);
+        });
+
+        test("modifying clone does not affect original", () => {
+            const line = clone.elements[0];
+            const block = line.elements[0];
+            block.chord = "Abm9";
+
+            expect(c.elements[0].elements[0].chord).toEqual("A7");
+        });
+    });
+
     describe("de/serialization", () => {
         const failSong = (): ChordSong => {
             expect(false).toEqual(true);

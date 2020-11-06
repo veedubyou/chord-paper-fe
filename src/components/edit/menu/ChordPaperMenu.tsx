@@ -4,6 +4,7 @@ import FolderOpenIcon from "@material-ui/icons/FolderOpen";
 import TransposeIcon from "@material-ui/icons/ImportExport";
 import PlayIcon from "@material-ui/icons/PlayArrow";
 import SaveIcon from "@material-ui/icons/Save";
+import ForkIcon from "@material-ui/icons/Restaurant";
 import {
     SpeedDial as UnstyledSpeedDial,
     SpeedDialAction,
@@ -19,7 +20,7 @@ import { useLoadMenuAction } from "./load";
 import { useSaveMenuAction } from "./save";
 import TransposeMenu from "./TransposeMenu";
 import useKonamiCode from "react-use-konami";
-import { UserContext } from "../../user/userContext";
+import { User, UserContext } from "../../user/userContext";
 
 interface ChordPaperMenuProps {
     song: ChordSong;
@@ -46,7 +47,7 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     const user = React.useContext(UserContext);
     const loadAction = useLoadMenuAction(props.onSongChanged, enqueueSnackbar);
     const saveAction = useSaveMenuAction(props.song);
-    const cloudSaveAction = useCloudCreateSong(props.song);
+    const cloudSaveAction = useCloudCreateSong();
 
     const openMenu = () => {
         setOpen(true);
@@ -54,6 +55,11 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
 
     const closeMenu = () => {
         setOpen(false);
+    };
+
+    const forkSong = (song: ChordSong, user: User) => {
+        const songClone = song.deepClone();
+        cloudSaveAction(songClone, user);
     };
 
     useKonamiCode(() => {
@@ -109,9 +115,17 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                 <SpeedDialAction
                     icon={<CloudUploadIcon />}
                     tooltipTitle="Save to Cloud"
-                    onClick={() => cloudSaveAction(user)}
+                    onClick={() => cloudSaveAction(props.song, user)}
                 />
             )}
+            {!props.song.isUnsaved() && user !== null && (
+                <SpeedDialAction
+                    icon={<ForkIcon />}
+                    tooltipTitle="Fork"
+                    onClick={() => forkSong(props.song, user)}
+                />
+            )}
+
             <SpeedDialAction
                 icon={<PlayIcon />}
                 tooltipTitle="Play Mode"
