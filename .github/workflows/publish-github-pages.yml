@@ -8,18 +8,18 @@ on:
 jobs:
     publish:
         name: Publish master to Github Pages
-#        runs-on: ubuntu-latest
-        runs-on: chord-paper-fe-runner
+        runs-on: ubuntu-latest
+        # runs-on: chord-paper-fe-runner
         steps:
             # Checkout with history (to get git describe output properly)
             - name: Checkout
               uses: actions/checkout@v2
               with:
-                fetch-depth: 0
+                  fetch-depth: 0
 
             - name: Update GIT-VERSION-FILE
               run: bash git-version.sh
-            
+
             - name: Get version tag from GIT-VERSION-FILE
               run: echo "::set-env name=gitver::$(cat GIT-VERSION-FILE)"
 
