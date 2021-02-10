@@ -5,6 +5,13 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { PlainFn } from "../../common/PlainFn";
 import PlayContent, { PlayFormatting } from "./PlayContent";
 import PlayMenu from "./PlayMenu";
+import ReactPlayer from "react-player";
+
+// const Box = withStyles({
+//     root: {
+//         height: "100vh",
+//     },
+// })(UnstyledBox);
 
 interface PlayProps {
     song: ChordSong;
@@ -46,6 +53,12 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
             <ThemeProvider theme={playTheme}>
                 <PlayContent song={props.song} formatting={formatting} />
             </ThemeProvider>
+            <ReactPlayer
+                url="https://drive.google.com/uc?export=download&id=1McQJ3dhyXGPD-weynWIv1F4xuDo1_vGE"
+                controls={true}
+                width="100%"
+                height="200px"
+            />
         </>
     );
 };
