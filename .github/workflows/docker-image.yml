@@ -24,9 +24,7 @@ jobs:
             - name: Update GIT-VERSION-FILE
               run: bash git-version.sh
             - name: Get version tag from GIT-VERSION-FILE
-              run: echo "::set-env name=gitver::$(cat GIT-VERSION-FILE)"
-              env:
-                  ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
+              run: echo "gitver=$(cat GIT-VERSION-FILE)" >> $GITHUB_ENV
             - name: Login to DockerHub
               run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             - name: Build image w/version
@@ -38,7 +36,7 @@ jobs:
             - name: Push image latest
               run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:latest
             - name: Get Current Timestamp
-              run: echo "::set-env name=date::$(date +%s)"
+              run: echo "date=$(date +%s)" >> $GITHUB_ENV
 
             - name: Deploy Project to K8S Cluster
               uses: steebchen/kubectl@master
