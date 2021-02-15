@@ -7,7 +7,7 @@ import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import PlayLine from "./PlayLine";
 
-export interface PlayFormatting {
+export interface DisplaySettings {
     numberOfColumns: number;
     fontSize: number;
     columnMargin: number;
@@ -15,7 +15,8 @@ export interface PlayFormatting {
 
 interface PlayContentProps {
     song: ChordSong;
-    formatting: PlayFormatting;
+    displaySettings: DisplaySettings;
+    height: string;
 }
 
 const PlayContent: React.FC<PlayContentProps> = (
@@ -24,11 +25,13 @@ const PlayContent: React.FC<PlayContentProps> = (
     const ref = React.useRef<HTMLElement>();
 
     const numberOfColumns =
-        props.formatting.numberOfColumns >= 1
-            ? props.formatting.numberOfColumns
+        props.displaySettings.numberOfColumns >= 1
+            ? props.displaySettings.numberOfColumns
             : 1;
     const columnMargin =
-        props.formatting.columnMargin >= 0 ? props.formatting.columnMargin : 0;
+        props.displaySettings.columnMargin >= 0
+            ? props.displaySettings.columnMargin
+            : 0;
 
     const windowWidth = useWindowWidth();
     const columnWidth = windowWidth / numberOfColumns;
@@ -99,7 +102,10 @@ const PlayContent: React.FC<PlayContentProps> = (
         }
 
         scrollForward();
-        return true;
+
+        // returning false not prevent default
+        // preventing default would prevent clicking back into the main body to get focus
+        return false;
     };
 
     const handleRightClick = (
@@ -129,7 +135,7 @@ const PlayContent: React.FC<PlayContentProps> = (
             columnRuleStyle: "solid",
             columnRuleColor: grey[300],
             columns: numberOfColumns,
-            height: "100vh",
+            height: props.height,
             width: "100%",
         },
     })(Paper);
