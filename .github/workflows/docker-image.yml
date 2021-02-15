@@ -25,6 +25,8 @@ jobs:
               run: bash git-version.sh
             - name: Get version tag from GIT-VERSION-FILE
               run: echo "::set-env name=gitver::$(cat GIT-VERSION-FILE)"
+              env:
+                  ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
             - name: Login to DockerHub
               run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             - name: Build image w/version
