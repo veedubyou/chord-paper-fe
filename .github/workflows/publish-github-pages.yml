@@ -21,9 +21,7 @@ jobs:
               run: bash git-version.sh
 
             - name: Get version tag from GIT-VERSION-FILE
-              run: echo "::set-env name=gitver::$(cat GIT-VERSION-FILE)"
-              env:
-                  ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
+              run: echo "gitver=$(cat GIT-VERSION-FILE)" >> $GITHUB_ENV
 
             - name: Install Dependencies
               run: yarn
