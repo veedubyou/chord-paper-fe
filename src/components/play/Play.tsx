@@ -3,15 +3,11 @@ import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { PlainFn } from "../../common/PlainFn";
-import PlayContent, { PlayFormatting } from "./PlayContent";
+import { isValidUrl } from "../../common/URL";
+import PlayContent, { DisplaySettings } from "./PlayContent";
+import { PlayerSettings } from "./PlayerSettingsDialog";
 import PlayMenu from "./PlayMenu";
-import ReactPlayer from "react-player";
-
-// const Box = withStyles({
-//     root: {
-//         height: "100vh",
-//     },
-// })(UnstyledBox);
+import SongPlayer from "./SongPlayer";
 
 interface PlayProps {
     song: ChordSong;
@@ -19,10 +15,19 @@ interface PlayProps {
 }
 
 const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
-    const [formatting, setFormatting] = useState<PlayFormatting>({
+    const [displaySettings, setDisplaySettings] = useState<DisplaySettings>({
         numberOfColumns: 2,
         fontSize: 14,
         columnMargin: 20,
+    });
+
+    const defaultURL = isValidUrl(props.song.asHeardFrom)
+        ? props.song.asHeardFrom
+        : "";
+
+    const [playerSettings, setPlayerSettings] = useState<PlayerSettings>({
+        enablePlayer: true,
+        url: defaultURL,
     });
 
     const playTheme = (theme: Theme): Theme => {
@@ -31,10 +36,24 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
             typography: {
                 fontFamily: theme.typography.fontFamily,
                 fontWeightRegular: theme.typography.fontWeightRegular,
-                fontSize: formatting.fontSize,
+                fontSize: displaySettings.fontSize,
             },
         });
     };
+
+    const playerHeightPercentage = playerSettings.enablePlayer ? 10 : 0;
+    const contentHeightPercentage = 100 - playerHeightPercentage;
+
+    const playerHeight = `${playerHeightPercentage}vh`;
+    const contentHeight = `${contentHeightPercentage}vh`;
+
+    const player: React.ReactNode = (() => {
+        if (!playerSettings.enablePlayer) {
+            return null;
+        }
+
+        return <SongPlayer url={playerSettings.url} height={playerHeight} />;
+    })();
 
     return (
         <>
@@ -46,19 +65,20 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
                 </title>
             </Helmet>
             <PlayMenu
-                formatting={formatting}
-                onFormattingChange={setFormatting}
+                displaySettings={displaySettings}
+                playerSettings={playerSettings}
+                onDisplaySettingsChange={setDisplaySettings}
+                onPlayerSettingsChange={setPlayerSettings}
                 onExit={props.onEdit}
             />
             <ThemeProvider theme={playTheme}>
-                <PlayContent song={props.song} formatting={formatting} />
+                <PlayContent
+                    song={props.song}
+                    displaySettings={displaySettings}
+                    height={contentHeight}
+                />
             </ThemeProvider>
-            <ReactPlayer
-                url="https://drive.google.com/uc?export=download&id=1McQJ3dhyXGPD-weynWIv1F4xuDo1_vGE"
-                controls={true}
-                width="100%"
-                height="200px"
-            />
+            {player}
         </>
     );
 };

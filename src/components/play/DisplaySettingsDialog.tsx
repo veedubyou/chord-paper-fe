@@ -14,7 +14,7 @@ import { withStyles } from "@material-ui/styles";
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import React, { ChangeEvent, useState } from "react";
 import { isWhitespace } from "../../common/Whitespace";
-import { PlayFormatting } from "./PlayContent";
+import { DisplaySettings } from "./PlayContent";
 import { PlainFn } from "../../common/PlainFn";
 
 type TextFieldProps = Omit<Partial<TextFieldPropsWithVariant>, "variant">;
@@ -32,11 +32,11 @@ interface InputFieldSpecification {
     validationErrorPropsFn: (strValue: string) => Either<Error, number>;
 }
 
-interface DisplaySettingsProps {
+interface DisplaySettingsDialogProps {
     open: boolean;
     onClose?: PlainFn;
-    defaultSettings: PlayFormatting;
-    onSubmit?: (formatting: PlayFormatting) => void;
+    defaultSettings: DisplaySettings;
+    onSubmit?: (displaySettings: DisplaySettings) => void;
 }
 
 const Box = withStyles((theme: Theme) => ({
@@ -45,8 +45,8 @@ const Box = withStyles((theme: Theme) => ({
     },
 }))(UnstyledBox);
 
-const DisplaySettings: React.FC<DisplaySettingsProps> = (
-    props: DisplaySettingsProps
+const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
+    props: DisplaySettingsDialogProps
 ): JSX.Element => {
     const [settings, setSettings] = useState<TextSettings>({
         numberOfColumns: props.defaultSettings.numberOfColumns.toString(),
@@ -88,7 +88,7 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = (
         return right(convertedInteger);
     };
 
-    const validatedSettings = (): Either<Error, PlayFormatting> => {
+    const validatedSettings = (): Either<Error, DisplaySettings> => {
         const numberOfColumnsResults = validateInt(settings.numberOfColumns);
         const fontSizeResults = validateNumber(settings.fontSize);
         const columnMarginResults = validateNumber(settings.columnMargin);
@@ -105,13 +105,13 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = (
             return columnMarginResults;
         }
 
-        const formatting: PlayFormatting = {
+        const displaySettings: DisplaySettings = {
             numberOfColumns: numberOfColumnsResults.right,
             fontSize: fontSizeResults.right,
             columnMargin: columnMarginResults.right,
         };
 
-        return right(formatting);
+        return right(displaySettings);
     };
 
     const hasValidationErrors = (): boolean => {
@@ -216,4 +216,4 @@ const DisplaySettings: React.FC<DisplaySettingsProps> = (
     );
 };
 
-export default DisplaySettings;
+export default DisplaySettingsDialog;
