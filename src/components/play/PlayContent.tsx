@@ -2,7 +2,7 @@ import { Box, Paper, RootRef } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
 import { withStyles } from "@material-ui/styles";
 import { useWindowWidth } from "@react-hook/window-size";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import PlayLine from "./PlayLine";
@@ -19,10 +19,40 @@ interface PlayContentProps {
     height: string;
 }
 
+class EventBatcher {
+    timeWindow: number;
+    callbackFn: () => void;
+    private processingEvent: boolean;
+
+    constructor(timeWindow: number, callbackFn: () => void) {
+        this.timeWindow = timeWindow;
+        this.callbackFn = callbackFn;
+        this.processingEvent = false;
+    }
+
+    processEvent() {
+        console.log("called process event");
+
+        if (!this.processingEvent) {
+            setTimeout(this.executeCallback, this.timeWindow);
+        }
+
+        this.processingEvent = true;
+    }
+
+    private executeCallback() {
+        this.callbackFn();
+        this.processingEvent = false;
+    }
+}
+
 const PlayContent: React.FC<PlayContentProps> = (
     props: PlayContentProps
 ): JSX.Element => {
     const ref = React.useRef<HTMLElement>();
+    const [numberOfColumnPaddings, setNumberOfColumnPaddings] = useState<
+        number | null
+    >(null);
 
     const numberOfColumns =
         props.displaySettings.numberOfColumns >= 1
@@ -152,12 +182,64 @@ const PlayContent: React.FC<PlayContentProps> = (
     })(Box);
 
     const lines = props.song.chordLines.map((chordLine: ChordLine) => {
-        return <PlayLine chordLine={chordLine} />;
+        return <PlayLine chordLine={chordLine} key={chordLine.id} />;
     });
+
+    const FullHeightBox = withStyles({
+        root: {
+            height: props.height,
+        },
+    })(Box);
+
+    const columnPadding: React.ReactElement[] = (() => {
+        const numberOfDivs =
+            numberOfColumnPaddings !== null ? numberOfColumnPaddings : 0;
+
+        const divPads: React.ReactElement[] = [];
+
+        for (let i = 0; i < numberOfDivs; i++) {
+            divPads.push(
+                <FullHeightBox key={`empty-column-${i}`}>
+                    <div></div>
+                </FullHeightBox>
+            );
+        }
+
+        return divPads;
+    })();
+
+    const clearColumnPadding = () => {
+        console.log("resize event");
+        setNumberOfColumnPaddings(null);
+    };
 
     useEffect(() => {
         ref.current?.focus();
+
+        const batcher = new EventBatcher(2000, clearColumnPadding);
+
+        window.addEventListener("resize", batcher.processEvent);
+
+        return () => window.removeEventListener("resize", batcher.processEvent);
     });
+
+    useEffect(() => {
+        const numberOfFilledColumns = Math.round(
+            (numberOfColumns * document.body.scrollWidth) / window.innerWidth
+        );
+
+        const remainderOfColumns: number =
+            numberOfFilledColumns % numberOfColumns;
+
+        if (numberOfColumnPaddings === null) {
+            setNumberOfColumnPaddings(remainderOfColumns);
+        }
+
+        console.log("effect", numberOfColumnPaddings, remainderOfColumns);
+
+        if (remainderOfColumns !== numberOfColumnPaddings) {
+        }
+    }, [numberOfColumns, numberOfColumnPaddings, setNumberOfColumnPaddings]);
 
     return (
         <RootRef rootRef={ref}>
@@ -168,6 +250,7 @@ const PlayContent: React.FC<PlayContentProps> = (
                 onKeyDown={handleKey}
             >
                 <MarginBox>{lines}</MarginBox>
+                {columnPadding}
             </ColumnedPaper>
         </RootRef>
     );
