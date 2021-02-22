@@ -2,13 +2,13 @@ import { Box, Paper, RootRef } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
 import { withStyles } from "@material-ui/styles";
 import { useWindowWidth } from "@react-hook/window-size";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import PlayLine from "./PlayLine";
 
 export interface DisplaySettings {
-    numberOfColumns: number;
+    numberOfColumnsPerPage: number;
     fontSize: number;
     columnMargin: number;
 }
@@ -23,10 +23,11 @@ const PlayContent: React.FC<PlayContentProps> = (
     props: PlayContentProps
 ): JSX.Element => {
     const ref = React.useRef<HTMLElement>();
+    const [numberOfEmptyColumns, setNumberOfEmptyColumns] = useState<number>(0);
 
-    const numberOfColumns =
-        props.displaySettings.numberOfColumns >= 1
-            ? props.displaySettings.numberOfColumns
+    const numberOfColumnsPerPage =
+        props.displaySettings.numberOfColumnsPerPage >= 1
+            ? props.displaySettings.numberOfColumnsPerPage
             : 1;
     const columnMargin =
         props.displaySettings.columnMargin >= 0
@@ -34,7 +35,7 @@ const PlayContent: React.FC<PlayContentProps> = (
             : 0;
 
     const windowWidth = useWindowWidth();
-    const columnWidth = windowWidth / numberOfColumns;
+    const columnWidth = windowWidth / numberOfColumnsPerPage;
     const snapThreshold = columnWidth / 2;
 
     const scrollPage = (forward: boolean) => {
@@ -134,7 +135,7 @@ const PlayContent: React.FC<PlayContentProps> = (
             columnRuleWidth: "2px",
             columnRuleStyle: "solid",
             columnRuleColor: grey[300],
-            columns: numberOfColumns,
+            columns: numberOfColumnsPerPage,
             height: props.height,
             width: "100%",
         },
@@ -152,12 +153,74 @@ const PlayContent: React.FC<PlayContentProps> = (
     })(Box);
 
     const lines = props.song.chordLines.map((chordLine: ChordLine) => {
-        return <PlayLine chordLine={chordLine} />;
+        return <PlayLine chordLine={chordLine} key={chordLine.id} />;
     });
+
+    const FullHeightBox = withStyles({
+        root: {
+            height: props.height,
+            pageBreakInside: "avoid",
+        },
+    })(Box);
+
+    const emptyColumns: React.ReactElement[] = (() => {
+        if (numberOfEmptyColumns === null) {
+            return [];
+        }
+
+        const cols: React.ReactElement[] = [];
+
+        for (let i = 0; i < numberOfEmptyColumns; i++) {
+            cols.push(
+                <FullHeightBox key={`empty-column-${i}`}>
+                    <div />
+                </FullHeightBox>
+            );
+        }
+
+        return cols;
+    })();
 
     useEffect(() => {
         ref.current?.focus();
     });
+
+    useEffect(() => {
+        // add some empty columns to the end of the song
+        // so that each "page scroll" navigation ends evenly
+        // e.g. if a 3 column page is divided as 5 columns: a | b | c | d | e
+        // then the user will see
+        // page 1: a | b | c
+        // page 2: c | d | e
+        // this will add a div to the end so that it will look like
+        // page 1: a | b | c
+        // page 2: d | e | [empty]
+
+        const numberOfRenderedColumns = Math.round(
+            document.body.scrollWidth / columnWidth
+        );
+
+        const numberOfColumnsInLastPage: number =
+            numberOfRenderedColumns % numberOfColumnsPerPage;
+
+        if (numberOfColumnsInLastPage !== 0) {
+            let nextNumberOfEmptyColumns =
+                numberOfColumnsPerPage -
+                numberOfColumnsInLastPage +
+                numberOfEmptyColumns;
+
+            nextNumberOfEmptyColumns =
+                nextNumberOfEmptyColumns % numberOfColumnsPerPage;
+
+            setNumberOfEmptyColumns(nextNumberOfEmptyColumns);
+        }
+    }, [
+        numberOfColumnsPerPage,
+        columnWidth,
+        numberOfEmptyColumns,
+        setNumberOfEmptyColumns,
+        props,
+    ]);
 
     return (
         <RootRef rootRef={ref}>
@@ -168,6 +231,7 @@ const PlayContent: React.FC<PlayContentProps> = (
                 onKeyDown={handleKey}
             >
                 <MarginBox>{lines}</MarginBox>
+                {emptyColumns}
             </ColumnedPaper>
         </RootRef>
     );

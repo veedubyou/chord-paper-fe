@@ -16,7 +16,7 @@ interface PlayProps {
 
 const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
     const [displaySettings, setDisplaySettings] = useState<DisplaySettings>({
-        numberOfColumns: 2,
+        numberOfColumnsPerPage: 2,
         fontSize: 14,
         columnMargin: 20,
     });

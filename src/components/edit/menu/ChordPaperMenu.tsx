@@ -39,9 +39,10 @@ const SpeedDial = withStyles((theme: Theme) => ({
 const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     props: ChordPaperMenuProps
 ): JSX.Element => {
+    const developmentEnv = process.env.NODE_ENV === "development";
     const [open, setOpen] = useState(false);
     const [transposeMenuOpen, setTransposeMenuOpen] = useState(false);
-    const [offlineMode, setOfflineMode] = useState(false);
+    const [offlineMode, setOfflineMode] = useState(developmentEnv);
     const { enqueueSnackbar } = useSnackbar();
 
     const user = React.useContext(UserContext);
