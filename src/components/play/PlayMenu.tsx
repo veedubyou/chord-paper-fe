@@ -4,7 +4,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import TuneIcon from "@material-ui/icons/Tune";
 import RadioIcon from "@material-ui/icons/Radio";
 
-import UnstyledMenuIcon from "@material-ui/icons/Menu";
+import UnstyledMoreVertIcon from "@material-ui/icons/MoreVert";
 import {
     SpeedDial as UnstyledSpeedDial,
     SpeedDialAction,
@@ -30,12 +30,12 @@ const MenuIcon = withStyles({
     root: {
         backgroundColor: "transparent",
     },
-})(UnstyledMenuIcon);
+})(UnstyledMoreVertIcon);
 
 const SpeedDial = withStyles((theme: Theme) => ({
     root: {
         position: "fixed",
-        top: theme.spacing(2),
+        top: theme.spacing(3),
         right: theme.spacing(2),
         "& .MuiSpeedDial-fab": {
             backgroundColor: "transparent",

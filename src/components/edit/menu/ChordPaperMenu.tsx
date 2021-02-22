@@ -2,25 +2,25 @@ import { Theme } from "@material-ui/core";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import FolderOpenIcon from "@material-ui/icons/FolderOpen";
 import TransposeIcon from "@material-ui/icons/ImportExport";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 import PlayIcon from "@material-ui/icons/PlayArrow";
-import SaveIcon from "@material-ui/icons/Save";
 import ForkIcon from "@material-ui/icons/Restaurant";
+import SaveIcon from "@material-ui/icons/Save";
 import {
     SpeedDial as UnstyledSpeedDial,
     SpeedDialAction,
-    SpeedDialIcon,
 } from "@material-ui/lab";
 import { withStyles } from "@material-ui/styles";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
+import useKonamiCode from "react-use-konami";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { PlainFn } from "../../../common/PlainFn";
+import { User, UserContext } from "../../user/userContext";
 import { useCloudCreateSong } from "./cloudSave";
 import { useLoadMenuAction } from "./load";
 import { useSaveMenuAction } from "./save";
 import TransposeMenu from "./TransposeMenu";
-import useKonamiCode from "react-use-konami";
-import { User, UserContext } from "../../user/userContext";
 
 interface ChordPaperMenuProps {
     song: ChordSong;
@@ -31,7 +31,7 @@ interface ChordPaperMenuProps {
 const SpeedDial = withStyles((theme: Theme) => ({
     root: {
         position: "fixed",
-        bottom: theme.spacing(2),
+        top: theme.spacing(3),
         right: theme.spacing(2),
     },
 }))(UnstyledSpeedDial);
@@ -85,40 +85,19 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
 
     return (
         <SpeedDial
-            icon={<SpeedDialIcon />}
+            icon={<MoreVertIcon />}
             open={open}
             onOpen={openMenu}
             onClose={closeMenu}
+            direction="down"
             ariaLabel="SpeedDial"
         >
-            {offlineMode && (
-                <SpeedDialAction
-                    icon={<FolderOpenIcon />}
-                    tooltipTitle="Load from computer"
-                    onClick={loadAction}
-                />
-            )}
-            {offlineMode && (
-                <SpeedDialAction
-                    icon={<SaveIcon />}
-                    tooltipTitle="Save to computer"
-                    onClick={saveAction}
-                />
-            )}
             <SpeedDialAction
-                icon={<TransposeIcon />}
-                tooltipTitle="Transpose"
-                onClick={() => {
-                    setTransposeMenuOpen(true);
-                }}
+                icon={<PlayIcon />}
+                tooltipTitle="Play Mode"
+                onClick={props.onPlay}
             />
-            {props.song.isUnsaved() && user !== null && (
-                <SpeedDialAction
-                    icon={<CloudUploadIcon />}
-                    tooltipTitle="Save to Cloud"
-                    onClick={() => cloudSaveAction(props.song, user)}
-                />
-            )}
+
             {!props.song.isUnsaved() && user !== null && (
                 <SpeedDialAction
                     icon={<ForkIcon />}
@@ -127,11 +106,37 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                 />
             )}
 
+            {props.song.isUnsaved() && user !== null && (
+                <SpeedDialAction
+                    icon={<CloudUploadIcon />}
+                    tooltipTitle="Save to Cloud"
+                    onClick={() => cloudSaveAction(props.song, user)}
+                />
+            )}
+
             <SpeedDialAction
-                icon={<PlayIcon />}
-                tooltipTitle="Play Mode"
-                onClick={props.onPlay}
+                icon={<TransposeIcon />}
+                tooltipTitle="Transpose"
+                onClick={() => {
+                    setTransposeMenuOpen(true);
+                }}
             />
+
+            {offlineMode && (
+                <SpeedDialAction
+                    icon={<SaveIcon />}
+                    tooltipTitle="Save to computer"
+                    onClick={saveAction}
+                />
+            )}
+
+            {offlineMode && (
+                <SpeedDialAction
+                    icon={<FolderOpenIcon />}
+                    tooltipTitle="Load from computer"
+                    onClick={loadAction}
+                />
+            )}
         </SpeedDial>
     );
 };
