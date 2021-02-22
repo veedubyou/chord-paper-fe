@@ -4,7 +4,7 @@ import FolderOpenIcon from "@material-ui/icons/FolderOpen";
 import TransposeIcon from "@material-ui/icons/ImportExport";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import PlayIcon from "@material-ui/icons/PlayArrow";
-import ForkIcon from "@material-ui/icons/Restaurant";
+import ForkIcon from "@material-ui/icons/CallSplit";
 import SaveIcon from "@material-ui/icons/Save";
 import {
     SpeedDial as UnstyledSpeedDial,
