@@ -8,7 +8,7 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import PlayLine from "./PlayLine";
 
 export interface DisplaySettings {
-    numberOfColumns: number;
+    numberOfColumnsPerPage: number;
     fontSize: number;
     columnMargin: number;
 }
@@ -19,44 +19,15 @@ interface PlayContentProps {
     height: string;
 }
 
-class EventBatcher {
-    timeWindow: number;
-    callbackFn: () => void;
-    private processingEvent: boolean;
-
-    constructor(timeWindow: number, callbackFn: () => void) {
-        this.timeWindow = timeWindow;
-        this.callbackFn = callbackFn;
-        this.processingEvent = false;
-    }
-
-    processEvent() {
-        console.log("called process event");
-
-        if (!this.processingEvent) {
-            setTimeout(this.executeCallback, this.timeWindow);
-        }
-
-        this.processingEvent = true;
-    }
-
-    private executeCallback() {
-        this.callbackFn();
-        this.processingEvent = false;
-    }
-}
-
 const PlayContent: React.FC<PlayContentProps> = (
     props: PlayContentProps
 ): JSX.Element => {
     const ref = React.useRef<HTMLElement>();
-    const [numberOfColumnPaddings, setNumberOfColumnPaddings] = useState<
-        number | null
-    >(null);
+    const [numberOfEmptyColumns, setNumberOfEmptyColumns] = useState<number>(0);
 
-    const numberOfColumns =
-        props.displaySettings.numberOfColumns >= 1
-            ? props.displaySettings.numberOfColumns
+    const numberOfColumnsPerPage =
+        props.displaySettings.numberOfColumnsPerPage >= 1
+            ? props.displaySettings.numberOfColumnsPerPage
             : 1;
     const columnMargin =
         props.displaySettings.columnMargin >= 0
@@ -64,7 +35,7 @@ const PlayContent: React.FC<PlayContentProps> = (
             : 0;
 
     const windowWidth = useWindowWidth();
-    const columnWidth = windowWidth / numberOfColumns;
+    const columnWidth = windowWidth / numberOfColumnsPerPage;
     const snapThreshold = columnWidth / 2;
 
     const scrollPage = (forward: boolean) => {
@@ -164,7 +135,7 @@ const PlayContent: React.FC<PlayContentProps> = (
             columnRuleWidth: "2px",
             columnRuleStyle: "solid",
             columnRuleColor: grey[300],
-            columns: numberOfColumns,
+            columns: numberOfColumnsPerPage,
             height: props.height,
             width: "100%",
         },
@@ -188,58 +159,68 @@ const PlayContent: React.FC<PlayContentProps> = (
     const FullHeightBox = withStyles({
         root: {
             height: props.height,
+            pageBreakInside: "avoid",
         },
     })(Box);
 
-    const columnPadding: React.ReactElement[] = (() => {
-        const numberOfDivs =
-            numberOfColumnPaddings !== null ? numberOfColumnPaddings : 0;
+    const emptyColumns: React.ReactElement[] = (() => {
+        if (numberOfEmptyColumns === null) {
+            return [];
+        }
 
-        const divPads: React.ReactElement[] = [];
+        const cols: React.ReactElement[] = [];
 
-        for (let i = 0; i < numberOfDivs; i++) {
-            divPads.push(
+        for (let i = 0; i < numberOfEmptyColumns; i++) {
+            cols.push(
                 <FullHeightBox key={`empty-column-${i}`}>
-                    <div></div>
+                    <div />
                 </FullHeightBox>
             );
         }
 
-        return divPads;
+        return cols;
     })();
-
-    const clearColumnPadding = () => {
-        console.log("resize event");
-        setNumberOfColumnPaddings(null);
-    };
 
     useEffect(() => {
         ref.current?.focus();
-
-        const batcher = new EventBatcher(2000, clearColumnPadding);
-
-        window.addEventListener("resize", batcher.processEvent);
-
-        return () => window.removeEventListener("resize", batcher.processEvent);
     });
 
     useEffect(() => {
-        const numberOfFilledColumns = Math.round(
-            (numberOfColumns * document.body.scrollWidth) / window.innerWidth
+        // add some empty columns to the end of the song
+        // so that each "page scroll" navigation ends evenly
+        // e.g. if a 3 column page is divided as 5 columns: a | b | c | d | e
+        // then the user will see
+        // page 1: a | b | c
+        // page 2: c | d | e
+        // this will add a div to the end so that it will look like
+        // page 1: a | b | c
+        // page 2: d | e | [empty]
+
+        const numberOfRenderedColumns = Math.round(
+            document.body.scrollWidth / columnWidth
         );
 
-        const remainderOfColumns: number =
-            numberOfFilledColumns % numberOfColumns;
+        const numberOfColumnsInLastPage: number =
+            numberOfRenderedColumns % numberOfColumnsPerPage;
 
-        if (numberOfColumnPaddings === null) {
-            setNumberOfColumnPaddings(remainderOfColumns);
+        if (numberOfColumnsInLastPage !== 0) {
+            let nextNumberOfEmptyColumns =
+                numberOfColumnsPerPage -
+                numberOfColumnsInLastPage +
+                numberOfEmptyColumns;
+
+            nextNumberOfEmptyColumns =
+                nextNumberOfEmptyColumns % numberOfColumnsPerPage;
+
+            setNumberOfEmptyColumns(nextNumberOfEmptyColumns);
         }
-
-        console.log("effect", numberOfColumnPaddings, remainderOfColumns);
-
-        if (remainderOfColumns !== numberOfColumnPaddings) {
-        }
-    }, [numberOfColumns, numberOfColumnPaddings, setNumberOfColumnPaddings]);
+    }, [
+        numberOfColumnsPerPage,
+        columnWidth,
+        numberOfEmptyColumns,
+        setNumberOfEmptyColumns,
+        props,
+    ]);
 
     return (
         <RootRef rootRef={ref}>
@@ -250,7 +231,7 @@ const PlayContent: React.FC<PlayContentProps> = (
                 onKeyDown={handleKey}
             >
                 <MarginBox>{lines}</MarginBox>
-                {columnPadding}
+                {emptyColumns}
             </ColumnedPaper>
         </RootRef>
     );

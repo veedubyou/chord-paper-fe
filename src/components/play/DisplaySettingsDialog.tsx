@@ -49,7 +49,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
     props: DisplaySettingsDialogProps
 ): JSX.Element => {
     const [settings, setSettings] = useState<TextSettings>({
-        numberOfColumns: props.defaultSettings.numberOfColumns.toString(),
+        numberOfColumns: props.defaultSettings.numberOfColumnsPerPage.toString(),
         fontSize: props.defaultSettings.fontSize.toString(),
         columnMargin: props.defaultSettings.columnMargin.toString(),
     });
@@ -106,7 +106,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
         }
 
         const displaySettings: DisplaySettings = {
-            numberOfColumns: numberOfColumnsResults.right,
+            numberOfColumnsPerPage: numberOfColumnsResults.right,
             fontSize: fontSizeResults.right,
             columnMargin: columnMarginResults.right,
         };
@@ -126,7 +126,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
         }
 
         props.onSubmit?.({
-            numberOfColumns: settings.right.numberOfColumns,
+            numberOfColumnsPerPage: settings.right.numberOfColumnsPerPage,
             fontSize: settings.right.fontSize,
             columnMargin: settings.right.columnMargin,
         });
