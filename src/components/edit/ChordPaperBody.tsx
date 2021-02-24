@@ -124,27 +124,31 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     };
 
     const notifySongChanged = () => {
-        if (props.onSongChanged) {
-            props.onSongChanged(props.song);
-        }
+        props.onSongChanged?.(props.song);
     };
 
     const handleChordDND = (
         destinationBlockID: IDable<ChordBlock>,
         splitIndex: number,
         newChord: string,
-        sourceBlockID: IDable<ChordBlock>
+        sourceBlockID: IDable<ChordBlock>,
+        copyAction: boolean
     ) => {
-        // clearing the source block first allows handling of when the chord
-        // is dropped onto another token in the same block without special cases
         const [sourceLine, sourceBlock] = props.song.findLineAndBlock(
             sourceBlockID
         );
-        sourceBlock.chord = "";
+
+        const moveAction = !copyAction;
+        if (moveAction) {
+            // clearing the source block first allows handling of when the chord
+            // is dropped onto another token in the same block without special cases
+            sourceBlock.chord = "";
+        }
 
         const [destinationLine, destinationBlock] = props.song.findLineAndBlock(
             destinationBlockID
         );
+
         if (splitIndex !== 0) {
             destinationLine.splitBlock(destinationBlockID, splitIndex);
         }

@@ -71,7 +71,8 @@ export interface BlockProps extends DataTestID {
         destinationBlockID: IDable<ChordBlock>,
         splitIndex: number,
         newChord: string,
-        sourceBlockID: IDable<ChordBlock>
+        sourceBlockID: IDable<ChordBlock>,
+        copyAction: boolean
     ) => void;
     onChordChange?: (id: IDable<ChordBlock>, newChord: string) => void;
     onBlockSplit?: (id: IDable<ChordBlock>, splitIndex: number) => void;
@@ -118,28 +119,27 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     };
 
     const handleDragged = () => {
-        if (props.onChordChange) {
-            props.onChordChange(props.chordBlock, "");
-        }
+        props.onChordChange?.(props.chordBlock, "");
     };
 
     const dropHandler = (tokenIndex: number) => {
-        return (newChord: string, sourceBlockID: IDable<ChordBlock>) => {
-            if (props.onChordDragAndDrop) {
-                props.onChordDragAndDrop(
-                    props.chordBlock,
-                    tokenIndex,
-                    newChord,
-                    sourceBlockID
-                );
-            }
+        return (
+            newChord: string,
+            sourceBlockID: IDable<ChordBlock>,
+            copyAction: boolean
+        ) => {
+            props.onChordDragAndDrop?.(
+                props.chordBlock,
+                tokenIndex,
+                newChord,
+                sourceBlockID,
+                copyAction
+            );
         };
     };
 
     const endEdit = (newChord: string) => {
-        if (props.onChordChange) {
-            props.onChordChange(props.chordBlock, newChord);
-        }
+        props.onChordChange?.(props.chordBlock, newChord);
 
         finishEdit();
     };

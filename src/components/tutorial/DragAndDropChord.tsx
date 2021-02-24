@@ -46,6 +46,11 @@ const DragAndDropChord: React.FC<{}> = (): JSX.Element => {
             </Typography>
             <LineBreak />
             <Typography>
+                If you hold CTRL or CMD while dragging and dropping, the chord
+                will be copied instead of moved over.
+            </Typography>
+            <LineBreak />
+            <Typography>
                 Let's move the{" "}
                 <ChordTypography display="inline">B7</ChordTypography> above{" "}
                 <LyricsTypography display="inline">suddenly</LyricsTypography>{" "}
