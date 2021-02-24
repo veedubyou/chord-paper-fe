@@ -24,7 +24,7 @@ export const HTML5BackendWithCTRLKey = (
 
     if (
         untypesafeBackend.handleTopDragEnter === undefined ||
-        untypesafeBackend.handleTopDragEnter == null
+        untypesafeBackend.handleTopDragEnter === null
     ) {
         welpThingsBroke();
     }
@@ -39,7 +39,7 @@ export const HTML5BackendWithCTRLKey = (
 
     if (
         untypesafeBackend.handleTopDragOver === undefined ||
-        untypesafeBackend.handleTopDragOver == null
+        untypesafeBackend.handleTopDragOver === null
     ) {
         welpThingsBroke();
     }
