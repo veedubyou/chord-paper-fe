@@ -6,6 +6,8 @@ import ChordPaperBody from "./ChordPaperBody";
 import ChordPaperMenu from "./menu/ChordPaperMenu";
 import Header from "./Header";
 import { PlainFn } from "../../common/PlainFn";
+import TrackPlayer from "../track_player/TrackPlayer";
+import { makeStyles } from "@material-ui/styles";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
@@ -16,6 +18,12 @@ const RootPaper = withStyles((theme: Theme) => ({
     },
 }))(Paper);
 
+const useWhiteStyle = makeStyles({
+    root: {
+        backgroundColor: "white",
+    },
+});
+
 interface ChordPaperProps {
     song: ChordSong;
     onSongChanged?: (song: ChordSong) => void;
@@ -25,6 +33,8 @@ interface ChordPaperProps {
 const ChordPaper: React.FC<ChordPaperProps> = (
     props: ChordPaperProps
 ): JSX.Element => {
+    const whiteStyle = useWhiteStyle();
+
     const songChangeHandler = (song: ChordSong) => {
         props.onSongChanged?.(song);
     };
@@ -52,6 +62,10 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                     song={props.song}
                     onSongChanged={songChangeHandler}
                     onPlay={props.onPlay}
+                />
+                <TrackPlayer
+                    collapsedButtonClassName={whiteStyle.root}
+                    url={props.song.metadata.asHeardFrom}
                 />
             </RootPaper>
         </>

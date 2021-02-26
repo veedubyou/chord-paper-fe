@@ -16,7 +16,6 @@ export interface DisplaySettings {
 interface PlayContentProps {
     song: ChordSong;
     displaySettings: DisplaySettings;
-    height: string;
 }
 
 const PlayContent: React.FC<PlayContentProps> = (
@@ -136,7 +135,7 @@ const PlayContent: React.FC<PlayContentProps> = (
             columnRuleStyle: "solid",
             columnRuleColor: grey[300],
             columns: numberOfColumnsPerPage,
-            height: props.height,
+            height: "100vh",
             width: "100%",
         },
     })(Paper);
@@ -158,7 +157,7 @@ const PlayContent: React.FC<PlayContentProps> = (
 
     const FullHeightBox = withStyles({
         root: {
-            height: props.height,
+            height: "100vh",
             pageBreakInside: "avoid",
         },
     })(Box);

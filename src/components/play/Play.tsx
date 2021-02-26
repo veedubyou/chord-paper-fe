@@ -1,13 +1,18 @@
 import { createMuiTheme, Theme, ThemeProvider } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { PlainFn } from "../../common/PlainFn";
-import { isValidUrl } from "../../common/URL";
+import TrackPlayer from "../track_player/TrackPlayer";
 import PlayContent, { DisplaySettings } from "./PlayContent";
-import { PlayerSettings } from "./PlayerSettingsDialog";
 import PlayMenu from "./PlayMenu";
-import SongPlayer from "./SongPlayer";
+
+const useTransparentStyle = makeStyles({
+    root: {
+        backgroundColor: "transparent",
+    },
+});
 
 interface PlayProps {
     song: ChordSong;
@@ -21,14 +26,7 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
         columnMargin: 20,
     });
 
-    const defaultURL = isValidUrl(props.song.asHeardFrom)
-        ? props.song.asHeardFrom
-        : "";
-
-    const [playerSettings, setPlayerSettings] = useState<PlayerSettings>({
-        enablePlayer: true,
-        url: defaultURL,
-    });
+    const transparentStyle = useTransparentStyle();
 
     const playTheme = (theme: Theme): Theme => {
         return createMuiTheme({
@@ -41,20 +39,6 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
         });
     };
 
-    const playerHeightPercentage = playerSettings.enablePlayer ? 10 : 0;
-    const contentHeightPercentage = 100 - playerHeightPercentage;
-
-    const playerHeight = `${playerHeightPercentage}vh`;
-    const contentHeight = `${contentHeightPercentage}vh`;
-
-    const player: React.ReactNode = (() => {
-        if (!playerSettings.enablePlayer) {
-            return null;
-        }
-
-        return <SongPlayer url={playerSettings.url} height={playerHeight} />;
-    })();
-
     return (
         <>
             <Helmet>
@@ -66,19 +50,19 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
             </Helmet>
             <PlayMenu
                 displaySettings={displaySettings}
-                playerSettings={playerSettings}
                 onDisplaySettingsChange={setDisplaySettings}
-                onPlayerSettingsChange={setPlayerSettings}
                 onExit={props.onEdit}
             />
             <ThemeProvider theme={playTheme}>
                 <PlayContent
                     song={props.song}
                     displaySettings={displaySettings}
-                    height={contentHeight}
                 />
             </ThemeProvider>
-            {player}
+            <TrackPlayer
+                collapsedButtonClassName={transparentStyle.root}
+                url={props.song.asHeardFrom}
+            />
         </>
     );
 };
