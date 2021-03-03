@@ -71,7 +71,6 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                 />
                 <TrackPlayer
                     collapsedButtonClassName={whiteStyle.root}
-                    url={props.song.metadata.asHeardFrom}
                     trackList={props.song.trackList}
                     onTrackListChanged={trackChangeHandler}
                 />

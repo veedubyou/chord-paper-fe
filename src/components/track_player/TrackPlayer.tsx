@@ -8,7 +8,6 @@ type PlayerVisibilityState = "collapsed" | "full";
 
 interface TrackPlayerProps {
     trackList: Track[];
-    url: string;
     onTrackListChanged?: (trackList: Track[]) => void;
     collapsedButtonClassName?: string;
 }
