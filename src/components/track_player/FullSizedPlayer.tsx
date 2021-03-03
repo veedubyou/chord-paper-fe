@@ -81,7 +81,7 @@ const FullSizedPlayer: React.FC<FullSizedPlayerProps> = (
     const paddingLeftStyle = usePaddingLeftStyle();
 
     const players = props.trackList.map((track: Track, index: number) => (
-        <Collapse in={index === props.currentTrackIndex} key={index}>
+        <Collapse in={index === props.currentTrackIndex} key={track.url}>
             <Box>
                 <ReactPlayer
                     url={track.url}
