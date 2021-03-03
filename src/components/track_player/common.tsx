@@ -7,6 +7,10 @@ export const roundedTopCornersStyle = (theme: Theme) => ({
     borderTopRightRadius: theme.spacing(1.5),
 });
 
+export const roundedCornersStyle = (theme: Theme) => ({
+    borderRadius: theme.spacing(1.5),
+});
+
 const BottomRightBox = withStyles((theme: Theme) => ({
     root: {
         position: "fixed",

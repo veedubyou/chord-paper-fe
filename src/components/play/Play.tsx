@@ -61,7 +61,7 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
             </ThemeProvider>
             <TrackPlayer
                 collapsedButtonClassName={transparentStyle.root}
-                url={props.song.asHeardFrom}
+                trackList={props.song.trackList}
             />
         </>
     );

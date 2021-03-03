@@ -1,4 +1,4 @@
-import { Button, Slide, Theme } from "@material-ui/core";
+import { Button, Slide, Theme, Tooltip } from "@material-ui/core";
 import RadioIcon from "@material-ui/icons/Radio";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
@@ -12,7 +12,9 @@ const ExpandButton = withStyles((theme: Theme) => ({
 
 interface CollapsedButtonProps {
     show: boolean;
-    onExpand: () => void;
+    disabled?: boolean;
+    tooltipMessage: string;
+    onClick: () => void;
     className?: string;
 }
 
@@ -22,12 +24,19 @@ const CollapsedButton: React.FC<CollapsedButtonProps> = (
     return (
         <Slide in={props.show} direction="up">
             {withBottomRightBox(
-                <ExpandButton
-                    className={props.className}
-                    onClick={props.onExpand}
-                >
-                    <RadioIcon />
-                </ExpandButton>
+                // span inserted to workaround disabled elements with tooltip
+                // https://material-ui.com/components/tooltips/#disabled-elements
+                <Tooltip title={props.tooltipMessage}>
+                    <span>
+                        <ExpandButton
+                            className={props.className}
+                            onClick={props.onClick}
+                            disabled={props.disabled}
+                        >
+                            <RadioIcon />
+                        </ExpandButton>
+                    </span>
+                </Tooltip>
             )}
         </Slide>
     );

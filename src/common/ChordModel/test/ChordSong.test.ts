@@ -46,6 +46,7 @@ describe("Chord Song", () => {
                 asHeardFrom: "A Rickroll from my youth",
             },
             lastSavedAt: new Date(),
+            trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}]
         });
     });
 
@@ -106,6 +107,7 @@ describe("Chord Song", () => {
                     performedBy: "Rick Astley",
                     asHeardFrom: "A Rickroll from my youth",
                 },
+                trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}],
                 elements: [
                     {
                         elements: [
@@ -277,6 +279,8 @@ describe("Chord Song", () => {
                             performedBy: "Rick Astley",
                             asHeardFrom: "every time someone rickrolls me",
                         },
+                        trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}]
+
                     }
                 );
             });
@@ -322,6 +326,7 @@ describe("Chord Song", () => {
                             performedBy: "Rick Astley",
                             asHeardFrom: "every time someone rickrolls me",
                         },
+                        trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}]
                     }
                 );
 
@@ -369,6 +374,7 @@ describe("Chord Song", () => {
                             performedBy: "Rick Astley",
                             asHeardFrom: "every time someone rickrolls me",
                         },
+                        trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}]
                     }
                 );
 
@@ -416,6 +422,7 @@ describe("Chord Song", () => {
                             performedBy: "Rick Astley",
                             asHeardFrom: "every time someone rickrolls me",
                         },
+                        trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}]
                     }
                 );
                 expect(original.contentEquals(other)).toEqual(false);
@@ -462,6 +469,7 @@ describe("Chord Song", () => {
                             performedBy: "Rick Astley",
                             asHeardFrom: "every time someone rickrolls me",
                         },
+                        trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}]
                     }
                 );
                 expect(original.contentEquals(other)).toEqual(false);
