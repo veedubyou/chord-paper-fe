@@ -13,7 +13,7 @@ const demo = () => {
             <Switch>
                 <Redirect from="/demo" to="/demo/edit" exact />
                 <Route key="/demo" path="/demo">
-                    <Demo basePath="/demo" />
+                    <Demo />
                 </Route>
             </Switch>
         </MemoryRouter>

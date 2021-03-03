@@ -8,6 +8,7 @@ import Header from "./Header";
 import { PlainFn } from "../../common/PlainFn";
 import TrackPlayer from "../track_player/TrackPlayer";
 import { makeStyles } from "@material-ui/styles";
+import { Track } from "../../common/ChordModel/Track";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
@@ -39,6 +40,11 @@ const ChordPaper: React.FC<ChordPaperProps> = (
         props.onSongChanged?.(song);
     };
 
+    const trackChangeHandler = (trackList: Track[]) => {
+        props.song.trackList = trackList;
+        songChangeHandler(props.song);
+    };
+
     return (
         <>
             <Helmet>
@@ -66,6 +72,8 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                 <TrackPlayer
                     collapsedButtonClassName={whiteStyle.root}
                     url={props.song.metadata.asHeardFrom}
+                    trackList={props.song.trackList}
+                    onTrackListChanged={trackChangeHandler}
                 />
             </RootPaper>
         </>
