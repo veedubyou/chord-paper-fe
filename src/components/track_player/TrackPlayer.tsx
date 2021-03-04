@@ -23,6 +23,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
 
     const [trackEditDialogOpen, setTrackEditDialogOpen] = useState(false);
     const [currTrackIndex, setCurrTrackIndex] = useState(0);
+    const [playing, setPlaying] = useState(false);
     const [cacheBusterID] = useState<string>(shortid.generate());
 
     const canEditTrackList = props.onTrackListChanged !== undefined;
@@ -95,6 +96,9 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
     const fullPlayer = (
         <FullSizedPlayer
             show={playerVisibilityState === "full"}
+            playing={playing}
+            onPlay={() => setPlaying(true)}
+            onPause={() => setPlaying(false)}
             currentTrackIndex={currTrackIndex}
             trackList={processedTrackList}
             onCollapse={() => setPlayerVisibilityState("collapsed")}
