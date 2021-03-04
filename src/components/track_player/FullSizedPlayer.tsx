@@ -17,7 +17,7 @@ import { Track } from "../../common/ChordModel/Track";
 import {
     roundedCornersStyle,
     roundedTopCornersStyle,
-    BottomRightBox,
+    withBottomRightBox,
 } from "./common";
 
 interface FullSizedPlayerProps {
@@ -159,13 +159,13 @@ const FullSizedPlayer: React.FC<FullSizedPlayerProps> = (
 
     return (
         <Slide in={props.show} direction="up">
-            <BottomRightBox>
+            {withBottomRightBox(
                 <FullPlayerContainer>
                     {titleBar}
                     <Divider />
                     {players}
                 </FullPlayerContainer>
-            </BottomRightBox>
+            )}
         </Slide>
     );
 };
