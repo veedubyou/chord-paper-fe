@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "49ba56e9f422e44d489ce98d7b18f66a",
+    "revision": "a4faa92ed2e4853542f383d1f9a7f4ed",
     "url": "/chord-paper-fe/index.html"
   },
   {
-    "revision": "f07d9e14918a4931062b",
+    "revision": "1f8bf62021bdce6d61a2",
     "url": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/chord-paper-fe/static/js/2.a9a440d3.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "f07d9e14918a4931062b",
-    "url": "/chord-paper-fe/static/js/main.083d41e0.chunk.js"
+    "revision": "1f8bf62021bdce6d61a2",
+    "url": "/chord-paper-fe/static/js/main.9f791a7a.chunk.js"
   },
   {
     "revision": "47dc456f270222aae9fd",
