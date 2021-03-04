@@ -22,9 +22,12 @@ import {
 
 interface FullSizedPlayerProps {
     show: boolean;
+    playing: boolean;
     currentTrackIndex: number;
     trackList: Track[];
     onCollapse: () => void;
+    onPlay: () => void;
+    onPause: () => void;
     onSelectCurrentTrack: (index: number) => void;
     onOpenTrackEditDialog?: () => void;
 }
@@ -80,19 +83,27 @@ const FullSizedPlayer: React.FC<FullSizedPlayerProps> = (
 ): JSX.Element => {
     const paddingLeftStyle = usePaddingLeftStyle();
 
-    const players = props.trackList.map((track: Track, index: number) => (
-        <Collapse in={index === props.currentTrackIndex} key={track.url}>
-            <Box>
-                <ReactPlayer
-                    url={track.url}
-                    controls
-                    width="50vw"
-                    height="auto"
-                    config={{ file: { forceAudio: true } }}
-                />
-            </Box>
-        </Collapse>
-    ));
+    const players = props.trackList.map((track: Track, index: number) => {
+        const focused = index === props.currentTrackIndex;
+
+        return (
+            <Collapse in={focused} key={track.url}>
+                <Box>
+                    <ReactPlayer
+                        key={track.url}
+                        url={track.url}
+                        playing={focused && props.playing}
+                        controls
+                        onPlay={props.onPlay}
+                        onPause={props.onPause}
+                        width="50vw"
+                        height="auto"
+                        config={{ file: { forceAudio: true } }}
+                    />
+                </Box>
+            </Collapse>
+        );
+    });
 
     const trackListEditButton = props.onOpenTrackEditDialog !== undefined && (
         <TitleBarButton onClick={props.onOpenTrackEditDialog}>
