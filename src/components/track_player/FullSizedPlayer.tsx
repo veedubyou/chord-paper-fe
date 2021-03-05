@@ -147,7 +147,12 @@ const FullSizedPlayer: React.FC<FullSizedPlayerProps> = (
         >
             {props.trackControls.map(
                 (trackControl: TrackControl, index: number) => (
-                    <MenuItem value={index}>{trackControl.label}</MenuItem>
+                    <MenuItem
+                        key={`${index}-${trackControl.label}`}
+                        value={index}
+                    >
+                        {trackControl.label}
+                    </MenuItem>
                 )
             )}
         </Select>

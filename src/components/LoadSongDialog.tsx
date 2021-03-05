@@ -106,7 +106,11 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
             }
 
             return (
-                <Typography display="block" variant="caption">
+                <Typography
+                    key={`${summary.id}-${label}`}
+                    display="block"
+                    variant="caption"
+                >
                     {`${label}: ${detail}`}
                 </Typography>
             );
@@ -117,7 +121,11 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
                 {detailElement(summary.metadata.performedBy, "Performed by")}
                 {detailElement(summary.metadata.composedBy, "Composed by")}
                 {summary.lastSavedAt !== null && (
-                    <Typography display="block" variant="caption">
+                    <Typography
+                        key={`${summary.id}-lastSavedAt`}
+                        display="block"
+                        variant="caption"
+                    >
                         {`Last Saved At: ${summary.lastSavedAt.toLocaleString()}`}
                     </Typography>
                 )}
@@ -134,8 +142,14 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
                 <ListItem key={summary.id} button onClick={navigateToSong}>
                     <ListItemText
                         primary={title}
+                        primaryTypographyProps={{
+                            key: `${summary.id}-primary`,
+                        }}
                         secondary={details}
-                    ></ListItemText>
+                        secondaryTypographyProps={{
+                            key: `${summary.id}-seccondary`,
+                        }}
+                    />
                 </ListItem>
                 <Divider key={`${summary.id}-divider`} />
             </>
