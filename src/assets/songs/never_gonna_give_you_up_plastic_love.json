@@ -923,5 +923,19 @@
         "composedBy": "Stock Aitken Waterman x Mariya Takeuchi",
         "performedBy": "Rick Astley  x Mariya Takeuchi",
         "asHeardFrom": "https://www.youtube.com/watch?v=dM9zwZCOmjM"
-    }
+    },
+    "trackList": [
+        {
+            "label": "Original",
+            "url": "https://www.youtube.com/watch?v=dM9zwZCOmjM"
+        },
+        {
+            "label": "Accompaniment",
+            "url": "https://drive.google.com/uc?export=download&id=1bB6ZcmEqR4w0qL-e0TTearMiZrggRrk-"
+        },
+        {
+            "label": "Drums + Bass",
+            "url": "https://drive.google.com/uc?export=download&id=1S_QLmukbGmfHdZbvyKSn04sEtUtH8gZ8"
+        }
+    ]
 }
