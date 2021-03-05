@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import shortid from "shortid";
 import { Track } from "../../common/ChordModel/Track";
 import CollapsedButton from "./CollapsedButton";
 import FullSizedPlayer from "./FullSizedPlayer";
-import { addCacheBuster, isGoogleDriveExportLink } from "./google_drive";
 import TrackListEditDialog from "./TrackListEditDialog";
+import { useMultiTrack } from "./useMultiTrack";
 
 type PlayerVisibilityState = "collapsed" | "full";
 
@@ -22,12 +21,13 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
     >("collapsed");
 
     const [trackEditDialogOpen, setTrackEditDialogOpen] = useState(false);
-    const [currTrackIndex, setCurrTrackIndex] = useState(0);
-    const [playing, setPlaying] = useState(false);
-    const [cacheBusterID] = useState<string>(shortid.generate());
+
+    const [trackControls, onCurrentTrackIndexChange] = useMultiTrack(
+        props.trackList
+    );
 
     const canEditTrackList = props.onTrackListChanged !== undefined;
-    const trackListIsEmpty = props.trackList.length === 0;
+    const trackListIsEmpty = trackControls.length === 0;
 
     const collapsedButtonFn = (
         disabled: boolean,
@@ -80,31 +80,12 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
         );
     }
 
-    const processedTrackList: Track[] = props.trackList.map((track: Track) => {
-        // Firefox caches some redirects on Google Drive links, which eventually leads
-        // to 403 on subsequent reloads. Breaking the cache here so that the loading doesn't break
-        if (isGoogleDriveExportLink(track.url)) {
-            return {
-                label: track.label,
-                url: addCacheBuster(track.url, cacheBusterID),
-            };
-        }
-
-        return track;
-    });
-
     const fullPlayer = (
         <FullSizedPlayer
             show={playerVisibilityState === "full"}
-            playing={playing}
-            onPlay={() => setPlaying(true)}
-            onPause={() => setPlaying(false)}
-            currentTrackIndex={currTrackIndex}
-            trackList={processedTrackList}
+            trackControls={trackControls}
             onCollapse={() => setPlayerVisibilityState("collapsed")}
-            onSelectCurrentTrack={(currentTrackIndex: number) =>
-                setCurrTrackIndex(currentTrackIndex)
-            }
+            onSelectCurrentTrack={onCurrentTrackIndexChange}
             onOpenTrackEditDialog={
                 canEditTrackList
                     ? () => setTrackEditDialogOpen(true)
