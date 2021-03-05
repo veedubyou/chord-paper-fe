@@ -18,7 +18,7 @@ import {
     roundedTopCornersStyle,
     withBottomRightBox,
 } from "./common";
-import { TrackControl } from "./useMultiTrackPlayer";
+import { TrackControl } from "./useMultiTrack";
 
 interface FullSizedPlayerProps {
     show: boolean;
