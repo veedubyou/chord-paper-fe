@@ -3,7 +3,7 @@ import { Track } from "../../common/ChordModel/Track";
 import CollapsedButton from "./CollapsedButton";
 import FullSizedPlayer from "./FullSizedPlayer";
 import TrackListEditDialog from "./TrackListEditDialog";
-import { useMultiTrack } from "./useMultiTrackPlayer";
+import { useMultiTrack } from "./useMultiTrack";
 
 type PlayerVisibilityState = "collapsed" | "full";
 
