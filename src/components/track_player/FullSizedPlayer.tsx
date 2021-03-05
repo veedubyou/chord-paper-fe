@@ -13,21 +13,17 @@ import CollapseDownIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import React from "react";
 import ReactPlayer from "react-player";
-import { Track } from "../../common/ChordModel/Track";
 import {
     roundedCornersStyle,
     roundedTopCornersStyle,
     withBottomRightBox,
 } from "./common";
+import { TrackControl } from "./useMultiTrackPlayer";
 
 interface FullSizedPlayerProps {
     show: boolean;
-    playing: boolean;
-    currentTrackIndex: number;
-    trackList: Track[];
+    trackControls: TrackControl[];
     onCollapse: () => void;
-    onPlay: () => void;
-    onPause: () => void;
     onSelectCurrentTrack: (index: number) => void;
     onOpenTrackEditDialog?: () => void;
 }
@@ -83,27 +79,37 @@ const FullSizedPlayer: React.FC<FullSizedPlayerProps> = (
 ): JSX.Element => {
     const paddingLeftStyle = usePaddingLeftStyle();
 
-    const players = props.trackList.map((track: Track, index: number) => {
-        const focused = index === props.currentTrackIndex;
+    const players = props.trackControls.map(
+        (trackControl: TrackControl, index: number) => {
+            const handleProgress = (state: {
+                played: number;
+                playedSeconds: number;
+                loaded: number;
+                loadedSeconds: number;
+            }) => {
+                trackControl.onProgress(state.playedSeconds);
+            };
 
-        return (
-            <Collapse in={focused} key={track.url}>
-                <Box>
-                    <ReactPlayer
-                        key={track.url}
-                        url={track.url}
-                        playing={focused && props.playing}
-                        controls
-                        onPlay={props.onPlay}
-                        onPause={props.onPause}
-                        width="50vw"
-                        height="auto"
-                        config={{ file: { forceAudio: true } }}
-                    />
-                </Box>
-            </Collapse>
-        );
-    });
+            return (
+                <Collapse in={trackControl.focused} key={trackControl.url}>
+                    <Box>
+                        <ReactPlayer
+                            ref={trackControl.ref}
+                            url={trackControl.url}
+                            playing={trackControl.playing}
+                            controls
+                            onPlay={trackControl.onPlay}
+                            onPause={trackControl.onPause}
+                            onProgress={handleProgress}
+                            width="50vw"
+                            height="auto"
+                            config={{ file: { forceAudio: true } }}
+                        />
+                    </Box>
+                </Collapse>
+            );
+        }
+    );
 
     const trackListEditButton = props.onOpenTrackEditDialog !== undefined && (
         <TitleBarButton onClick={props.onOpenTrackEditDialog}>
@@ -128,16 +134,22 @@ const FullSizedPlayer: React.FC<FullSizedPlayerProps> = (
         props.onSelectCurrentTrack(value);
     };
 
+    const currentIndex: number = props.trackControls.findIndex(
+        (trackControl: TrackControl) => trackControl.focused
+    );
+
     const trackListPicker = (
         <Select
             className={paddingLeftStyle.root}
             disableUnderline
-            value={props.currentTrackIndex}
+            value={currentIndex}
             onChange={trackChangeHandler}
         >
-            {props.trackList.map((track: Track, index: number) => (
-                <MenuItem value={index}>{track.label}</MenuItem>
-            ))}
+            {props.trackControls.map(
+                (trackControl: TrackControl, index: number) => (
+                    <MenuItem value={index}>{trackControl.label}</MenuItem>
+                )
+            )}
         </Select>
     );
 
