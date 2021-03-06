@@ -21,6 +21,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
     >("collapsed");
 
     const [trackEditDialogOpen, setTrackEditDialogOpen] = useState(false);
+    const [loadPlayers, setLoadPlayers] = useState(false);
 
     const [trackControls, onCurrentTrackIndexChange] = useMultiTrack(
         props.trackList
@@ -80,7 +81,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
         );
     }
 
-    const fullPlayer = (
+    const fullPlayer: false | JSX.Element = loadPlayers && (
         <FullSizedPlayer
             show={playerVisibilityState === "full"}
             trackControls={trackControls}
@@ -94,11 +95,19 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
         />
     );
 
+    const collapsedButtonClickHandler = () => {
+        if (!loadPlayers) {
+            setLoadPlayers(true);
+        }
+
+        setPlayerVisibilityState("full");
+    };
+
     return (
         <>
             {collapsedButtonFn(
                 false,
-                () => setPlayerVisibilityState("full"),
+                collapsedButtonClickHandler,
                 "Show Player"
             )}
             {fullPlayer}
