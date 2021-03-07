@@ -10,7 +10,7 @@ const ExpandButton = withStyles((theme: Theme) => ({
     },
 }))(Button);
 
-interface CollapsedButtonProps {
+interface MinimizedButtonProps {
     show: boolean;
     disabled?: boolean;
     tooltipMessage: string;
@@ -18,8 +18,8 @@ interface CollapsedButtonProps {
     className?: string;
 }
 
-const CollapsedButton: React.FC<CollapsedButtonProps> = (
-    props: CollapsedButtonProps
+const MinimizedButton: React.FC<MinimizedButtonProps> = (
+    props: MinimizedButtonProps
 ): JSX.Element => {
     return (
         <Slide in={props.show} direction="up">
@@ -42,4 +42,4 @@ const CollapsedButton: React.FC<CollapsedButtonProps> = (
     );
 };
 
-export default CollapsedButton;
+export default MinimizedButton;

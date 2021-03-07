@@ -4,6 +4,12 @@ import { PlainFn } from "../../common/PlainFn";
 import React, { useRef, useState } from "react";
 import shortid from "shortid";
 import { ensureGoogleDriveCacheBusted } from "./google_drive";
+import { Duration } from "luxon";
+
+interface FullPlayerControl {
+    trackControls: TrackControl[];
+    onCurrentTrackIndexChange: (newIndex: number) => void;
+}
 
 export interface TrackControl extends Track {
     focused: boolean;
@@ -14,11 +20,18 @@ export interface TrackControl extends Track {
     ref: React.Ref<ReactPlayer>;
 }
 
+interface CompactPlayerControl {
+    playing: boolean;
+    onPlay: PlainFn;
+    onPause: PlainFn;
+    currentTime: string;
+}
+
 const voidFn = () => {};
 
 export const useMultiTrack = (
     trackList: Track[]
-): [TrackControl[], (newIndex: number) => void] => {
+): [FullPlayerControl, CompactPlayerControl] => {
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -67,7 +80,7 @@ export const useMultiTrack = (
         setCurrentTrackIndex(newIndex);
     };
 
-    const controls: TrackControl[] = trackList.map(
+    const trackControls: TrackControl[] = trackList.map(
         (track: Track, index: number) => {
             const focused = index === currentTrackIndex;
 
@@ -84,5 +97,22 @@ export const useMultiTrack = (
         }
     );
 
-    return [controls, onCurrentTrackIndexChange];
+    const fullPlayerControl: FullPlayerControl = {
+        trackControls: trackControls,
+        onCurrentTrackIndexChange: onCurrentTrackIndexChange,
+    };
+
+    const currentTimeFormatted: string = (() => {
+        const duration: Duration = Duration.fromMillis(currentTime * 1000);
+        return duration.toFormat("m:ss");
+    })();
+
+    const compactPlayerControl: CompactPlayerControl = {
+        playing: playing,
+        onPlay: handlePlay,
+        onPause: handlePause,
+        currentTime: currentTimeFormatted,
+    };
+
+    return [fullPlayerControl, compactPlayerControl];
 };

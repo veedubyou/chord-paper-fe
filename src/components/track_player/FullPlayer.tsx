@@ -16,27 +16,18 @@ import ReactPlayer from "react-player";
 import {
     roundedCornersStyle,
     roundedTopCornersStyle,
+    TitleBar,
     withBottomRightBox,
 } from "./common";
 import { TrackControl } from "./useMultiTrack";
 
-interface FullSizedPlayerProps {
+interface FullPlayerProps {
     show: boolean;
     trackControls: TrackControl[];
     onCollapse: () => void;
     onSelectCurrentTrack: (index: number) => void;
     onOpenTrackEditDialog?: () => void;
 }
-
-const TitleBar = withStyles((theme: Theme) => ({
-    root: {
-        width: "100%",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        ...roundedTopCornersStyle(theme),
-    },
-}))(Box);
 
 const FlexBox = withStyles((theme: Theme) => ({
     root: {
@@ -74,8 +65,8 @@ const FullPlayerContainer = withStyles((theme: Theme) => ({
     },
 }))(Box);
 
-const FullSizedPlayer: React.FC<FullSizedPlayerProps> = (
-    props: FullSizedPlayerProps
+const FullPlayer: React.FC<FullPlayerProps> = (
+    props: FullPlayerProps
 ): JSX.Element => {
     const paddingLeftStyle = usePaddingLeftStyle();
 
@@ -101,6 +92,7 @@ const FullSizedPlayer: React.FC<FullSizedPlayerProps> = (
                             onPlay={trackControl.onPlay}
                             onPause={trackControl.onPause}
                             onProgress={handleProgress}
+                            progressInterval={500}
                             width="50vw"
                             height="auto"
                             config={{ file: { forceAudio: true } }}
@@ -187,4 +179,4 @@ const FullSizedPlayer: React.FC<FullSizedPlayerProps> = (
     );
 };
 
-export default FullSizedPlayer;
+export default FullPlayer;
