@@ -1,19 +1,20 @@
 import {
     Box,
     Button as UnstyledButton,
+    ButtonGroup as UnstyledButtonGroup,
     Divider,
     Slide,
     Theme,
     Typography,
 } from "@material-ui/core";
+import { ButtonProps } from "@material-ui/core/Button";
 import blueGrey from "@material-ui/core/colors/blueGrey";
+import grey from "@material-ui/core/colors/grey";
 import ExpandIcon from "@material-ui/icons/Launch";
 import MinimizeIcon from "@material-ui/icons/Minimize";
-import UnstyledReplayIcon from "@material-ui/icons/Replay";
-import { ButtonProps } from "@material-ui/core/Button";
-
 import UnstyledPauseIcon from "@material-ui/icons/Pause";
 import UnstyledPlayIcon from "@material-ui/icons/PlayArrow";
+import UnstyledReplayIcon from "@material-ui/icons/Replay";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
 import { PlainFn } from "../../common/PlainFn";
@@ -44,20 +45,14 @@ const PlayerBody = withStyles({
     },
 })(Box);
 
-const ButtonGroup = withStyles((theme: Theme) => ({
-    root: {
-        borderStyle: "solid",
-        borderColor: blueGrey[100],
-        borderLeftWidth: theme.spacing(0.25),
-        borderRightWidth: 0,
-        borderTopWidth: 0,
-        borderBottomWidth: 0,
-        paddingLeft: theme.spacing(1),
-        paddingRight: theme.spacing(1),
-        display: "flex",
-        alignContent: "center",
+const ButtonGroup = withStyles({
+    groupedHorizontal: {
+        "&:first-child": {
+            borderTopLeftRadius: 0,
+            borderBottomLeftRadius: 0,
+        },
     },
-}))(Box);
+})(UnstyledButtonGroup);
 
 const TimeDisplay = withStyles((theme: Theme) => ({
     root: {
@@ -66,6 +61,7 @@ const TimeDisplay = withStyles((theme: Theme) => ({
         justifyContent: "center",
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
+        color: grey[700],
     },
 }))(Box);
 
@@ -139,17 +135,15 @@ const CompactPlayer: React.FC<CompactPlayerProps> = (
 
     const controlPanel = (
         <PlayerBody>
-            <TimeDisplay>
-                <Typography variant="h6">{props.currentTime}</Typography>
-            </TimeDisplay>
-
             <ButtonGroup>
                 <CoolAssButton onClick={props.onJumpBack}>
                     <JumpBackIcon />
                 </CoolAssButton>
-
                 {playPauseButton}
             </ButtonGroup>
+            <TimeDisplay>
+                <Typography variant="h6">{props.currentTime}</Typography>
+            </TimeDisplay>
         </PlayerBody>
     );
 
