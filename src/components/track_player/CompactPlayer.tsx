@@ -32,6 +32,7 @@ interface CompactPlayerProps {
     currentTime: string;
     onPlay: PlainFn;
     onPause: PlainFn;
+    onJumpBack: PlainFn;
 }
 
 const PlayerBody = withStyles({
@@ -143,7 +144,7 @@ const CompactPlayer: React.FC<CompactPlayerProps> = (
             </TimeDisplay>
 
             <ButtonGroup>
-                <CoolAssButton>
+                <CoolAssButton onClick={props.onJumpBack}>
                     <JumpBackIcon />
                 </CoolAssButton>
 

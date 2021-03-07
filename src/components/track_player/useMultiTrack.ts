@@ -24,6 +24,7 @@ interface CompactPlayerControl {
     playing: boolean;
     onPlay: PlainFn;
     onPause: PlainFn;
+    onJumpBack: PlainFn;
     currentTime: string;
 }
 
@@ -40,6 +41,8 @@ export const useMultiTrack = (
     // it's basically keeping a persistent array of refs around
     const playerRefs = useRef<React.RefObject<ReactPlayer>[]>([]);
     const cacheBusterID = useRef<string>(shortid.generate());
+
+    const jumpInterval = 5; // seconds
 
     const processTrackURL = (url: string): string => {
         // Firefox caches some redirects on Google Drive links, which eventually leads
@@ -62,6 +65,17 @@ export const useMultiTrack = (
 
     const handlePlay = () => setPlaying(true);
     const handlePause = () => setPlaying(false);
+    const handleJumpBack = () => {
+        let newTime = currentTime - jumpInterval;
+        if (newTime < 0) {
+            newTime = 0;
+        }
+
+        const currentPlayerRef: ReactPlayer | null =
+            playerRefs.current[currentTrackIndex].current;
+        currentPlayerRef?.seekTo(newTime, "seconds");
+    };
+
     const handleProgress = (playedSeconds: number) =>
         setCurrentTime(playedSeconds);
 
@@ -111,6 +125,7 @@ export const useMultiTrack = (
         playing: playing,
         onPlay: handlePlay,
         onPause: handlePause,
+        onJumpBack: handleJumpBack,
         currentTime: currentTimeFormatted,
     };
 
