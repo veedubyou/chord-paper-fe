@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Track } from "../../common/ChordModel/Track";
-import CollapsedButton from "./CollapsedButton";
-import FullSizedPlayer from "./FullSizedPlayer";
+import MinimizedButton from "./MinimizedButton";
+import CompactPlayer from "./CompactPlayer";
+import FullPlayer from "./FullPlayer";
 import TrackListEditDialog from "./TrackListEditDialog";
 import { useMultiTrack } from "./useMultiTrack";
 
-type PlayerVisibilityState = "collapsed" | "full";
+type PlayerVisibilityState = "minimized" | "compact" | "full";
 
 interface TrackPlayerProps {
     trackList: Track[];
@@ -18,26 +19,26 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
 ): JSX.Element => {
     const [playerVisibilityState, setPlayerVisibilityState] = useState<
         PlayerVisibilityState
-    >("collapsed");
+    >("minimized");
 
     const [trackEditDialogOpen, setTrackEditDialogOpen] = useState(false);
     const [loadPlayers, setLoadPlayers] = useState(false);
 
-    const [trackControls, onCurrentTrackIndexChange] = useMultiTrack(
+    const [fullPlayerControl, compactPlayerControl] = useMultiTrack(
         props.trackList
     );
 
     const canEditTrackList = props.onTrackListChanged !== undefined;
-    const trackListIsEmpty = trackControls.length === 0;
+    const trackListIsEmpty = fullPlayerControl.trackControls.length === 0;
 
     const collapsedButtonFn = (
         disabled: boolean,
         expandFn: () => void,
         tooltipMessage: string
     ) => (
-        <CollapsedButton
+        <MinimizedButton
             className={props.collapsedButtonClassName}
-            show={playerVisibilityState === "collapsed"}
+            show={playerVisibilityState === "minimized"}
             tooltipMessage={tooltipMessage}
             disabled={disabled}
             onClick={expandFn}
@@ -82,11 +83,11 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
     }
 
     const fullPlayer: false | JSX.Element = loadPlayers && (
-        <FullSizedPlayer
+        <FullPlayer
             show={playerVisibilityState === "full"}
-            trackControls={trackControls}
-            onCollapse={() => setPlayerVisibilityState("collapsed")}
-            onSelectCurrentTrack={onCurrentTrackIndexChange}
+            trackControls={fullPlayerControl.trackControls}
+            onCollapse={() => setPlayerVisibilityState("compact")}
+            onSelectCurrentTrack={fullPlayerControl.onCurrentTrackIndexChange}
             onOpenTrackEditDialog={
                 canEditTrackList
                     ? () => setTrackEditDialogOpen(true)
@@ -95,12 +96,24 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
         />
     );
 
+    const compactPlayer: false | JSX.Element = loadPlayers && (
+        <CompactPlayer
+            show={playerVisibilityState === "compact"}
+            playing={compactPlayerControl.playing}
+            onPlay={compactPlayerControl.onPlay}
+            onPause={compactPlayerControl.onPause}
+            onMinimize={() => setPlayerVisibilityState("minimized")}
+            onMaximize={() => setPlayerVisibilityState("full")}
+            currentTime={compactPlayerControl.currentTime}
+        />
+    );
+
     const collapsedButtonClickHandler = () => {
         if (!loadPlayers) {
             setLoadPlayers(true);
         }
 
-        setPlayerVisibilityState("full");
+        setPlayerVisibilityState("compact");
     };
 
     return (
@@ -110,6 +123,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
                 collapsedButtonClickHandler,
                 "Show Player"
             )}
+            {compactPlayer}
             {fullPlayer}
             {trackEditDialog}
         </>
