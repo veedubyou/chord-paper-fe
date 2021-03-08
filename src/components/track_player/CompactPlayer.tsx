@@ -1,7 +1,6 @@
 import {
     Box,
     Button as UnstyledButton,
-    ButtonGroup as UnstyledButtonGroup,
     Divider,
     Slide,
     Theme,
@@ -46,13 +45,19 @@ const PlayerBody = withStyles({
 })(Box);
 
 const ButtonGroup = withStyles({
-    groupedHorizontal: {
-        "&:first-child": {
-            borderTopLeftRadius: 0,
-            borderBottomLeftRadius: 0,
-        },
+    root: {
+        display: "flex",
     },
-})(UnstyledButtonGroup);
+})(Box);
+
+const VerticalMiddleDivider = withStyles((theme: Theme) => ({
+    root: {
+        marginLeft: 0,
+        marginRight: 0,
+        marginTop: theme.spacing(1.5),
+        marginBottom: theme.spacing(1.5),
+    },
+}))(Divider);
 
 const TimeDisplay = withStyles((theme: Theme) => ({
     root: {
@@ -139,7 +144,9 @@ const CompactPlayer: React.FC<CompactPlayerProps> = (
                 <CoolAssButton onClick={props.onJumpBack}>
                     <JumpBackIcon />
                 </CoolAssButton>
+                <VerticalMiddleDivider orientation="vertical" flexItem />
                 {playPauseButton}
+                <VerticalMiddleDivider orientation="vertical" flexItem />
             </ButtonGroup>
             <TimeDisplay>
                 <Typography variant="h6">{props.currentTime}</Typography>
