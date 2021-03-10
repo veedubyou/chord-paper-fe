@@ -14,17 +14,20 @@ interface FullPlayerControl {
 export interface TrackControl extends Track {
     focused: boolean;
     playing: boolean;
-    onPlay: PlainFn;
-    onPause: PlainFn;
+    play: PlainFn;
+    pause: PlainFn;
+    jumpBack: PlainFn;
+    jumpForward: PlainFn;
+    skipBack: PlainFn;
     onProgress: (playedSeconds: number) => void;
     ref: React.Ref<ReactPlayer>;
 }
 
 interface CompactPlayerControl {
     playing: boolean;
-    onPlay: PlainFn;
-    onPause: PlainFn;
-    onJumpBack: PlainFn;
+    play: PlainFn;
+    pause: PlainFn;
+    jumpBack: PlainFn;
     currentTime: string;
 }
 
@@ -36,6 +39,7 @@ export const useMultiTrack = (
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
+
     // syntax bears a bit of explanation - the first use of useRef is just to keep state without rerender
     // (useState would rerender)
     // it's basically keeping a persistent array of refs around
@@ -63,6 +67,12 @@ export const useMultiTrack = (
 
     adjustRefArraySize();
 
+    const seekTo = (time: number) => {
+        const currentPlayerRef: ReactPlayer | null =
+            playerRefs.current[currentTrackIndex].current;
+        currentPlayerRef?.seekTo(time, "seconds");
+    };
+
     const handlePlay = () => setPlaying(true);
     const handlePause = () => setPlaying(false);
     const handleJumpBack = () => {
@@ -71,9 +81,16 @@ export const useMultiTrack = (
             newTime = 0;
         }
 
-        const currentPlayerRef: ReactPlayer | null =
-            playerRefs.current[currentTrackIndex].current;
-        currentPlayerRef?.seekTo(newTime, "seconds");
+        seekTo(newTime);
+    };
+
+    const handleJumpForward = () => {
+        const newTime = currentTime + jumpInterval;
+        seekTo(newTime);
+    };
+
+    const handleSkipBack = () => {
+        seekTo(0);
     };
 
     const handleProgress = (playedSeconds: number) =>
@@ -98,14 +115,25 @@ export const useMultiTrack = (
         (track: Track, index: number) => {
             const focused = index === currentTrackIndex;
 
+            const fnIfFocused = <T>(fn: T) => {
+                if (focused) {
+                    return fn;
+                }
+
+                return voidFn;
+            };
+
             return {
                 label: track.label,
                 url: processTrackURL(track.url),
                 focused: focused,
                 playing: focused && playing,
-                onPlay: focused ? handlePlay : voidFn,
-                onPause: focused ? handlePause : voidFn,
-                onProgress: focused ? handleProgress : voidFn,
+                play: fnIfFocused(handlePlay),
+                pause: fnIfFocused(handlePause),
+                jumpBack: fnIfFocused(handleJumpBack),
+                jumpForward: fnIfFocused(handleJumpForward),
+                skipBack: fnIfFocused(handleSkipBack),
+                onProgress: fnIfFocused(handleProgress),
                 ref: playerRefs.current[index],
             };
         }
@@ -123,9 +151,9 @@ export const useMultiTrack = (
 
     const compactPlayerControl: CompactPlayerControl = {
         playing: playing,
-        onPlay: handlePlay,
-        onPause: handlePause,
-        onJumpBack: handleJumpBack,
+        play: handlePlay,
+        pause: handlePause,
+        jumpBack: handleJumpBack,
         currentTime: currentTimeFormatted,
     };
 

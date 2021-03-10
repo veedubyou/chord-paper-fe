@@ -6,14 +6,10 @@ import {
     Theme,
     Typography,
 } from "@material-ui/core";
-import { ButtonProps } from "@material-ui/core/Button";
-import blueGrey from "@material-ui/core/colors/blueGrey";
 import grey from "@material-ui/core/colors/grey";
 import ExpandIcon from "@material-ui/icons/Launch";
 import MinimizeIcon from "@material-ui/icons/Minimize";
-import UnstyledPauseIcon from "@material-ui/icons/Pause";
-import UnstyledPlayIcon from "@material-ui/icons/PlayArrow";
-import UnstyledReplayIcon from "@material-ui/icons/Replay";
+
 import { withStyles } from "@material-ui/styles";
 import React from "react";
 import { PlainFn } from "../../common/PlainFn";
@@ -23,6 +19,8 @@ import {
     TitleBar,
     withBottomRightBox,
 } from "./common";
+import ControlButtonGroup, { ControlButton } from "./ControlButtonGroup";
+import ControlPane from "./ControlPane";
 
 interface CompactPlayerProps {
     show: boolean;
@@ -35,30 +33,6 @@ interface CompactPlayerProps {
     onJumpBack: PlainFn;
 }
 
-const PlayerBody = withStyles({
-    root: {
-        backgroundColor: blueGrey[50],
-        display: "flex",
-        justifyContent: "flex-end",
-        alignItems: "center",
-    },
-})(Box);
-
-const ButtonGroup = withStyles({
-    root: {
-        display: "flex",
-    },
-})(Box);
-
-const VerticalMiddleDivider = withStyles((theme: Theme) => ({
-    root: {
-        marginLeft: 0,
-        marginRight: 0,
-        marginTop: theme.spacing(1.5),
-        marginBottom: theme.spacing(1.5),
-    },
-}))(Divider);
-
 const TimeDisplay = withStyles((theme: Theme) => ({
     root: {
         flex: 1,
@@ -69,24 +43,6 @@ const TimeDisplay = withStyles((theme: Theme) => ({
         color: grey[700],
     },
 }))(Box);
-
-const JumpBackIcon = withStyles((theme: Theme) => ({
-    root: {
-        color: theme.palette.primary.main,
-    },
-}))(UnstyledReplayIcon);
-
-const PlayIcon = withStyles((theme: Theme) => ({
-    root: {
-        color: theme.palette.primary.main,
-    },
-}))(UnstyledPlayIcon);
-
-const PauseIcon = withStyles((theme: Theme) => ({
-    root: {
-        color: theme.palette.secondary.main,
-    },
-}))(UnstyledPauseIcon);
 
 const Button = withStyles((theme: Theme) => ({
     root: {
@@ -102,14 +58,6 @@ const PlayerContainer = withStyles((theme: Theme) => ({
         ...roundedTopCornersStyle(theme),
     },
 }))(Box);
-
-const CoolAssButton: React.FC<ButtonProps> = (props: ButtonProps) => {
-    return (
-        <Button {...props} size="small">
-            <Button size="small">{props.children}</Button>
-        </Button>
-    );
-};
 
 const CompactPlayer: React.FC<CompactPlayerProps> = (
     props: CompactPlayerProps
@@ -129,29 +77,21 @@ const CompactPlayer: React.FC<CompactPlayerProps> = (
     );
 
     const playPauseButton = props.playing ? (
-        <CoolAssButton onClick={props.onPause}>
-            <PauseIcon />
-        </CoolAssButton>
+        <ControlButton.Pause onClick={props.onPause} />
     ) : (
-        <CoolAssButton onClick={props.onPlay}>
-            <PlayIcon />
-        </CoolAssButton>
+        <ControlButton.Play onClick={props.onPlay} />
     );
 
-    const controlPanel = (
-        <PlayerBody>
-            <ButtonGroup>
-                <CoolAssButton onClick={props.onJumpBack}>
-                    <JumpBackIcon />
-                </CoolAssButton>
-                <VerticalMiddleDivider orientation="vertical" flexItem />
+    const controlPane = (
+        <ControlPane>
+            <ControlButtonGroup>
+                <ControlButton.JumpBack onClick={props.onJumpBack} />
                 {playPauseButton}
-                <VerticalMiddleDivider orientation="vertical" flexItem />
-            </ButtonGroup>
+            </ControlButtonGroup>
             <TimeDisplay>
                 <Typography variant="h6">{props.currentTime}</Typography>
             </TimeDisplay>
-        </PlayerBody>
+        </ControlPane>
     );
 
     return (
@@ -160,7 +100,7 @@ const CompactPlayer: React.FC<CompactPlayerProps> = (
                 <PlayerContainer>
                     {titleBar}
                     <Divider />
-                    {controlPanel}
+                    {controlPane}
                 </PlayerContainer>
             )}
         </Slide>
