@@ -6,21 +6,22 @@ import {
     Theme,
     Typography,
 } from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
 import ExpandIcon from "@material-ui/icons/Launch";
 import MinimizeIcon from "@material-ui/icons/Minimize";
-
 import { withStyles } from "@material-ui/styles";
 import React from "react";
 import { PlainFn } from "../../common/PlainFn";
 import {
+    controlPaneStyle,
+    greyTextColour,
+    minWidthOf,
     roundedCornersStyle,
     roundedTopCornersStyle,
     TitleBar,
     withBottomRightBox,
 } from "./common";
-import ControlButtonGroup, { ControlButton } from "./ControlButtonGroup";
-import ControlPane from "./ControlPane";
+import { ControlButton } from "./ControlButton";
+import ControlGroup from "./ControlGroup";
 
 interface CompactPlayerProps {
     show: boolean;
@@ -35,12 +36,12 @@ interface CompactPlayerProps {
 
 const TimeDisplay = withStyles((theme: Theme) => ({
     root: {
-        flex: 1,
         display: "flex",
         justifyContent: "center",
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        color: grey[700],
+        minWidth: minWidthOf(theme, "h6", "00:00"),
+        color: greyTextColour,
     },
 }))(Box);
 
@@ -54,10 +55,11 @@ const Button = withStyles((theme: Theme) => ({
 const PlayerContainer = withStyles((theme: Theme) => ({
     root: {
         backgroundColor: "white",
-        minWidth: "15vw",
         ...roundedTopCornersStyle(theme),
     },
 }))(Box);
+
+const ControlPane = withStyles({ root: controlPaneStyle })(Box);
 
 const CompactPlayer: React.FC<CompactPlayerProps> = (
     props: CompactPlayerProps
@@ -84,12 +86,14 @@ const CompactPlayer: React.FC<CompactPlayerProps> = (
 
     const controlPane = (
         <ControlPane>
-            <ControlButtonGroup>
+            <ControlGroup>
                 <ControlButton.JumpBack onClick={props.onJumpBack} />
                 {playPauseButton}
-            </ControlButtonGroup>
+            </ControlGroup>
             <TimeDisplay>
-                <Typography variant="h6">{props.currentTime}</Typography>
+                <Box>
+                    <Typography variant="h6">{props.currentTime}</Typography>
+                </Box>
             </TimeDisplay>
         </ControlPane>
     );
