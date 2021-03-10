@@ -29,8 +29,8 @@ export const controlPaneStyle = {
 // 200 - and suppose 200 is the largest width that the value can be
 // (e.g. perhaps in some fonts 199 is wider, then you'd use that)
 // then minWidthOf(theme, "body", "200") would return a size to use as the minWidth
-// so that the range of values will not move the change the size of the container
-// or its surrounding elements
+// so that the range of values will not change the size of the container
+// or move its surrounding elements
 export const minWidthOf = (
     theme: Theme,
     typographyVariant: TypographyVariant,
