@@ -1,7 +1,7 @@
 import { Box, Theme, Tooltip, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
-import { greyTextColour, minWidthOf } from "./common";
+import { greyTextColour, widthOfString } from "./common";
 import { ControlButton } from "./ControlButton";
 import { ControlGroupBox } from "./ControlGroup";
 
@@ -15,7 +15,7 @@ const PercentageDisplay = withStyles((theme: Theme) => {
     return {
         root: {
             color: greyTextColour,
-            minWidth: minWidthOf(theme, "h6", "200%"),
+            minWidth: widthOfString(theme, "h6", "200%"),
             display: "flex",
             justifyContent: "center",
         },

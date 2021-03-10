@@ -14,7 +14,7 @@ import { PlainFn } from "../../common/PlainFn";
 import {
     controlPaneStyle,
     greyTextColour,
-    minWidthOf,
+    widthOfString,
     roundedCornersStyle,
     roundedTopCornersStyle,
     TitleBar,
@@ -40,7 +40,7 @@ const TimeDisplay = withStyles((theme: Theme) => ({
         justifyContent: "center",
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
-        minWidth: minWidthOf(theme, "h6", "00:00"),
+        minWidth: widthOfString(theme, "h6", "00:00"),
         color: greyTextColour,
     },
 }))(Box);

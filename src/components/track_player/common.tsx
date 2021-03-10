@@ -31,7 +31,7 @@ export const controlPaneStyle = {
 // then minWidthOf(theme, "body", "200") would return a size to use as the minWidth
 // so that the range of values will not change the size of the container
 // or move its surrounding elements
-export const minWidthOf = (
+export const widthOfString = (
     theme: Theme,
     typographyVariant: TypographyVariant,
     phattestString: string
