@@ -1,15 +1,15 @@
 import { Button as UnstyledButton, Theme, Tooltip } from "@material-ui/core";
 import { ButtonProps } from "@material-ui/core/Button";
-import UnstyledDecreasePlayrateIcon from "@material-ui/icons/ArrowDropDown";
-import UnstyledIncreasePlayrateIcon from "@material-ui/icons/ArrowDropUp";
-import UnstyledPauseIcon from "@material-ui/icons/Pause";
-import UnstyledPlayIcon from "@material-ui/icons/PlayArrow";
-import UnstyledJumpBackIcon from "@material-ui/icons/Replay";
-import UnstyledSkipBackIcon from "@material-ui/icons/SkipPrevious";
+import DecreasePlayrateIcon from "@material-ui/icons/ArrowDropDown";
+import IncreasePlayrateIcon from "@material-ui/icons/ArrowDropUp";
+import PauseIcon from "@material-ui/icons/Pause";
+import PlayIcon from "@material-ui/icons/PlayArrow";
+import JumpBackIcon from "@material-ui/icons/Replay";
+import SkipBackIcon from "@material-ui/icons/SkipPrevious";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
 import { roundedCornersStyle } from "./common";
-import UnstyledJumpForwardIcon from "./ForwardIcon";
+import JumpForwardIcon from "./ForwardIcon";
 
 const Button = withStyles((theme: Theme) => ({
     root: {
@@ -18,56 +18,54 @@ const Button = withStyles((theme: Theme) => ({
     },
 }))(UnstyledButton);
 
-const mainPalette = (theme: Theme) => ({
+const PrimaryButton = withStyles((theme: Theme) => ({
     root: {
         color: theme.palette.primary.main,
     },
-});
+}))(Button);
 
-const secondaryPalette = (theme: Theme) => ({
+const SecondaryButton = withStyles((theme: Theme) => ({
     root: {
         color: theme.palette.secondary.main,
     },
-});
+}))(Button);
 
 const makeControlButton = (
     child: React.ReactElement,
-    tooltipMsg: string
+    tooltipMsg: string,
+    color: "primary" | "secondary"
 ): React.FC<ButtonProps> => {
+    const ColoredButton = color === "primary" ? PrimaryButton : SecondaryButton;
+
     return (props: ButtonProps) => (
         <Tooltip title={tooltipMsg}>
-            <Button {...props} size="small">
-                <Button size="small">{child}</Button>
-            </Button>
+            <ColoredButton {...props} size="small">
+                <ColoredButton disabled={props.disabled} size="small">
+                    {child}
+                </ColoredButton>
+            </ColoredButton>
         </Tooltip>
     );
 };
 
-const ControlIcons = {
-    Play: withStyles(mainPalette)(UnstyledPlayIcon),
-    Pause: withStyles(secondaryPalette)(UnstyledPauseIcon),
-    JumpBack: withStyles(mainPalette)(UnstyledJumpBackIcon),
-    JumpForward: withStyles(mainPalette)(UnstyledJumpForwardIcon),
-    SkipBack: withStyles(mainPalette)(UnstyledSkipBackIcon),
-    DecreasePlayrate: withStyles(mainPalette)(UnstyledDecreasePlayrateIcon),
-    IncreasePlayrate: withStyles(mainPalette)(UnstyledIncreasePlayrateIcon),
-};
-
 export const ControlButton = {
-    Play: makeControlButton(<ControlIcons.Play />, "Play the damn song"),
-    Pause: makeControlButton(<ControlIcons.Pause />, "Pause"),
-    JumpBack: makeControlButton(<ControlIcons.JumpBack />, "Jump Back"),
+    Play: makeControlButton(<PlayIcon />, "Play the damn song", "primary"),
+    Pause: makeControlButton(<PauseIcon />, "Pause", "secondary"),
+    JumpBack: makeControlButton(<JumpBackIcon />, "Jump Back", "primary"),
     JumpForward: makeControlButton(
-        <ControlIcons.JumpForward />,
-        "Jump Forward"
+        <JumpForwardIcon />,
+        "Jump Forward",
+        "primary"
     ),
-    SkipBack: makeControlButton(<ControlIcons.SkipBack />, "Go to Beginning"),
+    SkipBack: makeControlButton(<SkipBackIcon />, "Go to Beginning", "primary"),
     DecreasePlayrate: makeControlButton(
-        <ControlIcons.DecreasePlayrate />,
-        "Play slower"
+        <DecreasePlayrateIcon />,
+        "Play slower",
+        "primary"
     ),
     IncreasePlayrate: makeControlButton(
-        <ControlIcons.IncreasePlayrate />,
-        "Play faster"
+        <IncreasePlayrateIcon />,
+        "Play faster",
+        "primary"
     ),
 };
