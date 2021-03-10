@@ -100,9 +100,9 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
         <CompactPlayer
             show={playerVisibilityState === "compact"}
             playing={compactPlayerControl.playing}
-            onPlay={compactPlayerControl.onPlay}
-            onPause={compactPlayerControl.onPause}
-            onJumpBack={compactPlayerControl.onJumpBack}
+            onPlay={compactPlayerControl.play}
+            onPause={compactPlayerControl.pause}
+            onJumpBack={compactPlayerControl.jumpBack}
             onMinimize={() => setPlayerVisibilityState("minimized")}
             onMaximize={() => setPlayerVisibilityState("full")}
             currentTime={compactPlayerControl.currentTime}

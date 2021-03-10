@@ -19,6 +19,8 @@ import {
     TitleBar,
     withBottomRightBox,
 } from "./common";
+import ControlButtonGroup, { ControlButton } from "./ControlButtonGroup";
+import ControlPane from "./ControlPane";
 import { TrackControl } from "./useMultiTrack";
 
 interface FullPlayerProps {
@@ -72,6 +74,22 @@ const FullPlayer: React.FC<FullPlayerProps> = (
 
     const players = props.trackControls.map(
         (trackControl: TrackControl, index: number) => {
+            const controlPane = (
+                <ControlPane>
+                    <ControlButtonGroup>
+                        <ControlButton.SkipBack
+                            onClick={trackControl.skipBack}
+                        />
+                        <ControlButton.JumpBack
+                            onClick={trackControl.jumpBack}
+                        />
+                        <ControlButton.JumpForward
+                            onClick={trackControl.jumpForward}
+                        />
+                    </ControlButtonGroup>
+                </ControlPane>
+            );
+
             const handleProgress = (state: {
                 played: number;
                 playedSeconds: number;
@@ -89,8 +107,8 @@ const FullPlayer: React.FC<FullPlayerProps> = (
                             url={trackControl.url}
                             playing={trackControl.playing}
                             controls
-                            onPlay={trackControl.onPlay}
-                            onPause={trackControl.onPause}
+                            onPlay={trackControl.play}
+                            onPause={trackControl.pause}
                             onProgress={handleProgress}
                             progressInterval={500}
                             width="50vw"
@@ -98,6 +116,7 @@ const FullPlayer: React.FC<FullPlayerProps> = (
                             config={{ file: { forceAudio: true } }}
                         />
                     </Box>
+                    {controlPane}
                 </Collapse>
             );
         }
