@@ -86,6 +86,8 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
         <FullPlayer
             show={playerVisibilityState === "full"}
             trackControls={fullPlayerControl.trackControls}
+            playrate={fullPlayerControl.playrate}
+            onPlayrateChange={fullPlayerControl.onPlayrateChange}
             onCollapse={() => setPlayerVisibilityState("compact")}
             onSelectCurrentTrack={fullPlayerControl.onCurrentTrackIndexChange}
             onOpenTrackEditDialog={

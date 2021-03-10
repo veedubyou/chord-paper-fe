@@ -9,6 +9,8 @@ import { Duration } from "luxon";
 interface FullPlayerControl {
     trackControls: TrackControl[];
     onCurrentTrackIndexChange: (newIndex: number) => void;
+    playrate: number;
+    onPlayrateChange: (newPlayrate: number) => void;
 }
 
 export interface TrackControl extends Track {
@@ -39,6 +41,8 @@ export const useMultiTrack = (
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
+
+    const [playrate, setPlayrate] = useState(100);
 
     // syntax bears a bit of explanation - the first use of useRef is just to keep state without rerender
     // (useState would rerender)
@@ -142,6 +146,8 @@ export const useMultiTrack = (
     const fullPlayerControl: FullPlayerControl = {
         trackControls: trackControls,
         onCurrentTrackIndexChange: onCurrentTrackIndexChange,
+        playrate: playrate,
+        onPlayrateChange: setPlayrate,
     };
 
     const currentTimeFormatted: string = (() => {

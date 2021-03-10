@@ -14,18 +14,22 @@ import { makeStyles, withStyles } from "@material-ui/styles";
 import React from "react";
 import ReactPlayer from "react-player";
 import {
+    controlPaneStyle,
     roundedCornersStyle,
     roundedTopCornersStyle,
     TitleBar,
     withBottomRightBox,
 } from "./common";
-import ControlButtonGroup, { ControlButton } from "./ControlButtonGroup";
-import ControlPane from "./ControlPane";
+import { ControlButton } from "./ControlButton";
+import ControlGroup from "./ControlGroup";
+import PlayrateControl from "./PlayrateControl";
 import { TrackControl } from "./useMultiTrack";
 
 interface FullPlayerProps {
     show: boolean;
     trackControls: TrackControl[];
+    playrate: number;
+    onPlayrateChange: (newPlayrate: number) => void;
     onCollapse: () => void;
     onSelectCurrentTrack: (index: number) => void;
     onOpenTrackEditDialog?: () => void;
@@ -45,6 +49,13 @@ const TitleBarButton = withStyles((theme: Theme) => ({
         ...roundedCornersStyle(theme),
     },
 }))(Button);
+
+const ControlPane = withStyles({
+    root: {
+        ...controlPaneStyle,
+        justifyContent: "space-between",
+    },
+})(Box);
 
 const usePaddingLeftStyle = makeStyles((theme: Theme) => ({
     root: {
@@ -72,55 +83,58 @@ const FullPlayer: React.FC<FullPlayerProps> = (
 ): JSX.Element => {
     const paddingLeftStyle = usePaddingLeftStyle();
 
-    const players = props.trackControls.map(
-        (trackControl: TrackControl, index: number) => {
-            const controlPane = (
-                <ControlPane>
-                    <ControlButtonGroup>
-                        <ControlButton.SkipBack
-                            onClick={trackControl.skipBack}
-                        />
-                        <ControlButton.JumpBack
-                            onClick={trackControl.jumpBack}
-                        />
-                        <ControlButton.JumpForward
-                            onClick={trackControl.jumpForward}
-                        />
-                    </ControlButtonGroup>
-                </ControlPane>
-            );
+    const makeControlPane = (trackControl: TrackControl) => {
+        return (
+            <ControlPane>
+                <ControlGroup>
+                    <ControlButton.SkipBack onClick={trackControl.skipBack} />
+                    <ControlButton.JumpBack onClick={trackControl.jumpBack} />
+                    <ControlButton.JumpForward
+                        onClick={trackControl.jumpForward}
+                    />
+                </ControlGroup>
+                <PlayrateControl
+                    playrate={props.playrate}
+                    onChange={props.onPlayrateChange}
+                />
+            </ControlPane>
+        );
+    };
 
-            const handleProgress = (state: {
-                played: number;
-                playedSeconds: number;
-                loaded: number;
-                loadedSeconds: number;
-            }) => {
-                trackControl.onProgress(state.playedSeconds);
-            };
+    const playbackRate = props.playrate / 100;
 
-            return (
-                <Collapse in={trackControl.focused} key={trackControl.url}>
-                    <Box>
-                        <ReactPlayer
-                            ref={trackControl.ref}
-                            url={trackControl.url}
-                            playing={trackControl.playing}
-                            controls
-                            onPlay={trackControl.play}
-                            onPause={trackControl.pause}
-                            onProgress={handleProgress}
-                            progressInterval={500}
-                            width="50vw"
-                            height="auto"
-                            config={{ file: { forceAudio: true } }}
-                        />
-                    </Box>
-                    {controlPane}
-                </Collapse>
-            );
-        }
-    );
+    const players = props.trackControls.map((trackControl: TrackControl) => {
+        const handleProgress = (state: {
+            played: number;
+            playedSeconds: number;
+            loaded: number;
+            loadedSeconds: number;
+        }) => {
+            trackControl.onProgress(state.playedSeconds);
+        };
+
+        return (
+            <Collapse in={trackControl.focused} key={trackControl.url}>
+                <Box>
+                    <ReactPlayer
+                        ref={trackControl.ref}
+                        url={trackControl.url}
+                        playing={trackControl.playing}
+                        controls
+                        playbackRate={playbackRate}
+                        onPlay={trackControl.play}
+                        onPause={trackControl.pause}
+                        onProgress={handleProgress}
+                        progressInterval={500}
+                        width="50vw"
+                        height="auto"
+                        config={{ file: { forceAudio: true } }}
+                    />
+                </Box>
+                {makeControlPane(trackControl)}
+            </Collapse>
+        );
+    });
 
     const trackListEditButton = props.onOpenTrackEditDialog !== undefined && (
         <TitleBarButton onClick={props.onOpenTrackEditDialog}>
