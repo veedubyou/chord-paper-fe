@@ -26,12 +26,16 @@ const ControlGroup: React.FC<ControlGroupProps> = (
     props: ControlGroupProps
 ): JSX.Element => {
     const contents: React.ReactElement[] = props.children.map(
-        (child: React.ReactElement) => {
+        (child: React.ReactElement, index: number) => {
             return (
-                <>
+                <React.Fragment key={index}>
                     {child}
-                    <VerticalMiddleDivider orientation="vertical" flexItem />
-                </>
+                    <VerticalMiddleDivider
+                        key={`divider-${index}`}
+                        orientation="vertical"
+                        flexItem
+                    />
+                </React.Fragment>
             );
         }
     );
