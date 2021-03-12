@@ -122,8 +122,8 @@ const FullPlayer: React.FC<FullPlayerProps> = (
                         playing={trackControl.playing}
                         controls
                         playbackRate={playbackRate}
-                        onPlay={trackControl.play}
-                        onPause={trackControl.pause}
+                        onPlay={trackControl.onPlay}
+                        onPause={trackControl.onPause}
                         onProgress={handleProgress}
                         progressInterval={500}
                         width="50vw"

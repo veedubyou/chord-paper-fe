@@ -16,8 +16,8 @@ interface FullPlayerControl {
 export interface TrackControl extends Track {
     focused: boolean;
     playing: boolean;
-    play: PlainFn;
-    pause: PlainFn;
+    onPlay: PlainFn;
+    onPause: PlainFn;
     jumpBack: PlainFn;
     jumpForward: PlainFn;
     skipBack: PlainFn;
@@ -41,6 +41,11 @@ export const useMultiTrack = (
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
+
+    // a ref version so that a past render can access a future state
+    // see outOfSyncWorkaround for the reason
+    const currentTimeRefForWorkAround = useRef<number>(currentTime);
+    currentTimeRefForWorkAround.current = currentTime;
 
     const [playrate, setPlayrate] = useState(100);
 
@@ -77,9 +82,42 @@ export const useMultiTrack = (
         currentPlayerRef?.seekTo(time, "seconds");
     };
 
-    const handlePlay = () => setPlaying(true);
-    const handlePause = () => setPlaying(false);
-    const handleJumpBack = () => {
+    const handlePlayState = () => {
+        setPlaying(true);
+    };
+
+    const handlePauseState = () => {
+        setPlaying(false);
+    };
+
+    const playAction = () => {
+        if (!playing) {
+            setPlaying(true);
+        }
+    };
+
+    const outOfSyncWorkaround = () => {
+        // this is pretty unpleasant, but on certain videos, React Player can run into a race condition where
+        // it doesn't respond to playing=true/false, so the play and pause button doesn't actually affect the track
+        // this can be repro'd inconsistently by quickly toggling play/pause several times, or jump back, then pause in the compact player
+        //
+        // attempt at throttling didn't work, the wonkiness can occur even at 5 seconds of throttling depending on the course of events
+        // one observation is that this wonky state can be reset out of by performing a seek after it gets into this state
+        // however, it can't be too soon, hence the set timeout
+        // and also we would want to seek to the time of the most updated time, not the one during the current render, hence the use of ref
+        setTimeout(() => {
+            seekTo(currentTimeRefForWorkAround.current);
+        }, 200);
+    };
+
+    const pauseAction = () => {
+        if (playing) {
+            setPlaying(false);
+            outOfSyncWorkaround();
+        }
+    };
+
+    const jumpBackAction = () => {
         let newTime = currentTime - jumpInterval;
         if (newTime < 0) {
             newTime = 0;
@@ -88,17 +126,18 @@ export const useMultiTrack = (
         seekTo(newTime);
     };
 
-    const handleJumpForward = () => {
+    const jumpForwardAction = () => {
         const newTime = currentTime + jumpInterval;
         seekTo(newTime);
     };
 
-    const handleSkipBack = () => {
+    const skipBackAction = () => {
         seekTo(0);
     };
 
-    const handleProgress = (playedSeconds: number) =>
+    const handleProgress = (playedSeconds: number) => {
         setCurrentTime(playedSeconds);
+    };
 
     const synchronizeAllTracks = () => {
         for (let playerRef of playerRefs.current) {
@@ -132,11 +171,11 @@ export const useMultiTrack = (
                 url: processTrackURL(track.url),
                 focused: focused,
                 playing: focused && playing,
-                play: fnIfFocused(handlePlay),
-                pause: fnIfFocused(handlePause),
-                jumpBack: fnIfFocused(handleJumpBack),
-                jumpForward: fnIfFocused(handleJumpForward),
-                skipBack: fnIfFocused(handleSkipBack),
+                onPlay: fnIfFocused(handlePlayState),
+                onPause: fnIfFocused(handlePauseState),
+                jumpBack: fnIfFocused(jumpBackAction),
+                jumpForward: fnIfFocused(jumpForwardAction),
+                skipBack: fnIfFocused(skipBackAction),
                 onProgress: fnIfFocused(handleProgress),
                 ref: playerRefs.current[index],
             };
@@ -157,9 +196,9 @@ export const useMultiTrack = (
 
     const compactPlayerControl: CompactPlayerControl = {
         playing: playing,
-        play: handlePlay,
-        pause: handlePause,
-        jumpBack: handleJumpBack,
+        play: playAction,
+        pause: pauseAction,
+        jumpBack: jumpBackAction,
         currentTime: currentTimeFormatted,
     };
 

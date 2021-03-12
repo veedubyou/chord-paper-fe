@@ -32,39 +32,61 @@ const SecondaryButton = withStyles((theme: Theme) => ({
 
 const makeControlButton = (
     child: React.ReactElement,
+    key: string,
     tooltipMsg: string,
     color: "primary" | "secondary"
 ): React.FC<ButtonProps> => {
     const ColoredButton = color === "primary" ? PrimaryButton : SecondaryButton;
 
     return (props: ButtonProps) => (
-        <Tooltip title={tooltipMsg}>
-            <ColoredButton {...props} size="small">
-                <ColoredButton disabled={props.disabled} size="small">
-                    {child}
-                </ColoredButton>
+        <Tooltip key={key} title={tooltipMsg}>
+            <ColoredButton {...props} size="large">
+                {child}
             </ColoredButton>
         </Tooltip>
     );
 };
 
 export const ControlButton = {
-    Play: makeControlButton(<PlayIcon />, "Play the damn song", "primary"),
-    Pause: makeControlButton(<PauseIcon />, "Pause", "secondary"),
-    JumpBack: makeControlButton(<JumpBackIcon />, "Jump Back", "primary"),
+    Play: makeControlButton(
+        <PlayIcon />,
+        "play-button",
+        "Play the damn song",
+        "primary"
+    ),
+    Pause: makeControlButton(
+        <PauseIcon />,
+        "pause-button",
+        "Pause",
+        "secondary"
+    ),
+    JumpBack: makeControlButton(
+        <JumpBackIcon />,
+        "jump-back-buttonn",
+        "Jump Back",
+        "primary"
+    ),
     JumpForward: makeControlButton(
         <JumpForwardIcon />,
+        "jump-forward-button",
         "Jump Forward",
         "primary"
     ),
-    SkipBack: makeControlButton(<SkipBackIcon />, "Go to Beginning", "primary"),
+    SkipBack: makeControlButton(
+        <SkipBackIcon />,
+        "skip-back-button",
+        "Go to Beginning",
+        "primary"
+    ),
     DecreasePlayrate: makeControlButton(
         <DecreasePlayrateIcon />,
+        "decrease-playrate-button",
         "Play slower",
         "primary"
     ),
     IncreasePlayrate: makeControlButton(
         <IncreasePlayrateIcon />,
+        "increase-playrate-button",
         "Play faster",
         "primary"
     ),
