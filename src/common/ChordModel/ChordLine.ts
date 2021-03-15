@@ -16,8 +16,14 @@ const requiredFields = iots.type({
     type: iots.literal("ChordLine"),
 });
 
+const SectionValidator = iots.type({
+    name: iots.string,
+    time: iots.union([iots.number, iots.null]),
+});
+
 const optionalFields = iots.partial({
     label: iots.string,
+    section: SectionValidator,
 });
 
 export const ChordLineValidator = iots.intersection([
@@ -25,6 +31,7 @@ export const ChordLineValidator = iots.intersection([
     optionalFields,
 ]);
 
+export type Section = iots.TypeOf<typeof SectionValidator>;
 export type ChordLineValidatedFields = iots.TypeOf<typeof ChordLineValidator>;
 
 export class ChordLine extends Collection<ChordBlock>
@@ -32,8 +39,9 @@ export class ChordLine extends Collection<ChordBlock>
     id: string;
     type: "ChordLine";
     label?: string;
+    section?: Section;
 
-    constructor(elements?: ChordBlock[], label?: string) {
+    constructor(elements?: ChordBlock[], label?: string, section?: Section) {
         if (elements === undefined) {
             elements = [new ChordBlock({ chord: "", lyric: new Lyric("") })];
         }
@@ -43,6 +51,15 @@ export class ChordLine extends Collection<ChordBlock>
         this.id = shortid.generate();
         this.type = "ChordLine";
         this.label = label;
+
+        if (section === undefined && label !== undefined) {
+            this.section = {
+                name: label,
+                time: null,
+            };
+        } else {
+            this.section = section;
+        }
     }
 
     static fromValidatedFields(
@@ -54,7 +71,11 @@ export class ChordLine extends Collection<ChordBlock>
             }
         );
 
-        return new ChordLine(chordBlockElems, validatedFields.label);
+        return new ChordLine(
+            chordBlockElems,
+            validatedFields.label,
+            validatedFields.section
+        );
     }
 
     static deserialize(jsonStr: string): Either<Error, ChordLine> {
