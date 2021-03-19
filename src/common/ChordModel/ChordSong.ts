@@ -8,6 +8,8 @@ import {
     ChordLine,
     ChordLineValidatedFields,
     ChordLineValidator,
+    TimeSection,
+    timeSectionSortFn,
 } from "./ChordLine";
 import { Collection, IDable } from "./Collection";
 import { Lyric } from "./Lyric";
@@ -27,7 +29,7 @@ const SongSummaryTypes = {
     owner: iots.string,
     lastSavedAt: iots.union([DateFromISOString, iots.null]),
     metadata: MetadataValidator,
-}
+};
 
 const SongSummaryValidator = iots.type(SongSummaryTypes);
 
@@ -95,7 +97,7 @@ const ChordSongRequiredFields = iots.type({
 
 const ChordSongOptionalFields = iots.partial({
     trackList: iots.array(TrackValidator),
-})
+});
 
 const ChordSongValidator = iots.intersection([
     ChordSongRequiredFields,
@@ -105,7 +107,7 @@ const ChordSongValidator = iots.intersection([
 type ChordSongValidatedFields = iots.TypeOf<typeof ChordSongValidator>;
 
 export interface ChordSongFields extends SongSummaryValidatedFields {
-    trackList: Track[]
+    trackList: Track[];
 }
 
 export class ChordSong extends Collection<ChordLine>
@@ -151,11 +153,14 @@ export class ChordSong extends Collection<ChordLine>
             }
         );
 
-        const trackList: Track[] = validatedFields.trackList !== undefined ? validatedFields.trackList : [];
+        const trackList: Track[] =
+            validatedFields.trackList !== undefined
+                ? validatedFields.trackList
+                : [];
 
         return new ChordSong(chordLines, {
             ...validatedFields,
-            trackList: trackList
+            trackList: trackList,
         });
     }
 
@@ -192,6 +197,23 @@ export class ChordSong extends Collection<ChordLine>
 
     get chordLines(): ChordLine[] {
         return this.elements;
+    }
+
+    get timeSections(): TimeSection[] {
+        const collectSections = (
+            timeSections: TimeSection[],
+            line: ChordLine
+        ): TimeSection[] => {
+            if (line.section?.type === "time") {
+                timeSections.push(line.section);
+            }
+
+            return timeSections;
+        };
+
+        const timeSections = this.elements.reduce(collectSections, []);
+        timeSections.sort(timeSectionSortFn);
+        return timeSections;
     }
 
     get title(): string {

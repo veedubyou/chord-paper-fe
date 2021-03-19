@@ -48,7 +48,10 @@ const Labels: React.FC<{}> = (): JSX.Element => {
                     lyric: new Lyric("\ue200"),
                 }),
             ],
-            "Verse"
+            {
+                type: "label",
+                name: "Verse",
+            }
         ),
         new ChordLine([
             new ChordBlock({

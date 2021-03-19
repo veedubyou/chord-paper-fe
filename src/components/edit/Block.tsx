@@ -180,11 +180,11 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             return (
                 <Box data-testid="ChordEdit">
                     <ChordInput
-                        variant={lyricTypographyVariant}
+                        value={props.chordBlock.chord}
+                        variant="filled"
+                        typographyVariant={lyricTypographyVariant}
                         onFinish={endEdit}
-                    >
-                        {props.chordBlock.chord}
-                    </ChordInput>
+                    />
                 </Box>
             );
         }

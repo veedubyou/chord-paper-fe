@@ -25,7 +25,11 @@ describe("ChordLine", () => {
 
     let c: ChordLine;
     beforeEach(() => {
-        c = new ChordLine(testBlocks(), "Verse");
+        c = new ChordLine(testBlocks(), {
+            type: "time",
+            name: "Verse",
+            time: 35,
+        });
     });
 
     describe("de/serialization", () => {
@@ -46,7 +50,11 @@ describe("ChordLine", () => {
                     { chord: "Bm", lyric: new Lyric("strangers to ") },
                     { chord: "Cdim", lyric: new Lyric("love") },
                 ],
-                label: "Verse",
+                section: {
+                    type: "time",
+                    name: "Verse",
+                    time: 35,
+                },
             });
         });
 
@@ -155,7 +163,11 @@ describe("ChordLine", () => {
                             lyric: new Lyric("love"),
                         }),
                     ],
-                    "Verse"
+                    {
+                        type: "time",
+                        name: "Verse",
+                        time: 35,
+                    }
                 );
             });
 
@@ -175,7 +187,11 @@ describe("ChordLine", () => {
                             lyric: new Lyric("love"),
                         }),
                     ],
-                    "Verse"
+                    {
+                        type: "time",
+                        name: "Verse",
+                        time: 35,
+                    }
                 );
                 expect(original.contentEquals(other)).toEqual(true);
             });
@@ -214,7 +230,35 @@ describe("ChordLine", () => {
                             lyric: new Lyric("love"),
                         }),
                     ],
-                    "Chorus"
+                    {
+                        type: "time",
+                        name: "Durp",
+                        time: 35,
+                    }
+                );
+                expect(original.contentEquals(other)).toEqual(false);
+            });
+
+            test("fails if the label is different type", () => {
+                const other = new ChordLine(
+                    [
+                        new ChordBlock({
+                            chord: "A7",
+                            lyric: new Lyric("We're no "),
+                        }),
+                        new ChordBlock({
+                            chord: "Bm",
+                            lyric: new Lyric("strangers to "),
+                        }),
+                        new ChordBlock({
+                            chord: "Cdim",
+                            lyric: new Lyric("love"),
+                        }),
+                    ],
+                    {
+                        type: "label",
+                        name: "Verse",
+                    }
                 );
                 expect(original.contentEquals(other)).toEqual(false);
             });
@@ -235,12 +279,16 @@ describe("ChordLine", () => {
                             lyric: new Lyric("love"),
                         }),
                     ],
-                    "Verse"
+                    {
+                        type: "time",
+                        name: "Verse",
+                        time: 35,
+                    }
                 );
                 expect(original.contentEquals(other)).toEqual(false);
             });
 
-            test("fails any blocks are out of order different", () => {
+            test("fails any blocks are out of order", () => {
                 const other = new ChordLine(
                     [
                         new ChordBlock({
@@ -256,7 +304,11 @@ describe("ChordLine", () => {
                             lyric: new Lyric("strangers to "),
                         }),
                     ],
-                    "Verse"
+                    {
+                        type: "time",
+                        name: "Verse",
+                        time: 35,
+                    }
                 );
                 expect(original.contentEquals(other)).toEqual(false);
             });
@@ -283,7 +335,11 @@ describe("ChordLine", () => {
             });
 
             test("fails there's a label", () => {
-                const other = new ChordLine(undefined, "Chorus");
+                const other = new ChordLine(undefined, {
+                    type: "time",
+                    name: "Chorus",
+                    time: 100,
+                });
                 expect(original.contentEquals(other)).toEqual(false);
             });
         });
