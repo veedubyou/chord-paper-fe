@@ -38,4 +38,4 @@ jobs:
               run: yarn
 
             - name: Compile
-              run: icrawl/action-tsc@v1
+              uses: icrawl/action-tsc@v1
