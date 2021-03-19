@@ -14,6 +14,7 @@ export interface EditControl {
 }
 
 interface EditableTypographyProps extends DataTestID, TypographyProps {
+    children?: never;
     value: string;
     // provide this if you want to provide explicit control over the editability
     // of the field. this means the parent must manage this component's editing state
