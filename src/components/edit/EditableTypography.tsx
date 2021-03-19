@@ -61,14 +61,14 @@ const EditableTypography: React.FC<EditableTypographyProps> = (
 
     const nonEditableLine = (): React.ReactElement => {
         const {
-            children,
+            value,
             placeholder,
             onValueChange,
             editControl,
             ...typographyProps
         } = props;
 
-        if (props.children === "" && props.placeholder !== undefined) {
+        if (props.value === "" && props.placeholder !== undefined) {
             return (
                 <PlaceholderTypography {...typographyProps} onClick={startEdit}>
                     {props.placeholder}
