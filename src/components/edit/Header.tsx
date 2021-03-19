@@ -50,14 +50,13 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
     const title = (
         <Box paddingBottom={theme.spacing(0.5)}>
             <EditableTypography
+                value={props.song.title}
                 variant="h4"
                 align="center"
                 data-testid="SongTitle"
                 placeholder="Song Title"
                 onValueChange={updateTitleHandler}
-            >
-                {props.song.title}
-            </EditableTypography>
+            />
         </Box>
     );
 
@@ -75,14 +74,13 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
                     </Typography>
 
                     <EditableTypography
+                        value={props.song.composedBy}
                         display="block"
                         variant="caption"
                         placeholder="Stock Aitken Waterman"
                         onValueChange={updateComposeHandler}
                         data-testid="ComposedBy"
-                    >
-                        {props.song.composedBy}
-                    </EditableTypography>
+                    />
                 </Grid>
             </Grid>
             <Grid container item xs={4} justify="center">
@@ -92,13 +90,12 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
                     </Typography>
 
                     <EditableTypography
+                        value={props.song.performedBy}
                         variant="caption"
                         placeholder="Rick Astley"
                         onValueChange={updatePerformerHandler}
                         data-testid="PerformedBy"
-                    >
-                        {props.song.performedBy}
-                    </EditableTypography>
+                    />
                 </Grid>
             </Grid>
             <Grid container item xs={4} justify="center">
@@ -107,13 +104,12 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
                         As heard from:{" "}
                     </Typography>
                     <EditableTypography
+                        value={props.song.asHeardFrom}
                         variant="caption"
                         placeholder="https://www.youtube.com/watch?v=dM9zwZCOmjM"
                         onValueChange={updateHeardFrom}
                         data-testid="AsHeardAt"
-                    >
-                        {props.song.asHeardFrom}
-                    </EditableTypography>
+                    />
                 </Grid>
             </Grid>
         </Grid>

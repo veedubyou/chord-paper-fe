@@ -8,7 +8,7 @@ import {
     ChordLine,
     ChordLineValidatedFields,
     ChordLineValidator,
-    Section,
+    TimeSection,
 } from "./ChordLine";
 import { Collection, IDable } from "./Collection";
 import { Lyric } from "./Lyric";
@@ -198,16 +198,16 @@ export class ChordSong extends Collection<ChordLine>
         return this.elements;
     }
 
-    get sections(): Section[] {
+    get timeSections(): TimeSection[] {
         const collectSections = (
-            sections: Section[],
+            timeSections: TimeSection[],
             line: ChordLine
-        ): Section[] => {
-            if (line.section !== undefined) {
-                sections.push(line.section);
+        ): TimeSection[] => {
+            if (line.section?.type === "time") {
+                timeSections.push(line.section);
             }
 
-            return sections;
+            return timeSections;
         };
 
         return this.elements.reduce(collectSections, []);

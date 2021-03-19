@@ -13,7 +13,7 @@ import { PlainFn } from "../../common/PlainFn";
 import Block, { BlockProps } from "./Block";
 import WithHoverMenu, { MenuItem } from "./WithHoverMenu";
 import WithLyricInput from "./WithLyricInput";
-import WithSectionLabel from "./WithSectionLabel";
+import WithSection from "./WithSection";
 
 const AtomicSelectionBox = withStyles({
     root: {
@@ -126,11 +126,8 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         </WithLyricInput>
     );
 
-    const withSectionLabel = (
-        <WithSectionLabel
-            chordLine={props.chordLine}
-            onChangeLabel={props.onChangeLine}
-        >
+    const withSection = (
+        <WithSection chordLine={props.chordLine} onChange={props.onChangeLine}>
             {(editLabel: PlainFn) => {
                 const menuItems: MenuItem[] = [
                     {
@@ -147,10 +144,10 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
 
                 return withLyricInput(menuItems);
             }}
-        </WithSectionLabel>
+        </WithSection>
     );
 
-    const lineContent: React.ReactElement = withSectionLabel;
+    const lineContent: React.ReactElement = withSection;
     const yeetDirection = removed ? "up" : "down";
 
     return (

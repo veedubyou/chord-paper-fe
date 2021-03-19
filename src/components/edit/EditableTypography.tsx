@@ -14,7 +14,7 @@ export interface EditControl {
 }
 
 interface EditableTypographyProps extends DataTestID, TypographyProps {
-    children: string;
+    value: string;
     // provide this if you want to provide explicit control over the editability
     // of the field. this means the parent must manage this component's editing state
     editControl?: EditControl;
@@ -78,7 +78,7 @@ const EditableTypography: React.FC<EditableTypographyProps> = (
 
         return (
             <Typography {...typographyProps} onClick={startEdit}>
-                {inflateIfEmpty(props.children)}
+                {inflateIfEmpty(props.value)}
             </Typography>
         );
     };
@@ -90,12 +90,12 @@ const EditableTypography: React.FC<EditableTypographyProps> = (
 
         return (
             <TextInput
-                variant={props.variant}
+                value={props.value}
+                variant="filled"
+                typographyVariant={props.variant}
                 onFinish={finishEdit}
                 data-testid={"EditableLine"}
-            >
-                {props.children}
-            </TextInput>
+            />
         );
     };
 

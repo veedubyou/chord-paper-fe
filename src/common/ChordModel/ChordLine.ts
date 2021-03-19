@@ -16,10 +16,21 @@ const requiredFields = iots.type({
     type: iots.literal("ChordLine"),
 });
 
-const SectionValidator = iots.type({
+const LabelSectionValidator = iots.type({
+    type: iots.literal("label"),
     name: iots.string,
-    time: iots.union([iots.number, iots.null]),
 });
+
+const TimeSectionValidator = iots.type({
+    type: iots.literal("time"),
+    name: iots.string,
+    time: iots.number,
+});
+
+const SectionValidator = iots.union([
+    LabelSectionValidator,
+    TimeSectionValidator,
+]);
 
 const optionalFields = iots.partial({
     label: iots.string,
@@ -31,6 +42,8 @@ export const ChordLineValidator = iots.intersection([
     optionalFields,
 ]);
 
+export type LabelSection = iots.TypeOf<typeof LabelSectionValidator>;
+export type TimeSection = iots.TypeOf<typeof TimeSectionValidator>;
 export type Section = iots.TypeOf<typeof SectionValidator>;
 export type ChordLineValidatedFields = iots.TypeOf<typeof ChordLineValidator>;
 
@@ -38,10 +51,9 @@ export class ChordLine extends Collection<ChordBlock>
     implements IDable<ChordLine> {
     id: string;
     type: "ChordLine";
-    label?: string;
     section?: Section;
 
-    constructor(elements?: ChordBlock[], label?: string, section?: Section) {
+    constructor(elements?: ChordBlock[], section?: Section) {
         if (elements === undefined) {
             elements = [new ChordBlock({ chord: "", lyric: new Lyric("") })];
         }
@@ -50,16 +62,18 @@ export class ChordLine extends Collection<ChordBlock>
 
         this.id = shortid.generate();
         this.type = "ChordLine";
-        this.label = label;
+        this.section = section;
+    }
 
-        if (section === undefined && label !== undefined) {
-            this.section = {
-                name: label,
-                time: null,
-            };
-        } else {
-            this.section = section;
+    static sectionFromLabel(label?: string): Section | undefined {
+        if (label === undefined) {
+            return undefined;
         }
+
+        return {
+            type: "label",
+            name: label,
+        };
     }
 
     static fromValidatedFields(
@@ -71,11 +85,12 @@ export class ChordLine extends Collection<ChordBlock>
             }
         );
 
-        return new ChordLine(
-            chordBlockElems,
-            validatedFields.label,
-            validatedFields.section
-        );
+        let section: Section | undefined = validatedFields.section;
+        if (section === undefined) {
+            section = this.sectionFromLabel(validatedFields.label);
+        }
+
+        return new ChordLine(chordBlockElems, section);
     }
 
     static deserialize(jsonStr: string): Either<Error, ChordLine> {
@@ -133,6 +148,78 @@ export class ChordLine extends Collection<ChordBlock>
         this.normalizeBlocks();
     }
 
+    removeSectionName(): boolean {
+        if (this.section === undefined) {
+            return false;
+        }
+
+        this.section = undefined;
+
+        return true;
+    }
+
+    setSectionName(newName: string): boolean {
+        if (newName === "") {
+            return this.removeSectionName();
+        }
+
+        if (this.section === undefined) {
+            this.section = {
+                type: "label",
+                name: newName,
+            };
+
+            return true;
+        }
+
+        this.section.name = newName;
+        return true;
+    }
+
+    removeSectionTime(): boolean {
+        if (this.section === undefined) {
+            return false;
+        }
+
+        this.section = {
+            type: "label",
+            name: this.section.name,
+        };
+
+        return true;
+    }
+
+    setSectionTime(newTime: number | null): boolean {
+        if (newTime === null) {
+            return this.removeSectionTime();
+        }
+
+        const name = this.section !== undefined ? this.section.name : "";
+
+        this.section = {
+            type: "time",
+            name: name,
+            time: newTime,
+        };
+
+        return true;
+    }
+
+    // normalizeSection(): void {
+    //     if (this.section === undefined) {
+    //         return;
+    //     }
+
+    //     if (this.section.type === "label" && this.section.name === "") {
+    //         this.section = undefined;
+    //         return;
+    //     }
+
+    //     if (this.section.type === "time") {
+    //         if (this.section.name === "" && th)
+    //     }
+    // }
+
     splitBlock(idable: IDable<ChordBlock>, splitIndex: number): void {
         const index = this.indexOf(idable.id);
         const block = this.elements[index];
@@ -162,7 +249,7 @@ export class ChordLine extends Collection<ChordBlock>
     }
 
     clone(): ChordLine {
-        const clone = new ChordLine(this.elements, this.label);
+        const clone = new ChordLine(this.elements, this.section);
         clone.id = this.id;
         return clone;
     }
@@ -176,7 +263,7 @@ export class ChordLine extends Collection<ChordBlock>
             return false;
         }
 
-        if (this.label !== other.label) {
+        if (this.section !== other.section) {
             return false;
         }
 

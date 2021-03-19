@@ -31,18 +31,19 @@ const PlayLine: React.FC<PlayLineProps> = (
         </Box>
     );
 
-    if (props.chordLine.label !== undefined && props.chordLine.label !== "") {
-        const label = (
+    const label = props.chordLine.section?.name;
+    if (label !== undefined && label !== "") {
+        const labelElement = (
             <TopMarginBox>
                 <LabelTypography variant={sectionTypographyVariant}>
-                    {props.chordLine.label}
+                    {label}
                 </LabelTypography>
             </TopMarginBox>
         );
 
         lineComponent = (
             <Box display="inline-block">
-                {label}
+                {labelElement}
                 {lineComponent}
             </Box>
         );
