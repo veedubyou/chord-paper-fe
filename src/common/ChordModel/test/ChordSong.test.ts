@@ -46,7 +46,7 @@ describe("Chord Song", () => {
                 asHeardFrom: "A Rickroll from my youth",
             },
             lastSavedAt: new Date(),
-            trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}]
+            trackList: [{ label: "Original", url: "nevergonnagiveyouup.com" }],
         });
     });
 
@@ -107,7 +107,9 @@ describe("Chord Song", () => {
                     performedBy: "Rick Astley",
                     asHeardFrom: "A Rickroll from my youth",
                 },
-                trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}],
+                trackList: [
+                    { label: "Original", url: "nevergonnagiveyouup.com" },
+                ],
                 elements: [
                     {
                         elements: [
@@ -256,7 +258,11 @@ describe("Chord Song", () => {
                                     lyric: new Lyric("love"),
                                 }),
                             ],
-                            "Verse"
+                            {
+                                type: "time",
+                                name: "Verse",
+                                time: 35,
+                            }
                         ),
                         new ChordLine([
                             new ChordBlock({
@@ -279,8 +285,12 @@ describe("Chord Song", () => {
                             performedBy: "Rick Astley",
                             asHeardFrom: "every time someone rickrolls me",
                         },
-                        trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}]
-
+                        trackList: [
+                            {
+                                label: "Original",
+                                url: "nevergonnagiveyouup.com",
+                            },
+                        ],
                     }
                 );
             });
@@ -303,7 +313,11 @@ describe("Chord Song", () => {
                                     lyric: new Lyric("love"),
                                 }),
                             ],
-                            "Verse"
+                            {
+                                type: "time",
+                                name: "Verse",
+                                time: 35,
+                            }
                         ),
                         new ChordLine([
                             new ChordBlock({
@@ -326,7 +340,12 @@ describe("Chord Song", () => {
                             performedBy: "Rick Astley",
                             asHeardFrom: "every time someone rickrolls me",
                         },
-                        trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}]
+                        trackList: [
+                            {
+                                label: "Original",
+                                url: "nevergonnagiveyouup.com",
+                            },
+                        ],
                     }
                 );
 
@@ -351,7 +370,11 @@ describe("Chord Song", () => {
                                     lyric: new Lyric("love"),
                                 }),
                             ],
-                            "Chorus"
+                            {
+                                type: "time",
+                                name: "Durp",
+                                time: 35,
+                            }
                         ),
                         new ChordLine([
                             new ChordBlock({
@@ -374,7 +397,12 @@ describe("Chord Song", () => {
                             performedBy: "Rick Astley",
                             asHeardFrom: "every time someone rickrolls me",
                         },
-                        trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}]
+                        trackList: [
+                            {
+                                label: "Original",
+                                url: "nevergonnagiveyouup.com",
+                            },
+                        ],
                     }
                 );
 
@@ -399,7 +427,11 @@ describe("Chord Song", () => {
                                     lyric: new Lyric("love"),
                                 }),
                             ],
-                            "Verse"
+                            {
+                                type: "time",
+                                name: "Verse",
+                                time: 35,
+                            }
                         ),
                         new ChordLine([
                             new ChordBlock({
@@ -422,7 +454,12 @@ describe("Chord Song", () => {
                             performedBy: "Rick Astley",
                             asHeardFrom: "every time someone rickrolls me",
                         },
-                        trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}]
+                        trackList: [
+                            {
+                                label: "Original",
+                                url: "nevergonnagiveyouup.com",
+                            },
+                        ],
                     }
                 );
                 expect(original.contentEquals(other)).toEqual(false);
@@ -456,7 +493,11 @@ describe("Chord Song", () => {
                                     lyric: new Lyric("love"),
                                 }),
                             ],
-                            "Verse"
+                            {
+                                type: "time",
+                                name: "Verse",
+                                time: 35,
+                            }
                         ),
                     ],
                     {
@@ -469,7 +510,12 @@ describe("Chord Song", () => {
                             performedBy: "Rick Astley",
                             asHeardFrom: "every time someone rickrolls me",
                         },
-                        trackList: [{label: "Original", url: "nevergonnagiveyouup.com"}]
+                        trackList: [
+                            {
+                                label: "Original",
+                                url: "nevergonnagiveyouup.com",
+                            },
+                        ],
                     }
                 );
                 expect(original.contentEquals(other)).toEqual(false);

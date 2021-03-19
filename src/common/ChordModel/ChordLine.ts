@@ -47,6 +47,18 @@ export type TimeSection = iots.TypeOf<typeof TimeSectionValidator>;
 export type Section = iots.TypeOf<typeof SectionValidator>;
 export type ChordLineValidatedFields = iots.TypeOf<typeof ChordLineValidator>;
 
+export const timeSectionSortFn = (a: TimeSection, b: TimeSection): number => {
+    if (a.time < b.time) {
+        return -1;
+    }
+
+    if (a.time > b.time) {
+        return 1;
+    }
+
+    return 0;
+};
+
 export class ChordLine extends Collection<ChordBlock>
     implements IDable<ChordLine> {
     id: string;
@@ -205,21 +217,6 @@ export class ChordLine extends Collection<ChordBlock>
         return true;
     }
 
-    // normalizeSection(): void {
-    //     if (this.section === undefined) {
-    //         return;
-    //     }
-
-    //     if (this.section.type === "label" && this.section.name === "") {
-    //         this.section = undefined;
-    //         return;
-    //     }
-
-    //     if (this.section.type === "time") {
-    //         if (this.section.name === "" && th)
-    //     }
-    // }
-
     splitBlock(idable: IDable<ChordBlock>, splitIndex: number): void {
         const index = this.indexOf(idable.id);
         const block = this.elements[index];
@@ -263,7 +260,7 @@ export class ChordLine extends Collection<ChordBlock>
             return false;
         }
 
-        if (this.section !== other.section) {
+        if (!lodash.isEqual(this.section, other.section)) {
             return false;
         }
 

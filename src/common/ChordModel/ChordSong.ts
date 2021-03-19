@@ -9,6 +9,7 @@ import {
     ChordLineValidatedFields,
     ChordLineValidator,
     TimeSection,
+    timeSectionSortFn,
 } from "./ChordLine";
 import { Collection, IDable } from "./Collection";
 import { Lyric } from "./Lyric";
@@ -210,7 +211,9 @@ export class ChordSong extends Collection<ChordLine>
             return timeSections;
         };
 
-        return this.elements.reduce(collectSections, []);
+        const timeSections = this.elements.reduce(collectSections, []);
+        timeSections.sort(timeSectionSortFn);
+        return timeSections;
     }
 
     get title(): string {

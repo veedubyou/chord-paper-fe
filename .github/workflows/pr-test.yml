@@ -27,3 +27,15 @@ jobs:
 
             - name: Test
               run: yarn test --watchAll=false
+    compile:
+        name: Compile all sources
+        # runs-on: ubuntu-latest
+        runs-on: chord-paper-fe-runner
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Install Dependencies
+              run: yarn
+
+            - name: Compile
+              run: tsc
