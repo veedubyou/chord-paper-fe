@@ -17,6 +17,7 @@ interface ControlledTextInputProps extends StyledComponentProps {
     width?: string;
     variant: TextFieldProps["variant"];
     InputProps?: TextFieldProps["InputProps"];
+    inputRef?: TextFieldProps["inputRef"];
     error?: TextFieldProps["error"];
     typographyVariant?: TypographyVariant;
     placeholder?: string;
@@ -90,6 +91,7 @@ const ControlledTextInput: React.FC<ControlledTextInputProps> = (
                 ...browserInputProps,
             }}
             InputProps={props.InputProps}
+            inputRef={props.inputRef}
             value={props.value}
             onBlur={blurHandler}
             onChange={updateValue}

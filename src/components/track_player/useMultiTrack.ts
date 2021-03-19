@@ -1,10 +1,11 @@
+import { Duration } from "luxon";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
+import shortid from "shortid";
 import { Track } from "../../common/ChordModel/Track";
 import { PlainFn } from "../../common/PlainFn";
-import React, { useRef, useState } from "react";
-import shortid from "shortid";
+import { PlayerTimeContext } from "../PlayerTimeContext";
 import { ensureGoogleDriveCacheBusted } from "./google_drive";
-import { Duration } from "luxon";
 
 interface FullPlayerControl {
     trackControls: TrackControl[];
@@ -44,8 +45,8 @@ export const useMultiTrack = (
 
     // a ref version so that a past render can access a future state
     // see outOfSyncWorkaround for the reason
-    const currentTimeRefForWorkAround = useRef<number>(currentTime);
-    currentTimeRefForWorkAround.current = currentTime;
+    const currentTimeRef = useRef<number>(currentTime);
+    currentTimeRef.current = currentTime;
 
     const [playrate, setPlayrate] = useState(100);
 
@@ -56,6 +57,13 @@ export const useMultiTrack = (
     const cacheBusterID = useRef<string>(shortid.generate());
 
     const jumpInterval = 5; // seconds
+
+    const getPlayerTimeRef = useContext(PlayerTimeContext);
+    const getCurrentTime = () => currentTimeRef.current;
+
+    useEffect(() => {
+        getPlayerTimeRef.current = getCurrentTime;
+    });
 
     const processTrackURL = (url: string): string => {
         // Firefox caches some redirects on Google Drive links, which eventually leads
@@ -106,7 +114,7 @@ export const useMultiTrack = (
         // however, it can't be too soon, hence the set timeout
         // and also we would want to seek to the time of the most updated time, not the one during the current render, hence the use of ref
         setTimeout(() => {
-            seekTo(currentTimeRefForWorkAround.current);
+            seekTo(currentTimeRef.current);
         }, 200);
     };
 

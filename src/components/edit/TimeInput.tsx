@@ -2,7 +2,8 @@ import { IconButton, InputAdornment, Theme } from "@material-ui/core";
 import SlowMotionVideoIcon from "@material-ui/icons/SlowMotionVideo";
 import { StyledComponentProps, withStyles } from "@material-ui/styles";
 import { Duration } from "luxon";
-import React, { useState } from "react";
+import React, { useContext, useRef, useState } from "react";
+import { PlayerTimeContext } from "../PlayerTimeContext";
 import { widthOfString } from "../track_player/common";
 import UnstyledControlledTextInput from "./ControlledTextInput";
 
@@ -21,15 +22,20 @@ const ControlledTextInput = withStyles((theme: Theme) => ({
 const TimeInput: React.FC<TimeInputProps> = (
     props: TimeInputProps
 ): JSX.Element => {
-    const initialValue: string = (() => {
-        if (props.seconds === null) {
+    const secondsToString = (seconds: number | null): string => {
+        if (seconds === null) {
             return "";
         }
 
-        const duration = Duration.fromMillis(props.seconds * 1000);
+        const duration = Duration.fromMillis(seconds * 1000);
         return duration.toFormat("mss");
-    })();
+    };
+
+    const initialValue: string = secondsToString(props.seconds);
     const [value, setValue] = useState<string>(initialValue);
+    const inputBoxRef = useRef<any>(null); // pretty awful but this is the type from TextFieldProps
+
+    const getPlayerTimeRef = useContext(PlayerTimeContext);
 
     const decomposeTimeString = (timeString: string): [number, number] => {
         const numericValue = Number(timeString);
@@ -39,12 +45,12 @@ const TimeInput: React.FC<TimeInputProps> = (
         return [minutesPart, secondsPart];
     };
 
-    const validateCurrentTimeValue = (): boolean => {
-        if (value === "") {
+    const validateTimeValue = (time: string): boolean => {
+        if (time === "") {
             return true;
         }
 
-        const [minutesPart, secondsPart] = decomposeTimeString(value);
+        const [minutesPart, secondsPart] = decomposeTimeString(time);
 
         if (isNaN(minutesPart) || isNaN(secondsPart)) {
             return false;
@@ -76,20 +82,45 @@ const TimeInput: React.FC<TimeInputProps> = (
         setValue(sanitizeValue(newTime));
     };
 
-    const finish = () => {
-        if (value === "") {
+    const finish = (newTime: string) => {
+        if (newTime === "") {
             props.onFinish?.(null);
             return;
         }
 
-        const [minutes, seconds] = decomposeTimeString(value);
+        if (!validateTimeValue(newTime)) {
+            return;
+        }
+
+        const [minutes, seconds] = decomposeTimeString(newTime);
 
         props.onFinish?.(60 * minutes + seconds);
     };
 
+    const handleCurrentTimeButton = () => {
+        const currentGetPlayerTime = getPlayerTimeRef.current;
+        if (currentGetPlayerTime === null) {
+            return;
+        }
+
+        const playerTimeSeconds: number = currentGetPlayerTime();
+        const newValue = secondsToString(playerTimeSeconds);
+        setValue(newValue);
+        finish(newValue);
+
+        // put the focus back into the input box
+        if (
+            inputBoxRef.current !== null &&
+            inputBoxRef.current.focus !== undefined &&
+            inputBoxRef.current.focus !== null
+        ) {
+            inputBoxRef.current.focus();
+        }
+    };
+
     const buttonAdornment = (
         <InputAdornment position="start">
-            <IconButton edge="start">
+            <IconButton edge="start" onClick={handleCurrentTimeButton}>
                 <SlowMotionVideoIcon />
             </IconButton>
         </InputAdornment>
@@ -115,7 +146,7 @@ const TimeInput: React.FC<TimeInputProps> = (
     };
 
     const formattedValue = formatValue(value);
-    const error = !validateCurrentTimeValue();
+    const error = !validateTimeValue(value);
 
     return (
         <ControlledTextInput
@@ -124,13 +155,14 @@ const TimeInput: React.FC<TimeInputProps> = (
             onValueChange={handleValueChange}
             variant="standard"
             typographyVariant="body1"
-            onFinish={finish}
+            onFinish={() => finish(value)}
             paddingSpacing={0.5}
             error={error}
             InputProps={{
                 startAdornment: buttonAdornment,
-                disableUnderline: true,
+                disableUnderline: !error,
             }}
+            inputRef={inputBoxRef}
         />
     );
 };
