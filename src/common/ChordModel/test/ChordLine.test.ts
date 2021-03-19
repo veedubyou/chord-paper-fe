@@ -25,7 +25,11 @@ describe("ChordLine", () => {
 
     let c: ChordLine;
     beforeEach(() => {
-        c = new ChordLine(testBlocks(), "Verse");
+        c = new ChordLine(testBlocks(), {
+            type: "time",
+            name: "Verse",
+            time: 35,
+        });
     });
 
     describe("de/serialization", () => {
