@@ -9,6 +9,7 @@ import { PlainFn } from "../../common/PlainFn";
 import TrackPlayer from "../track_player/TrackPlayer";
 import { makeStyles } from "@material-ui/styles";
 import { Track } from "../../common/ChordModel/Track";
+import PlayerTimeProvider from "../PlayerTimeContext";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
@@ -46,7 +47,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
     };
 
     return (
-        <>
+        <PlayerTimeProvider>
             <Helmet>
                 <title>
                     {props.song.metadata.title !== ""
@@ -75,7 +76,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                     onTrackListChanged={trackChangeHandler}
                 />
             </RootPaper>
-        </>
+        </PlayerTimeProvider>
     );
 };
 
