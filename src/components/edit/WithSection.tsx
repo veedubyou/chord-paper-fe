@@ -81,7 +81,13 @@ const WithSection: React.FC<WithSectionProps> = (
     return (
         <>
             <Box>
-                <Tooltip arrow placement="left" interactive title={timeInput}>
+                <Tooltip
+                    arrow
+                    placement="left"
+                    interactive
+                    title={timeInput}
+                    disableFocusListener
+                >
                     <span>
                         <EditableTypography
                             value={label}
