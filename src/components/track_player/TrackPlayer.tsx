@@ -5,11 +5,13 @@ import CompactPlayer from "./CompactPlayer";
 import FullPlayer from "./FullPlayer";
 import TrackListEditDialog from "./TrackListEditDialog";
 import { useMultiTrack } from "./useMultiTrack";
+import { TimeSection } from "../../common/ChordModel/ChordLine";
 
 type PlayerVisibilityState = "minimized" | "compact" | "full";
 
 interface TrackPlayerProps {
     trackList: Track[];
+    timeSections: TimeSection[];
     onTrackListChanged?: (trackList: Track[]) => void;
     collapsedButtonClassName?: string;
 }
@@ -25,7 +27,8 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
     const [loadPlayers, setLoadPlayers] = useState(false);
 
     const [fullPlayerControl, compactPlayerControl] = useMultiTrack(
-        props.trackList
+        props.trackList,
+        props.timeSections
     );
 
     const canEditTrackList = props.onTrackListChanged !== undefined;

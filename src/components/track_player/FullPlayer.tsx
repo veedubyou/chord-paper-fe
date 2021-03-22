@@ -92,6 +92,9 @@ const FullPlayer: React.FC<FullPlayerProps> = (
                     <ControlButton.JumpForward
                         onClick={trackControl.jumpForward}
                     />
+                    <ControlButton.SkipForward
+                        onClick={trackControl.skipForward}
+                    />
                 </ControlGroup>
                 <PlayrateControl
                     playrate={props.playrate}
