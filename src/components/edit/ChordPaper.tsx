@@ -72,6 +72,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                 />
                 <TrackPlayer
                     collapsedButtonClassName={whiteStyle.root}
+                    timeSections={props.song.timeSections}
                     trackList={props.song.trackList}
                     onTrackListChanged={trackChangeHandler}
                 />
