@@ -90,13 +90,17 @@ const FullPlayer: React.FC<FullPlayerProps> = (
                     <ControlButton.Beginning
                         onClick={trackControl.goToBeginning}
                     />
-                    <ControlButton.SkipBack onClick={trackControl.skipBack} />
+                    <ControlButton.SkipBack
+                        disabled={!trackControl.skipBack.enabled}
+                        onClick={trackControl.skipBack.action}
+                    />
                     <ControlButton.JumpBack onClick={trackControl.jumpBack} />
                     <ControlButton.JumpForward
                         onClick={trackControl.jumpForward}
                     />
                     <ControlButton.SkipForward
-                        onClick={trackControl.skipForward}
+                        disabled={!trackControl.skipForward.enabled}
+                        onClick={trackControl.skipForward.action}
                     />
                 </ControlGroup>
                 <PlayrateControl

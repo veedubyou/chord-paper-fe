@@ -5,12 +5,11 @@ import IncreasePlayrateIcon from "@material-ui/icons/ArrowDropUp";
 import PauseIcon from "@material-ui/icons/Pause";
 import PlayIcon from "@material-ui/icons/PlayArrow";
 import JumpBackIcon from "@material-ui/icons/Replay";
-import SkipBackIcon from "@material-ui/icons/SkipPrevious";
 import SkipForwardIcon from "@material-ui/icons/SkipNext";
-import BeginningIcon from "@material-ui/icons/FirstPage";
-
+import SkipBackIcon from "@material-ui/icons/SkipPrevious";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
+import BeginningIcon from "./BeginningIcon";
 import { roundedCornersStyle } from "./common";
 import JumpForwardIcon from "./ForwardIcon";
 

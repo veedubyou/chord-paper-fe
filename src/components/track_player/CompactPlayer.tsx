@@ -22,6 +22,7 @@ import {
 } from "./common";
 import { ControlButton } from "./ControlButton";
 import ControlGroup from "./ControlGroup";
+import { ButtonActionAndState } from "./useMultiTrack";
 
 interface CompactPlayerProps {
     show: boolean;
@@ -29,9 +30,10 @@ interface CompactPlayerProps {
     onMaximize: PlainFn;
     onMinimize: PlainFn;
     currentTime: string;
-    onPlay: PlainFn;
-    onPause: PlainFn;
-    onJumpBack: PlainFn;
+    play: PlainFn;
+    pause: PlainFn;
+    jumpBack: PlainFn;
+    skipBack: ButtonActionAndState;
 }
 
 const TimeDisplay = withStyles((theme: Theme) => ({
@@ -79,15 +81,19 @@ const CompactPlayer: React.FC<CompactPlayerProps> = (
     );
 
     const playPauseButton = props.playing ? (
-        <ControlButton.Pause onClick={props.onPause} />
+        <ControlButton.Pause onClick={props.pause} />
     ) : (
-        <ControlButton.Play onClick={props.onPlay} />
+        <ControlButton.Play onClick={props.play} />
     );
 
     const controlPane = (
         <ControlPane>
             <ControlGroup>
-                <ControlButton.JumpBack onClick={props.onJumpBack} />
+                <ControlButton.SkipBack
+                    disabled={!props.skipBack.enabled}
+                    onClick={props.skipBack.action}
+                />
+                <ControlButton.JumpBack onClick={props.jumpBack} />
                 {playPauseButton}
             </ControlGroup>
             <TimeDisplay>
