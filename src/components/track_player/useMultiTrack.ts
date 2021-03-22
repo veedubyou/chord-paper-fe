@@ -2,6 +2,7 @@ import { Duration } from "luxon";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import shortid from "shortid";
+import { TimeSection } from "../../common/ChordModel/ChordLine";
 import { Track } from "../../common/ChordModel/Track";
 import { PlainFn } from "../../common/PlainFn";
 import { PlayerTimeContext } from "../PlayerTimeContext";
@@ -14,6 +15,11 @@ interface FullPlayerControl {
     onPlayrateChange: (newPlayrate: number) => void;
 }
 
+export interface ButtonActionAndState {
+    action: PlainFn;
+    enabled: boolean;
+}
+
 export interface TrackControl extends Track {
     focused: boolean;
     playing: boolean;
@@ -21,7 +27,9 @@ export interface TrackControl extends Track {
     onPause: PlainFn;
     jumpBack: PlainFn;
     jumpForward: PlainFn;
-    skipBack: PlainFn;
+    goToBeginning: PlainFn;
+    skipBack: ButtonActionAndState;
+    skipForward: ButtonActionAndState;
     onProgress: (playedSeconds: number) => void;
     ref: React.Ref<ReactPlayer>;
 }
@@ -31,13 +39,20 @@ interface CompactPlayerControl {
     play: PlainFn;
     pause: PlainFn;
     jumpBack: PlainFn;
+    skipBack: ButtonActionAndState;
     currentTime: string;
 }
 
 const voidFn = () => {};
 
+const emptyButton: ButtonActionAndState = {
+    action: voidFn,
+    enabled: false,
+};
+
 export const useMultiTrack = (
-    trackList: Track[]
+    trackList: Track[],
+    timeSections: TimeSection[]
 ): [FullPlayerControl, CompactPlayerControl] => {
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
     const [playing, setPlaying] = useState(false);
@@ -57,6 +72,9 @@ export const useMultiTrack = (
     const cacheBusterID = useRef<string>(shortid.generate());
 
     const jumpInterval = 5; // seconds
+
+    const skipBackBuffer = 2; // seconds;
+    const skipLeadIn = 1; // seconds;
 
     const getPlayerTimeRef = useContext(PlayerTimeContext);
     const getCurrentTime = () => currentTimeRef.current;
@@ -84,9 +102,66 @@ export const useMultiTrack = (
 
     adjustRefArraySize();
 
+    const [currentSection, previousSection, nextSection] = ((): [
+        TimeSection | null,
+        TimeSection | null,
+        TimeSection | null
+    ] => {
+        let currentSectionIndex: number | null = null;
+
+        timeSections.forEach((section: TimeSection, index: number) => {
+            if (currentTime >= section.time) {
+                if (
+                    currentSectionIndex === null ||
+                    section.time > timeSections[currentSectionIndex].time
+                ) {
+                    currentSectionIndex = index;
+                }
+            }
+        });
+
+        const currentSection = (() => {
+            if (currentSectionIndex === null) {
+                return null;
+            }
+            return timeSections[currentSectionIndex];
+        })();
+
+        const previousSection = (() => {
+            if (currentSectionIndex === null || currentSectionIndex === 0) {
+                return null;
+            }
+
+            return timeSections[currentSectionIndex - 1];
+        })();
+
+        const nextSection = (() => {
+            if (timeSections.length === 0) {
+                return null;
+            }
+
+            if (currentSectionIndex === null) {
+                return timeSections[0];
+            }
+
+            if (currentSectionIndex === timeSections.length - 1) {
+                return null;
+            }
+
+            return timeSections[currentSectionIndex + 1];
+        })();
+
+        return [currentSection, previousSection, nextSection];
+    })();
+
     const seekTo = (time: number) => {
         const currentPlayerRef: ReactPlayer | null =
             playerRefs.current[currentTrackIndex].current;
+
+        if (time < 0) {
+            time = 0;
+        }
+
         currentPlayerRef?.seekTo(time, "seconds");
     };
 
@@ -139,8 +214,36 @@ export const useMultiTrack = (
         seekTo(newTime);
     };
 
-    const skipBackAction = () => {
+    const goToBeginningAction = () => {
         seekTo(0);
+    };
+
+    const skipBackButton: ButtonActionAndState = {
+        action: () => {
+            if (currentSection === null) {
+                return;
+            }
+
+            if (
+                previousSection !== null &&
+                currentTime <= currentSection.time + skipBackBuffer
+            ) {
+                seekTo(previousSection.time - skipLeadIn);
+                return;
+            }
+
+            seekTo(currentSection.time - skipLeadIn);
+        },
+        enabled: currentSection !== null,
+    };
+
+    const skipForwardButton: ButtonActionAndState = {
+        action: () => {
+            if (nextSection !== null) {
+                seekTo(nextSection.time - skipLeadIn);
+            }
+        },
+        enabled: nextSection !== null,
     };
 
     const handleProgress = (playedSeconds: number) => {
@@ -166,13 +269,16 @@ export const useMultiTrack = (
         (track: Track, index: number) => {
             const focused = index === currentTrackIndex;
 
-            const fnIfFocused = <T>(fn: T) => {
+            const thisIfFocused = <T>(thisThing: T, elseThing: T) => {
                 if (focused) {
-                    return fn;
+                    return thisThing;
                 }
 
-                return voidFn;
+                return elseThing;
             };
+
+            const fnIfFocused = <T extends PlainFn>(fn: T) =>
+                thisIfFocused(fn, voidFn);
 
             return {
                 label: track.label,
@@ -181,10 +287,12 @@ export const useMultiTrack = (
                 playing: focused && playing,
                 onPlay: fnIfFocused(handlePlayState),
                 onPause: fnIfFocused(handlePauseState),
+                goToBeginning: fnIfFocused(goToBeginningAction),
                 jumpBack: fnIfFocused(jumpBackAction),
                 jumpForward: fnIfFocused(jumpForwardAction),
-                skipBack: fnIfFocused(skipBackAction),
-                onProgress: fnIfFocused(handleProgress),
+                skipBack: thisIfFocused(skipBackButton, emptyButton),
+                skipForward: thisIfFocused(skipForwardButton, emptyButton),
+                onProgress: thisIfFocused(handleProgress, voidFn),
                 ref: playerRefs.current[index],
             };
         }
@@ -206,6 +314,7 @@ export const useMultiTrack = (
         playing: playing,
         play: playAction,
         pause: pauseAction,
+        skipBack: skipBackButton,
         jumpBack: jumpBackAction,
         currentTime: currentTimeFormatted,
     };

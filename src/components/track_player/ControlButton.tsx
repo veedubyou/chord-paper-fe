@@ -5,9 +5,11 @@ import IncreasePlayrateIcon from "@material-ui/icons/ArrowDropUp";
 import PauseIcon from "@material-ui/icons/Pause";
 import PlayIcon from "@material-ui/icons/PlayArrow";
 import JumpBackIcon from "@material-ui/icons/Replay";
+import SkipForwardIcon from "@material-ui/icons/SkipNext";
 import SkipBackIcon from "@material-ui/icons/SkipPrevious";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
+import BeginningIcon from "./BeginningIcon";
 import { roundedCornersStyle } from "./common";
 import JumpForwardIcon from "./ForwardIcon";
 
@@ -75,6 +77,18 @@ export const ControlButton = {
     SkipBack: makeControlButton(
         <SkipBackIcon />,
         "skip-back-button",
+        "Go back a section",
+        "primary"
+    ),
+    SkipForward: makeControlButton(
+        <SkipForwardIcon />,
+        "skip-back-button",
+        "Go forward a section",
+        "primary"
+    ),
+    Beginning: makeControlButton(
+        <BeginningIcon />,
+        "beginning-button",
         "Go to Beginning",
         "primary"
     ),
