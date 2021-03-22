@@ -78,6 +78,9 @@ const WithSection: React.FC<WithSectionProps> = (
         return <TimeInput seconds={time} onFinish={handleTimeChange} />;
     })();
 
+    // prevent tooltip from stealing focus from the editable textfield
+    const disableTooltipFocus = editing;
+
     return (
         <>
             <Box>
@@ -86,7 +89,7 @@ const WithSection: React.FC<WithSectionProps> = (
                     placement="left"
                     interactive
                     title={timeInput}
-                    disableFocusListener
+                    disableFocusListener={disableTooltipFocus}
                 >
                     <span>
                         <EditableTypography
