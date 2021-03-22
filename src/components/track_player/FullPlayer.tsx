@@ -87,6 +87,9 @@ const FullPlayer: React.FC<FullPlayerProps> = (
         return (
             <ControlPane>
                 <ControlGroup>
+                    <ControlButton.Beginning
+                        onClick={trackControl.goToBeginning}
+                    />
                     <ControlButton.SkipBack onClick={trackControl.skipBack} />
                     <ControlButton.JumpBack onClick={trackControl.jumpBack} />
                     <ControlButton.JumpForward
