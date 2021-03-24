@@ -86,6 +86,12 @@ const FullPlayer: React.FC<FullPlayerProps> = (
     const paddingLeftStyle = usePaddingLeftStyle();
 
     const makeControlPane = (trackControl: TrackControl) => {
+        const playPauseButton = trackControl.playing ? (
+            <ControlButton.Pause onClick={trackControl.pause} />
+        ) : (
+            <ControlButton.Play onClick={trackControl.play} />
+        );
+
         return (
             <ControlPane>
                 <ControlGroup>
@@ -97,6 +103,7 @@ const FullPlayer: React.FC<FullPlayerProps> = (
                         onClick={trackControl.skipBack.action}
                     />
                     <ControlButton.JumpBack onClick={trackControl.jumpBack} />
+                    {playPauseButton}
                     <ControlButton.JumpForward
                         onClick={trackControl.jumpForward}
                     />
@@ -133,7 +140,7 @@ const FullPlayer: React.FC<FullPlayerProps> = (
                         ref={trackControl.ref}
                         url={trackControl.url}
                         playing={trackControl.playing}
-                        controls
+                        controls={false}
                         playbackRate={playbackRate}
                         onPlay={trackControl.onPlay}
                         onPause={trackControl.onPause}
