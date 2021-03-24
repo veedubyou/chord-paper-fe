@@ -14,14 +14,15 @@ import { PlainFn } from "../../common/PlainFn";
 import {
     controlPaneStyle,
     greyTextColour,
-    widthOfString,
     roundedCornersStyle,
     roundedTopCornersStyle,
     TitleBar,
+    widthOfString,
     withBottomRightBox,
 } from "./common";
 import { ControlButton } from "./ControlButton";
 import ControlGroup from "./ControlGroup";
+import SectionLabel from "./SectionLabel";
 import { ButtonActionAndState } from "./useMultiTrack";
 
 interface CompactPlayerProps {
@@ -30,6 +31,7 @@ interface CompactPlayerProps {
     onMaximize: PlainFn;
     onMinimize: PlainFn;
     currentTime: string;
+    currentSectionLabel: string;
     play: PlainFn;
     pause: PlainFn;
     jumpBack: PlainFn;
@@ -62,6 +64,12 @@ const PlayerContainer = withStyles((theme: Theme) => ({
 }))(Box);
 
 const ControlPane = withStyles({ root: controlPaneStyle })(Box);
+const ControlPaneText = withStyles({
+    root: {
+        display: "flex",
+        alignItems: "baseline",
+    },
+})(Box);
 
 const CompactPlayer: React.FC<CompactPlayerProps> = (
     props: CompactPlayerProps
@@ -88,6 +96,7 @@ const CompactPlayer: React.FC<CompactPlayerProps> = (
 
     const controlPane = (
         <ControlPane>
+            <SectionLabel value={props.currentSectionLabel} divider />
             <ControlGroup>
                 <ControlButton.SkipBack
                     disabled={!props.skipBack.enabled}
@@ -96,11 +105,15 @@ const CompactPlayer: React.FC<CompactPlayerProps> = (
                 <ControlButton.JumpBack onClick={props.jumpBack} />
                 {playPauseButton}
             </ControlGroup>
-            <TimeDisplay>
-                <Box>
-                    <Typography variant="h6">{props.currentTime}</Typography>
-                </Box>
-            </TimeDisplay>
+            <ControlPaneText>
+                <TimeDisplay>
+                    <Box>
+                        <Typography variant="h6">
+                            {props.currentTime}
+                        </Typography>
+                    </Box>
+                </TimeDisplay>
+            </ControlPaneText>
         </ControlPane>
     );
 
