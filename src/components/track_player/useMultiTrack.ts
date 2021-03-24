@@ -10,6 +10,7 @@ import { ensureGoogleDriveCacheBusted } from "./google_drive";
 
 interface FullPlayerControl {
     trackControls: TrackControl[];
+    currentSectionLabel: string;
     onCurrentTrackIndexChange: (newIndex: number) => void;
     playrate: number;
     onPlayrateChange: (newPlayrate: number) => void;
@@ -36,6 +37,7 @@ export interface TrackControl extends Track {
 
 interface CompactPlayerControl {
     playing: boolean;
+    currentSectionLabel: string;
     play: PlainFn;
     pause: PlainFn;
     jumpBack: PlainFn;
@@ -298,11 +300,15 @@ export const useMultiTrack = (
         }
     );
 
+    const currentSectionLabel =
+        currentSection !== null ? currentSection.name : "";
+
     const fullPlayerControl: FullPlayerControl = {
         trackControls: trackControls,
         onCurrentTrackIndexChange: onCurrentTrackIndexChange,
         playrate: playrate,
         onPlayrateChange: setPlayrate,
+        currentSectionLabel: currentSectionLabel,
     };
 
     const currentTimeFormatted: string = (() => {
@@ -317,6 +323,7 @@ export const useMultiTrack = (
         skipBack: skipBackButton,
         jumpBack: jumpBackAction,
         currentTime: currentTimeFormatted,
+        currentSectionLabel: currentSectionLabel,
     };
 
     return [fullPlayerControl, compactPlayerControl];

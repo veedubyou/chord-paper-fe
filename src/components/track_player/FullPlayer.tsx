@@ -23,12 +23,14 @@ import {
 import { ControlButton } from "./ControlButton";
 import ControlGroup from "./ControlGroup";
 import PlayrateControl from "./PlayrateControl";
+import SectionLabel from "./SectionLabel";
 import { TrackControl } from "./useMultiTrack";
 
 interface FullPlayerProps {
     show: boolean;
     trackControls: TrackControl[];
     playrate: number;
+    currentSectionLabel: string;
     onPlayrateChange: (newPlayrate: number) => void;
     onCollapse: () => void;
     onSelectCurrentTrack: (index: number) => void;
@@ -103,6 +105,7 @@ const FullPlayer: React.FC<FullPlayerProps> = (
                         onClick={trackControl.skipForward.action}
                     />
                 </ControlGroup>
+                <SectionLabel value={props.currentSectionLabel} />
                 <PlayrateControl
                     playrate={props.playrate}
                     onChange={props.onPlayrateChange}

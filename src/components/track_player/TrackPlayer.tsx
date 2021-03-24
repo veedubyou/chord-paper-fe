@@ -90,6 +90,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             show={playerVisibilityState === "full"}
             trackControls={fullPlayerControl.trackControls}
             playrate={fullPlayerControl.playrate}
+            currentSectionLabel={fullPlayerControl.currentSectionLabel}
             onPlayrateChange={fullPlayerControl.onPlayrateChange}
             onCollapse={() => setPlayerVisibilityState("compact")}
             onSelectCurrentTrack={fullPlayerControl.onCurrentTrackIndexChange}
@@ -112,6 +113,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             onMinimize={() => setPlayerVisibilityState("minimized")}
             onMaximize={() => setPlayerVisibilityState("full")}
             currentTime={compactPlayerControl.currentTime}
+            currentSectionLabel={compactPlayerControl.currentSectionLabel}
         />
     );
 
