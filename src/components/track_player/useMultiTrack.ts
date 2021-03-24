@@ -24,13 +24,15 @@ export interface ButtonActionAndState {
 export interface TrackControl extends Track {
     focused: boolean;
     playing: boolean;
-    onPlay: PlainFn;
-    onPause: PlainFn;
+    play: PlainFn;
+    pause: PlainFn;
     jumpBack: PlainFn;
     jumpForward: PlainFn;
     goToBeginning: PlainFn;
     skipBack: ButtonActionAndState;
     skipForward: ButtonActionAndState;
+    onPlay: PlainFn;
+    onPause: PlainFn;
     onProgress: (playedSeconds: number) => void;
     ref: React.Ref<ReactPlayer>;
 }
@@ -270,7 +272,7 @@ export const useMultiTrack = (
     };
 
     const trackControls: TrackControl[] = trackList.map(
-        (track: Track, index: number) => {
+        (track: Track, index: number): TrackControl => {
             const focused = index === currentTrackIndex;
 
             const thisIfFocused = <T>(thisThing: T, elseThing: T) => {
@@ -289,13 +291,15 @@ export const useMultiTrack = (
                 url: processTrackURL(track.url),
                 focused: focused,
                 playing: focused && playing,
-                onPlay: fnIfFocused(handlePlayState),
-                onPause: fnIfFocused(handlePauseState),
+                play: fnIfFocused(playAction),
+                pause: fnIfFocused(pauseAction),
                 goToBeginning: fnIfFocused(goToBeginningAction),
                 jumpBack: fnIfFocused(jumpBackAction),
                 jumpForward: fnIfFocused(jumpForwardAction),
                 skipBack: thisIfFocused(skipBackButton, emptyButton),
                 skipForward: thisIfFocused(skipForwardButton, emptyButton),
+                onPlay: fnIfFocused(handlePlayState),
+                onPause: fnIfFocused(handlePauseState),
                 onProgress: thisIfFocused(handleProgress, voidFn),
                 ref: playerRefs.current[index],
             };
