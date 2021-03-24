@@ -41,7 +41,9 @@ interface CompactPlayerControl {
     play: PlainFn;
     pause: PlainFn;
     jumpBack: PlainFn;
+    jumpForward: PlainFn;
     skipBack: ButtonActionAndState;
+    skipForward: ButtonActionAndState;
     currentTime: string;
 }
 
@@ -321,7 +323,9 @@ export const useMultiTrack = (
         play: playAction,
         pause: pauseAction,
         skipBack: skipBackButton,
+        skipForward: skipForwardButton,
         jumpBack: jumpBackAction,
+        jumpForward: jumpForwardAction,
         currentTime: currentTimeFormatted,
         currentSectionLabel: currentSectionLabel,
     };

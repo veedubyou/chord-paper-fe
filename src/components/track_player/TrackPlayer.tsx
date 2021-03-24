@@ -109,7 +109,9 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             play={compactPlayerControl.play}
             pause={compactPlayerControl.pause}
             jumpBack={compactPlayerControl.jumpBack}
+            jumpForward={compactPlayerControl.jumpForward}
             skipBack={compactPlayerControl.skipBack}
+            skipForward={compactPlayerControl.skipForward}
             onMinimize={() => setPlayerVisibilityState("minimized")}
             onMaximize={() => setPlayerVisibilityState("full")}
             currentTime={compactPlayerControl.currentTime}
