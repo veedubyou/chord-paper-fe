@@ -33,7 +33,9 @@ interface CompactPlayerProps {
     play: PlainFn;
     pause: PlainFn;
     jumpBack: PlainFn;
+    jumpForward: PlainFn;
     skipBack: ButtonActionAndState;
+    skipForward: ButtonActionAndState;
 }
 
 const TimeDisplay = withStyles((theme: Theme) => ({
@@ -95,6 +97,11 @@ const CompactPlayer: React.FC<CompactPlayerProps> = (
                 />
                 <ControlButton.JumpBack onClick={props.jumpBack} />
                 {playPauseButton}
+                <ControlButton.JumpForward onClick={props.jumpForward} />
+                <ControlButton.SkipForward
+                    disabled={!props.skipForward.enabled}
+                    onClick={props.skipForward.action}
+                />
             </ControlGroup>
             <TimeDisplay>
                 <Box>
