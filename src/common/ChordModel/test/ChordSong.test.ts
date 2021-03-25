@@ -43,7 +43,6 @@ describe("Chord Song", () => {
                 title: "Never Gonna Give You Up",
                 composedBy: "Me",
                 performedBy: "Rick Astley",
-                asHeardFrom: "A Rickroll from my youth",
             },
             lastSavedAt: new Date(),
             trackList: [{ label: "Original", url: "nevergonnagiveyouup.com" }],
@@ -105,7 +104,6 @@ describe("Chord Song", () => {
                     title: "Never Gonna Give You Up",
                     composedBy: "Me",
                     performedBy: "Rick Astley",
-                    asHeardFrom: "A Rickroll from my youth",
                 },
                 trackList: [
                     { label: "Original", url: "nevergonnagiveyouup.com" },
@@ -152,14 +150,14 @@ describe("Chord Song", () => {
 
         test("missing a nested field", () => {
             const results = ChordLine.deserialize(
-                `{"elements":[{"elements":[{"lyric":{"serializedLyric":"We're no "},"type":"ChordBlock"},{"chord":"Bm","lyric":{"serializedLyric":"strangers to "},"type":"ChordBlock"},{"chord":"Cdim","lyric":{"serializedLyric":"love"},"type":"ChordBlock"}],"type":"ChordLine"},{"elements":[{"chord":"D7b9#11","lyric":{"serializedLyric":"You know the rules "},"type":"ChordBlock"},{"chord":"Eb9","lyric":{"serializedLyric":"and so do I"},"type":"ChordBlock"}],"type":"ChordLine"}],"metadata":{"title":"Never Gonna Give You Up","composedBy":"Me","performedBy":"Rick Astley","asHeardFrom":"A Rickroll from my youth"}}`
+                `{"elements":[{"elements":[{"lyric":{"serializedLyric":"We're no "},"type":"ChordBlock"},{"chord":"Bm","lyric":{"serializedLyric":"strangers to "},"type":"ChordBlock"},{"chord":"Cdim","lyric":{"serializedLyric":"love"},"type":"ChordBlock"}],"type":"ChordLine"},{"elements":[{"chord":"D7b9#11","lyric":{"serializedLyric":"You know the rules "},"type":"ChordBlock"},{"chord":"Eb9","lyric":{"serializedLyric":"and so do I"},"type":"ChordBlock"}],"type":"ChordLine"}],"metadata":{"title":"Never Gonna Give You Up","composedBy":"Me","performedBy":"Rick Astley"}}`
             );
             expect(isLeft(results)).toEqual(true);
         });
 
         test("missing metadata field", () => {
             const results = ChordSong.deserialize(
-                `{"elements":[{"elements":[{"chord":"A7","lyric":{"serializedLyric":"We're no "},"type":"ChordBlock"},{"chord":"Bm","lyric":{"serializedLyric":"strangers to "},"type":"ChordBlock"},{"chord":"Cdim","lyric":{"serializedLyric":"love"},"type":"ChordBlock"}],"type":"ChordLine"},{"elements":[{"chord":"D7b9#11","lyric":{"serializedLyric":"You know the rules "},"type":"ChordBlock"},{"chord":"Eb9","lyric":{"serializedLyric":"and so do I"},"type":"ChordBlock"}],"type":"ChordLine"}],"metadata":{"title":"Never Gonna Give You Up","composedBy":"Me","performedBy":"Rick Astley"}}`
+                `{"elements":[{"elements":[{"chord":"A7","lyric":{"serializedLyric":"We're no "},"type":"ChordBlock"},{"chord":"Bm","lyric":{"serializedLyric":"strangers to "},"type":"ChordBlock"},{"chord":"Cdim","lyric":{"serializedLyric":"love"},"type":"ChordBlock"}],"type":"ChordLine"},{"elements":[{"chord":"D7b9#11","lyric":{"serializedLyric":"You know the rules "},"type":"ChordBlock"},{"chord":"Eb9","lyric":{"serializedLyric":"and so do I"},"type":"ChordBlock"}],"type":"ChordLine"}],"metadata":{"title":"Never Gonna Give You Up","composedBy":"Me"}}`
             );
             expect(isLeft(results)).toEqual(true);
         });
@@ -283,7 +281,6 @@ describe("Chord Song", () => {
                             title: "Never Gonna Give You Up",
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
-                            asHeardFrom: "every time someone rickrolls me",
                         },
                         trackList: [
                             {
@@ -338,7 +335,6 @@ describe("Chord Song", () => {
                             title: "Never Gonna Give You Up",
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
-                            asHeardFrom: "every time someone rickrolls me",
                         },
                         trackList: [
                             {
@@ -395,7 +391,6 @@ describe("Chord Song", () => {
                             title: "Never Gonna Give You Up",
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
-                            asHeardFrom: "every time someone rickrolls me",
                         },
                         trackList: [
                             {
@@ -452,7 +447,6 @@ describe("Chord Song", () => {
                             title: "Never Gonna Give You Up",
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
-                            asHeardFrom: "every time someone rickrolls me",
                         },
                         trackList: [
                             {
@@ -508,7 +502,6 @@ describe("Chord Song", () => {
                             title: "Never Gonna Give You Up",
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
-                            asHeardFrom: "every time someone rickrolls me",
                         },
                         trackList: [
                             {

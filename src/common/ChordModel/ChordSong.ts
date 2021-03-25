@@ -19,7 +19,6 @@ const MetadataValidator = iots.type({
     title: iots.string,
     composedBy: iots.string,
     performedBy: iots.string,
-    asHeardFrom: iots.string,
 });
 
 type Metadata = iots.TypeOf<typeof MetadataValidator>;
@@ -51,7 +50,6 @@ export class SongSummary implements SongSummaryValidatedFields {
                 title: "",
                 composedBy: "",
                 performedBy: "",
-                asHeardFrom: "",
             };
             this.lastSavedAt = null;
             return;
@@ -130,7 +128,6 @@ export class ChordSong extends Collection<ChordLine>
                 title: "",
                 composedBy: "",
                 performedBy: "",
-                asHeardFrom: "",
             };
             this.lastSavedAt = null;
             this.trackList = [];
@@ -238,14 +235,6 @@ export class ChordSong extends Collection<ChordLine>
 
     set composedBy(newComposedBy: string) {
         this.metadata.composedBy = newComposedBy;
-    }
-
-    get asHeardFrom(): string {
-        return this.metadata.asHeardFrom;
-    }
-
-    set asHeardFrom(newAsHeardFrom: string) {
-        this.metadata.asHeardFrom = newAsHeardFrom;
     }
 
     clone(): ChordSong {
