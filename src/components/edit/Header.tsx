@@ -42,11 +42,6 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
         notifySongChanged();
     };
 
-    const updateHeardFrom = (newHeardFrom: string) => {
-        props.song.asHeardFrom = newHeardFrom;
-        notifySongChanged();
-    };
-
     const title = (
         <Box paddingBottom={theme.spacing(0.5)}>
             <EditableTypography
@@ -67,7 +62,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
 
     const details = (
         <Grid container justify="center">
-            <Grid container item xs={4} justify="center">
+            <Grid container item xs={6} justify="center">
                 <Grid item>
                     <Typography display="block" variant="caption">
                         Composed by:{" "}
@@ -83,7 +78,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
                     />
                 </Grid>
             </Grid>
-            <Grid container item xs={4} justify="center">
+            <Grid container item xs={6} justify="center">
                 <Grid item>
                     <Typography display="inline" variant="caption">
                         Performed by:{" "}
@@ -95,20 +90,6 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
                         placeholder="Rick Astley"
                         onValueChange={updatePerformerHandler}
                         data-testid="PerformedBy"
-                    />
-                </Grid>
-            </Grid>
-            <Grid container item xs={4} justify="center">
-                <Grid item>
-                    <Typography display="inline" variant="caption">
-                        As heard from:{" "}
-                    </Typography>
-                    <EditableTypography
-                        value={props.song.asHeardFrom}
-                        variant="caption"
-                        placeholder="https://www.youtube.com/watch?v=dM9zwZCOmjM"
-                        onValueChange={updateHeardFrom}
-                        data-testid="AsHeardAt"
                     />
                 </Grid>
             </Grid>
