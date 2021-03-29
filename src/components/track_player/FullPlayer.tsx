@@ -140,7 +140,7 @@ const FullPlayer: React.FC<FullPlayerProps> = (
                         ref={trackControl.ref}
                         url={trackControl.url}
                         playing={trackControl.playing}
-                        controls={false}
+                        controls
                         playbackRate={playbackRate}
                         onPlay={trackControl.onPlay}
                         onPause={trackControl.onPause}
