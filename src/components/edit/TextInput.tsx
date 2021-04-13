@@ -18,6 +18,7 @@ const TextInput: React.FC<TextInputProps> = (
 
     return (
         <ControlledTextInput
+            classes={props.classes}
             value={value}
             onValueChange={setValue}
             variant={props.variant}
