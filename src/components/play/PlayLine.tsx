@@ -42,7 +42,7 @@ const PlayLine: React.FC<PlayLineProps> = (
         );
 
         lineComponent = (
-            <Box display="inline-block">
+            <Box>
                 {labelElement}
                 {lineComponent}
             </Box>
