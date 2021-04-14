@@ -3,7 +3,9 @@ import { makeStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { TrackList } from "../../common/ChordModel/Track";
 import { PlainFn } from "../../common/PlainFn";
+import TrackListProvider from "../track_player/TrackListProvider";
 import TrackPlayer from "../track_player/TrackPlayer";
 import PlayContent, { DisplaySettings } from "./PlayContent";
 import PlayMenu from "./PlayMenu";
@@ -39,6 +41,24 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
         });
     };
 
+    const trackPlayer: React.ReactNode = (() => {
+        if (props.song.isUnsaved()) {
+            return null;
+        }
+
+        return (
+            <TrackListProvider songID={props.song.id}>
+                {(tracklist: TrackList) => (
+                    <TrackPlayer
+                        collapsedButtonClassName={transparentStyle.root}
+                        timeSections={props.song.timeSections}
+                        trackList={tracklist}
+                    />
+                )}
+            </TrackListProvider>
+        );
+    })();
+
     return (
         <>
             <Helmet>
@@ -59,11 +79,7 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
                     displaySettings={displaySettings}
                 />
             </ThemeProvider>
-            <TrackPlayer
-                collapsedButtonClassName={transparentStyle.root}
-                timeSections={props.song.timeSections}
-                trackList={props.song.trackList}
-            />
+            {trackPlayer}
         </>
     );
 };

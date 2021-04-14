@@ -1,6 +1,7 @@
 import { Either, left, right } from "fp-ts/lib/Either";
 import ky from "ky";
 import { ChordSong } from "../ChordModel/ChordSong";
+import { TrackList } from "../ChordModel/Track";
 
 const backendHost = ((): string => {
     const localURL = "http://localhost:5000";
@@ -48,6 +49,22 @@ export const getSong = async (
 
     try {
         parsed = await ky.get(`${backendHost}/songs/${songID}`).json();
+    } catch (e) {
+        return left(e);
+    }
+
+    return right(parsed);
+};
+
+export const getTrackList = async (
+    songID: string
+): Promise<Either<Error, unknown>> => {
+    let parsed: unknown;
+
+    try {
+        parsed = await ky
+            .get(`${backendHost}/songs/${songID}/tracklist`)
+            .json();
     } catch (e) {
         return left(e);
     }
@@ -114,6 +131,32 @@ export const updateSong = async (
         parsed = await ky
             .put(`${backendHost}/songs/${song.id}`, {
                 json: song,
+                headers: {
+                    Authorization: "Bearer " + authToken,
+                },
+            })
+            .json();
+    } catch (e) {
+        return left(e);
+    }
+
+    return right(parsed);
+};
+
+export const updateTrackList = async (
+    tracklist: TrackList,
+    authToken: string
+): Promise<Either<Error, unknown>> => {
+    if (tracklist.song_id === "") {
+        return left(new Error("No song ID on the tracklist"));
+    }
+
+    let parsed: unknown;
+
+    try {
+        parsed = await ky
+            .put(`${backendHost}/songs/${tracklist.song_id}/tracklist`, {
+                json: tracklist,
                 headers: {
                     Authorization: "Bearer " + authToken,
                 },

@@ -13,7 +13,6 @@ import {
 } from "./ChordLine";
 import { Collection, IDable } from "./Collection";
 import { Lyric } from "./Lyric";
-import { Track, TrackValidator } from "./Track";
 
 const MetadataValidator = iots.type({
     title: iots.string,
@@ -88,25 +87,12 @@ export class SongSummary implements SongSummaryValidatedFields {
     }
 }
 
-const ChordSongRequiredFields = iots.type({
+const ChordSongValidator = iots.type({
     ...SongSummaryTypes,
     elements: iots.array(ChordLineValidator),
 });
 
-const ChordSongOptionalFields = iots.partial({
-    trackList: iots.array(TrackValidator),
-});
-
-const ChordSongValidator = iots.intersection([
-    ChordSongRequiredFields,
-    ChordSongOptionalFields,
-]);
-
 type ChordSongValidatedFields = iots.TypeOf<typeof ChordSongValidator>;
-
-export interface ChordSongFields extends SongSummaryValidatedFields {
-    trackList: Track[];
-}
 
 export class ChordSong extends Collection<ChordLine>
     implements SongSummaryValidatedFields {
@@ -114,9 +100,11 @@ export class ChordSong extends Collection<ChordLine>
     owner: string;
     lastSavedAt: Date | null;
     metadata: Metadata;
-    trackList: Track[];
 
-    constructor(input_elements?: ChordLine[], fields?: ChordSongFields) {
+    constructor(
+        input_elements?: ChordLine[],
+        fields?: SongSummaryValidatedFields
+    ) {
         const elements = input_elements ?? [new ChordLine()];
 
         super(elements);
@@ -130,7 +118,6 @@ export class ChordSong extends Collection<ChordLine>
                 performedBy: "",
             };
             this.lastSavedAt = null;
-            this.trackList = [];
             return;
         }
 
@@ -138,7 +125,6 @@ export class ChordSong extends Collection<ChordLine>
         this.owner = fields.owner;
         this.metadata = fields.metadata;
         this.lastSavedAt = fields.lastSavedAt;
-        this.trackList = fields.trackList;
     }
 
     static fromValidatedFields(
@@ -150,15 +136,7 @@ export class ChordSong extends Collection<ChordLine>
             }
         );
 
-        const trackList: Track[] =
-            validatedFields.trackList !== undefined
-                ? validatedFields.trackList
-                : [];
-
-        return new ChordSong(chordLines, {
-            ...validatedFields,
-            trackList: trackList,
-        });
+        return new ChordSong(chordLines, validatedFields);
     }
 
     static deserialize(jsonStr: string): Either<Error, ChordSong> {
@@ -305,10 +283,6 @@ export class ChordSong extends Collection<ChordLine>
         }
 
         if (!lodash.isEqual(this.metadata, other.metadata)) {
-            return false;
-        }
-
-        if (!lodash.isEqual(this.trackList, other.trackList)) {
             return false;
         }
 

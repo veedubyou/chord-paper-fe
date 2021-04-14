@@ -1,4 +1,5 @@
 import {
+    Box,
     Box as UnstyledBox,
     Button,
     Dialog,
@@ -16,7 +17,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { withStyles } from "@material-ui/styles";
 import lodash from "lodash";
 import React, { useState } from "react";
-import { Track } from "../../common/ChordModel/Track";
+import { Track, TrackList } from "../../common/ChordModel/Track";
 import { PlainFn } from "../../common/PlainFn";
 import { convertViewLinkToExportLink } from "./google_drive";
 
@@ -25,8 +26,8 @@ type TextFieldProps = Omit<Partial<TextFieldPropsWithVariant>, "variant">;
 interface TrackListEditDialogProps {
     open: boolean;
     onClose?: PlainFn;
-    trackList: Track[];
-    onSubmit?: (trackList: Track[]) => void;
+    trackList: TrackList;
+    onSubmit?: (trackList: TrackList) => void;
 }
 
 const InlineBlockBox = withStyles({
@@ -63,33 +64,37 @@ const Typography = withStyles((theme: Theme) => ({
 const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
     props: TrackListEditDialogProps
 ): JSX.Element => {
-    const initialTracks: Track[] = (() => {
+    const emptySingleTrack = (): Track => {
+        return { id: "", track_type: "single", label: "", url: "" };
+    };
+
+    const initialTrackList: TrackList = (() => {
         const clone = lodash.cloneDeep(props.trackList);
-        if (clone.length === 0) {
-            clone.push({ label: "", url: "" });
+        if (clone.tracks.length === 0) {
+            clone.tracks.push(emptySingleTrack());
         }
 
         return clone;
     })();
 
-    const [tracks, setTracks] = useState<Track[]>(initialTracks);
+    const [trackList, setTrackList] = useState<TrackList>(initialTrackList);
     const [version, setVersion] = useState(0);
 
     const bumpVersion = () => setVersion(version + 1);
-    const cloneTracks = () => lodash.cloneDeep(tracks);
+    const cloneTrackList = () => lodash.cloneDeep(trackList);
 
     const appendTrack = () => {
-        const clone = cloneTracks();
-        clone.push({ label: "", url: "" });
+        const clone = cloneTrackList();
+        clone.tracks.push(emptySingleTrack());
         bumpVersion();
-        setTracks(clone);
+        setTrackList(clone);
     };
 
     const removeTrack = (index: number) => {
-        const clone = cloneTracks();
-        clone.splice(index, 1);
+        const clone = cloneTrackList();
+        clone.tracks.splice(index, 1);
         bumpVersion();
-        setTracks(clone);
+        setTrackList(clone);
     };
 
     const validateValue = (label: string): TextFieldProps => {
@@ -102,7 +107,7 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
     };
 
     const hasError: boolean = (() => {
-        for (let track of tracks) {
+        for (let track of trackList.tracks) {
             if (validateValue(track.label).error === true) {
                 return true;
             }
@@ -119,7 +124,7 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
         return (
             event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
         ) => {
-            const track = tracks[index];
+            const track = trackList.tracks[index];
             const updatedTrack = { ...track, label: event.target.value };
             updateTrack(index, updatedTrack);
         };
@@ -129,7 +134,7 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
         return (
             event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
         ) => {
-            const track = tracks[index];
+            const track = trackList.tracks[index];
             const updatedTrack = { ...track, url: event.target.value };
             updateTrack(index, updatedTrack);
         };
@@ -146,7 +151,7 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
                 return;
             }
 
-            const track = tracks[index];
+            const track = trackList.tracks[index];
             const possiblyGoogleDriveViewLink: string = track.url;
             const result: string | null = convertViewLinkToExportLink(
                 possiblyGoogleDriveViewLink
@@ -163,13 +168,13 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
     };
 
     const updateTrack = (index: number, track: Track) => {
-        const clone = cloneTracks();
-        clone.splice(index, 1, track);
-        setTracks(clone);
+        const clone = cloneTrackList();
+        clone.tracks.splice(index, 1, track);
+        setTrackList(clone);
     };
 
     const trackListInputs = (() => {
-        const rows: React.ReactElement[] = tracks.map(
+        const rows: React.ReactElement[] = trackList.tracks.map(
             (track: Track, index: number) => {
                 // about version-index:
                 // we don't want to rerender the textboxes every time because it interrupts the
@@ -229,28 +234,28 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
             return;
         }
 
-        props.onSubmit?.(tracks);
+        props.onSubmit?.(trackList);
     };
 
     return (
         <Dialog open={props.open} onClose={props.onClose} maxWidth={false}>
             <DialogTitle>Edit Track List</DialogTitle>
             <DialogContent>
-                <Typography variant="body2">
-                    <div>Add URLs for the audio track this song.</div>
-                    <div>
+                <Typography variant="body2" variantMapping={{ body2: "div" }}>
+                    <Box>Add URLs for the audio track this song.</Box>
+                    <Box>
                         This can be your own hosted files, or Youtube, etc.
-                    </div>
+                    </Box>
                 </Typography>
-                <Typography variant="body2">
-                    <div>
+                <Typography variant="body2" variantMapping={{ body2: "div" }}>
+                    <Box>
                         This player works best if every track is a version of
                         the same song,
-                    </div>
-                    <div>
+                    </Box>
+                    <Box>
                         e.g. the original recording, just the accompaniment,
                         only drums + bass.
-                    </div>
+                    </Box>
                 </Typography>
                 <Divider />
                 {trackListInputs}

@@ -45,7 +45,6 @@ describe("Chord Song", () => {
                 performedBy: "Rick Astley",
             },
             lastSavedAt: new Date(),
-            trackList: [{ label: "Original", url: "nevergonnagiveyouup.com" }],
         });
     });
 
@@ -105,9 +104,6 @@ describe("Chord Song", () => {
                     composedBy: "Me",
                     performedBy: "Rick Astley",
                 },
-                trackList: [
-                    { label: "Original", url: "nevergonnagiveyouup.com" },
-                ],
                 elements: [
                     {
                         elements: [
@@ -282,12 +278,6 @@ describe("Chord Song", () => {
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
                         },
-                        trackList: [
-                            {
-                                label: "Original",
-                                url: "nevergonnagiveyouup.com",
-                            },
-                        ],
                     }
                 );
             });
@@ -336,12 +326,6 @@ describe("Chord Song", () => {
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
                         },
-                        trackList: [
-                            {
-                                label: "Original",
-                                url: "nevergonnagiveyouup.com",
-                            },
-                        ],
                     }
                 );
 
@@ -392,12 +376,6 @@ describe("Chord Song", () => {
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
                         },
-                        trackList: [
-                            {
-                                label: "Original",
-                                url: "nevergonnagiveyouup.com",
-                            },
-                        ],
                     }
                 );
 
@@ -448,12 +426,6 @@ describe("Chord Song", () => {
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
                         },
-                        trackList: [
-                            {
-                                label: "Original",
-                                url: "nevergonnagiveyouup.com",
-                            },
-                        ],
                     }
                 );
                 expect(original.contentEquals(other)).toEqual(false);
@@ -503,12 +475,6 @@ describe("Chord Song", () => {
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
                         },
-                        trackList: [
-                            {
-                                label: "Original",
-                                url: "nevergonnagiveyouup.com",
-                            },
-                        ],
                     }
                 );
                 expect(original.contentEquals(other)).toEqual(false);
