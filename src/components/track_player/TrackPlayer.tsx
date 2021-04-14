@@ -5,8 +5,8 @@ import { TrackList } from "../../common/ChordModel/Track";
 import CompactPlayer from "./CompactPlayer";
 import FullPlayer from "./FullPlayer";
 import MinimizedButton from "./MinimizedButton";
-import TrackListEditDialog from "./TrackListEditDialog";
-import { useMultiTrack } from "./useMultiTrack";
+import TrackListEditDialog from "./dialog/TrackListEditDialog";
+import { usePlayer } from "./usePlayer";
 
 type PlayerVisibilityState = "minimized" | "compact" | "full";
 
@@ -34,7 +34,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
     >({ open: false, randomID: "" });
     const [loadPlayers, setLoadPlayers] = useState(false);
 
-    const [fullPlayerControl, compactPlayerControl] = useMultiTrack(
+    const [fullPlayerControl, compactPlayerControl] = usePlayer(
         props.trackList,
         props.timeSections
     );

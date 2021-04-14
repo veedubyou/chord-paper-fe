@@ -58,7 +58,7 @@ const emptyButton: ButtonActionAndState = {
     enabled: false,
 };
 
-export const useMultiTrack = (
+export const usePlayer = (
     trackList: TrackList,
     timeSections: TimeSection[]
 ): [FullPlayerControl, CompactPlayerControl] => {
@@ -290,9 +290,22 @@ export const useMultiTrack = (
             const fnIfFocused = <T extends PlainFn>(fn: T) =>
                 thisIfFocused(fn, voidFn);
 
+            //TODO:
+            const playerURL: string = (() => {
+                switch (track.track_type) {
+                    case "single": {
+                        return track.url;
+                    }
+
+                    case "4stems": {
+                        return "";
+                    }
+                }
+            })();
+
             return {
                 label: track.label,
-                url: processTrackURL(track.url),
+                url: processTrackURL(playerURL),
                 focused: focused,
                 playing: focused && playing,
                 play: fnIfFocused(playAction),

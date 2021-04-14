@@ -7,21 +7,24 @@ import {
     DialogContent,
     DialogTitle,
     Divider,
-    TextField,
-    TextFieldProps as TextFieldPropsWithVariant,
+    Menu,
+    MenuItem,
     Theme,
     Typography as UnstyledTypography,
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import DeleteIcon from "@material-ui/icons/Delete";
 import { withStyles } from "@material-ui/styles";
 import lodash from "lodash";
 import React, { useState } from "react";
-import { Track, TrackList } from "../../common/ChordModel/Track";
-import { PlainFn } from "../../common/PlainFn";
-import { convertViewLinkToExportLink } from "./google_drive";
-
-type TextFieldProps = Omit<Partial<TextFieldPropsWithVariant>, "variant">;
+import {
+    FourStemsTrack,
+    SingleTrack,
+    Track,
+    TrackList,
+} from "../../../common/ChordModel/Track";
+import { PlainFn } from "../../../common/PlainFn";
+import SingleTrackRow from "./SingleTrackRow";
+import FourStemTrackRow from "./FourStemTrackRow";
 
 interface TrackListEditDialogProps {
     open: boolean;
@@ -46,14 +49,6 @@ const AddNewRowBox = withStyles((theme: Theme) => ({
     },
 }))(UnstyledBox);
 
-const RowContainer = withStyles((theme: Theme) => ({
-    root: {
-        display: "flex",
-        margin: theme.spacing(2),
-        alignItems: "baseline",
-    },
-}))(UnstyledBox);
-
 const Typography = withStyles((theme: Theme) => ({
     root: {
         marginLeft: theme.spacing(2),
@@ -65,7 +60,7 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
     props: TrackListEditDialogProps
 ): JSX.Element => {
     const emptySingleTrack = (): Track => {
-        return { id: "", track_type: "single", label: "", url: "" };
+        return new SingleTrack("", "", "");
     };
 
     const initialTrackList: TrackList = (() => {
@@ -79,13 +74,42 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
 
     const [trackList, setTrackList] = useState<TrackList>(initialTrackList);
     const [version, setVersion] = useState(0);
+    const [
+        addTrackMenuElement,
+        setAddTrackMenuElement,
+    ] = useState<HTMLElement | null>(null);
 
     const bumpVersion = () => setVersion(version + 1);
     const cloneTrackList = () => lodash.cloneDeep(trackList);
 
-    const appendTrack = () => {
+    const handleAddTrackMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAddTrackMenuElement(event.currentTarget);
+    };
+
+    const handleCloseAddTrackMenu = () => {
+        setAddTrackMenuElement(null);
+    };
+
+    const handleAddSingleTrack = () => {
+        appendTrack(new SingleTrack("", "", ""));
+        handleCloseAddTrackMenu();
+    };
+
+    const handleAddFourStemTrack = () => {
+        appendTrack(
+            new FourStemsTrack("", "", {
+                vocals_url: "",
+                other_url: "",
+                bass_url: "",
+                drums_url: "",
+            })
+        );
+        handleCloseAddTrackMenu();
+    };
+
+    const appendTrack = (track: Track) => {
         const clone = cloneTrackList();
-        clone.tracks.push(emptySingleTrack());
+        clone.tracks.push(track);
         bumpVersion();
         setTrackList(clone);
     };
@@ -97,22 +121,9 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
         setTrackList(clone);
     };
 
-    const validateValue = (label: string): TextFieldProps => {
-        const emptyLabel = label.trim() === "";
-
-        return {
-            error: emptyLabel ? true : undefined,
-            helperText: emptyLabel ? "Can't be empty" : undefined,
-        };
-    };
-
     const hasError: boolean = (() => {
         for (let track of trackList.tracks) {
-            if (validateValue(track.label).error === true) {
-                return true;
-            }
-
-            if (validateValue(track.url).error === true) {
+            if (!track.validate()) {
                 return true;
             }
         }
@@ -120,50 +131,9 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
         return false;
     })();
 
-    const labelChangeHandler = (index: number) => {
-        return (
-            event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-        ) => {
-            const track = trackList.tracks[index];
-            const updatedTrack = { ...track, label: event.target.value };
-            updateTrack(index, updatedTrack);
-        };
-    };
-
-    const urlChangeHandler = (index: number) => {
-        return (
-            event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-        ) => {
-            const track = trackList.tracks[index];
-            const updatedTrack = { ...track, url: event.target.value };
-            updateTrack(index, updatedTrack);
-        };
-    };
-
-    const urlKeyHandler = (index: number) => {
-        return (event: React.KeyboardEvent<HTMLDivElement>) => {
-            // only process for (CMD | CTRL) + g
-            if (!event.metaKey && !event.ctrlKey) {
-                return;
-            }
-
-            if (event.key !== "g" && event.key !== "G") {
-                return;
-            }
-
-            const track = trackList.tracks[index];
-            const possiblyGoogleDriveViewLink: string = track.url;
-            const result: string | null = convertViewLinkToExportLink(
-                possiblyGoogleDriveViewLink
-            );
-            if (result === null) {
-                return;
-            }
-
-            const updatedTrack: Track = { ...track, url: result };
-            updateTrack(index, updatedTrack);
-
-            event.preventDefault();
+    const trackChangeHandler = (index: number) => {
+        return (newTrack: Track) => {
+            updateTrack(index, newTrack);
         };
     };
 
@@ -175,7 +145,10 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
 
     const trackListInputs = (() => {
         const rows: React.ReactElement[] = trackList.tracks.map(
-            (track: Track, index: number) => {
+            // linter is wrong here - switch at the bottom is exhaustive and the compiler can verify
+            // it thinks that it may possibly return undefined, but it can't
+            // eslint-disable-next-line array-callback-return
+            (track: Track, index: number): React.ReactElement => {
                 // about version-index:
                 // we don't want to rerender the textboxes every time because it interrupts the
                 // typing experience by blurring focus while the user types
@@ -186,44 +159,59 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
                 //
                 // version helps with this mostly because the track indices stably identify a track
                 // for the same version
-                return (
-                    <>
-                        <RowContainer key={`${version}-${index}`}>
-                            <TextField
-                                label="Track Label"
-                                variant="outlined"
-                                value={track.label}
-                                onChange={labelChangeHandler(index)}
-                                {...validateValue(track.label)}
-                            />
-                            <TextField
-                                label="Track URL"
-                                variant="outlined"
-                                value={track.url}
-                                onChange={urlChangeHandler(index)}
-                                onKeyDown={urlKeyHandler(index)}
-                                {...validateValue(track.url)}
-                            />
-                            <Button onClick={() => removeTrack(index)}>
-                                <DeleteIcon />
-                            </Button>
-                        </RowContainer>
+                const rowKey = `${version}-${index}`;
 
-                        <Divider />
-                    </>
-                );
+                switch (track.track_type) {
+                    case "single": {
+                        return (
+                            <SingleTrackRow
+                                key={rowKey}
+                                track={track}
+                                onChange={trackChangeHandler(index)}
+                                onRemove={() => removeTrack(index)}
+                            />
+                        );
+                    }
+                    case "4stems": {
+                        return (
+                            <FourStemTrackRow
+                                key={rowKey}
+                                track={track}
+                                onChange={trackChangeHandler(index)}
+                                onRemove={() => removeTrack(index)}
+                            />
+                        );
+                    }
+                }
             }
         );
 
+        const showAddTrackMenu = addTrackMenuElement !== null;
+
         rows.push(
-            <InlineBlockBox>
-                <AddNewRowBox key="append-action" onClick={() => appendTrack()}>
-                    <Button>
+            <>
+                <InlineBlockBox>
+                    <AddNewRowBox
+                        key="append-action"
+                        onClick={handleAddTrackMenu}
+                    >
                         <AddIcon />
-                    </Button>
-                    <Typography>Add a new track</Typography>
-                </AddNewRowBox>
-            </InlineBlockBox>
+                        <Typography>Add a new track</Typography>
+                    </AddNewRowBox>
+                </InlineBlockBox>
+                <Menu
+                    open={showAddTrackMenu}
+                    anchorEl={addTrackMenuElement}
+                    onClose={handleCloseAddTrackMenu}
+                >
+                    <MenuItem onClick={handleAddSingleTrack}>
+                        Single Track
+                    </MenuItem>
+                    <MenuItem onClick={handleAddFourStemTrack}>
+                        4 Stem Track
+                    </MenuItem>
+                </Menu>
+            </>
         );
 
         return rows;
