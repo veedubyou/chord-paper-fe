@@ -50,7 +50,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
         }
 
         return (
-            <TrackListProvider songID={props.song.id}>
+            <TrackListProvider song={props.song}>
                 {(
                     tracklist: TrackList,
                     changeHandler: TrackListChangeHandler

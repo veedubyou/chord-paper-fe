@@ -3,6 +3,7 @@ import { isLeft } from "fp-ts/lib/These";
 import React, { useState } from "react";
 import { useErrorMessage } from "../../common/backend/errors";
 import { getTrackList, updateTrackList } from "../../common/backend/requests";
+import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { TrackList } from "../../common/ChordModel/Track";
 import { FetchState } from "../../common/fetch";
 import ErrorImage from "../display/ErrorImage";
@@ -12,7 +13,7 @@ import MinimizedButton from "./MinimizedButton";
 export type TrackListChangeHandler = (tracklist: TrackList) => void;
 
 interface TrackListProviderProps {
-    songID: string;
+    song: ChordSong;
     children: (
         tracklist: TrackList,
         changeHandler: TrackListChangeHandler
@@ -48,12 +49,12 @@ const TrackListProvider: React.FC<TrackListProviderProps> = (
     };
 
     const fetchTrackList = async () => {
-        let fetchResult = await getTrackList(props.songID);
+        let fetchResult = await getTrackList(props.song.id);
         handleFetchedTracklist(fetchResult);
     };
 
     const handleTrackListChanged = async (tracklist: TrackList) => {
-        if (user === null) {
+        if (user === null || !props.song.isOwner(user)) {
             setFetchState({ state: "loaded", item: tracklist });
             return;
         }
