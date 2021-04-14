@@ -23,7 +23,7 @@ import {
 import { ControlButton } from "./ControlButton";
 import ControlGroup from "./ControlGroup";
 import SectionLabel from "./SectionLabel";
-import { ButtonActionAndState } from "./useMultiTrack";
+import { ButtonActionAndState } from "./usePlayer";
 
 interface CompactPlayerProps {
     show: boolean;

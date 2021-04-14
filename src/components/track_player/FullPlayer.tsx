@@ -24,7 +24,7 @@ import { ControlButton } from "./ControlButton";
 import ControlGroup from "./ControlGroup";
 import PlayrateControl from "./PlayrateControl";
 import SectionLabel from "./SectionLabel";
-import { TrackControl } from "./useMultiTrack";
+import { TrackControl } from "./usePlayer";
 
 interface FullPlayerProps {
     show: boolean;
