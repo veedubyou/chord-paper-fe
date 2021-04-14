@@ -47,7 +47,7 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
         }
 
         return (
-            <TrackListProvider songID={props.song.id}>
+            <TrackListProvider song={props.song}>
                 {(tracklist: TrackList) => (
                     <TrackPlayer
                         collapsedButtonClassName={transparentStyle.root}
