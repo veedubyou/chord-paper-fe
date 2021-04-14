@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import shortid from "shortid";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
-import { Track } from "../../common/ChordModel/Track";
+import { Track, TrackList } from "../../common/ChordModel/Track";
 import { PlainFn } from "../../common/PlainFn";
 import { PlayerTimeContext } from "../PlayerTimeContext";
 import { ensureGoogleDriveCacheBusted } from "./google_drive";
@@ -21,7 +21,9 @@ export interface ButtonActionAndState {
     enabled: boolean;
 }
 
-export interface TrackControl extends Track {
+export interface TrackControl {
+    label: string;
+    url: string;
     focused: boolean;
     playing: boolean;
     play: PlainFn;
@@ -57,7 +59,7 @@ const emptyButton: ButtonActionAndState = {
 };
 
 export const useMultiTrack = (
-    trackList: Track[],
+    trackList: TrackList,
     timeSections: TimeSection[]
 ): [FullPlayerControl, CompactPlayerControl] => {
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
@@ -85,6 +87,8 @@ export const useMultiTrack = (
     const getPlayerTimeRef = useContext(PlayerTimeContext);
     const getCurrentTime = () => currentTimeRef.current;
 
+    const tracks = trackList.tracks;
+
     useEffect(() => {
         getPlayerTimeRef.current = getCurrentTime;
     });
@@ -96,13 +100,13 @@ export const useMultiTrack = (
     };
 
     const adjustRefArraySize = () => {
-        if (trackList.length > playerRefs.current.length) {
-            const diff: number = trackList.length - playerRefs.current.length;
+        if (tracks.length > playerRefs.current.length) {
+            const diff: number = tracks.length - playerRefs.current.length;
             for (let i = 0; i < diff; i++) {
                 playerRefs.current.push(React.createRef<ReactPlayer>());
             }
-        } else if (trackList.length < playerRefs.current.length) {
-            playerRefs.current.splice(trackList.length);
+        } else if (tracks.length < playerRefs.current.length) {
+            playerRefs.current.splice(tracks.length);
         }
     };
 
@@ -271,7 +275,7 @@ export const useMultiTrack = (
         setCurrentTrackIndex(newIndex);
     };
 
-    const trackControls: TrackControl[] = trackList.map(
+    const trackControls: TrackControl[] = tracks.map(
         (track: Track, index: number): TrackControl => {
             const focused = index === currentTrackIndex;
 

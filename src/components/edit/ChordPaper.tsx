@@ -1,15 +1,18 @@
 import { Paper, Theme, withStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
-import ChordPaperBody from "./ChordPaperBody";
-import ChordPaperMenu from "./menu/ChordPaperMenu";
-import Header from "./Header";
+import { TrackList } from "../../common/ChordModel/Track";
 import { PlainFn } from "../../common/PlainFn";
-import TrackPlayer from "../track_player/TrackPlayer";
-import { makeStyles } from "@material-ui/styles";
-import { Track } from "../../common/ChordModel/Track";
 import PlayerTimeProvider from "../PlayerTimeContext";
+import TrackListProvider, {
+    TrackListChangeHandler,
+} from "../track_player/TrackListProvider";
+import TrackPlayer from "../track_player/TrackPlayer";
+import ChordPaperBody from "./ChordPaperBody";
+import Header from "./Header";
+import ChordPaperMenu from "./menu/ChordPaperMenu";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
@@ -41,10 +44,27 @@ const ChordPaper: React.FC<ChordPaperProps> = (
         props.onSongChanged?.(song);
     };
 
-    const trackChangeHandler = (trackList: Track[]) => {
-        props.song.trackList = trackList;
-        songChangeHandler(props.song);
-    };
+    const trackPlayer: React.ReactNode = (() => {
+        if (props.song.isUnsaved()) {
+            return null;
+        }
+
+        return (
+            <TrackListProvider songID={props.song.id}>
+                {(
+                    tracklist: TrackList,
+                    changeHandler: TrackListChangeHandler
+                ) => (
+                    <TrackPlayer
+                        collapsedButtonClassName={whiteStyle.root}
+                        timeSections={props.song.timeSections}
+                        trackList={tracklist}
+                        onTrackListChanged={changeHandler}
+                    />
+                )}
+            </TrackListProvider>
+        );
+    })();
 
     return (
         <PlayerTimeProvider>
@@ -70,12 +90,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                     onSongChanged={songChangeHandler}
                     onPlay={props.onPlay}
                 />
-                <TrackPlayer
-                    collapsedButtonClassName={whiteStyle.root}
-                    timeSections={props.song.timeSections}
-                    trackList={props.song.trackList}
-                    onTrackListChanged={trackChangeHandler}
-                />
+                {trackPlayer}
             </RootPaper>
         </PlayerTimeProvider>
     );

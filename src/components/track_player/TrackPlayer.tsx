@@ -1,19 +1,25 @@
 import React, { useState } from "react";
-import { Track } from "../../common/ChordModel/Track";
-import MinimizedButton from "./MinimizedButton";
+import shortid from "shortid";
+import { TimeSection } from "../../common/ChordModel/ChordLine";
+import { TrackList } from "../../common/ChordModel/Track";
 import CompactPlayer from "./CompactPlayer";
 import FullPlayer from "./FullPlayer";
+import MinimizedButton from "./MinimizedButton";
 import TrackListEditDialog from "./TrackListEditDialog";
 import { useMultiTrack } from "./useMultiTrack";
-import { TimeSection } from "../../common/ChordModel/ChordLine";
 
 type PlayerVisibilityState = "minimized" | "compact" | "full";
 
 interface TrackPlayerProps {
-    trackList: Track[];
+    trackList: TrackList;
     timeSections: TimeSection[];
-    onTrackListChanged?: (trackList: Track[]) => void;
+    onTrackListChanged?: (trackList: TrackList) => void;
     collapsedButtonClassName?: string;
+}
+
+interface TrackEditDialogState {
+    open: boolean;
+    randomID: string;
 }
 
 const TrackPlayer: React.FC<TrackPlayerProps> = (
@@ -23,7 +29,9 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
         PlayerVisibilityState
     >("minimized");
 
-    const [trackEditDialogOpen, setTrackEditDialogOpen] = useState(false);
+    const [trackEditDialogState, setTrackEditDialogState] = useState<
+        TrackEditDialogState
+    >({ open: false, randomID: "" });
     const [loadPlayers, setLoadPlayers] = useState(false);
 
     const [fullPlayerControl, compactPlayerControl] = useMultiTrack(
@@ -48,17 +56,26 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
         />
     );
 
-    const handleTrackListChange = (track: Track[]) => {
-        setTrackEditDialogOpen(false);
-        props.onTrackListChanged?.(track);
+    const handleTrackListChange = (tracklist: TrackList) => {
+        closeTrackEditDialog();
+        props.onTrackListChanged?.(tracklist);
     };
 
-    const trackEditDialog = trackEditDialogOpen && (
+    const openTrackEditDialog = () => {
+        setTrackEditDialogState({ open: true, randomID: shortid.generate() });
+    };
+
+    const closeTrackEditDialog = () => {
+        setTrackEditDialogState({ open: false, randomID: "" });
+    };
+
+    const trackEditDialog = trackEditDialogState.open && (
         <TrackListEditDialog
-            open={trackEditDialogOpen}
+            key={trackEditDialogState.randomID}
+            open={trackEditDialogState.open}
             trackList={props.trackList}
             onSubmit={handleTrackListChange}
-            onClose={() => setTrackEditDialogOpen(false)}
+            onClose={closeTrackEditDialog}
         />
     );
 
@@ -75,11 +92,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
         // prompt the user to add tracks if there is none
         return (
             <>
-                {collapsedButtonFn(
-                    false,
-                    () => setTrackEditDialogOpen(true),
-                    "Show Player"
-                )}
+                {collapsedButtonFn(false, openTrackEditDialog, "Show Player")}
                 {trackEditDialog}
             </>
         );
@@ -95,9 +108,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             onCollapse={() => setPlayerVisibilityState("compact")}
             onSelectCurrentTrack={fullPlayerControl.onCurrentTrackIndexChange}
             onOpenTrackEditDialog={
-                canEditTrackList
-                    ? () => setTrackEditDialogOpen(true)
-                    : undefined
+                canEditTrackList ? openTrackEditDialog : undefined
             }
         />
     );

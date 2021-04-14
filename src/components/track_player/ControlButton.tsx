@@ -42,9 +42,11 @@ const makeControlButton = (
 
     return (props: ButtonProps) => (
         <Tooltip key={key} title={tooltipMsg}>
-            <ColoredButton {...props} size="large">
-                {child}
-            </ColoredButton>
+            <span>
+                <ColoredButton {...props} size="large">
+                    {child}
+                </ColoredButton>
+            </span>
         </Tooltip>
     );
 };
