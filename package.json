@@ -43,6 +43,7 @@
         "react-scripts": "3.4.1",
         "react-use-konami": "^1.0.13",
         "shortid": "^2.2.15",
+        "tone": "^14.7.77",
         "typescript": "^3.8.0"
     },
     "scripts": {
