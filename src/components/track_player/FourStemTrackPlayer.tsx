@@ -1,4 +1,12 @@
-import { Box, LinearProgress, Theme, Typography } from "@material-ui/core";
+import {
+    Box,
+    Button,
+    LinearProgress,
+    Theme,
+    Typography,
+} from "@material-ui/core";
+import { grey } from "@material-ui/core/colors";
+import RefreshIcon from "@material-ui/icons/Refresh";
 import { withStyles } from "@material-ui/styles";
 import audioBufferToWav from "audiobuffer-to-wav";
 import ky from "ky";
@@ -14,7 +22,8 @@ import { ButtonActionAndState, useTimeControls } from "./useTimeControls";
 
 const PaddedBox = withStyles((theme: Theme) => ({
     root: {
-        margin: theme.spacing(2),
+        padding: theme.spacing(2),
+        backgroundColor: grey[100],
     },
 }))(Box);
 
@@ -98,6 +107,24 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
         return URL.createObjectURL(blob);
     };
 
+    const syncToneTransport = () => {
+        // sync the play state
+        if (timeControl.playing && Tone.Transport.state !== "started") {
+            Tone.Transport.start();
+        } else if (
+            !timeControl.playing &&
+            Tone.Transport.state !== "paused" &&
+            Tone.Transport.state !== "stopped"
+        ) {
+            Tone.Transport.pause();
+        }
+
+        // sync the time
+        if (Math.abs(timeControl.currentTime - Tone.Transport.seconds) > 1) {
+            Tone.Transport.seconds = timeControl.currentTime;
+        }
+    };
+
     useEffect(() => {
         const loadPlayers = async () => {
             try {
@@ -129,6 +156,7 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
                     item: players,
                 });
             } catch (e) {
+                console.error(e);
                 setFetchState({
                     state: "error",
                     error: e,
@@ -139,10 +167,23 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
 
         if (fetchState.state === "not-started") {
             loadPlayers();
+            setFetchState({
+                state: "loading",
+            });
         }
     }, [fetchState, setFetchState, props.track.stems]);
 
-    if (fetchState.state !== "loaded") {
+    if (fetchState.state === "not-started") {
+        return (
+            <PaddedBox>
+                <Typography variant="body1">
+                    Tracks have not started loading...
+                </Typography>
+            </PaddedBox>
+        );
+    }
+
+    if (fetchState.state === "loading") {
         return (
             <PaddedBox>
                 <Typography variant="body1">Loading track...</Typography>
@@ -151,23 +192,20 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
         );
     }
 
-    const syncToneTransport = () => {
-        // sync the play state
-        if (timeControl.playing && Tone.Transport.state !== "started") {
-            Tone.Transport.start();
-        } else if (
-            !timeControl.playing &&
-            Tone.Transport.state !== "paused" &&
-            Tone.Transport.state !== "stopped"
-        ) {
-            Tone.Transport.pause();
-        }
+    if (fetchState.state === "error") {
+        const refresh = () => {
+            setFetchState({ state: "not-started" });
+        };
 
-        // sync the time
-        if (Math.abs(timeControl.currentTime - Tone.Transport.seconds) > 1) {
-            Tone.Transport.seconds = timeControl.currentTime;
-        }
-    };
+        return (
+            <PaddedBox display="flex" alignItems="center">
+                <Button onClick={refresh}>
+                    <RefreshIcon />
+                </Button>
+                <Typography variant="body1">Failed to load tracks</Typography>
+            </PaddedBox>
+        );
+    }
 
     syncToneTransport();
 

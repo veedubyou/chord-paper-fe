@@ -189,7 +189,7 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
         const showAddTrackMenu = addTrackMenuElement !== null;
 
         rows.push(
-            <>
+            <React.Fragment key="append">
                 <InlineBlockBox>
                     <AddNewRowBox
                         key="append-action"
@@ -211,7 +211,7 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
                         4 Stem Track
                     </MenuItem>
                 </Menu>
-            </>
+            </React.Fragment>
         );
 
         return rows;
