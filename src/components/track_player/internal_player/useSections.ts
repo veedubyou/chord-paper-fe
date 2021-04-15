@@ -3,7 +3,7 @@ import { TimeSection } from "../../../common/ChordModel/ChordLine";
 export const useSections = (
     timeSections: TimeSection[],
     currentTime: number
-): [TimeSection | null, TimeSection | null, TimeSection | null] => {
+): [TimeSection | null, TimeSection | null, TimeSection | null, string] => {
     const [currentSection, previousSection, nextSection] = ((): [
         TimeSection | null,
         TimeSection | null,
@@ -56,5 +56,8 @@ export const useSections = (
         return [currentSection, previousSection, nextSection];
     })();
 
-    return [currentSection, previousSection, nextSection];
+    const currentSectionLabel =
+        currentSection !== null ? currentSection.name : "";
+
+    return [currentSection, previousSection, nextSection, currentSectionLabel];
 };

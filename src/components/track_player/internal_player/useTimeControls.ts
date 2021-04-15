@@ -24,13 +24,18 @@ export interface TimeControls {
     makeSkipForward: (nextSection: TimeSection | null) => ButtonActionAndState;
     currentTime: number;
     currentTimeFormatted: string;
-    onProgress: (playedSeconds: number) => void;
+    onProgress: (state: {
+        played: number;
+        playedSeconds: number;
+        loaded: number;
+        loadedSeconds: number;
+    }) => void;
     onPlay: PlainFn;
     onPause: PlainFn;
 }
 
 export const useTimeControls = (
-    currentPlayerRef: ReactPlayer | null
+    currentPlayerRef: ReactPlayer | undefined
 ): TimeControls => {
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -152,8 +157,13 @@ export const useTimeControls = (
         };
     };
 
-    const handleProgress = (playedSeconds: number) => {
-        setCurrentTime(playedSeconds);
+    const handleProgress = (state: {
+        played: number;
+        playedSeconds: number;
+        loaded: number;
+        loadedSeconds: number;
+    }) => {
+        setCurrentTime(state.playedSeconds);
     };
 
     const currentTimeFormatted: string = (() => {

@@ -9,7 +9,7 @@ import PlayerTimeProvider from "../PlayerTimeContext";
 import TrackListProvider, {
     TrackListChangeHandler,
 } from "../track_player/TrackListProvider";
-import TrackPlayer from "../track_player/TrackPlayer";
+import JamStation from "../track_player/JamStation";
 import ChordPaperBody from "./ChordPaperBody";
 import Header from "./Header";
 import ChordPaperMenu from "./menu/ChordPaperMenu";
@@ -55,7 +55,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                     tracklist: TrackList,
                     changeHandler: TrackListChangeHandler
                 ) => (
-                    <TrackPlayer
+                    <JamStation
                         collapsedButtonClassName={whiteStyle.root}
                         timeSections={props.song.timeSections}
                         trackList={tracklist}
