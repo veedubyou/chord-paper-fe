@@ -6,7 +6,7 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { TrackList } from "../../common/ChordModel/Track";
 import { PlainFn } from "../../common/PlainFn";
 import TrackListProvider from "../track_player/TrackListProvider";
-import TrackPlayer from "../track_player/TrackPlayer";
+import JamStation from "../track_player/JamStation";
 import PlayContent, { DisplaySettings } from "./PlayContent";
 import PlayMenu from "./PlayMenu";
 
@@ -49,7 +49,7 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
         return (
             <TrackListProvider song={props.song}>
                 {(tracklist: TrackList) => (
-                    <TrackPlayer
+                    <JamStation
                         collapsedButtonClassName={transparentStyle.root}
                         timeSections={props.song.timeSections}
                         trackList={tracklist}

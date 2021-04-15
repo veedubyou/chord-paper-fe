@@ -1,7 +1,6 @@
 import {
     Box,
     Button,
-    Collapse,
     Divider,
     MenuItem,
     Select as UnstyledSelect,
@@ -12,30 +11,15 @@ import EditIcon from "@material-ui/icons/Edit";
 import CollapseDownIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import React from "react";
-import ReactPlayer from "react-player";
+import { TimeSection } from "../../common/ChordModel/ChordLine";
+import { Track, TrackList } from "../../common/ChordModel/Track";
 import {
-    controlPaneStyle,
     roundedCornersStyle,
     roundedTopCornersStyle,
     TitleBar,
     withBottomRightBox,
 } from "./common";
-import { ControlButton } from "./ControlButton";
-import ControlGroup from "./ControlGroup";
-import PlayrateControl from "./PlayrateControl";
-import SectionLabel from "./SectionLabel";
-import { TrackControl } from "./useMultiTrack";
-
-interface FullPlayerProps {
-    show: boolean;
-    trackControls: TrackControl[];
-    playrate: number;
-    currentSectionLabel: string;
-    onPlayrateChange: (newPlayrate: number) => void;
-    onCollapse: () => void;
-    onSelectCurrentTrack: (index: number) => void;
-    onOpenTrackEditDialog?: () => void;
-}
+import TrackPlayer from "./TrackPlayer";
 
 const FlexBox = withStyles((theme: Theme) => ({
     root: {
@@ -51,13 +35,6 @@ const TitleBarButton = withStyles((theme: Theme) => ({
         ...roundedCornersStyle(theme),
     },
 }))(Button);
-
-const ControlPane = withStyles({
-    root: {
-        ...controlPaneStyle,
-        justifyContent: "space-between",
-    },
-})(Box);
 
 const usePaddingLeftStyle = makeStyles((theme: Theme) => ({
     root: {
@@ -80,81 +57,26 @@ const FullPlayerContainer = withStyles((theme: Theme) => ({
     },
 }))(Box);
 
-const FullPlayer: React.FC<FullPlayerProps> = (
-    props: FullPlayerProps
+interface MultiTrackPlayerProps {
+    show: boolean;
+
+    tracklist: TrackList;
+    readonly timeSections: TimeSection[];
+
+    currentTrackIndex: number;
+    onSelectCurrentTrack: (index: number) => void;
+
+    playrate: number;
+    onPlayrateChange: (newPlayrate: number) => void;
+
+    onOpenTrackEditDialog?: () => void;
+    onCollapse: () => void;
+}
+
+const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
+    props: MultiTrackPlayerProps
 ): JSX.Element => {
     const paddingLeftStyle = usePaddingLeftStyle();
-
-    const makeControlPane = (trackControl: TrackControl) => {
-        const playPauseButton = trackControl.playing ? (
-            <ControlButton.Pause onClick={trackControl.pause} />
-        ) : (
-            <ControlButton.Play onClick={trackControl.play} />
-        );
-
-        return (
-            <ControlPane>
-                <ControlGroup>
-                    <ControlButton.Beginning
-                        onClick={trackControl.goToBeginning}
-                    />
-                    <ControlButton.SkipBack
-                        disabled={!trackControl.skipBack.enabled}
-                        onClick={trackControl.skipBack.action}
-                    />
-                    <ControlButton.JumpBack onClick={trackControl.jumpBack} />
-                    {playPauseButton}
-                    <ControlButton.JumpForward
-                        onClick={trackControl.jumpForward}
-                    />
-                    <ControlButton.SkipForward
-                        disabled={!trackControl.skipForward.enabled}
-                        onClick={trackControl.skipForward.action}
-                    />
-                </ControlGroup>
-                <SectionLabel value={props.currentSectionLabel} />
-                <PlayrateControl
-                    playrate={props.playrate}
-                    onChange={props.onPlayrateChange}
-                />
-            </ControlPane>
-        );
-    };
-
-    const playbackRate = props.playrate / 100;
-
-    const players = props.trackControls.map((trackControl: TrackControl) => {
-        const handleProgress = (state: {
-            played: number;
-            playedSeconds: number;
-            loaded: number;
-            loadedSeconds: number;
-        }) => {
-            trackControl.onProgress(state.playedSeconds);
-        };
-
-        return (
-            <Collapse in={trackControl.focused} key={trackControl.url}>
-                <Box>
-                    <ReactPlayer
-                        ref={trackControl.ref}
-                        url={trackControl.url}
-                        playing={trackControl.playing}
-                        controls
-                        playbackRate={playbackRate}
-                        onPlay={trackControl.onPlay}
-                        onPause={trackControl.onPause}
-                        onProgress={handleProgress}
-                        progressInterval={500}
-                        width="50vw"
-                        height="auto"
-                        config={{ file: { forceAudio: true } }}
-                    />
-                </Box>
-                {makeControlPane(trackControl)}
-            </Collapse>
-        );
-    });
 
     const trackListEditButton = props.onOpenTrackEditDialog !== undefined && (
         <TitleBarButton onClick={props.onOpenTrackEditDialog}>
@@ -179,34 +101,24 @@ const FullPlayer: React.FC<FullPlayerProps> = (
         props.onSelectCurrentTrack(value);
     };
 
-    const currentIndex: number = props.trackControls.findIndex(
-        (trackControl: TrackControl) => trackControl.focused
-    );
-
     const trackListPicker = (
         <Select
             className={paddingLeftStyle.root}
             disableUnderline
-            value={currentIndex}
+            value={props.currentTrackIndex}
             onChange={trackChangeHandler}
         >
-            {props.trackControls.map(
-                (trackControl: TrackControl, index: number) => (
-                    <MenuItem
-                        key={`${index}-${trackControl.label}`}
-                        value={index}
-                    >
-                        {trackControl.label}
-                    </MenuItem>
-                )
-            )}
+            {props.tracklist.tracks.map((track: Track, index: number) => (
+                <MenuItem key={`${index}-${track.label}`} value={index}>
+                    {track.label}
+                </MenuItem>
+            ))}
         </Select>
     );
 
     const titleBar = (
         <TitleBar>
             <Box />
-
             <FlexBox>
                 {trackListEditButton}
                 {trackListPicker}
@@ -217,6 +129,22 @@ const FullPlayer: React.FC<FullPlayerProps> = (
                 </TitleBarButton>
             </Box>
         </TitleBar>
+    );
+
+    const players: React.ReactElement[] = props.tracklist.tracks.map(
+        (track: Track, index: number) => {
+            const show = index === props.currentTrackIndex;
+            return (
+                <TrackPlayer
+                    key={`${index}-${track.label}`}
+                    show={show}
+                    track={track}
+                    timeSections={props.timeSections}
+                    playrate={props.playrate}
+                    onPlayrateChange={props.onPlayrateChange}
+                />
+            );
+        }
     );
 
     return (
@@ -232,4 +160,4 @@ const FullPlayer: React.FC<FullPlayerProps> = (
     );
 };
 
-export default FullPlayer;
+export default MultiTrackPlayer;
