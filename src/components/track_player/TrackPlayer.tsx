@@ -6,7 +6,7 @@ import CompactPlayer from "./CompactPlayer";
 import FullPlayer from "./FullPlayer";
 import MinimizedButton from "./MinimizedButton";
 import TrackListEditDialog from "./dialog/TrackListEditDialog";
-import { usePlayer } from "./usePlayer";
+import { usePlayer } from "./internal_player/usePlayer";
 
 type PlayerVisibilityState = "minimized" | "compact" | "full";
 
@@ -125,7 +125,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             skipForward={compactPlayerControl.skipForward}
             onMinimize={() => setPlayerVisibilityState("minimized")}
             onMaximize={() => setPlayerVisibilityState("full")}
-            currentTime={compactPlayerControl.currentTime}
+            currentTime={compactPlayerControl.currentTimeFormatted}
             currentSectionLabel={compactPlayerControl.currentSectionLabel}
         />
     );

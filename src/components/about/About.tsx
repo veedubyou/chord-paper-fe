@@ -41,4 +41,17 @@ const About: React.FC<{}> = (): JSX.Element => {
     );
 };
 
+// const createEmptySongURL = (time: number): string => {
+//     const audioCtx = new window.AudioContext();
+//     const audioBuffer = audioCtx.createBuffer(
+//         2,
+//         audioCtx.sampleRate * time,
+//         audioCtx.sampleRate
+//     );
+
+//     const arrayBuffer = audioBufferToWav(audioBuffer);
+//     const blob = new window.Blob([arrayBuffer]);
+//     return URL.createObjectURL(blob);
+// };
+
 export default About;

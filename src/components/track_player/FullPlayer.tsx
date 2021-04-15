@@ -3,6 +3,7 @@ import {
     Button,
     Collapse,
     Divider,
+    LinearProgress,
     MenuItem,
     Select as UnstyledSelect,
     Slide,
@@ -12,7 +13,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import CollapseDownIcon from "@material-ui/icons/ExpandMore";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import React from "react";
-import ReactPlayer from "react-player";
+import ReactPlayer, { ReactPlayerProps } from "react-player";
 import {
     controlPaneStyle,
     roundedCornersStyle,
@@ -24,7 +25,7 @@ import { ControlButton } from "./ControlButton";
 import ControlGroup from "./ControlGroup";
 import PlayrateControl from "./PlayrateControl";
 import SectionLabel from "./SectionLabel";
-import { TrackControl } from "./usePlayer";
+import { TrackControl } from "./internal_player/usePlayer";
 
 interface FullPlayerProps {
     show: boolean;
@@ -42,6 +43,12 @@ const FlexBox = withStyles((theme: Theme) => ({
         display: "flex",
         alignItems: "center",
         margin: theme.spacing(0.5),
+    },
+}))(Box);
+
+const PaddedBox = withStyles((theme: Theme) => ({
+    root: {
+        margin: theme.spacing(3),
     },
 }))(Box);
 
@@ -123,7 +130,7 @@ const FullPlayer: React.FC<FullPlayerProps> = (
 
     const playbackRate = props.playrate / 100;
 
-    const players = props.trackControls.map((trackControl: TrackControl) => {
+    const makePlayer = (trackControl: TrackControl, index: number) => {
         const handleProgress = (state: {
             played: number;
             playedSeconds: number;
@@ -133,28 +140,51 @@ const FullPlayer: React.FC<FullPlayerProps> = (
             trackControl.onProgress(state.playedSeconds);
         };
 
-        return (
-            <Collapse in={trackControl.focused} key={trackControl.url}>
-                <Box>
-                    <ReactPlayer
-                        ref={trackControl.ref}
-                        url={trackControl.url}
-                        playing={trackControl.playing}
-                        controls
-                        playbackRate={playbackRate}
-                        onPlay={trackControl.onPlay}
-                        onPause={trackControl.onPause}
-                        onProgress={handleProgress}
-                        progressInterval={500}
-                        width="50vw"
-                        height="auto"
-                        config={{ file: { forceAudio: true } }}
-                    />
-                </Box>
-                {makeControlPane(trackControl)}
-            </Collapse>
-        );
-    });
+        const commonReactPlayerProps: ReactPlayerProps = {
+            ref: trackControl.ref,
+            playing: trackControl.playing,
+            controls: true,
+            playbackRate: playbackRate,
+            onPlay: trackControl.onPlay,
+            onPause: trackControl.onPause,
+            onProgress: handleProgress,
+            progressInterval: 500,
+            width: "50vw",
+            height: "auto",
+            config: { file: { forceAudio: true } },
+        };
+
+        switch (trackControl.trackType) {
+            case "single": {
+                return (
+                    <Collapse in={trackControl.focused} key={trackControl.url}>
+                        <Box>
+                            <ReactPlayer
+                                {...commonReactPlayerProps}
+                                url={trackControl.url}
+                            />
+                        </Box>
+                        {makeControlPane(trackControl)}
+                    </Collapse>
+                );
+            }
+
+            case "4stems": {
+                return (
+                    <Collapse
+                        in={trackControl.focused}
+                        key={`loading-${index}`}
+                    >
+                        <PaddedBox>
+                            <LinearProgress />
+                        </PaddedBox>
+                    </Collapse>
+                );
+            }
+        }
+    };
+
+    const players = props.trackControls.map(makePlayer);
 
     const trackListEditButton = props.onOpenTrackEditDialog !== undefined && (
         <TitleBarButton onClick={props.onOpenTrackEditDialog}>
