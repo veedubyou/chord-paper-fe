@@ -4,11 +4,8 @@ import ReactPlayer, { ReactPlayerProps } from "react-player";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
 import { SingleTrack } from "../../common/ChordModel/Track";
 import ControlPane from "./ControlPane";
-import { useSections } from "./internal_player/useSections";
-import {
-    ButtonActionAndState,
-    useTimeControls,
-} from "./internal_player/useTimeControls";
+import { useSections } from "./useSections";
+import { ButtonActionAndState, useTimeControls } from "./useTimeControls";
 
 interface SingleTrackPlayerProps {
     track: SingleTrack;
@@ -25,10 +22,10 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
     const timeControl = useTimeControls(playerRef.current);
 
     const [
+        currentSectionLabel,
         currentSection,
         previousSection,
         nextSection,
-        currentSectionLabel,
     ] = useSections(props.timeSections, timeControl.currentTime);
 
     const commonReactPlayerProps: ReactPlayerProps = {

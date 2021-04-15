@@ -1,9 +1,9 @@
-import { TimeSection } from "../../../common/ChordModel/ChordLine";
+import { TimeSection } from "../../common/ChordModel/ChordLine";
 
 export const useSections = (
     timeSections: TimeSection[],
     currentTime: number
-): [TimeSection | null, TimeSection | null, TimeSection | null, string] => {
+): [string, TimeSection | null, TimeSection | null, TimeSection | null] => {
     const [currentSection, previousSection, nextSection] = ((): [
         TimeSection | null,
         TimeSection | null,
@@ -59,5 +59,5 @@ export const useSections = (
     const currentSectionLabel =
         currentSection !== null ? currentSection.name : "";
 
-    return [currentSection, previousSection, nextSection, currentSectionLabel];
+    return [currentSectionLabel, currentSection, previousSection, nextSection];
 };

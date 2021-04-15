@@ -9,11 +9,8 @@ import { TimeSection } from "../../common/ChordModel/ChordLine";
 import { FourStemsTrack } from "../../common/ChordModel/Track";
 import { FetchState } from "../../common/fetch";
 import ControlPane from "./ControlPane";
-import { useSections } from "./internal_player/useSections";
-import {
-    ButtonActionAndState,
-    useTimeControls,
-} from "./internal_player/useTimeControls";
+import { useSections } from "./useSections";
+import { ButtonActionAndState, useTimeControls } from "./useTimeControls";
 
 const PaddedBox = withStyles((theme: Theme) => ({
     root: {
@@ -47,10 +44,10 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
     const timeControl = useTimeControls(playerRef.current);
 
     const [
+        currentSectionLabel,
         currentSection,
         previousSection,
         nextSection,
-        currentSectionLabel,
     ] = useSections(props.timeSections, timeControl.currentTime);
 
     const commonReactPlayerProps: ReactPlayerProps = {

@@ -5,7 +5,7 @@ import { PlainFn } from "../../common/PlainFn";
 import { controlPaneStyle } from "./common";
 import { ControlButton } from "./ControlButton";
 import ControlGroup from "./ControlGroup";
-import { ButtonActionAndState } from "./internal_player/useTimeControls";
+import { ButtonActionAndState } from "./useTimeControls";
 import PlayrateControl from "./PlayrateControl";
 import SectionLabel from "./SectionLabel";
 

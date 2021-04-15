@@ -1,9 +1,9 @@
 import { Duration } from "luxon";
 import { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
-import { TimeSection } from "../../../common/ChordModel/ChordLine";
-import { PlainFn } from "../../../common/PlainFn";
-import { PlayerTimeContext } from "../../PlayerTimeContext";
+import { TimeSection } from "../../common/ChordModel/ChordLine";
+import { PlainFn } from "../../common/PlainFn";
+import { PlayerTimeContext } from "../PlayerTimeContext";
 
 export interface ButtonActionAndState {
     action: PlainFn;
