@@ -9,7 +9,7 @@ import { grey } from "@material-ui/core/colors";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { withStyles } from "@material-ui/styles";
 import audioBufferToWav from "audiobuffer-to-wav";
-import ky from "ky";
+import ky, { DownloadProgress } from "ky";
 import React, { useEffect, useRef, useState } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
 import * as Tone from "tone";
@@ -17,6 +17,10 @@ import { TimeSection } from "../../common/ChordModel/ChordLine";
 import { FourStemsTrack } from "../../common/ChordModel/Track";
 import { FetchState } from "../../common/fetch";
 import ControlPane from "./ControlPane";
+import FourStemControlPane, {
+    ButtonStateAndAction,
+} from "./FourStemControlPane";
+import { FourStemNames } from "./fourStemTypes";
 import { useSections } from "./useSections";
 import { ButtonActionAndState, useTimeControls } from "./useTimeControls";
 
@@ -27,13 +31,20 @@ const PaddedBox = withStyles((theme: Theme) => ({
     },
 }))(Box);
 
-interface LoadedPlayers {
-    bass: Tone.GrainPlayer;
-    drums: Tone.GrainPlayer;
-    other: Tone.GrainPlayer;
-    vocals: Tone.GrainPlayer;
+interface StemControl {
+    player: Tone.GrainPlayer;
+    volumeControl: Tone.Volume;
+}
+
+interface LoadedPlayers extends Record<FourStemNames, StemControl> {
     silentURL: string;
 }
+
+interface StemState {
+    enabled: boolean;
+}
+
+type StemStates = Record<FourStemNames, StemState>;
 
 interface FourStemTrackPlayerProps {
     track: FourStemsTrack;
@@ -51,6 +62,12 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
     });
     const playerRef = useRef<ReactPlayer>();
     const timeControl = useTimeControls(playerRef.current);
+    const [stemStates, setStemStates] = useState<StemStates>({
+        bass: { enabled: true },
+        drums: { enabled: true },
+        other: { enabled: true },
+        vocals: { enabled: true },
+    });
 
     const [
         currentSectionLabel,
@@ -83,16 +100,28 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
 
     const audioCtxRef = useRef(new window.AudioContext());
 
-    const fetchAndCreatePlayer = async (
-        url: string
-    ): Promise<Tone.GrainPlayer> => {
-        const response = await ky.get(url, { timeout: false }).arrayBuffer();
+    const fetchAndCreatePlayer = async (url: string): Promise<StemControl> => {
+        const response = await ky
+            .get(url, {
+                timeout: false,
+                headers: {
+                    "X-Requested-With": "chord-paper-fe",
+                },
+                onDownloadProgress: (progress: DownloadProgress) =>
+                    console.log(progress.percent, url),
+            })
+            .arrayBuffer();
         const audioBuffer = await audioCtxRef.current.decodeAudioData(response);
 
-        return new Tone.GrainPlayer({ url: audioBuffer })
-            .toDestination()
-            .sync()
-            .start(0);
+        const volume = new Tone.Volume().toDestination();
+
+        return {
+            volumeControl: volume,
+            player: new Tone.GrainPlayer({ url: audioBuffer })
+                .connect(volume)
+                .sync()
+                .start(0),
+        };
     };
 
     const createEmptySongURL = (time: number): string => {
@@ -140,7 +169,7 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
                     fetchAndCreatePlayer(props.track.stems.vocals_url),
                 ]);
 
-                const duration = bassPlayer.buffer.duration;
+                const duration = bassPlayer.player.buffer.duration;
                 const silentURL = createEmptySongURL(duration);
 
                 const players: LoadedPlayers = {
@@ -209,6 +238,58 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
 
     syncToneTransport();
 
+    const stemControlPane = (() => {
+        const bass: ButtonStateAndAction = {
+            enabled: stemStates.bass.enabled,
+            onToggle: (newState: boolean) =>
+                setStemStates({ ...stemStates, bass: { enabled: newState } }),
+        };
+
+        const drums: ButtonStateAndAction = {
+            enabled: stemStates.drums.enabled,
+            onToggle: (newState: boolean) =>
+                setStemStates({ ...stemStates, drums: { enabled: newState } }),
+        };
+
+        const other: ButtonStateAndAction = {
+            enabled: stemStates.other.enabled,
+            onToggle: (newState: boolean) =>
+                setStemStates({ ...stemStates, other: { enabled: newState } }),
+        };
+
+        const vocals: ButtonStateAndAction = {
+            enabled: stemStates.vocals.enabled,
+            onToggle: (newState: boolean) =>
+                setStemStates({ ...stemStates, vocals: { enabled: newState } }),
+        };
+        return (
+            <FourStemControlPane
+                bass={bass}
+                drums={drums}
+                other={other}
+                vocals={vocals}
+            />
+        );
+    })();
+
+    if (stemStates.bass.enabled === fetchState.item.bass.volumeControl.mute) {
+        fetchState.item.bass.volumeControl.mute = !stemStates.bass.enabled;
+    }
+
+    if (stemStates.drums.enabled === fetchState.item.drums.volumeControl.mute) {
+        fetchState.item.drums.volumeControl.mute = !stemStates.drums.enabled;
+    }
+
+    if (stemStates.other.enabled === fetchState.item.other.volumeControl.mute) {
+        fetchState.item.other.volumeControl.mute = !stemStates.other.enabled;
+    }
+
+    if (
+        stemStates.vocals.enabled === fetchState.item.vocals.volumeControl.mute
+    ) {
+        fetchState.item.vocals.volumeControl.mute = !stemStates.vocals.enabled;
+    }
+
     return (
         <Box>
             <Box>
@@ -217,6 +298,7 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
                     url={fetchState.item.silentURL}
                 />
             </Box>
+            {stemControlPane}
             <ControlPane
                 playing={timeControl.playing}
                 sectionLabel={currentSectionLabel}
