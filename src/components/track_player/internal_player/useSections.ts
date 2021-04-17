@@ -1,4 +1,4 @@
-import { TimeSection } from "../../common/ChordModel/ChordLine";
+import { TimeSection } from "../../../common/ChordModel/ChordLine";
 
 export const useSections = (
     timeSections: TimeSection[],

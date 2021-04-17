@@ -1,8 +1,8 @@
 import { Box } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
-import { PlainFn } from "../../common/PlainFn";
-import { controlPaneStyle } from "./common";
+import { PlainFn } from "../../../common/PlainFn";
+import { controlPaneStyle } from "../common";
 import { ControlButton } from "./ControlButton";
 import ControlGroup from "./ControlGroup";
 import { ButtonActionAndState } from "./useTimeControls";

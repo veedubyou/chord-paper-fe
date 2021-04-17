@@ -1,11 +1,11 @@
 import { Box } from "@material-ui/core";
 import React, { useRef } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
-import { TimeSection } from "../../common/ChordModel/ChordLine";
-import { SingleTrack } from "../../common/ChordModel/Track";
-import ControlPane from "./ControlPane";
-import { useSections } from "./useSections";
-import { ButtonActionAndState, useTimeControls } from "./useTimeControls";
+import { TimeSection } from "../../../../common/ChordModel/ChordLine";
+import { SingleTrack } from "../../../../common/ChordModel/Track";
+import ControlPane from "../ControlPane";
+import { useSections } from "../useSections";
+import { ButtonActionAndState, useTimeControls } from "../useTimeControls";
 
 interface SingleTrackPlayerProps {
     track: SingleTrack;

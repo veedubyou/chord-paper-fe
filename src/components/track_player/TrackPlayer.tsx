@@ -2,8 +2,8 @@ import { Collapse } from "@material-ui/core";
 import React from "react";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
 import { Track } from "../../common/ChordModel/Track";
-import FourStemTrackPlayer from "./FourStemTrackPlayer";
-import SingleTrackPlayer from "./SingleTrackPlayer";
+import FourStemTrackPlayer from "./internal_player/4stems/FourStemTrackPlayer";
+import SingleTrackPlayer from "./internal_player/single/SingleTrackPlayer";
 
 interface TrackPlayerProps {
     show: boolean;

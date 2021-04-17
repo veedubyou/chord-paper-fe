@@ -1,6 +1,6 @@
 import { TextField } from "@material-ui/core";
 import React from "react";
-import { convertViewLinkToExportLink } from "../google_drive";
+import { convertViewLinkToExportLink } from "../internal_player/google_drive";
 import { textFieldValidation } from "./error";
 
 interface URLFieldProps {

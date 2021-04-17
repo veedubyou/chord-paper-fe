@@ -19,17 +19,17 @@ const SingleTrackValidator = iots.intersection([
 ]);
 
 const FourStemsValidator = iots.type({
-    vocals_url: iots.string,
-    other_url: iots.string,
-    bass_url: iots.string,
-    drums_url: iots.string,
+    vocals: iots.string,
+    other: iots.string,
+    bass: iots.string,
+    drums: iots.string,
 });
 
 const FourStemsTrackValidator = iots.intersection([
     BaseTrackValidator,
     iots.type({
         track_type: iots.literal("4stems"),
-        stems: FourStemsValidator,
+        stem_urls: FourStemsValidator,
     }),
 ]);
 
@@ -72,6 +72,14 @@ export class SingleTrack implements SingleTrackValidatedFields {
     }
 }
 
+export type FourStemKeys = "vocals" | "other" | "bass" | "drums";
+export const FourStemEmptyObject: Record<FourStemKeys, undefined> = {
+    bass: undefined,
+    drums: undefined,
+    other: undefined,
+    vocals: undefined,
+};
+
 type FourStemsValidatedFields = iots.TypeOf<typeof FourStemsValidator>;
 type FourStemsTrackValidatedFields = iots.TypeOf<
     typeof FourStemsTrackValidator
@@ -81,13 +89,17 @@ export class FourStemsTrack implements FourStemsTrackValidatedFields {
     id: string;
     track_type: "4stems";
     label: string;
-    stems: FourStemsValidatedFields;
+    stem_urls: FourStemsValidatedFields;
 
-    constructor(id: string, label: string, stems: FourStemsValidatedFields) {
+    constructor(
+        id: string,
+        label: string,
+        stems_urls: FourStemsValidatedFields
+    ) {
         this.id = id;
         this.track_type = "4stems";
         this.label = label;
-        this.stems = stems;
+        this.stem_urls = stems_urls;
     }
 
     static fromValidatedFields(
@@ -96,7 +108,7 @@ export class FourStemsTrack implements FourStemsTrackValidatedFields {
         return new FourStemsTrack(
             validatedFields.id,
             validatedFields.label,
-            validatedFields.stems
+            validatedFields.stem_urls
         );
     }
 
@@ -105,21 +117,13 @@ export class FourStemsTrack implements FourStemsTrackValidatedFields {
             return false;
         }
 
-        if (!validateValue(this.stems.bass_url)) {
-            return false;
+        let key: FourStemKeys;
+        for (key in this.stem_urls) {
+            if (!validateValue(this.stem_urls[key])) {
+                return false;
+            }
         }
 
-        if (!validateValue(this.stems.drums_url)) {
-            return false;
-        }
-
-        if (!validateValue(this.stems.other_url)) {
-            return false;
-        }
-
-        if (!validateValue(this.stems.vocals_url)) {
-            return false;
-        }
         return true;
     }
 }

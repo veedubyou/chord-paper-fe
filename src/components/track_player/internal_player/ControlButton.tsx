@@ -10,7 +10,7 @@ import SkipBackIcon from "@material-ui/icons/SkipPrevious";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
 import BeginningIcon from "./BeginningIcon";
-import { roundedCornersStyle } from "./common";
+import { roundedCornersStyle } from "../common";
 import JumpForwardIcon from "./ForwardIcon";
 
 const Button = withStyles((theme: Theme) => ({

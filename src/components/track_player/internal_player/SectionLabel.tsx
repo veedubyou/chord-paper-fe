@@ -1,7 +1,7 @@
 import { Theme, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
-import { greyTextColour } from "./common";
+import { greyTextColour } from "../common";
 import { VerticalMiddleDivider } from "./ControlGroup";
 
 const SectionLabelTypography = withStyles((theme: Theme) => ({

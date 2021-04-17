@@ -63,7 +63,7 @@ export const getTrackList = async (
 
     try {
         parsed = await ky
-            .get(`${backendHost}/songs/${songID}/tracklist`)
+            .get(`${backendHost}/songs/${songID}/tracklist`, { timeout: false })
             .json();
     } catch (e) {
         return left(e);
