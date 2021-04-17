@@ -1,6 +1,8 @@
 import {
+    Box,
     Button as UnstyledButton,
     Grid,
+    Slider,
     Theme,
     Typography,
 } from "@material-ui/core";
@@ -15,6 +17,14 @@ import { withStyles } from "@material-ui/styles";
 import React from "react";
 import { FourStemKeys } from "../../../../common/ChordModel/Track";
 import { mapObject } from "../../../../common/mapObject";
+
+const FullSizedBox = withStyles((theme: Theme) => ({
+    root: {
+        width: "100%",
+        paddingLeft: theme.spacing(1.5),
+        paddingRight: theme.spacing(1.5),
+    },
+}))(Box);
 
 const withColoredButtonStyle = (color: string) => {
     return withStyles((theme: Theme) => ({
@@ -78,10 +88,21 @@ const FourStemControlPane: React.FC<FourStemControlPaneProps> = (
             props[stemKey].onToggle(!props[stemKey].enabled);
         };
 
+        const changeHandler = (event: React.ChangeEvent<{}>) => {
+            event.preventDefault();
+            event.stopPropagation();
+        };
+
         return (
             <Grid xs={3} item>
                 <StemButton variant="contained" onClick={handleClick}>
-                    <Typography variant="body1">{stem.label}</Typography>
+                    <FullSizedBox>
+                        <Typography variant="body1">{stem.label}</Typography>
+
+                        <Box onClick={changeHandler}>
+                            <Slider />
+                        </Box>
+                    </FullSizedBox>
                 </StemButton>
             </Grid>
         );
