@@ -5,6 +5,7 @@ import { useWindowWidth } from "@react-hook/window-size";
 import React, { useEffect, useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { isScrollBackwardsKey, isScrollForwardsKey } from "./keyMap";
 import PlayLine from "./PlayLine";
 
 export interface DisplaySettings {
@@ -171,18 +172,17 @@ const PlayContent: React.FC<PlayContentProps> = (
 
     useEffect(() => {
         const handleKey = (event: KeyboardEvent) => {
-            // only three keys ever go backwards, everything else goes forwards
-            if (
-                event.key === "ArrowLeft" ||
-                event.key === "ArrowUp" ||
-                event.key === "Backspace"
-            ) {
+            if (isScrollBackwardsKey(event.code)) {
                 scrollBackward();
-            } else {
-                scrollForward();
+                event.preventDefault();
+                return;
             }
 
-            event.preventDefault();
+            if (isScrollForwardsKey(event.code)) {
+                scrollForward();
+                event.preventDefault();
+                return;
+            }
         };
 
         window.addEventListener("keydown", handleKey);
