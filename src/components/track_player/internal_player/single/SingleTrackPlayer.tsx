@@ -1,9 +1,11 @@
 import { Box } from "@material-ui/core";
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
+import shortid from "shortid";
 import { TimeSection } from "../../../../common/ChordModel/ChordLine";
 import { SingleTrack } from "../../../../common/ChordModel/Track";
 import ControlPane from "../ControlPane";
+import { ensureGoogleDriveCacheBusted } from "../google_drive";
 import { useSections } from "../useSections";
 import { ButtonActionAndState, useTimeControls } from "../useTimeControls";
 
@@ -20,6 +22,10 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
 ): JSX.Element => {
     const playerRef = useRef<ReactPlayer>();
     const timeControl = useTimeControls(playerRef.current);
+    const trackURL: string = useMemo(
+        () => ensureGoogleDriveCacheBusted(props.track.url, shortid.generate()),
+        [props.track.url]
+    );
 
     const [
         currentSectionLabel,
@@ -53,10 +59,7 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
     return (
         <Box>
             <Box>
-                <ReactPlayer
-                    {...commonReactPlayerProps}
-                    url={props.track.url}
-                />
+                <ReactPlayer {...commonReactPlayerProps} url={trackURL} />
             </Box>
             <ControlPane
                 playing={timeControl.playing}
