@@ -12,7 +12,7 @@ import { mapObject } from "../../../../common/mapObject";
 import ControlPane from "../ControlPane";
 import { useSections } from "../useSections";
 import { ButtonActionAndState, useTimeControls } from "../useTimeControls";
-import { audioCtx } from "./audioCtx";
+import { getAudioCtx } from "./audioCtx";
 import FourStemControlPane, {
     ButtonStateAndAction,
 } from "./FourStemControlPane";
@@ -50,6 +50,7 @@ const createToneNodes = (audioBuffer: AudioBuffer): StemToneNodes => {
 };
 
 const createEmptySongURL = (time: number): string => {
+    const audioCtx = getAudioCtx();
     const audioBuffer = audioCtx.createBuffer(
         2,
         audioCtx.sampleRate * time,

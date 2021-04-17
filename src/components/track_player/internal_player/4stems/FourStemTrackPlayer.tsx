@@ -16,7 +16,7 @@ import {
     FourStemsTrack,
 } from "../../../../common/ChordModel/Track";
 import { FetchState } from "../../../../common/fetch";
-import { audioCtx } from "./audioCtx";
+import { getAudioCtx } from "./audioCtx";
 import LoadedFourStemTrackPlayer from "./LoadedFourStemTrackPlayer";
 
 const PaddedBox = withStyles((theme: Theme) => ({
@@ -50,7 +50,7 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
             })
             .arrayBuffer();
 
-        return await audioCtx.decodeAudioData(response);
+        return await getAudioCtx().decodeAudioData(response);
     };
 
     useEffect(() => {
