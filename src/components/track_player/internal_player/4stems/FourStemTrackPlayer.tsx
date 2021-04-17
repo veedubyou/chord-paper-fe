@@ -8,14 +8,18 @@ import {
 import { grey } from "@material-ui/core/colors";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { withStyles } from "@material-ui/styles";
-import ky from "ky";
-import React, { useEffect, useState } from "react";
+import ky, { DownloadProgress } from "ky";
+import lodash from "lodash";
+import prettyBytes from "pretty-bytes";
+import React, { useEffect, useRef, useState } from "react";
 import { TimeSection } from "../../../../common/ChordModel/ChordLine";
 import {
+    FourStemEmptyObject,
     FourStemKeys,
     FourStemsTrack,
 } from "../../../../common/ChordModel/Track";
 import { FetchState } from "../../../../common/fetch";
+import { mapObject } from "../../../../common/mapObject";
 import { getAudioCtx } from "./audioCtx";
 import LoadedFourStemTrackPlayer from "./LoadedFourStemTrackPlayer";
 
@@ -34,19 +38,35 @@ interface FourStemTrackPlayerProps {
     onPlayrateChange: (newPlayrate: number) => void;
 }
 
+interface SingleLoadingProgress {
+    loadedBytes: number;
+    totalBytes: number | null;
+}
+type ProgressHandler = (loadedBytes: number, totalBytes: number | null) => void;
+
 type FetchResult = Record<FourStemKeys, AudioBuffer>;
+type LoadingProgress = Record<FourStemKeys, SingleLoadingProgress>;
 
 const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
     props: FourStemTrackPlayerProps
 ): JSX.Element => {
-    const [fetchState, setFetchState] = useState<FetchState<FetchResult>>({
+    const [fetchState, setFetchState] = useState<
+        FetchState<FetchResult, LoadingProgress>
+    >({
         state: "not-started",
     });
 
-    const fetchAudioBuffer = async (url: string): Promise<AudioBuffer> => {
+    const fetchStateRef = useRef(fetchState);
+    fetchStateRef.current = fetchState;
+
+    const fetchAudioBuffer = async (
+        url: string,
+        handleProgress: (progress: DownloadProgress) => void
+    ): Promise<AudioBuffer> => {
         const response = await ky
             .get(url, {
                 timeout: false,
+                onDownloadProgress: handleProgress,
             })
             .arrayBuffer();
 
@@ -56,23 +76,49 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
     useEffect(() => {
         const loadPlayers = async () => {
             try {
+                const fetchResponses = mapObject(
+                    props.track.stem_urls,
+                    (url: string, stemKey: FourStemKeys) => {
+                        const handleProgress = (progress: DownloadProgress) => {
+                            const currentFetchState = fetchStateRef.current;
+                            if (currentFetchState.state !== "loading") {
+                                return;
+                            }
+
+                            const newFetchState = lodash.clone(
+                                currentFetchState
+                            );
+                            newFetchState.details[stemKey].loadedBytes =
+                                progress.transferredBytes;
+                            newFetchState.details[stemKey].totalBytes =
+                                progress.totalBytes === 0
+                                    ? null
+                                    : progress.totalBytes;
+
+                            setFetchState(newFetchState);
+                        };
+
+                        return fetchAudioBuffer(url, handleProgress);
+                    }
+                );
+
                 const [
-                    bassPlayer,
-                    drumsPlayer,
-                    otherPlayer,
-                    vocalsPlayer,
+                    bassBuffer,
+                    drumsBuffer,
+                    otherBuffer,
+                    vocalsBuffer,
                 ] = await Promise.all([
-                    fetchAudioBuffer(props.track.stem_urls.bass),
-                    fetchAudioBuffer(props.track.stem_urls.drums),
-                    fetchAudioBuffer(props.track.stem_urls.other),
-                    fetchAudioBuffer(props.track.stem_urls.vocals),
+                    fetchResponses.bass,
+                    fetchResponses.drums,
+                    fetchResponses.other,
+                    fetchResponses.vocals,
                 ]);
 
                 const players: FetchResult = {
-                    bass: bassPlayer,
-                    drums: drumsPlayer,
-                    other: otherPlayer,
-                    vocals: vocalsPlayer,
+                    bass: bassBuffer,
+                    drums: drumsBuffer,
+                    other: otherBuffer,
+                    vocals: vocalsBuffer,
                 };
 
                 setFetchState({
@@ -93,6 +139,10 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
             loadPlayers();
             setFetchState({
                 state: "loading",
+                details: mapObject(FourStemEmptyObject, () => ({
+                    loadedBytes: 0,
+                    totalBytes: null,
+                })),
             });
         }
     }, [fetchState, setFetchState, props.track.stem_urls]);
@@ -108,10 +158,57 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
     }
 
     if (fetchState.state === "loading") {
+        const totalBytes: number | null = (() => {
+            let total = 0;
+            let stemKey: FourStemKeys;
+            for (stemKey in fetchState.details) {
+                const stemTotal = fetchState.details[stemKey].totalBytes;
+                if (stemTotal === null) {
+                    return null;
+                }
+
+                total += stemTotal;
+            }
+            return total;
+        })();
+
+        const loadedBytes: number = (() => {
+            let loaded = 0;
+            let stemKey: FourStemKeys;
+            for (stemKey in fetchState.details) {
+                loaded += fetchState.details[stemKey].loadedBytes;
+            }
+            return loaded;
+        })();
+
+        let formattedProgress = prettyBytes(loadedBytes);
+        if (totalBytes !== null) {
+            formattedProgress += "/" + prettyBytes(totalBytes);
+        }
+
+        const progressBar = (() => {
+            if (totalBytes === null) {
+                return <LinearProgress />;
+            }
+
+            const percent = (loadedBytes / totalBytes) * 100;
+            return <LinearProgress variant="determinate" value={percent} />;
+        })();
+
+        const label = (() => {
+            if (loadedBytes === totalBytes) {
+                return "Processing track...";
+            }
+
+            return "Loading track...";
+        })();
+
         return (
             <PaddedBox>
-                <Typography variant="body1">Loading track...</Typography>
-                <LinearProgress />
+                <Typography variant="body1">
+                    {label}({formattedProgress})
+                </Typography>
+                {progressBar}
             </PaddedBox>
         );
     }
