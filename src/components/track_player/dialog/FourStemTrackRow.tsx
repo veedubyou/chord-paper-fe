@@ -3,7 +3,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { withStyles } from "@material-ui/styles";
 import lodash from "lodash";
 import React from "react";
-import { FourStemsTrack } from "../../../common/ChordModel/Track";
+import { FourStemKeys, FourStemsTrack } from "../../../common/ChordModel/Track";
+import { mapObject } from "../../../common/mapObject";
 import LabelField from "./LabelField";
 import URLField from "./URLField";
 
@@ -19,6 +20,13 @@ const RowContainer = withStyles((theme: Theme) => ({
     },
 }))(Grid);
 
+const urlFieldLabels: Record<FourStemKeys, string> = {
+    bass: "Bass URL",
+    drums: "Drums URL",
+    other: "Other URL",
+    vocals: "Vocals URL",
+};
+
 const FourStemTrackRow: React.FC<FourStemTrackRowProps> = (
     props: FourStemTrackRowProps
 ): JSX.Element => {
@@ -28,29 +36,26 @@ const FourStemTrackRow: React.FC<FourStemTrackRowProps> = (
         props.onChange(updatedTrack);
     };
 
-    const handleBassURLChange = (newURL: string) => {
-        const updatedTrack = lodash.clone(props.track);
-        updatedTrack.stems.bass_url = newURL;
-        props.onChange(updatedTrack);
+    const makeURLField = (
+        label: string,
+        stemKey: FourStemKeys
+    ): React.ReactElement => {
+        const handleChange = (newURL: string) => {
+            const updatedTrack = lodash.clone(props.track);
+            updatedTrack.stem_urls[stemKey] = newURL;
+            props.onChange(updatedTrack);
+        };
+
+        return (
+            <URLField
+                labelText={label}
+                value={props.track.stem_urls[stemKey]}
+                onChange={handleChange}
+            />
+        );
     };
 
-    const handleDrumsURLChange = (newURL: string) => {
-        const updatedTrack = lodash.clone(props.track);
-        updatedTrack.stems.drums_url = newURL;
-        props.onChange(updatedTrack);
-    };
-
-    const handleOtherURLChange = (newURL: string) => {
-        const updatedTrack = lodash.clone(props.track);
-        updatedTrack.stems.other_url = newURL;
-        props.onChange(updatedTrack);
-    };
-
-    const handleVocalsURLChange = (newURL: string) => {
-        const updatedTrack = lodash.clone(props.track);
-        updatedTrack.stems.vocals_url = newURL;
-        props.onChange(updatedTrack);
-    };
+    const stemURLFields = mapObject(urlFieldLabels, makeURLField);
 
     return (
         <>
@@ -62,11 +67,7 @@ const FourStemTrackRow: React.FC<FourStemTrackRowProps> = (
                     />
                 </Grid>
                 <Grid xs={5} item>
-                    <URLField
-                        labelText="Vocals URL"
-                        value={props.track.stems.vocals_url}
-                        onChange={handleVocalsURLChange}
-                    />
+                    {stemURLFields.vocals}
                 </Grid>
                 <Grid xs={2} item>
                     <Button onClick={props.onRemove}>
@@ -77,35 +78,21 @@ const FourStemTrackRow: React.FC<FourStemTrackRowProps> = (
             <RowContainer key="other" container alignItems="center">
                 <Grid xs={5} item></Grid>
                 <Grid xs={5} item>
-                    <URLField
-                        labelText="Other URL"
-                        value={props.track.stems.other_url}
-                        onChange={handleOtherURLChange}
-                    />
+                    {stemURLFields.other}
                 </Grid>
                 <Grid xs={2} item></Grid>
             </RowContainer>
-
             <RowContainer key="bass" container alignItems="center">
                 <Grid xs={5} item></Grid>
                 <Grid xs={5} item>
-                    <URLField
-                        labelText="Bass URL"
-                        value={props.track.stems.bass_url}
-                        onChange={handleBassURLChange}
-                    />
+                    {stemURLFields.bass}
                 </Grid>
                 <Grid xs={2} item></Grid>
             </RowContainer>
-
             <RowContainer key="drums" container alignItems="center">
                 <Grid xs={5} item></Grid>
                 <Grid xs={5} item>
-                    <URLField
-                        labelText="Drums URL"
-                        value={props.track.stems.drums_url}
-                        onChange={handleDrumsURLChange}
-                    />
+                    {stemURLFields.drums}
                 </Grid>
                 <Grid xs={2} item></Grid>
             </RowContainer>

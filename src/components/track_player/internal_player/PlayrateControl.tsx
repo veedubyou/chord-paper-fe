@@ -1,7 +1,7 @@
 import { Box, Theme, Tooltip, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
-import { greyTextColour, widthOfString } from "./common";
+import { greyTextColour, widthOfString } from "../common";
 import { ControlButton } from "./ControlButton";
 import { ControlGroupBox } from "./ControlGroup";
 

@@ -98,10 +98,10 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
     const handleAddFourStemTrack = () => {
         appendTrack(
             new FourStemsTrack("", "", {
-                vocals_url: "",
-                other_url: "",
-                bass_url: "",
-                drums_url: "",
+                vocals: "",
+                other: "",
+                bass: "",
+                drums: "",
             })
         );
         handleCloseAddTrackMenu();
