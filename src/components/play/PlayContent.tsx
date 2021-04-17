@@ -62,21 +62,6 @@ const PlayContent: React.FC<PlayContentProps> = (
     const scrollForward = () => scrollPage(true);
     const scrollBackward = () => scrollPage(false);
 
-    const handleKey = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        // only three keys ever go backwards, everything else goes forwards
-        if (
-            event.key === "ArrowLeft" ||
-            event.key === "ArrowUp" ||
-            event.key === "Backspace"
-        ) {
-            scrollBackward();
-        } else {
-            scrollForward();
-        }
-
-        event.preventDefault();
-    };
-
     const handleClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
@@ -185,6 +170,27 @@ const PlayContent: React.FC<PlayContentProps> = (
     });
 
     useEffect(() => {
+        const handleKey = (event: KeyboardEvent) => {
+            // only three keys ever go backwards, everything else goes forwards
+            if (
+                event.key === "ArrowLeft" ||
+                event.key === "ArrowUp" ||
+                event.key === "Backspace"
+            ) {
+                scrollBackward();
+            } else {
+                scrollForward();
+            }
+
+            event.preventDefault();
+        };
+
+        window.addEventListener("keydown", handleKey);
+
+        return () => window.removeEventListener("keydown", handleKey);
+    });
+
+    useEffect(() => {
         // add some empty columns to the end of the song
         // so that each "page scroll" navigation ends evenly
         // e.g. if a 3 column page is divided as 5 columns: a | b | c | d | e
@@ -227,7 +233,6 @@ const PlayContent: React.FC<PlayContentProps> = (
                 onMouseDown={handleClick}
                 onContextMenu={cancelContextMenu}
                 tabIndex={0}
-                onKeyDown={handleKey}
             >
                 <MarginBox>{lines}</MarginBox>
                 {emptyColumns}
