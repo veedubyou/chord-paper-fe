@@ -7,9 +7,10 @@ import { SingleTrack } from "../../../../common/ChordModel/Track";
 import ControlPane from "../ControlPane";
 import { ensureGoogleDriveCacheBusted } from "../google_drive";
 import { useSections } from "../useSections";
-import { ButtonActionAndState, useTimeControls } from "../useTimeControls";
+import { useTimeControls } from "../useTimeControls";
 
 interface SingleTrackPlayerProps {
+    focused: boolean;
     track: SingleTrack;
     readonly timeSections: TimeSection[];
 
@@ -48,11 +49,6 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
         config: { file: { forceAudio: true } },
     };
 
-    const playButton: ButtonActionAndState = {
-        action: timeControl.play,
-        enabled: true,
-    };
-
     const skipBack = timeControl.makeSkipBack(currentSection, previousSection);
     const skipForward = timeControl.makeSkipForward(nextSection);
 
@@ -62,9 +58,10 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
                 <ReactPlayer {...commonReactPlayerProps} url={trackURL} />
             </Box>
             <ControlPane
+                focused={props.focused}
                 playing={timeControl.playing}
                 sectionLabel={currentSectionLabel}
-                onPlay={playButton}
+                onPlay={timeControl.play}
                 onPause={timeControl.pause}
                 onJumpBack={timeControl.jumpBack}
                 onJumpForward={timeControl.jumpForward}

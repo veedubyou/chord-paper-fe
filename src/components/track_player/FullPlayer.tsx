@@ -133,7 +133,7 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
 
     const players: React.ReactElement[] = props.tracklist.tracks.map(
         (track: Track, index: number) => {
-            const show = index === props.currentTrackIndex;
+            const show = index === props.currentTrackIndex && props.show;
             return (
                 <TrackPlayer
                     key={`${index}-${track.label}`}

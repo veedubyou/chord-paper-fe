@@ -2,7 +2,7 @@ import { Box, Paper, RootRef } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
 import { withStyles } from "@material-ui/styles";
 import { useWindowWidth } from "@react-hook/window-size";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { useRegisterKeyListener } from "../GlobalKeyListener";
@@ -40,30 +40,33 @@ const PlayContent: React.FC<PlayContentProps> = (
     const columnWidth = windowWidth / numberOfColumnsPerPage;
     const snapThreshold = columnWidth / 2;
 
-    const scrollPage = (forward: boolean) => {
-        const currentPos = window.scrollX;
-        const delta = forward ? windowWidth : -windowWidth;
+    const scrollPage = useCallback(
+        (forward: boolean) => {
+            const currentPos = window.scrollX;
+            const delta = forward ? windowWidth : -windowWidth;
 
-        let nextPos = currentPos + delta;
+            let nextPos = currentPos + delta;
 
-        const distanceFromLastColumn = nextPos % columnWidth;
+            const distanceFromLastColumn = nextPos % columnWidth;
 
-        if (distanceFromLastColumn < snapThreshold) {
-            nextPos -= distanceFromLastColumn;
-        } else {
-            const remainingDistance = columnWidth - distanceFromLastColumn;
-            nextPos += remainingDistance;
-        }
+            if (distanceFromLastColumn < snapThreshold) {
+                nextPos -= distanceFromLastColumn;
+            } else {
+                const remainingDistance = columnWidth - distanceFromLastColumn;
+                nextPos += remainingDistance;
+            }
 
-        window.scrollTo({
-            left: nextPos,
-            top: 0,
-            behavior: "smooth",
-        });
-    };
+            window.scrollTo({
+                left: nextPos,
+                top: 0,
+                behavior: "smooth",
+            });
+        },
+        [columnWidth, windowWidth, snapThreshold]
+    );
 
-    const scrollForward = () => scrollPage(true);
-    const scrollBackward = () => scrollPage(false);
+    const scrollForward = useCallback(() => scrollPage(true), [scrollPage]);
+    const scrollBackward = useCallback(() => scrollPage(false), [scrollPage]);
 
     const handleClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -190,7 +193,7 @@ const PlayContent: React.FC<PlayContentProps> = (
         addKeyListener(handleKey);
 
         return () => removeKeyListener(handleKey);
-    });
+    }, [scrollBackward, scrollForward, addKeyListener, removeKeyListener]);
 
     useEffect(() => {
         // add some empty columns to the end of the song

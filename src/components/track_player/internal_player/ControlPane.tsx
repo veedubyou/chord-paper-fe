@@ -1,18 +1,19 @@
 import { Box } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { PlainFn } from "../../../common/PlainFn";
+import { useRegisterTopKeyListener } from "../../GlobalKeyListener";
 import { controlPaneStyle } from "../common";
 import { ControlButton } from "./ControlButton";
 import ControlGroup from "./ControlGroup";
-import { ButtonActionAndState } from "./useTimeControls";
 import PlayrateControl from "./PlayrateControl";
 import SectionLabel from "./SectionLabel";
-import { useRegisterTopKeyListener } from "../../GlobalKeyListener";
+import { ButtonActionAndState } from "./useTimeControls";
 
 interface ControlPaneProps {
+    focused: boolean;
     playing: boolean;
-    onPlay: ButtonActionAndState;
+    onPlay: PlainFn;
     onPause: PlainFn;
     onJumpBack: PlainFn;
     onJumpForward: PlainFn;
@@ -35,65 +36,77 @@ const ControlPane: React.FC<ControlPaneProps> = (
     props: ControlPaneProps
 ): JSX.Element => {
     const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
-    const pauseRef = useRef<HTMLButtonElement>(null);
-    const playRef = useRef<HTMLButtonElement>(null);
-    const jumpBackRef = useRef<HTMLButtonElement>(null);
-    const jumpForwardRef = useRef<HTMLButtonElement>(null);
-    const skipBackRef = useRef<HTMLButtonElement>(null);
-    const skipForwardRef = useRef<HTMLButtonElement>(null);
 
     const playPauseButton = props.playing ? (
-        <ControlButton.Pause ref={pauseRef} onClick={props.onPause} />
+        <ControlButton.Pause onClick={props.onPause} />
     ) : (
-        <ControlButton.Play
-            ref={playRef}
-            onClick={props.onPlay.action}
-            disabled={!props.onPlay.enabled}
-        />
+        <ControlButton.Play onClick={props.onPlay} />
     );
 
-    console.log("control renrender");
+    useEffect(() => {
+        if (!props.focused) {
+            return;
+        }
 
-    // useEffect(() => {
-    //     const handleKey = (event: KeyboardEvent) => {
-    //         console.log("handling key");
-    //         event.stopImmediatePropagation();
-    //     };
+        const handleKey = (event: KeyboardEvent) => {
+            const stopEvent = () => {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+            };
 
-    //     addTopKeyListener(handleKey);
+            switch (event.code) {
+                case "Space": {
+                    if (props.playing) {
+                        props.onPause();
+                        stopEvent();
+                    } else {
+                        props.onPlay();
+                        stopEvent();
+                    }
 
-    //     return () => removeKeyListener(handleKey);
-    // }, [
-    //     addTopKeyListener,
-    //     removeKeyListener,
-    //     playRef,
-    //     pauseRef,
-    //     jumpBackRef,
-    //     jumpForwardRef,
-    //     skipBackRef,
-    //     skipForwardRef,
-    // ]);
+                    break;
+                }
+                case "ArrowLeft": {
+                    if (event.ctrlKey || event.metaKey) {
+                        props.onSkipBack.action();
+                    } else {
+                        props.onJumpBack();
+                    }
+
+                    stopEvent();
+                    break;
+                }
+                case "ArrowRight": {
+                    if (event.ctrlKey || event.metaKey) {
+                        props.onSkipForward.action();
+                    } else {
+                        props.onJumpForward();
+                    }
+
+                    stopEvent();
+                    return;
+                }
+            }
+        };
+
+        addTopKeyListener(handleKey);
+        return () => {
+            removeKeyListener(handleKey);
+        };
+    }, [props, addTopKeyListener, removeKeyListener]);
 
     return (
         <ControlPaneBox>
             <ControlGroup>
                 <ControlButton.Beginning onClick={props.onGoToBeginning} />
                 <ControlButton.SkipBack
-                    ref={skipBackRef}
                     disabled={!props.onSkipBack.enabled}
                     onClick={props.onSkipBack.action}
                 />
-                <ControlButton.JumpBack
-                    ref={jumpBackRef}
-                    onClick={props.onJumpBack}
-                />
+                <ControlButton.JumpBack onClick={props.onJumpBack} />
                 {playPauseButton}
-                <ControlButton.JumpForward
-                    ref={jumpForwardRef}
-                    onClick={props.onJumpForward}
-                />
+                <ControlButton.JumpForward onClick={props.onJumpForward} />
                 <ControlButton.SkipForward
-                    ref={skipForwardRef}
                     disabled={!props.onSkipForward.enabled}
                     onClick={props.onSkipForward.action}
                 />

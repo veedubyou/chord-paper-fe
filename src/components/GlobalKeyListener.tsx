@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useRef } from "react";
 
 type KeyListener = (event: KeyboardEvent) => void;
 type RegisterKeyListenerFn = (listener: KeyListener) => void;
@@ -34,43 +34,42 @@ export const useRegisterTopKeyListener = (): [
 const GlobalKeyListenerProvider: React.FC<GlobalKeyListenerProviderProps> = (
     props: GlobalKeyListenerProviderProps
 ): JSX.Element => {
-    const [keyListeners, setKeyListeners] = useState<KeyListener[]>([]);
+    const keyListeners = useRef<KeyListener[]>([]);
 
-    console.log("rerender");
+    const removeAll = () => {
+        for (let listener of keyListeners.current) {
+            window.removeEventListener("keydown", listener);
+        }
+    };
+
+    const addAll = () => {
+        for (let listener of keyListeners.current) {
+            window.addEventListener("keydown", listener);
+        }
+    };
 
     const registerKeyListener = (listener: KeyListener) => {
-        const newKeyListeners = keyListeners.concat(listener);
-        setKeyListeners(newKeyListeners);
+        keyListeners.current.push(listener);
+        window.addEventListener("keydown", listener);
     };
 
     const registerTopKeyListener = (listener: KeyListener) => {
-        const newKeyListeners = [listener].concat(keyListeners);
-        setKeyListeners(newKeyListeners);
+        removeAll();
+        keyListeners.current.unshift(listener);
+        addAll();
     };
 
     const unregisterKeyListener = (listener: KeyListener) => {
-        const index = keyListeners.findIndex(
+        const index = keyListeners.current.findIndex(
             (value: KeyListener) => value === listener
         );
         if (index === -1) {
             return;
         }
 
-        keyListeners.splice(index, 1);
-        setKeyListeners(keyListeners.concat());
+        keyListeners.current.splice(index, 1);
+        window.removeEventListener("keydown", listener);
     };
-
-    // useEffect(() => {
-    //     for (let listener of keyListeners) {
-    //         window.addEventListener("keydown", listener);
-    //     }
-
-    //     return () => {
-    //         for (let listener of keyListeners) {
-    //             window.removeEventListener("keydown", listener);
-    //         }
-    //     };
-    // }, [keyListeners]);
 
     return (
         <GlobalKeyListenerContext.Provider

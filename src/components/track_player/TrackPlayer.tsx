@@ -22,6 +22,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             case "single": {
                 return (
                     <SingleTrackPlayer
+                        focused={props.show}
                         track={props.track}
                         timeSections={props.timeSections}
                         playrate={props.playrate}
