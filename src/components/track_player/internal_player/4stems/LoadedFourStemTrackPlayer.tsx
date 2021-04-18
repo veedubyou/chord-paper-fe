@@ -33,7 +33,8 @@ type ToneNodes = Record<FourStemKeys, StemToneNodes>;
 type ButtonStates = Record<FourStemKeys, ButtonState>;
 
 interface LoadedFourStemTrackPlayerProps {
-    focused: boolean;
+    show: boolean;
+    currentTrack: boolean;
     audioBuffers: Record<FourStemKeys, AudioBuffer>;
     readonly timeSections: TimeSection[];
     playrate: number;
@@ -136,6 +137,12 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
     };
 
     useEffect(() => {
+        if (!props.currentTrack && timeControl.playing) {
+            timeControl.onPause();
+        }
+    }, [props.currentTrack, timeControl]);
+
+    useEffect(() => {
         let stemKey: FourStemKeys;
         for (stemKey in toneNodes) {
             toneNodes[stemKey].player.sync().start(0);
@@ -184,7 +191,7 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
             </Box>
             {stemControlPane}
             <ControlPane
-                focused={props.focused}
+                show={props.show}
                 playing={timeControl.playing}
                 sectionLabel={currentSectionLabel}
                 onPlay={timeControl.play}

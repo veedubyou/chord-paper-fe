@@ -1,5 +1,5 @@
 import { Box } from "@material-ui/core";
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
 import shortid from "shortid";
 import { TimeSection } from "../../../../common/ChordModel/ChordLine";
@@ -11,7 +11,9 @@ import { useSections } from "../useSections";
 import { useTimeControls } from "../useTimeControls";
 
 interface SingleTrackPlayerProps {
-    focused: boolean;
+    show: boolean;
+    currentTrack: boolean;
+
     track: SingleTrack;
     readonly timeSections: TimeSection[];
 
@@ -55,13 +57,19 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
     const skipBack = timeControl.makeSkipBack(currentSection, previousSection);
     const skipForward = timeControl.makeSkipForward(nextSection);
 
+    useEffect(() => {
+        if (!props.currentTrack && timeControl.playing) {
+            timeControl.onPause();
+        }
+    }, [props.currentTrack, timeControl]);
+
     return (
         <Box>
             <Box>
                 <ReactPlayer {...commonReactPlayerProps} url={trackURL} />
             </Box>
             <ControlPane
-                focused={props.focused}
+                show={props.show}
                 playing={timeControl.playing}
                 sectionLabel={currentSectionLabel}
                 onPlay={timeControl.play}
