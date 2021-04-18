@@ -5,6 +5,7 @@ import { useWindowWidth } from "@react-hook/window-size";
 import React, { useEffect, useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { useRegisterKeyListener } from "../GlobalKeyListener";
 import { isScrollBackwardsKey, isScrollForwardsKey } from "./keyMap";
 import PlayLine from "./PlayLine";
 
@@ -24,6 +25,7 @@ const PlayContent: React.FC<PlayContentProps> = (
 ): JSX.Element => {
     const ref = React.useRef<HTMLElement>();
     const [numberOfEmptyColumns, setNumberOfEmptyColumns] = useState<number>(0);
+    const [addKeyListener, removeKeyListener] = useRegisterKeyListener();
 
     const numberOfColumnsPerPage =
         props.displaySettings.numberOfColumnsPerPage >= 1
@@ -185,9 +187,9 @@ const PlayContent: React.FC<PlayContentProps> = (
             }
         };
 
-        window.addEventListener("keydown", handleKey);
+        addKeyListener(handleKey);
 
-        return () => window.removeEventListener("keydown", handleKey);
+        return () => removeKeyListener(handleKey);
     });
 
     useEffect(() => {

@@ -32,6 +32,7 @@ type ToneNodes = Record<FourStemKeys, StemToneNodes>;
 type ButtonStates = Record<FourStemKeys, ButtonState>;
 
 interface LoadedFourStemTrackPlayerProps {
+    focused: boolean;
     audioBuffers: Record<FourStemKeys, AudioBuffer>;
     readonly timeSections: TimeSection[];
     playrate: number;

@@ -33,6 +33,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             case "4stems": {
                 return (
                     <FourStemTrackPlayer
+                        focused={props.show}
                         track={props.track}
                         timeSections={props.timeSections}
                         playrate={props.playrate}

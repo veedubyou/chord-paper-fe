@@ -31,6 +31,7 @@ const PaddedBox = withStyles((theme: Theme) => ({
 }))(Box);
 
 interface FourStemTrackPlayerProps {
+    focused: boolean;
     track: FourStemsTrack;
     readonly timeSections: TimeSection[];
 
@@ -42,7 +43,6 @@ interface SingleLoadingProgress {
     loadedBytes: number;
     totalBytes: number | null;
 }
-type ProgressHandler = (loadedBytes: number, totalBytes: number | null) => void;
 
 type FetchResult = Record<FourStemKeys, AudioBuffer>;
 type LoadingProgress = Record<FourStemKeys, SingleLoadingProgress>;
@@ -230,6 +230,7 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
 
     return (
         <LoadedFourStemTrackPlayer
+            focused={props.focused}
             audioBuffers={fetchState.item}
             timeSections={props.timeSections}
             playrate={props.playrate}
