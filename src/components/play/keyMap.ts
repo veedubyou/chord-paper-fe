@@ -6,7 +6,7 @@ const scrollBackwardsKeys: string[] = [
 ];
 
 export const isScrollBackwardsKey = (code: string): boolean => {
-    for (let backwardsKey in scrollBackwardsKeys) {
+    for (let backwardsKey of scrollBackwardsKeys) {
         if (backwardsKey === code) {
             return true;
         }
@@ -71,7 +71,7 @@ export const scrollForwardKeys: string[] = [
 ];
 
 export const isScrollForwardsKey = (code: string): boolean => {
-    for (let forwardsKey in scrollForwardKeys) {
+    for (let forwardsKey of scrollForwardKeys) {
         if (forwardsKey === code) {
             return true;
         }
