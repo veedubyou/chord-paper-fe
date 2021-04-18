@@ -13,6 +13,7 @@ import { makeStyles, withStyles } from "@material-ui/styles";
 import React from "react";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
 import { Track, TrackList } from "../../common/ChordModel/Track";
+import { PlainFn } from "../../common/PlainFn";
 import {
     roundedCornersStyle,
     roundedTopCornersStyle,
@@ -69,8 +70,8 @@ interface MultiTrackPlayerProps {
     playrate: number;
     onPlayrateChange: (newPlayrate: number) => void;
 
-    onOpenTrackEditDialog?: () => void;
-    onCollapse: () => void;
+    onOpenTrackEditDialog?: PlainFn;
+    onMinimize: PlainFn;
 }
 
 const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
@@ -124,7 +125,7 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
                 {trackListPicker}
             </FlexBox>
             <Box>
-                <TitleBarButton onClick={props.onCollapse}>
+                <TitleBarButton onClick={props.onMinimize}>
                     <CollapseDownIcon />
                 </TitleBarButton>
             </Box>
@@ -142,6 +143,7 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
                     timeSections={props.timeSections}
                     playrate={props.playrate}
                     onPlayrateChange={props.onPlayrateChange}
+                    onMinimize={props.onMinimize}
                 />
             );
         }

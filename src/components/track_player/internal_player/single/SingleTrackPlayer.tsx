@@ -4,6 +4,7 @@ import ReactPlayer, { ReactPlayerProps } from "react-player";
 import shortid from "shortid";
 import { TimeSection } from "../../../../common/ChordModel/ChordLine";
 import { SingleTrack } from "../../../../common/ChordModel/Track";
+import { PlainFn } from "../../../../common/PlainFn";
 import ControlPane from "../ControlPane";
 import { ensureGoogleDriveCacheBusted } from "../google_drive";
 import { useSections } from "../useSections";
@@ -16,6 +17,8 @@ interface SingleTrackPlayerProps {
 
     playrate: number;
     onPlayrateChange: (newPlayrate: number) => void;
+
+    onMinimize: PlainFn;
 }
 
 const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
@@ -70,6 +73,7 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
                 onGoToBeginning={timeControl.goToBeginning}
                 playrate={props.playrate}
                 onPlayrateChange={props.onPlayrateChange}
+                onMinimize={props.onMinimize}
             />
         </Box>
     );

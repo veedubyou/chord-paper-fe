@@ -20,6 +20,7 @@ import {
 } from "../../../../common/ChordModel/Track";
 import { FetchState } from "../../../../common/fetch";
 import { mapObject } from "../../../../common/mapObject";
+import { PlainFn } from "../../../../common/PlainFn";
 import { getAudioCtx } from "./audioCtx";
 import LoadedFourStemTrackPlayer from "./LoadedFourStemTrackPlayer";
 
@@ -37,6 +38,7 @@ interface FourStemTrackPlayerProps {
 
     playrate: number;
     onPlayrateChange: (newPlayrate: number) => void;
+    onMinimize: PlainFn;
 }
 
 interface SingleLoadingProgress {
@@ -235,6 +237,7 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
             timeSections={props.timeSections}
             playrate={props.playrate}
             onPlayrateChange={props.onPlayrateChange}
+            onMinimize={props.onMinimize}
         />
     );
 };

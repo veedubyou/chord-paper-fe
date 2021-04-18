@@ -237,7 +237,6 @@ const PlayContent: React.FC<PlayContentProps> = (
             <ColumnedPaper
                 onMouseDown={handleClick}
                 onContextMenu={cancelContextMenu}
-                tabIndex={0}
             >
                 <MarginBox>{lines}</MarginBox>
                 {emptyColumns}
