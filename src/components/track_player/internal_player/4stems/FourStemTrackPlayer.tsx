@@ -40,9 +40,8 @@ interface FourStemTrackPlayerProps {
 
 interface SingleLoadingProgress {
     loadedBytes: number;
-    totalBytes: number | null;
+    totalBytes: number | "initial" | "unknown";
 }
-type ProgressHandler = (loadedBytes: number, totalBytes: number | null) => void;
 
 type FetchResult = Record<FourStemKeys, AudioBuffer>;
 type LoadingProgress = Record<FourStemKeys, SingleLoadingProgress>;
@@ -91,9 +90,9 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
                             newFetchState.details[stemKey].loadedBytes =
                                 progress.transferredBytes;
                             newFetchState.details[stemKey].totalBytes =
-                                progress.totalBytes === 0
-                                    ? null
-                                    : progress.totalBytes;
+                                progress.totalBytes !== 0
+                                    ? progress.totalBytes
+                                    : "unknown";
 
                             setFetchState(newFetchState);
                         };
@@ -139,10 +138,13 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
             loadPlayers();
             setFetchState({
                 state: "loading",
-                details: mapObject(FourStemEmptyObject, () => ({
-                    loadedBytes: 0,
-                    totalBytes: null,
-                })),
+                details: mapObject(
+                    FourStemEmptyObject,
+                    (): SingleLoadingProgress => ({
+                        loadedBytes: 0,
+                        totalBytes: "initial",
+                    })
+                ),
             });
         }
     }, [fetchState, setFetchState, props.track.stem_urls]);
@@ -158,16 +160,26 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
     }
 
     if (fetchState.state === "loading") {
-        const totalBytes: number | null = (() => {
+        const totalBytes: number | "unknown" | "initial" = (() => {
             let total = 0;
             let stemKey: FourStemKeys;
             for (stemKey in fetchState.details) {
                 const stemTotal = fetchState.details[stemKey].totalBytes;
-                if (stemTotal === null) {
-                    return null;
-                }
 
-                total += stemTotal;
+                switch (stemTotal) {
+                    case "unknown": {
+                        return "unknown";
+                    }
+
+                    case "initial": {
+                        return "initial";
+                    }
+
+                    default: {
+                        total += stemTotal;
+                        break;
+                    }
+                }
             }
             return total;
         })();
@@ -182,16 +194,26 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
         })();
 
         let formattedProgress = prettyBytes(loadedBytes);
-        if (totalBytes !== null) {
+        if (totalBytes !== "unknown" && totalBytes !== "initial") {
             formattedProgress += "/" + prettyBytes(totalBytes);
         }
 
         const progressBar = (() => {
-            if (totalBytes === null) {
+            if (totalBytes === "unknown") {
                 return <LinearProgress />;
             }
 
-            const percent = (loadedBytes / totalBytes) * 100;
+            const percent: number = (() => {
+                if (totalBytes === "initial") {
+                    // we don't know everything yet, just conservatively pretend it's out of 100MB
+                    // so the bar won't go backwards
+                    const pretendTotalBytes = 100 * 1000 * 1000;
+                    return (loadedBytes / pretendTotalBytes) * 100;
+                }
+
+                return (loadedBytes / totalBytes) * 100;
+            })();
+
             return <LinearProgress variant="determinate" value={percent} />;
         })();
 
