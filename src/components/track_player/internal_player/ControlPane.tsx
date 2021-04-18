@@ -11,7 +11,7 @@ import SectionLabel from "./SectionLabel";
 import { ButtonActionAndState } from "./useTimeControls";
 
 interface ControlPaneProps {
-    focused: boolean;
+    show: boolean;
     playing: boolean;
     onPlay: PlainFn;
     onPause: PlainFn;
@@ -45,7 +45,7 @@ const ControlPane: React.FC<ControlPaneProps> = (
     );
 
     useEffect(() => {
-        if (!props.focused) {
+        if (!props.show) {
             return;
         }
 

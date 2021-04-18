@@ -8,6 +8,8 @@ import SingleTrackPlayer from "./internal_player/single/SingleTrackPlayer";
 
 interface TrackPlayerProps {
     show: boolean;
+    currentTrack: boolean;
+
     track: Track;
     readonly timeSections: TimeSection[];
 
@@ -25,7 +27,8 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             case "single": {
                 return (
                     <SingleTrackPlayer
-                        focused={props.show}
+                        show={props.show}
+                        currentTrack={props.currentTrack}
                         track={props.track}
                         timeSections={props.timeSections}
                         playrate={props.playrate}
@@ -38,7 +41,8 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             case "4stems": {
                 return (
                     <FourStemTrackPlayer
-                        focused={props.show}
+                        show={props.show}
+                        currentTrack={props.currentTrack}
                         track={props.track}
                         timeSections={props.timeSections}
                         playrate={props.playrate}

@@ -32,7 +32,9 @@ const PaddedBox = withStyles((theme: Theme) => ({
 }))(Box);
 
 interface FourStemTrackPlayerProps {
-    focused: boolean;
+    show: boolean;
+    currentTrack: boolean;
+
     track: FourStemsTrack;
     readonly timeSections: TimeSection[];
 
@@ -255,7 +257,8 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
 
     return (
         <LoadedFourStemTrackPlayer
-            focused={props.focused}
+            show={props.show}
+            currentTrack={props.currentTrack}
             audioBuffers={fetchState.item}
             timeSections={props.timeSections}
             playrate={props.playrate}
