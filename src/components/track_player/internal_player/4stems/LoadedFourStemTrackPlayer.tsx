@@ -1,5 +1,6 @@
 import { Box } from "@material-ui/core";
 import audioBufferToWav from "audiobuffer-to-wav";
+import lodash from "lodash";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
 import * as Tone from "tone";
@@ -9,14 +10,14 @@ import {
     FourStemKeys,
 } from "../../../../common/ChordModel/Track";
 import { mapObject } from "../../../../common/mapObject";
+import { PlainFn } from "../../../../common/PlainFn";
 import ControlPane from "../ControlPane";
 import { useSections } from "../useSections";
-import { ButtonActionAndState, useTimeControls } from "../useTimeControls";
+import { useTimeControls } from "../useTimeControls";
 import { getAudioCtx } from "./audioCtx";
 import FourStemControlPane, {
     ButtonStateAndAction,
 } from "./FourStemControlPane";
-import lodash from "lodash";
 
 interface StemToneNodes {
     player: Tone.GrainPlayer;
@@ -32,10 +33,12 @@ type ToneNodes = Record<FourStemKeys, StemToneNodes>;
 type ButtonStates = Record<FourStemKeys, ButtonState>;
 
 interface LoadedFourStemTrackPlayerProps {
+    focused: boolean;
     audioBuffers: Record<FourStemKeys, AudioBuffer>;
     readonly timeSections: TimeSection[];
     playrate: number;
     onPlayrateChange: (newPlayrate: number) => void;
+    onMinimize: PlainFn;
 }
 
 const createToneNodes = (audioBuffer: AudioBuffer): StemToneNodes => {
@@ -104,11 +107,6 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
         style: { minWidth: "50vw" },
         height: "auto",
         config: { file: { forceAudio: true } },
-    };
-
-    const playButton: ButtonActionAndState = {
-        action: timeControl.play,
-        enabled: true,
     };
 
     const skipBack = timeControl.makeSkipBack(currentSection, previousSection);
@@ -186,15 +184,17 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
             </Box>
             {stemControlPane}
             <ControlPane
+                focused={props.focused}
                 playing={timeControl.playing}
                 sectionLabel={currentSectionLabel}
-                onPlay={playButton}
+                onPlay={timeControl.play}
                 onPause={timeControl.pause}
                 onJumpBack={timeControl.jumpBack}
                 onJumpForward={timeControl.jumpForward}
                 onSkipBack={skipBack}
                 onSkipForward={skipForward}
                 onGoToBeginning={timeControl.goToBeginning}
+                onMinimize={props.onMinimize}
                 playrate={100}
                 onPlayrateChange={() => {}}
             />

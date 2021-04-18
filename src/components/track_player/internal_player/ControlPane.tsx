@@ -1,23 +1,26 @@
 import { Box } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
-import React from "react";
+import React, { useEffect } from "react";
 import { PlainFn } from "../../../common/PlainFn";
+import { useRegisterTopKeyListener } from "../../GlobalKeyListener";
 import { controlPaneStyle } from "../common";
 import { ControlButton } from "./ControlButton";
 import ControlGroup from "./ControlGroup";
-import { ButtonActionAndState } from "./useTimeControls";
 import PlayrateControl from "./PlayrateControl";
 import SectionLabel from "./SectionLabel";
+import { ButtonActionAndState } from "./useTimeControls";
 
 interface ControlPaneProps {
+    focused: boolean;
     playing: boolean;
-    onPlay: ButtonActionAndState;
+    onPlay: PlainFn;
     onPause: PlainFn;
     onJumpBack: PlainFn;
     onJumpForward: PlainFn;
     onGoToBeginning: PlainFn;
     onSkipBack: ButtonActionAndState;
     onSkipForward: ButtonActionAndState;
+    onMinimize: PlainFn;
     playrate: number;
     onPlayrateChange: (newPlayrate: number) => void;
     sectionLabel: string;
@@ -33,14 +36,76 @@ const ControlPaneBox = withStyles({
 const ControlPane: React.FC<ControlPaneProps> = (
     props: ControlPaneProps
 ): JSX.Element => {
+    const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
+
     const playPauseButton = props.playing ? (
         <ControlButton.Pause onClick={props.onPause} />
     ) : (
-        <ControlButton.Play
-            onClick={props.onPlay.action}
-            disabled={!props.onPlay.enabled}
-        />
+        <ControlButton.Play onClick={props.onPlay} />
     );
+
+    useEffect(() => {
+        if (!props.focused) {
+            return;
+        }
+
+        const handleKey = (event: KeyboardEvent) => {
+            // only fire for "default" targets, when the user isn't particularly interacting
+            // with anything else
+            if (event.target !== document.body) {
+                return;
+            }
+
+            const stopEvent = () => {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+            };
+
+            switch (event.code) {
+                case "Space": {
+                    if (props.playing) {
+                        props.onPause();
+                        stopEvent();
+                    } else {
+                        props.onPlay();
+                        stopEvent();
+                    }
+
+                    break;
+                }
+                case "ArrowDown": {
+                    props.onMinimize();
+                    stopEvent();
+                    break;
+                }
+                case "ArrowLeft": {
+                    if (event.ctrlKey || event.metaKey) {
+                        props.onSkipBack.action();
+                    } else {
+                        props.onJumpBack();
+                    }
+
+                    stopEvent();
+                    break;
+                }
+                case "ArrowRight": {
+                    if (event.ctrlKey || event.metaKey) {
+                        props.onSkipForward.action();
+                    } else {
+                        props.onJumpForward();
+                    }
+
+                    stopEvent();
+                    return;
+                }
+            }
+        };
+
+        addTopKeyListener(handleKey);
+        return () => {
+            removeKeyListener(handleKey);
+        };
+    }, [props, addTopKeyListener, removeKeyListener]);
 
     return (
         <ControlPaneBox>

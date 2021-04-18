@@ -2,6 +2,7 @@ import { Collapse } from "@material-ui/core";
 import React from "react";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
 import { Track } from "../../common/ChordModel/Track";
+import { PlainFn } from "../../common/PlainFn";
 import FourStemTrackPlayer from "./internal_player/4stems/FourStemTrackPlayer";
 import SingleTrackPlayer from "./internal_player/single/SingleTrackPlayer";
 
@@ -12,6 +13,8 @@ interface TrackPlayerProps {
 
     playrate: number;
     onPlayrateChange: (newPlayrate: number) => void;
+
+    onMinimize: PlainFn;
 }
 
 const TrackPlayer: React.FC<TrackPlayerProps> = (
@@ -22,10 +25,12 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             case "single": {
                 return (
                     <SingleTrackPlayer
+                        focused={props.show}
                         track={props.track}
                         timeSections={props.timeSections}
                         playrate={props.playrate}
                         onPlayrateChange={props.onPlayrateChange}
+                        onMinimize={props.onMinimize}
                     />
                 );
             }
@@ -33,10 +38,12 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             case "4stems": {
                 return (
                     <FourStemTrackPlayer
+                        focused={props.show}
                         track={props.track}
                         timeSections={props.timeSections}
                         playrate={props.playrate}
                         onPlayrateChange={props.onPlayrateChange}
+                        onMinimize={props.onMinimize}
                     />
                 );
             }

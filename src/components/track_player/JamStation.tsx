@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import shortid from "shortid";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
 import { TrackList } from "../../common/ChordModel/Track";
-import MultiTrackPlayer from "./FullPlayer";
+import MultiTrackPlayer from "./MultiTrackPlayer";
 import MinimizedButton from "./MinimizedButton";
 import TrackListEditDialog from "./dialog/TrackListEditDialog";
 
@@ -103,7 +103,7 @@ const JamStation: React.FC<JamStationProps> = (
             onPlayrateChange={setPlayrate}
             currentTrackIndex={currentTrackIndex}
             onSelectCurrentTrack={setCurrentTrackIndex}
-            onCollapse={() => setPlayerVisibilityState("minimized")}
+            onMinimize={() => setPlayerVisibilityState("minimized")}
             onOpenTrackEditDialog={
                 canEditTrackList ? openTrackEditDialog : undefined
             }

@@ -20,6 +20,7 @@ import {
 } from "../../../../common/ChordModel/Track";
 import { FetchState } from "../../../../common/fetch";
 import { mapObject } from "../../../../common/mapObject";
+import { PlainFn } from "../../../../common/PlainFn";
 import { getAudioCtx } from "./audioCtx";
 import LoadedFourStemTrackPlayer from "./LoadedFourStemTrackPlayer";
 
@@ -31,11 +32,13 @@ const PaddedBox = withStyles((theme: Theme) => ({
 }))(Box);
 
 interface FourStemTrackPlayerProps {
+    focused: boolean;
     track: FourStemsTrack;
     readonly timeSections: TimeSection[];
 
     playrate: number;
     onPlayrateChange: (newPlayrate: number) => void;
+    onMinimize: PlainFn;
 }
 
 interface SingleLoadingProgress {
@@ -252,10 +255,12 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
 
     return (
         <LoadedFourStemTrackPlayer
+            focused={props.focused}
             audioBuffers={fetchState.item}
             timeSections={props.timeSections}
             playrate={props.playrate}
             onPlayrateChange={props.onPlayrateChange}
+            onMinimize={props.onMinimize}
         />
     );
 };

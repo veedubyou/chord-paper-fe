@@ -38,6 +38,7 @@ import { User, UserContext } from "./components/user/userContext";
 import Version from "./components/Version";
 import { withSongContext } from "./components/WithSongContext";
 import { withCloud } from "./components/WithCloud";
+import GlobalKeyListenerProvider from "./components/GlobalKeyListener";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -157,7 +158,9 @@ function App() {
                 />
                 <SnackbarProvider>
                     <HashRouter>
-                        <AppContent />
+                        <GlobalKeyListenerProvider>
+                            <AppContent />
+                        </GlobalKeyListenerProvider>
                     </HashRouter>
                 </SnackbarProvider>
             </ThemeProvider>
