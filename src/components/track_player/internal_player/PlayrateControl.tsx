@@ -23,22 +23,22 @@ const PercentageDisplay = withStyles((theme: Theme) => {
 })(Typography);
 
 interface PlayrateControlProps {
-    playrate: number;
-    onChange: (newPlayrate: number) => void;
+    playratePercentage: number;
+    onChange: (newPlayratePercentage: number) => void;
 }
 
 const PlayrateControl: React.FC<PlayrateControlProps> = (
     props: PlayrateControlProps
 ): JSX.Element => {
-    const playrate = Math.round(props.playrate);
-    const interval = 10;
+    const playrate = Math.round(props.playratePercentage);
+    const interval = 5;
     const percentage: string = `${playrate}%`;
 
     const onDecrease = () => props.onChange(playrate - interval);
     const onIncrease = () => props.onChange(playrate + interval);
 
-    const decreaseDisabled = playrate - interval <= 0;
-    const increaseDisabled = playrate + interval > 200;
+    const decreaseDisabled = playrate - interval < 50;
+    const increaseDisabled = playrate + interval > 150;
 
     return (
         <PlayrateBox>

@@ -36,9 +36,6 @@ interface FourStemTrackPlayerProps {
 
     track: FourStemsTrack;
     readonly timeSections: TimeSection[];
-
-    playrate: number;
-    onPlayrateChange: (newPlayrate: number) => void;
 }
 
 interface SingleLoadingProgress {
@@ -259,8 +256,6 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
             currentTrack={props.currentTrack}
             audioBuffers={fetchState.item}
             timeSections={props.timeSections}
-            playrate={props.playrate}
-            onPlayrateChange={props.onPlayrateChange}
         />
     );
 };

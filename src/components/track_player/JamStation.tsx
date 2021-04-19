@@ -34,8 +34,6 @@ const JamStation: React.FC<JamStationProps> = (
     const [loadPlayers, setLoadPlayers] = useState(false);
 
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-    const [playrate, setPlayrate] = useState(100);
-
     const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
 
     const canEditTrackList = props.onTrackListChanged !== undefined;
@@ -150,8 +148,6 @@ const JamStation: React.FC<JamStationProps> = (
             show={playerVisibilityState === "full"}
             tracklist={props.trackList}
             timeSections={props.timeSections}
-            playrate={playrate}
-            onPlayrateChange={setPlayrate}
             currentTrackIndex={currentTrackIndex}
             onSelectCurrentTrack={setCurrentTrackIndex}
             onMinimize={minimizePlayer}

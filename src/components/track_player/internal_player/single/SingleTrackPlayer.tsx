@@ -1,5 +1,5 @@
 import { Box } from "@material-ui/core";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
 import shortid from "shortid";
 import { TimeSection } from "../../../../common/ChordModel/ChordLine";
@@ -15,15 +15,13 @@ interface SingleTrackPlayerProps {
 
     track: SingleTrack;
     readonly timeSections: TimeSection[];
-
-    playrate: number;
-    onPlayrateChange: (newPlayrate: number) => void;
 }
 
 const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
     props: SingleTrackPlayerProps
 ): JSX.Element => {
     const playerRef = useRef<ReactPlayer>();
+    const [playratePercentage, setPlayratePercentage] = useState(100);
     const timeControl = useTimeControls(playerRef.current);
     const trackURL: string = useMemo(
         () => ensureGoogleDriveCacheBusted(props.track.url, shortid.generate()),
@@ -41,7 +39,7 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
         ref: playerRef,
         playing: timeControl.playing,
         controls: true,
-        playbackRate: props.playrate / 100,
+        playbackRate: playratePercentage / 100,
         onPlay: timeControl.onPlay,
         onPause: timeControl.onPause,
         onProgress: timeControl.onProgress,
@@ -76,8 +74,8 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
                 onSkipBack={skipBack}
                 onSkipForward={skipForward}
                 onGoToBeginning={timeControl.goToBeginning}
-                playrate={props.playrate}
-                onPlayrateChange={props.onPlayrateChange}
+                playratePercentage={playratePercentage}
+                onPlayratePercentageChange={setPlayratePercentage}
             />
         </Box>
     );

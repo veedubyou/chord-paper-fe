@@ -31,12 +31,13 @@ interface StemToneNodes {
 
 interface StemState {
     muted: boolean;
-    volume: number;
+    volumePercentage: number;
 }
 
 type ToneNodes = Record<FourStemKeys, StemToneNodes>;
 type PlayerState = {
-    masterVolume: number;
+    masterVolumePercentage: number;
+    playratePercentage: number;
     stems: Record<FourStemKeys, StemState>;
 };
 
@@ -45,15 +46,15 @@ interface LoadedFourStemTrackPlayerProps {
     currentTrack: boolean;
     audioBuffers: Record<FourStemKeys, AudioBuffer>;
     readonly timeSections: TimeSection[];
-    playrate: number;
-    onPlayrateChange: (newPlayrate: number) => void;
 }
 
 const createToneNodes = (audioBuffer: AudioBuffer): StemToneNodes => {
     const volumeNode = new Tone.Volume();
-    const playerNode = new Tone.GrainPlayer({ url: audioBuffer }).connect(
-        volumeNode
-    );
+    const playerNode = new Tone.GrainPlayer({
+        url: audioBuffer,
+        grainSize: 0.1,
+        overlap: 0.05,
+    }).connect(volumeNode);
 
     return {
         volumeNode: volumeNode,
@@ -97,11 +98,12 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
     const initialPlayerState: PlayerState = (() => {
         const stemStates = mapObject(FourStemEmptyObject, () => ({
             muted: false,
-            volume: 100,
+            volumePercentage: 100,
         }));
 
         return {
-            masterVolume: 100,
+            masterVolumePercentage: 100,
+            playratePercentage: 100,
             stems: stemStates,
         };
     })();
@@ -123,7 +125,8 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
     ) => {
         // need to use ref, seems like changing this doesn't cause a rerender in react player
         const newPlayerState = lodash.cloneDeep(playerStateRef.current);
-        newPlayerState.masterVolume = event.currentTarget.volume * 100;
+        newPlayerState.masterVolumePercentage =
+            event.currentTarget.volume * 100;
         setPlayerState(newPlayerState);
     };
 
@@ -131,8 +134,8 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
         ref: playerRef,
         playing: timeControl.playing,
         controls: true,
-        volume: playerState.masterVolume / 100,
-        playbackRate: 1, //TODO
+        volume: playerState.masterVolumePercentage / 100,
+        playbackRate: playerState.playratePercentage / 100,
         onPlay: timeControl.onPlay,
         onPause: timeControl.onPause,
         onProgress: timeControl.onProgress,
@@ -163,29 +166,45 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
             Tone.Transport.pause();
         }
 
+        const playrate = playerState.playratePercentage / 100;
+
+        // Tone transport doesn't observe slowed down time, only each individual node plays the sound back slower
+        // e.g. if a 10s clip is played at 50% speed, then Tone transport will finish playing it from 0s to 20s
+        // so to compare player time and Tone transport time, it needs to be scaled against the playrate
+        const adjustedToneTime = Tone.Transport.seconds * playrate;
+
         // sync the time
-        if (Math.abs(timeControl.currentTime - Tone.Transport.seconds) > 1) {
-            Tone.Transport.seconds = timeControl.currentTime;
+        if (Math.abs(timeControl.currentTime - adjustedToneTime) > 1) {
+            Tone.Transport.seconds = timeControl.currentTime / playrate;
         }
-    }, [timeControl.playing, timeControl.currentTime]);
+    }, [
+        timeControl.playing,
+        timeControl.currentTime,
+        playerState.playratePercentage,
+    ]);
 
     // synchronize player state and track volumes/mutedness
     useEffect(() => {
         let stemKey: FourStemKeys;
         for (stemKey in playerState.stems) {
-            const stemVolumeFraction =
-                (playerState.stems[stemKey].volume / 100) *
-                (playerState.masterVolume / 100);
+            const stemState = playerState.stems[stemKey];
+            const nodes = toneNodes[stemKey];
+
+            const stemVolume =
+                (stemState.volumePercentage / 100) *
+                (playerState.masterVolumePercentage / 100);
 
             // don't set if fraction is 0, log of 0 is undefined
-            if (stemVolumeFraction > 0) {
-                const stemVolumeDecibels = 20 * Math.log10(stemVolumeFraction);
-                toneNodes[stemKey].volumeNode.volume.value = stemVolumeDecibels;
+            if (stemVolume > 0) {
+                const stemVolumeDecibels = 20 * Math.log10(stemVolume);
+                nodes.volumeNode.volume.value = stemVolumeDecibels;
             }
 
             // mute needs to be set last because it can be overrided by volume
-            toneNodes[stemKey].endNode.mute =
-                playerState.stems[stemKey].muted || stemVolumeFraction === 0;
+            nodes.endNode.mute = stemState.muted || stemVolume === 0;
+
+            nodes.playerNode.playbackRate =
+                playerState.playratePercentage / 100;
         }
     }, [toneNodes, playerState]);
 
@@ -239,10 +258,10 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
                     newPlayerState.stems[stemKey].muted = !enabled;
                     setPlayerState(newPlayerState);
                 },
-                volume: stemState.volume,
+                volume: stemState.volumePercentage,
                 onVolumeChanged: (newVolume: number) => {
                     const newPlayerState = lodash.cloneDeep(playerState);
-                    newPlayerState.stems[stemKey].volume = newVolume;
+                    newPlayerState.stems[stemKey].volumePercentage = newVolume;
                     setPlayerState(newPlayerState);
                 },
             };
@@ -252,6 +271,13 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
 
         return <FourStemControlPane {...stemControls} />;
     })();
+
+    const handlePlayratePercentageChange = (newPlayratePercentage: number) => {
+        setPlayerState({
+            ...playerState,
+            playratePercentage: newPlayratePercentage,
+        });
+    };
 
     return (
         <Box>
@@ -270,8 +296,8 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
                 onSkipBack={skipBack}
                 onSkipForward={skipForward}
                 onGoToBeginning={timeControl.goToBeginning}
-                playrate={100}
-                onPlayrateChange={() => {}}
+                playratePercentage={playerState.playratePercentage}
+                onPlayratePercentageChange={handlePlayratePercentageChange}
             />
         </Box>
     );
