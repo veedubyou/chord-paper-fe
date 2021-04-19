@@ -178,12 +178,16 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
             const stemVolumeFraction =
                 (playerState.stems[stemKey].volume / 100) *
                 (playerState.masterVolume / 100);
-            const stemVolumeDecibels = 20 * Math.log10(stemVolumeFraction);
 
-            toneNodes[stemKey].volumeNode.volume.value = stemVolumeDecibels;
+            // don't set if fraction is 0, log of 0 is undefined
+            if (stemVolumeFraction > 0) {
+                const stemVolumeDecibels = 20 * Math.log10(stemVolumeFraction);
+                toneNodes[stemKey].volumeNode.volume.value = stemVolumeDecibels;
+            }
 
             // mute needs to be set last because it can be overrided by volume
-            toneNodes[stemKey].endNode.mute = playerState.stems[stemKey].muted;
+            toneNodes[stemKey].endNode.mute =
+                playerState.stems[stemKey].muted || stemVolumeFraction === 0;
         }
     }, [toneNodes, playerState]);
 
