@@ -20,7 +20,6 @@ interface ControlPaneProps {
     onGoToBeginning: PlainFn;
     onSkipBack: ButtonActionAndState;
     onSkipForward: ButtonActionAndState;
-    onMinimize: PlainFn;
     playrate: number;
     onPlayrateChange: (newPlayrate: number) => void;
     sectionLabel: string;
@@ -71,11 +70,6 @@ const ControlPane: React.FC<ControlPaneProps> = (
                         stopEvent();
                     }
 
-                    break;
-                }
-                case "ArrowDown": {
-                    props.onMinimize();
-                    stopEvent();
                     break;
                 }
                 case "ArrowLeft": {

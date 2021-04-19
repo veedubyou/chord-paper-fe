@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import shortid from "shortid";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
 import { TrackList } from "../../common/ChordModel/Track";
 import MultiTrackPlayer from "./MultiTrackPlayer";
 import MinimizedButton from "./MinimizedButton";
 import TrackListEditDialog from "./dialog/TrackListEditDialog";
+import { useRegisterTopKeyListener } from "../GlobalKeyListener";
 
 type PlayerVisibilityState = "minimized" | "full";
 
@@ -34,6 +35,8 @@ const JamStation: React.FC<JamStationProps> = (
 
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
     const [playrate, setPlayrate] = useState(100);
+
+    const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
 
     const canEditTrackList = props.onTrackListChanged !== undefined;
     const trackListIsEmpty = props.trackList.tracks.length === 0;
@@ -75,16 +78,64 @@ const JamStation: React.FC<JamStationProps> = (
         />
     );
 
-    if (trackListIsEmpty) {
-        // can't add any tracks, also nothing to play. just show a disabled button
-        if (!canEditTrackList) {
-            return collapsedButtonFn(
-                true,
-                () => {},
-                "No audio tracks available"
-            );
+    const showPlayer = useCallback(() => {
+        if (!loadPlayers) {
+            setLoadPlayers(true);
         }
 
+        setPlayerVisibilityState("full");
+    }, [loadPlayers, setLoadPlayers, setPlayerVisibilityState]);
+
+    const minimizePlayer = useCallback(() => {
+        setPlayerVisibilityState("minimized");
+    }, [setPlayerVisibilityState]);
+
+    const inoperable = trackListIsEmpty && !canEditTrackList;
+
+    useEffect(() => {
+        if (inoperable) {
+            return;
+        }
+
+        const handleKey = (event: KeyboardEvent) => {
+            // only fire for "default" targets, when the user isn't particularly interacting
+            // with anything else
+            if (event.target !== document.body) {
+                return;
+            }
+
+            if (event.code !== "Slash") {
+                return;
+            }
+
+            if (playerVisibilityState === "minimized") {
+                showPlayer();
+            } else {
+                minimizePlayer();
+            }
+
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        };
+
+        addTopKeyListener(handleKey);
+        return () => removeKeyListener(handleKey);
+    }, [
+        addTopKeyListener,
+        removeKeyListener,
+        playerVisibilityState,
+        showPlayer,
+        minimizePlayer,
+        inoperable,
+    ]);
+
+    if (inoperable) {
+        // can't add any tracks, also nothing to play. just show a disabled button
+
+        return collapsedButtonFn(true, () => {}, "No audio tracks available");
+    }
+
+    if (trackListIsEmpty) {
         // prompt the user to add tracks if there is none
         return (
             <>
@@ -103,28 +154,16 @@ const JamStation: React.FC<JamStationProps> = (
             onPlayrateChange={setPlayrate}
             currentTrackIndex={currentTrackIndex}
             onSelectCurrentTrack={setCurrentTrackIndex}
-            onMinimize={() => setPlayerVisibilityState("minimized")}
+            onMinimize={minimizePlayer}
             onOpenTrackEditDialog={
                 canEditTrackList ? openTrackEditDialog : undefined
             }
         />
     );
 
-    const collapsedButtonClickHandler = () => {
-        if (!loadPlayers) {
-            setLoadPlayers(true);
-        }
-
-        setPlayerVisibilityState("full");
-    };
-
     return (
         <>
-            {collapsedButtonFn(
-                false,
-                collapsedButtonClickHandler,
-                "Show Player"
-            )}
+            {collapsedButtonFn(false, showPlayer, "Show Player")}
             {fullPlayer}
             {trackEditDialog}
         </>
