@@ -20,8 +20,8 @@ interface ControlPaneProps {
     onGoToBeginning: PlainFn;
     onSkipBack: ButtonActionAndState;
     onSkipForward: ButtonActionAndState;
-    playrate: number;
-    onPlayrateChange: (newPlayrate: number) => void;
+    playratePercentage: number;
+    onPlayratePercentageChange: (newPlayrate: number) => void;
     sectionLabel: string;
 }
 
@@ -119,8 +119,8 @@ const ControlPane: React.FC<ControlPaneProps> = (
             </ControlGroup>
             <SectionLabel value={props.sectionLabel} />
             <PlayrateControl
-                playrate={props.playrate}
-                onChange={props.onPlayrateChange}
+                playratePercentage={props.playratePercentage}
+                onChange={props.onPlayratePercentageChange}
             />
         </ControlPaneBox>
     );

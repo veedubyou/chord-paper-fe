@@ -67,9 +67,6 @@ interface MultiTrackPlayerProps {
     currentTrackIndex: number;
     onSelectCurrentTrack: (index: number) => void;
 
-    playrate: number;
-    onPlayrateChange: (newPlayrate: number) => void;
-
     onOpenTrackEditDialog?: PlainFn;
     onMinimize: PlainFn;
 }
@@ -143,8 +140,6 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
                     currentTrack={currentTrack}
                     track={track}
                     timeSections={props.timeSections}
-                    playrate={props.playrate}
-                    onPlayrateChange={props.onPlayrateChange}
                 />
             );
         }

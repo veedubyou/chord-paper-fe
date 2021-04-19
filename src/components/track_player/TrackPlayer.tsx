@@ -11,9 +11,6 @@ interface TrackPlayerProps {
 
     track: Track;
     readonly timeSections: TimeSection[];
-
-    playrate: number;
-    onPlayrateChange: (newPlayrate: number) => void;
 }
 
 const TrackPlayer: React.FC<TrackPlayerProps> = (
@@ -28,8 +25,6 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
                         currentTrack={props.currentTrack}
                         track={props.track}
                         timeSections={props.timeSections}
-                        playrate={props.playrate}
-                        onPlayrateChange={props.onPlayrateChange}
                     />
                 );
             }
@@ -41,8 +36,6 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
                         currentTrack={props.currentTrack}
                         track={props.track}
                         timeSections={props.timeSections}
-                        playrate={props.playrate}
-                        onPlayrateChange={props.onPlayrateChange}
                     />
                 );
             }
