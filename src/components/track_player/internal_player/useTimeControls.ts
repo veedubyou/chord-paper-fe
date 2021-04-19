@@ -1,6 +1,7 @@
 import { Duration } from "luxon";
 import { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
+import FilePlayer from "react-player/file";
 import { TimeSection } from "../../../common/ChordModel/ChordLine";
 import { PlainFn } from "../../../common/PlainFn";
 import { PlayerTimeContext } from "../../PlayerTimeContext";
@@ -35,7 +36,7 @@ export interface TimeControls {
 }
 
 export const useTimeControls = (
-    currentPlayerRef: ReactPlayer | undefined
+    currentPlayerRef: ReactPlayer | FilePlayer | undefined
 ): TimeControls => {
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);

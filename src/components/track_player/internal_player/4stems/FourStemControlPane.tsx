@@ -7,6 +7,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import {
+    blueGrey,
     grey,
     lightBlue,
     pink,
@@ -25,6 +26,12 @@ const FullSizedBox = withStyles((theme: Theme) => ({
         paddingRight: theme.spacing(1.5),
     },
 }))(Box);
+
+const VolumeSlider = withStyles({
+    root: {
+        color: blueGrey[400],
+    },
+})(Slider);
 
 const withColoredButtonStyle = (color: string) => {
     return withStyles((theme: Theme) => ({
@@ -45,9 +52,11 @@ const withColoredButtonStyle = (color: string) => {
 
 const DisabledButton = withColoredButtonStyle(grey[300])(UnstyledButton);
 
-export interface ButtonStateAndAction {
+export interface StemControl {
     enabled: boolean;
-    onToggle: (newState: boolean) => void;
+    onEnabledChanged: (newEnabled: boolean) => void;
+    volume: number;
+    onVolumeChanged: (newVolume: number) => void;
 }
 
 interface StemProperty {
@@ -74,7 +83,7 @@ const buttonSpecs: Record<FourStemKeys, StemProperty> = {
     },
 };
 
-type FourStemControlPaneProps = Record<FourStemKeys, ButtonStateAndAction>;
+type FourStemControlPaneProps = Record<FourStemKeys, StemControl>;
 
 const FourStemControlPane: React.FC<FourStemControlPaneProps> = (
     props: FourStemControlPaneProps
@@ -85,12 +94,23 @@ const FourStemControlPane: React.FC<FourStemControlPaneProps> = (
             : DisabledButton;
 
         const handleClick = () => {
-            props[stemKey].onToggle(!props[stemKey].enabled);
+            props[stemKey].onEnabledChanged(!props[stemKey].enabled);
         };
 
-        const changeHandler = (event: React.ChangeEvent<{}>) => {
+        const preventClickBubble = (event: React.ChangeEvent<{}>) => {
             event.preventDefault();
             event.stopPropagation();
+        };
+
+        const handleVolumeChange = (
+            _event: React.ChangeEvent<{}>,
+            value: number | number[]
+        ) => {
+            if (typeof value !== "number") {
+                return;
+            }
+
+            props[stemKey].onVolumeChanged(value);
         };
 
         return (
@@ -99,8 +119,15 @@ const FourStemControlPane: React.FC<FourStemControlPaneProps> = (
                     <FullSizedBox>
                         <Typography variant="body1">{stem.label}</Typography>
 
-                        <Box onClick={changeHandler}>
-                            <Slider />
+                        <Box onClick={preventClickBubble}>
+                            <VolumeSlider
+                                value={props[stemKey].volume}
+                                onChange={handleVolumeChange}
+                                min={0}
+                                max={150}
+                                step={10}
+                                valueLabelDisplay="auto"
+                            />
                         </Box>
                     </FullSizedBox>
                 </StemButton>
