@@ -1,10 +1,13 @@
 import {
+    Box,
     Button as UnstyledButton,
     Grid,
+    Slider,
     Theme,
     Typography,
 } from "@material-ui/core";
 import {
+    blueGrey,
     grey,
     lightBlue,
     pink,
@@ -15,6 +18,20 @@ import { withStyles } from "@material-ui/styles";
 import React from "react";
 import { FourStemKeys } from "../../../../common/ChordModel/Track";
 import { mapObject } from "../../../../common/mapObject";
+
+const FullSizedBox = withStyles((theme: Theme) => ({
+    root: {
+        width: "100%",
+        paddingLeft: theme.spacing(1.5),
+        paddingRight: theme.spacing(1.5),
+    },
+}))(Box);
+
+const VolumeSlider = withStyles({
+    root: {
+        color: blueGrey[400],
+    },
+})(Slider);
 
 const withColoredButtonStyle = (color: string) => {
     return withStyles((theme: Theme) => ({
@@ -35,9 +52,11 @@ const withColoredButtonStyle = (color: string) => {
 
 const DisabledButton = withColoredButtonStyle(grey[300])(UnstyledButton);
 
-export interface ButtonStateAndAction {
+export interface StemControl {
     enabled: boolean;
-    onToggle: (newState: boolean) => void;
+    onEnabledChanged: (newEnabled: boolean) => void;
+    volume: number;
+    onVolumeChanged: (newVolume: number) => void;
 }
 
 interface StemProperty {
@@ -64,7 +83,7 @@ const buttonSpecs: Record<FourStemKeys, StemProperty> = {
     },
 };
 
-type FourStemControlPaneProps = Record<FourStemKeys, ButtonStateAndAction>;
+type FourStemControlPaneProps = Record<FourStemKeys, StemControl>;
 
 const FourStemControlPane: React.FC<FourStemControlPaneProps> = (
     props: FourStemControlPaneProps
@@ -75,13 +94,42 @@ const FourStemControlPane: React.FC<FourStemControlPaneProps> = (
             : DisabledButton;
 
         const handleClick = () => {
-            props[stemKey].onToggle(!props[stemKey].enabled);
+            props[stemKey].onEnabledChanged(!props[stemKey].enabled);
+        };
+
+        const preventClickBubble = (event: React.ChangeEvent<{}>) => {
+            event.preventDefault();
+            event.stopPropagation();
+        };
+
+        const handleVolumeChange = (
+            _event: React.ChangeEvent<{}>,
+            value: number | number[]
+        ) => {
+            if (typeof value !== "number") {
+                return;
+            }
+
+            props[stemKey].onVolumeChanged(value);
         };
 
         return (
             <Grid xs={3} item>
                 <StemButton variant="contained" onClick={handleClick}>
-                    <Typography variant="body1">{stem.label}</Typography>
+                    <FullSizedBox>
+                        <Typography variant="body1">{stem.label}</Typography>
+
+                        <Box onClick={preventClickBubble}>
+                            <VolumeSlider
+                                value={props[stemKey].volume}
+                                onChange={handleVolumeChange}
+                                min={0}
+                                max={150}
+                                step={10}
+                                valueLabelDisplay="auto"
+                            />
+                        </Box>
+                    </FullSizedBox>
                 </StemButton>
             </Grid>
         );
