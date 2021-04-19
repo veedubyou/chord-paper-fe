@@ -145,7 +145,6 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
                     timeSections={props.timeSections}
                     playrate={props.playrate}
                     onPlayrateChange={props.onPlayrateChange}
-                    onMinimize={props.onMinimize}
                 />
             );
         }

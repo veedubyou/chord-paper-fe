@@ -17,7 +17,6 @@ import {
     FourStemKeys,
 } from "../../../../common/ChordModel/Track";
 import { mapObject } from "../../../../common/mapObject";
-import { PlainFn } from "../../../../common/PlainFn";
 import ControlPane from "../ControlPane";
 import { useSections } from "../useSections";
 import { useTimeControls } from "../useTimeControls";
@@ -48,7 +47,6 @@ interface LoadedFourStemTrackPlayerProps {
     readonly timeSections: TimeSection[];
     playrate: number;
     onPlayrateChange: (newPlayrate: number) => void;
-    onMinimize: PlainFn;
 }
 
 const createToneNodes = (audioBuffer: AudioBuffer): StemToneNodes => {
@@ -268,7 +266,6 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
                 onSkipBack={skipBack}
                 onSkipForward={skipForward}
                 onGoToBeginning={timeControl.goToBeginning}
-                onMinimize={props.onMinimize}
                 playrate={100}
                 onPlayrateChange={() => {}}
             />
