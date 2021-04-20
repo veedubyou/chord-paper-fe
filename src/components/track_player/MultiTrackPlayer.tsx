@@ -9,8 +9,9 @@ import {
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 import CollapseDownIcon from "@material-ui/icons/ExpandMore";
+import RefreshIcon from "@material-ui/icons/Refresh";
 import { makeStyles, withStyles } from "@material-ui/styles";
-import React from "react";
+import React, { useRef } from "react";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
 import { Track, TrackList } from "../../common/ChordModel/Track";
 import { PlainFn } from "../../common/PlainFn";
@@ -20,7 +21,7 @@ import {
     TitleBar,
     withBottomRightBox,
 } from "./common";
-import TrackPlayer from "./TrackPlayer";
+import TrackPlayer, { Refreshable } from "./TrackPlayer";
 
 const FlexBox = withStyles((theme: Theme) => ({
     root: {
@@ -75,10 +76,19 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
     props: MultiTrackPlayerProps
 ): JSX.Element => {
     const paddingLeftStyle = usePaddingLeftStyle();
+    const refreshActionRef = useRef<Refreshable | null>(null);
 
     const trackListEditButton = props.onOpenTrackEditDialog !== undefined && (
         <TitleBarButton onClick={props.onOpenTrackEditDialog}>
             <EditIcon />
+        </TitleBarButton>
+    );
+
+    const refresh = () => refreshActionRef.current?.refresh();
+
+    const trackRefreshButton = (
+        <TitleBarButton onClick={refresh}>
+            <RefreshIcon />
         </TitleBarButton>
     );
 
@@ -118,6 +128,7 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
         <TitleBar>
             <Box />
             <FlexBox>
+                {trackRefreshButton}
                 {trackListEditButton}
                 {trackListPicker}
             </FlexBox>
@@ -133,9 +144,12 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
         (track: Track, index: number) => {
             const currentTrack = index === props.currentTrackIndex;
             const show = currentTrack && props.show;
+            const ref = currentTrack ? refreshActionRef : undefined;
+
             return (
                 <TrackPlayer
-                    key={`${index}-${track.label}`}
+                    key={`${index}-${track.id}`}
+                    refreshRef={ref}
                     show={show}
                     currentTrack={currentTrack}
                     track={track}

@@ -1,6 +1,7 @@
 import { Box } from "@material-ui/core";
 import audioBufferToWav from "audiobuffer-to-wav";
 import lodash from "lodash";
+import { useSnackbar } from "notistack";
 import React, {
     ReactEventHandler,
     SyntheticEvent,
@@ -82,6 +83,7 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
 ): JSX.Element => {
     const playerRef = useRef<FilePlayer>();
     const timeControl = useTimeControls(playerRef.current);
+    const { enqueueSnackbar } = useSnackbar();
 
     const [
         currentSectionLabel,
@@ -152,6 +154,36 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
 
     const skipBack = timeControl.makeSkipBack(currentSection, previousSection);
     const skipForward = timeControl.makeSkipForward(nextSection);
+
+    // check the integrity of the loaded tracks - they should all be the same length
+    // otherwise there could be a loading error
+    useEffect(() => {
+        let minDuration: number | null = null;
+        let maxDuration: number | null = null;
+
+        let stemKey: FourStemKeys;
+        for (stemKey in props.audioBuffers) {
+            const buffer = props.audioBuffers[stemKey];
+            if (minDuration === null || buffer.duration < minDuration) {
+                minDuration = buffer.duration;
+            }
+
+            if (maxDuration === null || buffer.duration > maxDuration) {
+                maxDuration = buffer.duration;
+            }
+        }
+
+        if (maxDuration === null || minDuration === null) {
+            return;
+        }
+
+        if (maxDuration - minDuration > 1) {
+            enqueueSnackbar(
+                "Mismatch in length of tracks loaded, try refreshing",
+                { variant: "warning" }
+            );
+        }
+    }, [enqueueSnackbar, props.audioBuffers]);
 
     // synchronize the time control and tone transport
     useEffect(() => {
