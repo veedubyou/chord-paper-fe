@@ -25,7 +25,8 @@ import { getAudioCtx } from "./audioCtx";
 import FourStemControlPane, { StemControl } from "./FourStemControlPane";
 
 interface StemToneNodes {
-    playerNode: Tone.GrainPlayer;
+    playerNode: Tone.Player;
+    pitchShiftNode: Tone.PitchShift;
     volumeNode: Tone.Volume;
     endNode: Tone.Volume;
 }
@@ -51,17 +52,21 @@ interface LoadedFourStemTrackPlayerProps {
 
 const createToneNodes = (audioBuffer: AudioBuffer): StemToneNodes => {
     const volumeNode = new Tone.Volume();
-    const playerNode = new Tone.GrainPlayer({
+    const pitchShiftNode = new Tone.PitchShift();
+    const playerNode = new Tone.Player({
         url: audioBuffer,
-        grainSize: 0.1,
-        overlap: 0.05,
-    }).connect(volumeNode);
+    }).chain(pitchShiftNode, volumeNode);
 
     return {
+        pitchShiftNode: pitchShiftNode,
         volumeNode: volumeNode,
         playerNode: playerNode,
         endNode: volumeNode,
     };
+};
+
+const semitonesToOffsetPlayrate = (playrate: number) => {
+    return 12 * Math.log2(1 / playrate);
 };
 
 const createEmptySongURL = (time: number): string => {
@@ -198,16 +203,8 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
             Tone.Transport.pause();
         }
 
-        const playrate = playerState.playratePercentage / 100;
-
-        // Tone transport doesn't observe slowed down time, only each individual node plays the sound back slower
-        // e.g. if a 10s clip is played at 50% speed, then Tone transport will finish playing it from 0s to 20s
-        // so to compare player time and Tone transport time, it needs to be scaled against the playrate
-        const adjustedToneTime = Tone.Transport.seconds * playrate;
-
-        // sync the time
-        if (Math.abs(timeControl.currentTime - adjustedToneTime) > 1) {
-            Tone.Transport.seconds = timeControl.currentTime / playrate;
+        if (Math.abs(timeControl.currentTime - Tone.Transport.seconds) > 1) {
+            Tone.Transport.seconds = timeControl.currentTime;
         }
     }, [
         timeControl.playing,
@@ -235,8 +232,10 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
             // mute needs to be set last because it can be overrided by volume
             nodes.endNode.mute = stemState.muted || stemVolume === 0;
 
-            nodes.playerNode.playbackRate =
-                playerState.playratePercentage / 100;
+            const playrate = playerState.playratePercentage / 100;
+
+            nodes.playerNode.playbackRate = playrate;
+            nodes.pitchShiftNode.pitch = semitonesToOffsetPlayrate(playrate);
         }
     }, [toneNodes, playerState]);
 
