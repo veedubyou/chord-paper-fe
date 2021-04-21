@@ -38,7 +38,7 @@ const PlayrateControl: React.FC<PlayrateControlProps> = (
     const onIncrease = () => props.onChange(playrate + interval);
 
     const decreaseDisabled = playrate - interval < 50;
-    const increaseDisabled = playrate + interval > 150;
+    const increaseDisabled = playrate + interval > 100;
 
     return (
         <PlayrateBox>
