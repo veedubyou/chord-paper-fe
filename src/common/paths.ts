@@ -76,6 +76,11 @@ export class SongIDModePath {
         const result = path.match(/\/song\/.+\/play/i);
         return result !== null;
     }
+
+    static isEditMode(path: string): boolean {
+        const result = path.match(/\/song\/.+\/edit/i);
+        return result !== null;
+    }
 }
 
 export class DemoPath {
