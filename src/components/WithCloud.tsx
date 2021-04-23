@@ -1,18 +1,18 @@
 import { isLeft } from "fp-ts/lib/Either";
 import isOnline from "is-online";
 import { useSnackbar } from "notistack";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
+import { Prompt, useHistory } from "react-router";
 import { useErrorMessage } from "../common/backend/errors";
 import { updateSong } from "../common/backend/requests";
 import { ChordSong } from "../common/ChordModel/ChordSong";
+import { SongIDModePath } from "../common/paths";
 import { User, UserContext } from "./user/userContext";
 
 interface SongProps {
     song: ChordSong;
     onSongChanged?: (song: ChordSong) => void;
 }
-
-let dirty: boolean = false;
 
 export const withCloud = <P extends SongProps>(
     OriginalComponent: React.FC<P>
@@ -21,16 +21,32 @@ export const withCloud = <P extends SongProps>(
         const user: User | null = React.useContext(UserContext);
         const showError = useErrorMessage();
         const { enqueueSnackbar } = useSnackbar();
+        const dirtyRef = useRef(false);
+        const history = useHistory();
 
         const handleSongChanged = (song: ChordSong) => {
-            dirty = true;
+            dirtyRef.current = true;
             props.onSongChanged?.(song);
         };
 
         useEffect(() => {
+            const unloadMessageFn = (event: Event) => {
+                if (dirtyRef.current) {
+                    event.preventDefault();
+                    event.returnValue = true;
+                }
+            };
+
+            window.addEventListener("beforeunload", unloadMessageFn);
+
+            return () =>
+                window.removeEventListener("beforeunload", unloadMessageFn);
+        }, []);
+
+        useEffect(() => {
             const shouldSave = async (song: ChordSong): Promise<boolean> => {
                 return (
-                    dirty &&
+                    dirtyRef.current &&
                     !song.isUnsaved() &&
                     song.isOwner(user) &&
                     (await isOnline())
@@ -44,10 +60,10 @@ export const withCloud = <P extends SongProps>(
                     await showError(error);
                 }
                 // set dirty back to true to try again later
-                dirty = true;
+                dirtyRef.current = true;
             };
 
-            const save = async (song: ChordSong) => {
+            const saveIfChanged = async (song: ChordSong) => {
                 if (user === null) {
                     return;
                 }
@@ -56,13 +72,17 @@ export const withCloud = <P extends SongProps>(
                     return;
                 }
 
-                dirty = false;
+                await save(user, song);
+            };
 
+            const save = async (user: User, song: ChordSong) => {
                 const result = await updateSong(song, user.authToken);
                 if (isLeft(result)) {
                     await handleError(result.left);
                     return;
                 }
+
+                dirtyRef.current = false;
 
                 const deserializeResult = ChordSong.fromJSONObject(
                     result.right
@@ -78,9 +98,12 @@ export const withCloud = <P extends SongProps>(
                 props.onSongChanged?.(song);
             };
 
-            const interval = setInterval(() => save(props.song), 10000);
+            const interval = setInterval(
+                () => saveIfChanged(props.song),
+                10000
+            );
             return () => clearInterval(interval);
-        }, [props, user, enqueueSnackbar, showError]);
+        }, [props, user, enqueueSnackbar, showError, dirtyRef]);
 
         // https://github.com/microsoft/TypeScript/issues/35858
         const originalComponentProps = {
@@ -88,6 +111,22 @@ export const withCloud = <P extends SongProps>(
             onSongChanged: handleSongChanged,
         } as P;
 
-        return <OriginalComponent {...originalComponentProps} />;
+        const showLeavingPrompt = () => {
+            if (
+                dirtyRef.current &&
+                SongIDModePath.isEditMode(history.location.pathname)
+            ) {
+                return "This page is asking you to confirm that you want to leave - data you have entered may not be saved.";
+            }
+
+            return true;
+        };
+
+        return (
+            <>
+                <Prompt message={showLeavingPrompt} />
+                <OriginalComponent {...originalComponentProps} />
+            </>
+        );
     };
 };
