@@ -26,6 +26,7 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
         numberOfColumnsPerPage: 2,
         fontSize: 14,
         columnMargin: 20,
+        scrollWidth: "page",
     });
 
     const transparentStyle = useTransparentStyle();

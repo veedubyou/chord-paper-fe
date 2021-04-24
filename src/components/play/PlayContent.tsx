@@ -13,6 +13,7 @@ export interface DisplaySettings {
     numberOfColumnsPerPage: number;
     fontSize: number;
     columnMargin: number;
+    scrollWidth: "page" | "column";
 }
 
 interface PlayContentProps {
@@ -43,7 +44,13 @@ const PlayContent: React.FC<PlayContentProps> = (
     const scrollPage = useCallback(
         (forward: boolean) => {
             const currentPos = window.scrollX;
-            const delta = forward ? windowWidth : -windowWidth;
+            const delta: number = (() => {
+                const scrollDelta =
+                    props.displaySettings.scrollWidth === "column"
+                        ? columnWidth
+                        : windowWidth;
+                return forward ? scrollDelta : -scrollDelta;
+            })();
 
             let nextPos = currentPos + delta;
 
@@ -62,7 +69,12 @@ const PlayContent: React.FC<PlayContentProps> = (
                 behavior: "smooth",
             });
         },
-        [columnWidth, windowWidth, snapThreshold]
+        [
+            columnWidth,
+            windowWidth,
+            snapThreshold,
+            props.displaySettings.scrollWidth,
+        ]
     );
 
     const scrollForward = useCallback(() => scrollPage(true), [scrollPage]);
