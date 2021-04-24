@@ -142,39 +142,6 @@ export const useTimeControls = (
         });
 
         return currentSectionIndex;
-
-        // const currentSection = (() => {
-        //     if (currentSectionIndex === null) {
-        //         return null;
-        //     }
-        //     return timeSections[currentSectionIndex];
-        // })();
-
-        // const previousSection = (() => {
-        //     if (currentSectionIndex === null || currentSectionIndex === 0) {
-        //         return null;
-        //     }
-
-        //     return timeSections[currentSectionIndex - 1];
-        // })();
-
-        // const nextSection = (() => {
-        //     if (timeSections.length === 0) {
-        //         return null;
-        //     }
-
-        //     if (currentSectionIndex === null) {
-        //         return timeSections[0];
-        //     }
-
-        //     if (currentSectionIndex === timeSections.length - 1) {
-        //         return null;
-        //     }
-
-        //     return timeSections[currentSectionIndex + 1];
-        // })();
-
-        // return [currentSection, previousSection, nextSection];
     })();
 
     const currentSection: TimeSection | null =
