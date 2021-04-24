@@ -19,7 +19,6 @@ import {
 } from "../../../../common/ChordModel/Track";
 import { mapObject } from "../../../../common/mapObject";
 import ControlPane from "../ControlPane";
-import { useSections } from "../useSections";
 import { useTimeControls } from "../useTimeControls";
 import { getAudioCtx } from "./audioCtx";
 import FourStemControlPane, { StemControl } from "./FourStemControlPane";
@@ -87,15 +86,8 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
     props: LoadedFourStemTrackPlayerProps
 ): JSX.Element => {
     const playerRef = useRef<FilePlayer>();
-    const timeControl = useTimeControls(playerRef.current);
+    const timeControl = useTimeControls(playerRef.current, props.timeSections);
     const { enqueueSnackbar } = useSnackbar();
-
-    const [
-        currentSectionLabel,
-        currentSection,
-        previousSection,
-        nextSection,
-    ] = useSections(props.timeSections, timeControl.currentTime);
 
     const toneNodes: ToneNodes = useMemo(
         () => mapObject(props.audioBuffers, createToneNodes),
@@ -156,9 +148,6 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
             },
         },
     };
-
-    const skipBack = timeControl.makeSkipBack(currentSection, previousSection);
-    const skipForward = timeControl.makeSkipForward(nextSection);
 
     // check the integrity of the loaded tracks - they should all be the same length
     // otherwise there could be a loading error
@@ -319,13 +308,13 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
             <ControlPane
                 show={props.show}
                 playing={timeControl.playing}
-                sectionLabel={currentSectionLabel}
+                sectionLabel={timeControl.currentSectionLabel}
                 onPlay={timeControl.play}
                 onPause={timeControl.pause}
                 onJumpBack={timeControl.jumpBack}
                 onJumpForward={timeControl.jumpForward}
-                onSkipBack={skipBack}
-                onSkipForward={skipForward}
+                onSkipBack={timeControl.skipBack}
+                onSkipForward={timeControl.skipForward}
                 onGoToBeginning={timeControl.goToBeginning}
                 playratePercentage={playerState.playratePercentage}
                 onPlayratePercentageChange={handlePlayratePercentageChange}
