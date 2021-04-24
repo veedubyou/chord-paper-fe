@@ -5,29 +5,56 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    FormControl,
+    FormControlLabel,
+    FormLabel as UnstyledFormLabel,
     InputAdornment,
+    Radio,
+    RadioGroup,
     TextField,
     TextFieldProps as TextFieldPropsWithVariant,
     Theme,
+    Typography,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import React, { ChangeEvent, useState } from "react";
+import { PlainFn } from "../../common/PlainFn";
 import { isWhitespace } from "../../common/Whitespace";
 import { DisplaySettings } from "./PlayContent";
-import { PlainFn } from "../../common/PlainFn";
+
+const Box = withStyles((theme: Theme) => ({
+    root: {
+        margin: theme.spacing(1),
+    },
+}))(UnstyledBox);
+
+const FormLabel = withStyles((theme: Theme) => ({
+    root: {
+        fontSize: "0.75rem",
+    },
+}))(UnstyledFormLabel);
+
+const RadioLabelTypography = withStyles((theme: Theme) => ({
+    root: {
+        fontSize: "0.75rem",
+    },
+}))(Typography);
 
 type TextFieldProps = Omit<Partial<TextFieldPropsWithVariant>, "variant">;
 
-interface TextSettings {
+interface DialogInput {
     numberOfColumns: string;
     fontSize: string;
     columnMargin: string;
+    scrollType: DisplaySettings["scrollType"];
 }
+
+type TextInputFieldKeys = keyof Omit<DialogInput, "scrollType">;
 
 interface InputFieldSpecification {
     label: string;
-    field: keyof TextSettings;
+    field: TextInputFieldKeys;
     adornment: string | null;
     validationErrorPropsFn: (strValue: string) => Either<Error, number>;
 }
@@ -39,19 +66,14 @@ interface DisplaySettingsDialogProps {
     onSubmit?: (displaySettings: DisplaySettings) => void;
 }
 
-const Box = withStyles((theme: Theme) => ({
-    root: {
-        margin: theme.spacing(1),
-    },
-}))(UnstyledBox);
-
 const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
     props: DisplaySettingsDialogProps
 ): JSX.Element => {
-    const [settings, setSettings] = useState<TextSettings>({
+    const [settings, setSettings] = useState<DialogInput>({
         numberOfColumns: props.defaultSettings.numberOfColumnsPerPage.toString(),
         fontSize: props.defaultSettings.fontSize.toString(),
         columnMargin: props.defaultSettings.columnMargin.toString(),
+        scrollType: props.defaultSettings.scrollType,
     });
 
     const validateNumber = (strValue: string): Either<Error, number> => {
@@ -109,6 +131,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
             numberOfColumnsPerPage: numberOfColumnsResults.right,
             fontSize: fontSizeResults.right,
             columnMargin: columnMarginResults.right,
+            scrollType: settings.scrollType,
         };
 
         return right(displaySettings);
@@ -129,13 +152,14 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
             numberOfColumnsPerPage: settings.right.numberOfColumnsPerPage,
             fontSize: settings.right.fontSize,
             columnMargin: settings.right.columnMargin,
+            scrollType: settings.right.scrollType,
         });
     };
 
-    const settingChangeHandler = (field: keyof TextSettings) => {
+    const textSettingChangeHandler = (field: TextInputFieldKeys) => {
         return (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
             const newValue = event.target.value;
-            const newSettings: TextSettings = { ...settings };
+            const newSettings: DialogInput = { ...settings };
             newSettings[field] = newValue;
             setSettings(newSettings);
         };
@@ -175,7 +199,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
         const textFieldProps: TextFieldProps = {
             label: spec.label,
             defaultValue: settings[spec.field],
-            onChange: settingChangeHandler(spec.field),
+            onChange: textSettingChangeHandler(spec.field),
             ...validationErrorProps(
                 spec.validationErrorPropsFn(settings[spec.field])
             ),
@@ -198,10 +222,62 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
         );
     };
 
+    const scrollTypeToggle = (() => {
+        const handleScrollTypeChange = (
+            _event: React.ChangeEvent<HTMLInputElement>,
+            value: string
+        ) => {
+            if (value !== "page" && value !== "column") {
+                console.error(
+                    "Display dialog - scroll type: Received an invalid radio value"
+                );
+                return;
+            }
+
+            setSettings({
+                ...settings,
+                scrollType: value,
+            });
+        };
+
+        return (
+            <Box>
+                <FormControl component="fieldset">
+                    <FormLabel>scroll type</FormLabel>
+                    <RadioGroup
+                        value={settings.scrollType}
+                        onChange={handleScrollTypeChange}
+                    >
+                        <FormControlLabel
+                            value="page"
+                            control={<Radio size="small" />}
+                            label={
+                                <RadioLabelTypography>
+                                    scroll by page
+                                </RadioLabelTypography>
+                            }
+                        />
+                        <FormControlLabel
+                            value="column"
+                            control={<Radio size="small" />}
+                            label={
+                                <RadioLabelTypography>
+                                    scroll by column
+                                </RadioLabelTypography>
+                            }
+                        />
+                    </RadioGroup>
+                </FormControl>
+            </Box>
+        );
+    })();
+
     return (
         <Dialog open={props.open} onClose={props.onClose}>
             <DialogTitle>Display Settings</DialogTitle>
             <DialogContent>
+                {scrollTypeToggle}
+
                 {inputSpecs.map((spec: InputFieldSpecification) =>
                     makeInput(spec)
                 )}
