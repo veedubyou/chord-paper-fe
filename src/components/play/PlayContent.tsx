@@ -177,6 +177,12 @@ const PlayContent: React.FC<PlayContentProps> = (
 
     useEffect(() => {
         const handleKey = (event: KeyboardEvent) => {
+            // only fire for "default" targets, when the user isn't particularly interacting
+            // with anything else
+            if (event.target !== document.body) {
+                return;
+            }
+
             if (isScrollBackwardsKey(event.code)) {
                 scrollBackward();
                 event.preventDefault();
