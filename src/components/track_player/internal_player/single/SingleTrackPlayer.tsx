@@ -6,7 +6,6 @@ import { TimeSection } from "../../../../common/ChordModel/ChordLine";
 import { SingleTrack } from "../../../../common/ChordModel/Track";
 import ControlPane from "../ControlPane";
 import { ensureGoogleDriveCacheBusted } from "../google_drive";
-import { useSections } from "../useSections";
 import { useTimeControls } from "../useTimeControls";
 
 interface SingleTrackPlayerProps {
@@ -22,18 +21,11 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
 ): JSX.Element => {
     const playerRef = useRef<ReactPlayer>();
     const [playratePercentage, setPlayratePercentage] = useState(100);
-    const timeControl = useTimeControls(playerRef.current);
+    const timeControl = useTimeControls(playerRef.current, props.timeSections);
     const trackURL: string = useMemo(
         () => ensureGoogleDriveCacheBusted(props.track.url, shortid.generate()),
         [props.track.url]
     );
-
-    const [
-        currentSectionLabel,
-        currentSection,
-        previousSection,
-        nextSection,
-    ] = useSections(props.timeSections, timeControl.currentTime);
 
     const commonReactPlayerProps: ReactPlayerProps = {
         ref: playerRef,
@@ -49,9 +41,6 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
         config: { file: { forceAudio: true } },
     };
 
-    const skipBack = timeControl.makeSkipBack(currentSection, previousSection);
-    const skipForward = timeControl.makeSkipForward(nextSection);
-
     useEffect(() => {
         if (!props.currentTrack && timeControl.playing) {
             timeControl.onPause();
@@ -66,13 +55,13 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
             <ControlPane
                 show={props.show}
                 playing={timeControl.playing}
-                sectionLabel={currentSectionLabel}
+                sectionLabel={timeControl.currentSectionLabel}
                 onPlay={timeControl.play}
                 onPause={timeControl.pause}
                 onJumpBack={timeControl.jumpBack}
                 onJumpForward={timeControl.jumpForward}
-                onSkipBack={skipBack}
-                onSkipForward={skipForward}
+                onSkipBack={timeControl.skipBack}
+                onSkipForward={timeControl.skipForward}
                 onGoToBeginning={timeControl.goToBeginning}
                 playratePercentage={playratePercentage}
                 onPlayratePercentageChange={setPlayratePercentage}

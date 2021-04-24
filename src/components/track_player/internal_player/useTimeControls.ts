@@ -18,11 +18,8 @@ export interface TimeControls {
     jumpBack: PlainFn;
     jumpForward: PlainFn;
     goToBeginning: PlainFn;
-    makeSkipBack: (
-        currentSection: TimeSection | null,
-        previousSection: TimeSection | null
-    ) => ButtonActionAndState;
-    makeSkipForward: (nextSection: TimeSection | null) => ButtonActionAndState;
+    skipBack: ButtonActionAndState;
+    skipForward: ButtonActionAndState;
     currentTime: number;
     currentTimeFormatted: string;
     onProgress: (state: {
@@ -33,10 +30,12 @@ export interface TimeControls {
     }) => void;
     onPlay: PlainFn;
     onPause: PlainFn;
+    currentSectionLabel: string;
 }
 
 export const useTimeControls = (
-    currentPlayerRef: ReactPlayer | FilePlayer | undefined
+    currentPlayerRef: ReactPlayer | FilePlayer | undefined,
+    timeSections: TimeSection[]
 ): TimeControls => {
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -49,6 +48,9 @@ export const useTimeControls = (
     const jumpInterval = 5; // seconds
 
     const skipBackBuffer = 2; // seconds;
+    const skipForwardBuffer = 2; // seconds;
+
+    // the amount to skip to before the section - helps not drop the user right on the down beat
     const skipLeadIn = 1; // seconds;
 
     {
@@ -121,42 +123,146 @@ export const useTimeControls = (
         seekTo(0);
     };
 
-    const makeSkipBackButton = (
-        currentSection: TimeSection | null,
-        previousSection: TimeSection | null
-    ): ButtonActionAndState => {
-        return {
-            action: () => {
-                if (currentSection === null) {
-                    return;
-                }
+    const currentSectionIndex = ((): number | null => {
+        if (timeSections.length === 0) {
+            return null;
+        }
 
+        let currentSectionIndex: number | null = null;
+
+        timeSections.forEach((section: TimeSection, index: number) => {
+            if (currentTime >= section.time) {
                 if (
-                    previousSection !== null &&
-                    currentTime <= currentSection.time + skipBackBuffer
+                    currentSectionIndex === null ||
+                    section.time > timeSections[currentSectionIndex].time
                 ) {
-                    seekTo(previousSection.time - skipLeadIn);
-                    return;
+                    currentSectionIndex = index;
+                }
+            }
+        });
+
+        return currentSectionIndex;
+
+        // const currentSection = (() => {
+        //     if (currentSectionIndex === null) {
+        //         return null;
+        //     }
+        //     return timeSections[currentSectionIndex];
+        // })();
+
+        // const previousSection = (() => {
+        //     if (currentSectionIndex === null || currentSectionIndex === 0) {
+        //         return null;
+        //     }
+
+        //     return timeSections[currentSectionIndex - 1];
+        // })();
+
+        // const nextSection = (() => {
+        //     if (timeSections.length === 0) {
+        //         return null;
+        //     }
+
+        //     if (currentSectionIndex === null) {
+        //         return timeSections[0];
+        //     }
+
+        //     if (currentSectionIndex === timeSections.length - 1) {
+        //         return null;
+        //     }
+
+        //     return timeSections[currentSectionIndex + 1];
+        // })();
+
+        // return [currentSection, previousSection, nextSection];
+    })();
+
+    const currentSection: TimeSection | null =
+        currentSectionIndex != null ? timeSections[currentSectionIndex] : null;
+
+    const currentSectionLabel =
+        currentSection !== null ? currentSection.name : "";
+
+    const skipBackButton: ButtonActionAndState = {
+        action: () => {
+            if (currentSection === null) {
+                return;
+            }
+
+            const previousSection: TimeSection | null = (() => {
+                if (currentSectionIndex === null || currentSectionIndex === 0) {
+                    return null;
                 }
 
-                seekTo(currentSection.time - skipLeadIn);
-            },
-            enabled: currentSection !== null,
-        };
+                return timeSections[currentSectionIndex - 1];
+            })();
+
+            if (
+                previousSection !== null &&
+                currentTime <= currentSection.time + skipBackBuffer
+            ) {
+                seekTo(previousSection.time - skipLeadIn);
+                return;
+            }
+
+            seekTo(currentSection.time - skipLeadIn);
+        },
+        enabled: currentSection !== null,
     };
 
-    const makeSkipForwardButton = (
-        nextSection: TimeSection | null
-    ): ButtonActionAndState => {
+    const skipForwardButton: ButtonActionAndState = (() => {
+        const findNextSectionIndex = (
+            sectionIndex: number | null
+        ): number | null => {
+            if (timeSections.length === 0) {
+                return null;
+            }
+
+            if (sectionIndex === null) {
+                return 0;
+            }
+
+            if (sectionIndex === timeSections.length - 1) {
+                return null;
+            }
+
+            return sectionIndex + 1;
+        };
+
+        const nextSectionIndex = findNextSectionIndex(currentSectionIndex);
+
+        // determine what the actual next section is - it could be the next one or next next one depending on the buffer
+        const nextSectionToSkipTo: TimeSection | null = (() => {
+            if (nextSectionIndex === null) {
+                return null;
+            }
+
+            const nextSection = timeSections[nextSectionIndex];
+
+            // we could return section (n + 1) or section (n + 2)
+            // the idea is that, e.g. the user is at 1:05 but the next section is at 1:06, and next next section is 1:30
+            // then the user actually wants to go to 1:30 by skipping forward
+            if (currentTime < nextSection.time - skipForwardBuffer) {
+                return nextSection;
+            }
+
+            const nextNextSectionIndex = findNextSectionIndex(nextSectionIndex);
+            if (nextNextSectionIndex === null) {
+                return null;
+            }
+
+            return timeSections[nextNextSectionIndex];
+        })();
+
         return {
             action: () => {
-                if (nextSection !== null) {
-                    seekTo(nextSection.time - skipLeadIn);
+                if (nextSectionToSkipTo !== null) {
+                    seekTo(nextSectionToSkipTo.time - skipLeadIn);
                 }
             },
-            enabled: nextSection !== null,
+            enabled: nextSectionToSkipTo !== null,
         };
-    };
+    })();
 
     const handleProgress = (state: {
         played: number;
@@ -176,8 +282,8 @@ export const useTimeControls = (
         playing: playing,
         play: playAction,
         pause: pauseAction,
-        makeSkipBack: makeSkipBackButton,
-        makeSkipForward: makeSkipForwardButton,
+        skipBack: skipBackButton,
+        skipForward: skipForwardButton,
         jumpBack: jumpBackAction,
         jumpForward: jumpForwardAction,
         goToBeginning: goToBeginningAction,
@@ -186,5 +292,6 @@ export const useTimeControls = (
         onProgress: handleProgress,
         onPlay: handlePlayState,
         onPause: handlePauseState,
+        currentSectionLabel: currentSectionLabel,
     };
 };
