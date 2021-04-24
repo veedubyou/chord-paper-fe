@@ -21,7 +21,7 @@ import {
 import { FetchState } from "../../../../common/fetch";
 import { mapObject } from "../../../../common/mapObject";
 import { getAudioCtx } from "./audioCtx";
-import LoadedFourStemTrackPlayer from "./LoadedFourStemTrackPlayer";
+import LoadedStemTrackPlayer from "./LoadedStemTrackPlayer";
 
 const PaddedBox = withStyles((theme: Theme) => ({
     root: {
@@ -251,7 +251,7 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
     }
 
     return (
-        <LoadedFourStemTrackPlayer
+        <LoadedStemTrackPlayer
             show={props.show}
             currentTrack={props.currentTrack}
             audioBuffers={fetchState.item}

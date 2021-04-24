@@ -1,5 +1,6 @@
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
+import { mapObject } from "../mapObject";
 
 const validateValue = (value: string): boolean => {
     return value.trim() !== "";
@@ -18,12 +19,24 @@ const SingleTrackValidator = iots.intersection([
     }),
 ]);
 
-const FourStemsValidator = iots.type({
-    vocals: iots.string,
-    other: iots.string,
-    bass: iots.string,
-    drums: iots.string,
-});
+const MakeStemsValidator = <T extends object>(emptyKeyMap: T) => {
+    const stringTypes = mapObject(
+        emptyKeyMap,
+        (_empty: {}, stemKey: keyof T) => iots.string
+    );
+    return iots.type(stringTypes);
+};
+
+export const FourStemEmptyObject = {
+    bass: undefined,
+    drums: undefined,
+    other: undefined,
+    vocals: undefined,
+};
+
+export type StemKeys<T extends string> = T;
+export type FourStemKeys = keyof typeof FourStemEmptyObject;
+const FourStemsValidator = MakeStemsValidator(FourStemEmptyObject);
 
 const FourStemsTrackValidator = iots.intersection([
     BaseTrackValidator,
@@ -71,14 +84,6 @@ export class SingleTrack implements SingleTrackValidatedFields {
         return validateValue(this.label) && validateValue(this.url);
     }
 }
-
-export type FourStemKeys = "vocals" | "other" | "bass" | "drums";
-export const FourStemEmptyObject: Record<FourStemKeys, undefined> = {
-    bass: undefined,
-    drums: undefined,
-    other: undefined,
-    vocals: undefined,
-};
 
 type FourStemsValidatedFields = iots.TypeOf<typeof FourStemsValidator>;
 type FourStemsTrackValidatedFields = iots.TypeOf<
