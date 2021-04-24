@@ -51,7 +51,7 @@ const withColoredButtonStyle = (color: string) => {
 
 const DisabledButton = withColoredButtonStyle(grey[300])(UnstyledButton);
 
-export interface StemButton<StemKey extends string> {
+export interface StemControl<StemKey extends string> {
     label: StemKey;
     buttonColour: string;
 
@@ -87,14 +87,14 @@ const buttonSpecs: Record<FourStemKeys, StemProperty> = {
 
 // T is a stem key, e.g. "bass" | "drums"
 type StemTrackControlPaneProps<StemKey extends string> = {
-    stemButtons: StemButton<StemKey>[];
+    stemControls: StemControl<StemKey>[];
 };
 
 const StemTrackControlPane = <StemKey extends string>(
     props: StemTrackControlPaneProps<StemKey>
 ): JSX.Element => {
     const makeButton = <StemKey extends string>(
-        stemButton: StemButton<StemKey>
+        stemButton: StemControl<StemKey>
     ) => {
         const RenderedButton = stemButton.enabled
             ? withColoredButtonStyle(stemButton.buttonColour)(UnstyledButton) //TODO: can perform better? TBD

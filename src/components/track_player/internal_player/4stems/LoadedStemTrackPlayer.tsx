@@ -13,17 +13,11 @@ import React, {
 import FilePlayer, { FilePlayerProps } from "react-player/file";
 import * as Tone from "tone";
 import { TimeSection } from "../../../../common/ChordModel/ChordLine";
-import {
-    FourStemEmptyObject,
-    FourStemKeys,
-} from "../../../../common/ChordModel/Track";
-import { mapObject } from "../../../../common/mapObject";
 import ControlPane from "../ControlPane";
 import { useSections } from "../useSections";
 import { useTimeControls } from "../useTimeControls";
 import { getAudioCtx } from "./audioCtx";
-import FourStemControlPane, { StemControl } from "./FourStemControlPane";
-import StemTrackControlPane from "./StemTrackControlPane";
+import StemTrackControlPane, { StemControl } from "./StemTrackControlPane";
 
 interface StemToneNodes<StemKey extends string> {
     label: StemKey;
@@ -231,46 +225,47 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
 
     // synchronize player state and track volumes/mutedness
     useEffect(() => {
-        for (let stemState in playerState.stems) {
-            const stemState = playerState.stems[stemKey];
-            const nodes = toneNodes[stemKey];
+        playerState.stems.forEach(
+            (stemState: StemState<StemKey>, stemIndex: number) => {
+                const nodes = toneNodes[stemIndex];
 
-            const stemVolume =
-                (stemState.volumePercentage / 100) *
-                (playerState.masterVolumePercentage / 100);
+                const stemVolume =
+                    (stemState.volumePercentage / 100) *
+                    (playerState.masterVolumePercentage / 100);
 
-            // don't set if fraction is 0, log of 0 is undefined
-            if (stemVolume > 0) {
-                const stemVolumeDecibels = 20 * Math.log10(stemVolume);
-                nodes.volumeNode.volume.value = stemVolumeDecibels;
+                // don't set if fraction is 0, log of 0 is undefined
+                if (stemVolume > 0) {
+                    const stemVolumeDecibels = 20 * Math.log10(stemVolume);
+                    nodes.volumeNode.volume.value = stemVolumeDecibels;
+                }
+
+                // mute needs to be set last because it can be overrided by volume
+                nodes.endNode.mute = stemState.muted || stemVolume === 0;
+
+                const playrate = playerState.playratePercentage / 100;
+
+                nodes.playerNode.playbackRate = playrate;
+                nodes.pitchShiftNode.pitch = semitonesToOffsetPlayrate(
+                    playrate
+                );
             }
-
-            // mute needs to be set last because it can be overrided by volume
-            nodes.endNode.mute = stemState.muted || stemVolume === 0;
-
-            const playrate = playerState.playratePercentage / 100;
-
-            nodes.playerNode.playbackRate = playrate;
-            nodes.pitchShiftNode.pitch = semitonesToOffsetPlayrate(playrate);
-        }
+        );
     }, [toneNodes, playerState]);
 
     // connect and disconnect nodes from the transport when not in focus
     // so that other tracks can use the transport
     useEffect(() => {
         if (props.currentTrack) {
-            let stemKey: StemKey;
-            for (stemKey in toneNodes) {
-                toneNodes[stemKey].playerNode.sync().start(0);
-                toneNodes[stemKey].endNode.toDestination();
-            }
+            toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
+                toneNode.playerNode.sync().start(0);
+                toneNode.endNode.toDestination();
+            });
 
             return () => {
-                let stemKey: FourStemKeys;
-                for (stemKey in toneNodes) {
-                    toneNodes[stemKey].playerNode.unsync();
-                    toneNodes[stemKey].endNode.disconnect();
-                }
+                toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
+                    toneNode.playerNode.unsync();
+                    toneNode.endNode.disconnect();
+                });
             };
         }
     }, [props.currentTrack, toneNodes]);
@@ -285,38 +280,41 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
     // cleanup buffer resources when this component goes out of scope
     useEffect(() => {
         return () => {
-            let stemKey: StemKey;
-            for (stemKey in toneNodes) {
-                toneNodes[stemKey].volumeNode.dispose();
-                toneNodes[stemKey].playerNode.dispose();
-            }
+            toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
+                toneNode.volumeNode.dispose();
+                toneNode.playerNode.dispose();
+            });
         };
     }, [toneNodes]);
 
     const stemControlPane = (() => {
         const makeStemControl = (
-            stemState: StemState,
-            stemKey: StemKey
-        ): StemControl => {
+            stemState: StemState<StemKey>,
+            stemIndex: number
+        ): StemControl<StemKey> => {
             return {
+                label: stemState.label,
+                buttonColour: "red", //TODO
                 enabled: !stemState.muted,
                 onEnabledChanged: (enabled: boolean) => {
                     const newPlayerState = lodash.cloneDeep(playerState);
-                    newPlayerState.stems[stemKey].muted = !enabled;
+                    newPlayerState.stems[stemIndex].muted = !enabled;
                     setPlayerState(newPlayerState);
                 },
                 volume: stemState.volumePercentage,
                 onVolumeChanged: (newVolume: number) => {
                     const newPlayerState = lodash.cloneDeep(playerState);
-                    newPlayerState.stems[stemKey].volumePercentage = newVolume;
+                    newPlayerState.stems[
+                        stemIndex
+                    ].volumePercentage = newVolume;
                     setPlayerState(newPlayerState);
                 },
             };
         };
 
-        const stemControls = mapObject(playerState.stems, makeStemControl);
+        const stemControls = playerState.stems.map(makeStemControl);
 
-        return <StemTrackControlPane {...stemControls} />;
+        return <StemTrackControlPane<StemKey> stemControls={stemControls} />;
     })();
 
     const handlePlayratePercentageChange = (newPlayratePercentage: number) => {

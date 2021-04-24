@@ -90,6 +90,43 @@ type FourStemsTrackValidatedFields = iots.TypeOf<
     typeof FourStemsTrackValidator
 >;
 
+export abstract class StemsTrack implements FourStemsTrackValidatedFields {
+    id: string;
+    track_type: "4stems";
+    label: string;
+    stem_urls: FourStemsValidatedFields;
+
+    constructor(
+        id: string,
+        label: string,
+        stems_urls: FourStemsValidatedFields
+    ) {
+        this.id = id;
+        this.track_type = "4stems";
+        this.label = label;
+        this.stem_urls = stems_urls;
+    }
+
+    static abstract fromValidatedFields(
+        validatedFields: FourStemsTrackValidatedFields
+    ): FourStemsTrack;
+
+    validate(): boolean {
+        if (!validateValue(this.label)) {
+            return false;
+        }
+
+        let key: FourStemKeys;
+        for (key in this.stem_urls) {
+            if (!validateValue(this.stem_urls[key])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
 export class FourStemsTrack implements FourStemsTrackValidatedFields {
     id: string;
     track_type: "4stems";
