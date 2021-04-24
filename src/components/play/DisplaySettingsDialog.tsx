@@ -47,10 +47,10 @@ interface DialogInput {
     numberOfColumns: string;
     fontSize: string;
     columnMargin: string;
-    scrollWidth: DisplaySettings["scrollWidth"];
+    scrollType: DisplaySettings["scrollType"];
 }
 
-type TextInputFieldKeys = keyof Omit<DialogInput, "scrollWidth">;
+type TextInputFieldKeys = keyof Omit<DialogInput, "scrollType">;
 
 interface InputFieldSpecification {
     label: string;
@@ -73,7 +73,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
         numberOfColumns: props.defaultSettings.numberOfColumnsPerPage.toString(),
         fontSize: props.defaultSettings.fontSize.toString(),
         columnMargin: props.defaultSettings.columnMargin.toString(),
-        scrollWidth: props.defaultSettings.scrollWidth,
+        scrollType: props.defaultSettings.scrollType,
     });
 
     const validateNumber = (strValue: string): Either<Error, number> => {
@@ -131,7 +131,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
             numberOfColumnsPerPage: numberOfColumnsResults.right,
             fontSize: fontSizeResults.right,
             columnMargin: columnMarginResults.right,
-            scrollWidth: settings.scrollWidth,
+            scrollType: settings.scrollType,
         };
 
         return right(displaySettings);
@@ -152,7 +152,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
             numberOfColumnsPerPage: settings.right.numberOfColumnsPerPage,
             fontSize: settings.right.fontSize,
             columnMargin: settings.right.columnMargin,
-            scrollWidth: settings.right.scrollWidth,
+            scrollType: settings.right.scrollType,
         });
     };
 
@@ -236,7 +236,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
 
             setSettings({
                 ...settings,
-                scrollWidth: value,
+                scrollType: value,
             });
         };
 
@@ -245,7 +245,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
                 <FormControl component="fieldset">
                     <FormLabel>scroll type</FormLabel>
                     <RadioGroup
-                        value={settings.scrollWidth}
+                        value={settings.scrollType}
                         onChange={handleScrollTypeChange}
                     >
                         <FormControlLabel
