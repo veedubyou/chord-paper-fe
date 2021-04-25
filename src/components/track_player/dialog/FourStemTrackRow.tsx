@@ -3,7 +3,10 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { withStyles } from "@material-ui/styles";
 import lodash from "lodash";
 import React from "react";
-import { FourStemKeys, FourStemsTrack } from "../../../common/ChordModel/Track";
+import {
+    FourStemKeys,
+    FourStemsTrack,
+} from "../../../common/ChordModel/tracks/StemTrack";
 import { mapObject } from "../../../common/mapObject";
 import LabelField from "./LabelField";
 import URLField from "./URLField";

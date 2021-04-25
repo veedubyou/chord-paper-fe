@@ -16,15 +16,13 @@ import AddIcon from "@material-ui/icons/Add";
 import { withStyles } from "@material-ui/styles";
 import lodash from "lodash";
 import React, { useState } from "react";
-import {
-    FourStemsTrack,
-    SingleTrack,
-    Track,
-    TrackList,
-} from "../../../common/ChordModel/Track";
 import { PlainFn } from "../../../common/PlainFn";
 import SingleTrackRow from "./SingleTrackRow";
 import FourStemTrackRow from "./FourStemTrackRow";
+import { Track } from "../../../common/ChordModel/tracks/Track";
+import { FourStemsTrack } from "../../../common/ChordModel/tracks/StemTrack";
+import { SingleTrack } from "../../../common/ChordModel/tracks/SingleTrack";
+import { TrackList } from "../../../common/ChordModel/tracks/TrackList";
 
 interface TrackListEditDialogProps {
     open: boolean;

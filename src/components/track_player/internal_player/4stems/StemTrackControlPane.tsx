@@ -16,7 +16,6 @@ import {
 } from "@material-ui/core/colors";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
-import { FourStemKeys } from "../../../../common/ChordModel/Track";
 
 const FullSizedBox = withStyles((theme: Theme) => ({
     root: {
@@ -51,39 +50,25 @@ const withColoredButtonStyle = (color: string) => {
 
 const DisabledButton = withColoredButtonStyle(grey[300])(UnstyledButton);
 
+const ColouredButtons = {
+    white: withColoredButtonStyle("white")(UnstyledButton),
+    pink: withColoredButtonStyle(pink[200])(UnstyledButton),
+    yellow: withColoredButtonStyle(yellow[200])(UnstyledButton),
+    purple: withColoredButtonStyle(purple[100])(UnstyledButton),
+    lightBlue: withColoredButtonStyle(lightBlue[200])(UnstyledButton),
+};
+
+export type ControlPaneButtonColour = keyof typeof ColouredButtons;
+
 export interface StemControl<StemKey extends string> {
     label: StemKey;
-    buttonColour: string;
+    buttonColour: ControlPaneButtonColour;
 
     enabled: boolean;
     onEnabledChanged: (newEnabled: boolean) => void;
     volume: number;
     onVolumeChanged: (newVolume: number) => void;
 }
-
-interface StemProperty {
-    label: string;
-    button: typeof DisabledButton; // somehow typeof Button doesn't match - just using an arbitrary one since they are all the same type
-}
-
-const buttonSpecs: Record<FourStemKeys, StemProperty> = {
-    bass: {
-        label: "Bass",
-        button: withColoredButtonStyle(pink[200])(UnstyledButton),
-    },
-    drums: {
-        label: "Drums",
-        button: withColoredButtonStyle(yellow[200])(UnstyledButton),
-    },
-    other: {
-        label: "Other",
-        button: withColoredButtonStyle(purple[100])(UnstyledButton),
-    },
-    vocals: {
-        label: "Vocal",
-        button: withColoredButtonStyle(lightBlue[200])(UnstyledButton),
-    },
-};
 
 // T is a stem key, e.g. "bass" | "drums"
 type StemTrackControlPaneProps<StemKey extends string> = {
@@ -97,7 +82,7 @@ const StemTrackControlPane = <StemKey extends string>(
         stemButton: StemControl<StemKey>
     ) => {
         const RenderedButton = stemButton.enabled
-            ? withColoredButtonStyle(stemButton.buttonColour)(UnstyledButton) //TODO: can perform better? TBD
+            ? ColouredButtons[stemButton.buttonColour]
             : DisabledButton;
 
         const handleClick = () => {
@@ -121,7 +106,7 @@ const StemTrackControlPane = <StemKey extends string>(
         };
 
         return (
-            <Grid item>
+            <Grid item xs>
                 <RenderedButton variant="contained" onClick={handleClick}>
                     <FullSizedBox>
                         <Typography variant="body1">
@@ -133,7 +118,7 @@ const StemTrackControlPane = <StemKey extends string>(
                                 value={stemButton.volume}
                                 onChange={handleVolumeChange}
                                 min={0}
-                                max={150}
+                                max={200}
                                 step={10}
                                 valueLabelDisplay="auto"
                             />
@@ -144,7 +129,7 @@ const StemTrackControlPane = <StemKey extends string>(
         );
     };
 
-    const buttons = props.stemButtons.map(makeButton);
+    const buttons = props.stemControls.map(makeButton);
 
     return <Grid container>{buttons}</Grid>;
 };

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useErrorMessage } from "../../common/backend/errors";
 import { getTrackList, updateTrackList } from "../../common/backend/requests";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { TrackList } from "../../common/ChordModel/Track";
+import { TrackList } from "../../common/ChordModel/tracks/TrackList";
 import { FetchState } from "../../common/fetch";
 import ErrorImage from "../display/ErrorImage";
 import { User, UserContext } from "../user/userContext";

@@ -17,7 +17,10 @@ import ControlPane from "../ControlPane";
 import { useSections } from "../useSections";
 import { useTimeControls } from "../useTimeControls";
 import { getAudioCtx } from "./audioCtx";
-import StemTrackControlPane, { StemControl } from "./StemTrackControlPane";
+import StemTrackControlPane, {
+    ControlPaneButtonColour,
+    StemControl,
+} from "./StemTrackControlPane";
 
 interface StemToneNodes<StemKey extends string> {
     label: StemKey;
@@ -28,7 +31,7 @@ interface StemToneNodes<StemKey extends string> {
 }
 
 interface StemState<StemKey extends string> {
-    label: StemKey;
+    key: StemKey;
     muted: boolean;
     volumePercentage: number;
 }
@@ -41,21 +44,21 @@ type PlayerState<StemKey extends string> = {
     stems: StemState<StemKey>[];
 };
 
-interface LoadedStemTrackPlayerStemProps<StemKey extends string> {
+interface StemInput<StemKey extends string> {
     label: StemKey;
-    buttonColour: string;
+    buttonColour: ControlPaneButtonColour;
     audioBuffer: AudioBuffer;
 }
 
 interface LoadedStemTrackPlayerProps<StemKey extends string> {
     show: boolean;
     currentTrack: boolean;
-    stems: LoadedStemTrackPlayerStemProps<StemKey>[];
+    stems: StemInput<StemKey>[];
     readonly timeSections: TimeSection[];
 }
 
 const createToneNodes = <StemKey extends string>(
-    stem: LoadedStemTrackPlayerStemProps<StemKey>
+    stem: StemInput<StemKey>
 ): StemToneNodes<StemKey> => {
     const volumeNode = new Tone.Volume();
     const pitchShiftNode = new Tone.PitchShift();
@@ -111,9 +114,9 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
 
     const initialPlayerState: PlayerState<StemKey> = (() => {
         const stemStates: StemState<StemKey>[] = props.stems.map(
-            (stem: LoadedStemTrackPlayerStemProps<StemKey>) => {
+            (stem: StemInput<StemKey>) => {
                 return {
-                    label: stem.label,
+                    key: stem.label,
                     muted: false,
                     volumePercentage: 100,
                 };
@@ -136,7 +139,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
 
     const silentURL = useMemo(
         () => createEmptySongURL(props.stems[0].audioBuffer.duration), //TODO - how to compile check this is not invalid
-        [props.stems[0].audioBuffer.duration]
+        [props.stems]
     );
 
     const handleMasterVolumeChange: ReactEventHandler<HTMLAudioElement> = (
@@ -292,9 +295,20 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
             stemState: StemState<StemKey>,
             stemIndex: number
         ): StemControl<StemKey> => {
+            const buttonColour: ControlPaneButtonColour = (() => {
+                const stemInput = props.stems.find(
+                    (value: StemInput<StemKey>) => value.label === stemState.key
+                );
+                if (stemInput === undefined) {
+                    return "white";
+                }
+
+                return stemInput.buttonColour;
+            })();
+
             return {
-                label: stemState.label,
-                buttonColour: "red", //TODO
+                label: stemState.key,
+                buttonColour: buttonColour,
                 enabled: !stemState.muted,
                 onEnabledChanged: (enabled: boolean) => {
                     const newPlayerState = lodash.cloneDeep(playerState);
