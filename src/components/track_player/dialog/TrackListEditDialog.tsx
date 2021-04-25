@@ -16,18 +16,17 @@ import AddIcon from "@material-ui/icons/Add";
 import { withStyles } from "@material-ui/styles";
 import lodash from "lodash";
 import React, { useState } from "react";
-import { PlainFn } from "../../../common/PlainFn";
-import SingleTrackRow from "./SingleTrackRow";
-import { Track } from "../../../common/ChordModel/tracks/Track";
+import { SingleTrack } from "../../../common/ChordModel/tracks/SingleTrack";
 import {
     FourStemKeys,
     FourStemTrack,
-    StemTrack,
     TwoStemKeys,
     TwoStemTrack,
 } from "../../../common/ChordModel/tracks/StemTrack";
-import { SingleTrack } from "../../../common/ChordModel/tracks/SingleTrack";
+import { Track } from "../../../common/ChordModel/tracks/Track";
 import { TrackList } from "../../../common/ChordModel/tracks/TrackList";
+import { PlainFn } from "../../../common/PlainFn";
+import SingleTrackRow from "./SingleTrackRow";
 import StemTrackRow, { URLFieldLabel } from "./StemTrackRow";
 
 interface TrackListEditDialogProps {
@@ -150,6 +149,12 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
         setTrackList(clone);
     };
 
+    const trackChangeHandler = (index: number) => {
+        return (newTrack: Track) => {
+            updateTrack(index, newTrack);
+        };
+    };
+
     const trackListInputs = (() => {
         const rows: React.ReactElement[] = trackList.tracks.map(
             // linter is wrong here - switch at the bottom is exhaustive and the compiler can verify
@@ -170,12 +175,6 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
 
                 switch (track.track_type) {
                     case "single": {
-                        const trackChangeHandler = (index: number) => {
-                            return (newTrack: SingleTrack) => {
-                                updateTrack(index, newTrack);
-                            };
-                        };
-
                         return (
                             <SingleTrackRow
                                 key={rowKey}
@@ -187,12 +186,6 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
                     }
 
                     case "2stems": {
-                        const trackChangeHandler = (index: number) => {
-                            return (newTrack: StemTrack<TwoStemKeys>) => {
-                                updateTrack(index, newTrack as TwoStemTrack);
-                            };
-                        };
-
                         const urlFieldLabels: URLFieldLabel<TwoStemKeys>[] = [
                             {
                                 key: "vocals",
@@ -216,12 +209,6 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
                     }
 
                     case "4stems": {
-                        const trackChangeHandler = (index: number) => {
-                            return (newTrack: StemTrack<FourStemKeys>) => {
-                                updateTrack(index, newTrack as FourStemTrack);
-                            };
-                        };
-
                         const urlFieldLabels: URLFieldLabel<FourStemKeys>[] = [
                             {
                                 key: "vocals",
