@@ -17,28 +17,11 @@ const makeStemTrackValidator = <T extends object, S extends string>(
     ]);
 };
 
-const FourStemEmptyObject = {
-    bass: undefined,
-    drums: undefined,
-    other: undefined,
-    vocals: undefined,
-};
-
-export type FourStemKeys = keyof typeof FourStemEmptyObject;
-export const FourStemsTrackValidator = makeStemTrackValidator(
-    FourStemEmptyObject,
-    "4stems"
-);
-
-type FourStemsTrackValidatedFields = iots.TypeOf<
-    typeof FourStemsTrackValidator
->;
-
 type StemURLs<StemKey extends string> = {
     [P in StemKey]: string;
 };
 
-export abstract class StemsTrack<StemKey extends string> {
+export abstract class StemTrack<StemKey extends string> {
     id: string;
     label: string;
     stem_urls: StemURLs<StemKey>;
@@ -67,8 +50,62 @@ export abstract class StemsTrack<StemKey extends string> {
     }
 }
 
-export class FourStemsTrack extends StemsTrack<FourStemKeys>
-    implements FourStemsTrackValidatedFields {
+// Two stems
+const TwoStemEmptyObject = {
+    accompaniment: undefined,
+    vocals: undefined,
+};
+
+export type TwoStemKeys = keyof typeof TwoStemEmptyObject;
+export const TwoStemTrackValidator = makeStemTrackValidator(
+    TwoStemEmptyObject,
+    "2stems"
+);
+
+type TwoStemTrackValidatedFields = iots.TypeOf<typeof TwoStemTrackValidator>;
+
+export class TwoStemTrack extends StemTrack<TwoStemKeys>
+    implements TwoStemTrackValidatedFields {
+    track_type: "2stems";
+
+    constructor(id: string, label: string, stem_urls: StemURLs<TwoStemKeys>) {
+        super(id, label, stem_urls);
+        this.track_type = "2stems";
+    }
+
+    keyObject(): Record<TwoStemKeys, undefined> {
+        return TwoStemEmptyObject;
+    }
+
+    static fromValidatedFields(
+        validatedFields: TwoStemTrackValidatedFields
+    ): TwoStemTrack {
+        return new TwoStemTrack(
+            validatedFields.id,
+            validatedFields.label,
+            validatedFields.stem_urls
+        );
+    }
+}
+
+// Four stems
+const FourStemEmptyObject = {
+    bass: undefined,
+    drums: undefined,
+    other: undefined,
+    vocals: undefined,
+};
+
+export type FourStemKeys = keyof typeof FourStemEmptyObject;
+export const FourStemTrackValidator = makeStemTrackValidator(
+    FourStemEmptyObject,
+    "4stems"
+);
+
+type FourStemTrackValidatedFields = iots.TypeOf<typeof FourStemTrackValidator>;
+
+export class FourStemTrack extends StemTrack<FourStemKeys>
+    implements FourStemTrackValidatedFields {
     track_type: "4stems";
 
     constructor(id: string, label: string, stem_urls: StemURLs<FourStemKeys>) {
@@ -81,9 +118,9 @@ export class FourStemsTrack extends StemsTrack<FourStemKeys>
     }
 
     static fromValidatedFields(
-        validatedFields: FourStemsTrackValidatedFields
-    ): FourStemsTrack {
-        return new FourStemsTrack(
+        validatedFields: FourStemTrackValidatedFields
+    ): FourStemTrack {
+        return new FourStemTrack(
             validatedFields.id,
             validatedFields.label,
             validatedFields.stem_urls

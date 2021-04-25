@@ -2,12 +2,15 @@ import { Collapse } from "@material-ui/core";
 import React, { useState } from "react";
 import shortid from "shortid";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
-import { FourStemKeys } from "../../common/ChordModel/tracks/StemTrack";
+import {
+    FourStemKeys,
+    TwoStemKeys,
+} from "../../common/ChordModel/tracks/StemTrack";
 import { Track } from "../../common/ChordModel/tracks/Track";
 import { PlainFn } from "../../common/PlainFn";
 import StemTrackPlayer, {
-    StemButton,
-} from "./internal_player/4stems/StemTrackPlayer";
+    StemButtonSpec,
+} from "./internal_player/stem/StemTrackPlayer";
 import SingleTrackPlayer from "./internal_player/single/SingleTrackPlayer";
 
 export interface Refreshable {
@@ -50,8 +53,32 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
                 );
             }
 
+            case "2stems": {
+                const buttonSpecs: StemButtonSpec<TwoStemKeys>[] = [
+                    {
+                        label: "vocals",
+                        buttonColour: "lightBlue",
+                    },
+                    {
+                        label: "accompaniment",
+                        buttonColour: "purple",
+                    },
+                ];
+
+                return (
+                    <StemTrackPlayer
+                        key={refreshToken}
+                        show={props.show}
+                        currentTrack={props.currentTrack}
+                        track={props.track}
+                        buttonSpecs={buttonSpecs}
+                        timeSections={props.timeSections}
+                    />
+                );
+            }
+
             case "4stems": {
-                const buttonSpecs: StemButton<FourStemKeys>[] = [
+                const buttonSpecs: StemButtonSpec<FourStemKeys>[] = [
                     {
                         label: "vocals",
                         buttonColour: "lightBlue",

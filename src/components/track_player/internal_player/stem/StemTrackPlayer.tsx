@@ -13,7 +13,7 @@ import lodash from "lodash";
 import prettyBytes from "pretty-bytes";
 import React, { useEffect, useRef, useState } from "react";
 import { TimeSection } from "../../../../common/ChordModel/ChordLine";
-import { StemsTrack } from "../../../../common/ChordModel/tracks/StemTrack";
+import { StemTrack } from "../../../../common/ChordModel/tracks/StemTrack";
 import { DetailedLoadingFetchState } from "../../../../common/fetch";
 import { mapObject } from "../../../../common/mapObject";
 import { getAudioCtx } from "./audioCtx";
@@ -27,7 +27,7 @@ const PaddedBox = withStyles((theme: Theme) => ({
     },
 }))(Box);
 
-export interface StemButton<StemKey extends string> {
+export interface StemButtonSpec<StemKey extends string> {
     label: StemKey;
     buttonColour: ControlPaneButtonColour;
 }
@@ -36,8 +36,8 @@ interface StemTrackPlayerProps<StemKey extends string> {
     show: boolean;
     currentTrack: boolean;
 
-    track: StemsTrack<StemKey>;
-    buttonSpecs: StemButton<StemKey>[];
+    track: StemTrack<StemKey>;
+    buttonSpecs: StemButtonSpec<StemKey>[];
 
     readonly timeSections: TimeSection[];
 }
@@ -300,12 +300,14 @@ const StemTrackPlayer = <StemKey extends string>(
         );
     }
 
-    const stems = props.buttonSpecs.map((buttonSpec: StemButton<StemKey>) => {
-        return {
-            ...buttonSpec,
-            audioBuffer: fetchState.item[buttonSpec.label],
-        };
-    });
+    const stems = props.buttonSpecs.map(
+        (buttonSpec: StemButtonSpec<StemKey>) => {
+            return {
+                ...buttonSpec,
+                audioBuffer: fetchState.item[buttonSpec.label],
+            };
+        }
+    );
 
     return (
         <LoadedStemTrackPlayer
