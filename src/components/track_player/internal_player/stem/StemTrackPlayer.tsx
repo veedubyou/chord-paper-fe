@@ -83,57 +83,49 @@ const StemTrackPlayer = <StemKey extends string>(
     };
 
     useEffect(() => {
+        type BufferKeyPair = {
+            audioBuffer: AudioBuffer;
+            stemKey: StemKey;
+        };
+
+        const fetchAudioBufferWithProgress = (
+            url: string,
+            stemKey: StemKey
+        ) => {
+            const handleProgress = (progress: DownloadProgress) => {
+                const currentFetchState = fetchStateRef.current;
+                if (currentFetchState.state !== "loading") {
+                    return;
+                }
+
+                const newFetchState = lodash.clone(currentFetchState);
+                newFetchState.details[stemKey].loadedBytes =
+                    progress.transferredBytes;
+                newFetchState.details[stemKey].totalBytes =
+                    progress.totalBytes !== 0 ? progress.totalBytes : "unknown";
+
+                setFetchState(newFetchState);
+            };
+
+            const audioBufferPromise = fetchAudioBuffer(url, handleProgress);
+
+            return audioBufferPromise.then((audioBuffer: AudioBuffer) => ({
+                audioBuffer: audioBuffer,
+                stemKey: stemKey,
+            }));
+        };
+
         const loadPlayers = async () => {
             try {
-                const fetchAudioBufferWithProgress = (
-                    url: string,
-                    stemKey: StemKey
-                ) => {
-                    const handleProgress = (progress: DownloadProgress) => {
-                        const currentFetchState = fetchStateRef.current;
-                        if (currentFetchState.state !== "loading") {
-                            return;
-                        }
-
-                        const newFetchState = lodash.clone(currentFetchState);
-                        newFetchState.details[stemKey].loadedBytes =
-                            progress.transferredBytes;
-                        newFetchState.details[stemKey].totalBytes =
-                            progress.totalBytes !== 0
-                                ? progress.totalBytes
-                                : "unknown";
-
-                        setFetchState(newFetchState);
-                    };
-
-                    const audioBufferPromise = fetchAudioBuffer(
-                        url,
-                        handleProgress
-                    );
-
-                    return audioBufferPromise.then(
-                        (audioBuffer: AudioBuffer) => ({
-                            audioBuffer: audioBuffer,
-                            stemKey: stemKey,
-                        })
-                    );
-                };
-
-                type BufferKeyPair = {
-                    audioBuffer: AudioBuffer;
-                    stemKey: StemKey;
-                };
-
                 const audioBufferPromises: Promise<BufferKeyPair>[] = [];
-                {
-                    let stemKey: StemKey;
-                    for (stemKey in props.track.stem_urls) {
-                        const bufferPromise = fetchAudioBufferWithProgress(
-                            props.track.stem_urls[stemKey],
-                            stemKey
-                        );
-                        audioBufferPromises.push(bufferPromise);
-                    }
+
+                let stemKey: StemKey;
+                for (stemKey in props.track.stem_urls) {
+                    const bufferPromise = fetchAudioBufferWithProgress(
+                        props.track.stem_urls[stemKey],
+                        stemKey
+                    );
+                    audioBufferPromises.push(bufferPromise);
                 }
 
                 const resolvedKeyBuffers = await Promise.all(
