@@ -137,10 +137,13 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
     const playerStateRef = useRef(playerState);
     playerStateRef.current = playerState;
 
-    const silentURL = useMemo(
-        () => createEmptySongURL(props.stems[0].audioBuffer.duration), //TODO - how to compile check this is not invalid
-        [props.stems]
-    );
+    const silentURL: string = useMemo(() => {
+        if (props.stems.length === 0) {
+            return "";
+        }
+
+        return createEmptySongURL(props.stems[0].audioBuffer.duration);
+    }, [props.stems]);
 
     const handleMasterVolumeChange: ReactEventHandler<HTMLAudioElement> = (
         event: SyntheticEvent<HTMLAudioElement>
