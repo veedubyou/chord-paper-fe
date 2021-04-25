@@ -14,7 +14,6 @@ import FilePlayer, { FilePlayerProps } from "react-player/file";
 import * as Tone from "tone";
 import { TimeSection } from "../../../../common/ChordModel/ChordLine";
 import ControlPane from "../ControlPane";
-import { useSections } from "../useSections";
 import { useTimeControls } from "../useTimeControls";
 import { getAudioCtx } from "./audioCtx";
 import StemTrackControlPane, {
