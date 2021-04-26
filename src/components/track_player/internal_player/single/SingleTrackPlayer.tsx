@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
 import shortid from "shortid";
 import { TimeSection } from "../../../../common/ChordModel/ChordLine";
-import { SingleTrack } from "../../../../common/ChordModel/Track";
+import { SingleTrack } from "../../../../common/ChordModel/tracks/SingleTrack";
 import ControlPane from "../ControlPane";
 import { ensureGoogleDriveCacheBusted } from "../google_drive";
 import { useTimeControls } from "../useTimeControls";

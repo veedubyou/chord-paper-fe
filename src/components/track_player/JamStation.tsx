@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import shortid from "shortid";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
-import { TrackList } from "../../common/ChordModel/Track";
+import { TrackList } from "../../common/ChordModel/tracks/TrackList";
 import MultiTrackPlayer from "./MultiTrackPlayer";
 import MinimizedButton from "./MinimizedButton";
 import TrackListEditDialog from "./dialog/TrackListEditDialog";

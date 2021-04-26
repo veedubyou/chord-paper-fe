@@ -16,8 +16,6 @@ import {
 } from "@material-ui/core/colors";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
-import { FourStemKeys } from "../../../../common/ChordModel/Track";
-import { mapObject } from "../../../../common/mapObject";
 
 const FullSizedBox = withStyles((theme: Theme) => ({
     root: {
@@ -52,49 +50,43 @@ const withColoredButtonStyle = (color: string) => {
 
 const DisabledButton = withColoredButtonStyle(grey[300])(UnstyledButton);
 
-export interface StemControl {
+const ColouredButtons = {
+    white: withColoredButtonStyle("white")(UnstyledButton),
+    pink: withColoredButtonStyle(pink[200])(UnstyledButton),
+    yellow: withColoredButtonStyle(yellow[200])(UnstyledButton),
+    purple: withColoredButtonStyle(purple[100])(UnstyledButton),
+    lightBlue: withColoredButtonStyle(lightBlue[200])(UnstyledButton),
+};
+
+export type ControlPaneButtonColour = keyof typeof ColouredButtons;
+
+export interface StemControl<StemKey extends string> {
+    label: StemKey;
+    buttonColour: ControlPaneButtonColour;
+
     enabled: boolean;
     onEnabledChanged: (newEnabled: boolean) => void;
     volume: number;
     onVolumeChanged: (newVolume: number) => void;
 }
 
-interface StemProperty {
-    label: string;
-    button: typeof DisabledButton; // somehow typeof Button doesn't match - just using an arbitrary one since they are all the same type
-}
-
-const buttonSpecs: Record<FourStemKeys, StemProperty> = {
-    bass: {
-        label: "Bass",
-        button: withColoredButtonStyle(pink[200])(UnstyledButton),
-    },
-    drums: {
-        label: "Drums",
-        button: withColoredButtonStyle(yellow[200])(UnstyledButton),
-    },
-    other: {
-        label: "Other",
-        button: withColoredButtonStyle(purple[100])(UnstyledButton),
-    },
-    vocals: {
-        label: "Vocal",
-        button: withColoredButtonStyle(lightBlue[200])(UnstyledButton),
-    },
+// T is a stem key, e.g. "bass" | "drums"
+type StemTrackControlPaneProps<StemKey extends string> = {
+    stemControls: StemControl<StemKey>[];
 };
 
-type FourStemControlPaneProps = Record<FourStemKeys, StemControl>;
-
-const FourStemControlPane: React.FC<FourStemControlPaneProps> = (
-    props: FourStemControlPaneProps
+const StemTrackControlPane = <StemKey extends string>(
+    props: StemTrackControlPaneProps<StemKey>
 ): JSX.Element => {
-    const makeButton = (stem: StemProperty, stemKey: FourStemKeys) => {
-        const StemButton = props[stemKey].enabled
-            ? stem.button
+    const makeButton = <StemKey extends string>(
+        stemButton: StemControl<StemKey>
+    ) => {
+        const RenderedButton = stemButton.enabled
+            ? ColouredButtons[stemButton.buttonColour]
             : DisabledButton;
 
         const handleClick = () => {
-            props[stemKey].onEnabledChanged(!props[stemKey].enabled);
+            stemButton.onEnabledChanged(!stemButton.enabled);
         };
 
         const preventClickBubble = (event: React.ChangeEvent<{}>) => {
@@ -110,41 +102,36 @@ const FourStemControlPane: React.FC<FourStemControlPaneProps> = (
                 return;
             }
 
-            props[stemKey].onVolumeChanged(value);
+            stemButton.onVolumeChanged(value);
         };
 
         return (
-            <Grid xs={3} item>
-                <StemButton variant="contained" onClick={handleClick}>
+            <Grid item xs>
+                <RenderedButton variant="contained" onClick={handleClick}>
                     <FullSizedBox>
-                        <Typography variant="body1">{stem.label}</Typography>
+                        <Typography variant="body1">
+                            {stemButton.label}
+                        </Typography>
 
                         <Box onClick={preventClickBubble}>
                             <VolumeSlider
-                                value={props[stemKey].volume}
+                                value={stemButton.volume}
                                 onChange={handleVolumeChange}
                                 min={0}
-                                max={150}
+                                max={200}
                                 step={10}
                                 valueLabelDisplay="auto"
                             />
                         </Box>
                     </FullSizedBox>
-                </StemButton>
+                </RenderedButton>
             </Grid>
         );
     };
 
-    const buttons = mapObject(buttonSpecs, makeButton);
+    const buttons = props.stemControls.map(makeButton);
 
-    return (
-        <Grid container>
-            {buttons.vocals}
-            {buttons.other}
-            {buttons.bass}
-            {buttons.drums}
-        </Grid>
-    );
+    return <Grid container>{buttons}</Grid>;
 };
 
-export default FourStemControlPane;
+export default StemTrackControlPane;

@@ -16,15 +16,18 @@ import AddIcon from "@material-ui/icons/Add";
 import { withStyles } from "@material-ui/styles";
 import lodash from "lodash";
 import React, { useState } from "react";
+import { SingleTrack } from "../../../common/ChordModel/tracks/SingleTrack";
 import {
-    FourStemsTrack,
-    SingleTrack,
-    Track,
-    TrackList,
-} from "../../../common/ChordModel/Track";
+    FourStemKeys,
+    FourStemTrack,
+    TwoStemKeys,
+    TwoStemTrack,
+} from "../../../common/ChordModel/tracks/StemTrack";
+import { Track } from "../../../common/ChordModel/tracks/Track";
+import { TrackList } from "../../../common/ChordModel/tracks/TrackList";
 import { PlainFn } from "../../../common/PlainFn";
 import SingleTrackRow from "./SingleTrackRow";
-import FourStemTrackRow from "./FourStemTrackRow";
+import StemTrackRow, { URLFieldLabel } from "./StemTrackRow";
 
 interface TrackListEditDialogProps {
     open: boolean;
@@ -91,19 +94,28 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
     };
 
     const handleAddSingleTrack = () => {
-        appendTrack(new SingleTrack("", "", ""));
-        handleCloseAddTrackMenu();
+        handleAddTrack(new SingleTrack("", "", ""));
+    };
+
+    const handleAddTwoStemTrack = () => {
+        handleAddTrack(
+            new TwoStemTrack("", "", { vocals: "", accompaniment: "" })
+        );
     };
 
     const handleAddFourStemTrack = () => {
-        appendTrack(
-            new FourStemsTrack("", "", {
+        handleAddTrack(
+            new FourStemTrack("", "", {
                 vocals: "",
                 other: "",
                 bass: "",
                 drums: "",
             })
         );
+    };
+
+    const handleAddTrack = (newTrack: Track) => {
+        appendTrack(newTrack);
         handleCloseAddTrackMenu();
     };
 
@@ -131,16 +143,16 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
         return false;
     })();
 
-    const trackChangeHandler = (index: number) => {
-        return (newTrack: Track) => {
-            updateTrack(index, newTrack);
-        };
-    };
-
     const updateTrack = (index: number, track: Track) => {
         const clone = cloneTrackList();
         clone.tracks.splice(index, 1, track);
         setTrackList(clone);
+    };
+
+    const trackChangeHandler = (index: number) => {
+        return (newTrack: Track) => {
+            updateTrack(index, newTrack);
+        };
     };
 
     const trackListInputs = (() => {
@@ -172,11 +184,55 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
                             />
                         );
                     }
-                    case "4stems": {
+
+                    case "2stems": {
+                        const urlFieldLabels: URLFieldLabel<TwoStemKeys>[] = [
+                            {
+                                key: "vocals",
+                                label: "Vocals File URL",
+                            },
+                            {
+                                key: "accompaniment",
+                                label: "Accompaniment File URL",
+                            },
+                        ];
+
                         return (
-                            <FourStemTrackRow
+                            <StemTrackRow
                                 key={rowKey}
                                 track={track}
+                                urlFieldLabels={urlFieldLabels}
+                                onChange={trackChangeHandler(index)}
+                                onRemove={() => removeTrack(index)}
+                            />
+                        );
+                    }
+
+                    case "4stems": {
+                        const urlFieldLabels: URLFieldLabel<FourStemKeys>[] = [
+                            {
+                                key: "vocals",
+                                label: "Vocals File URL",
+                            },
+                            {
+                                key: "other",
+                                label: "Other File URL",
+                            },
+                            {
+                                key: "bass",
+                                label: "Bass File URL",
+                            },
+                            {
+                                key: "drums",
+                                label: "Drums File URL",
+                            },
+                        ];
+
+                        return (
+                            <StemTrackRow
+                                key={rowKey}
+                                track={track}
+                                urlFieldLabels={urlFieldLabels}
                                 onChange={trackChangeHandler(index)}
                                 onRemove={() => removeTrack(index)}
                             />
@@ -206,6 +262,9 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
                 >
                     <MenuItem onClick={handleAddSingleTrack}>
                         Single Track
+                    </MenuItem>
+                    <MenuItem onClick={handleAddTwoStemTrack}>
+                        2 Stem Track
                     </MenuItem>
                     <MenuItem onClick={handleAddFourStemTrack}>
                         4 Stem Track

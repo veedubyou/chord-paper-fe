@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { TrackList } from "../../common/ChordModel/Track";
+import { TrackList } from "../../common/ChordModel/tracks/TrackList";
 import { PlainFn } from "../../common/PlainFn";
 import TrackListProvider from "../track_player/TrackListProvider";
 import JamStation from "../track_player/JamStation";

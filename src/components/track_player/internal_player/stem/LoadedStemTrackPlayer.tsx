@@ -13,50 +13,60 @@ import React, {
 import FilePlayer, { FilePlayerProps } from "react-player/file";
 import * as Tone from "tone";
 import { TimeSection } from "../../../../common/ChordModel/ChordLine";
-import {
-    FourStemEmptyObject,
-    FourStemKeys,
-} from "../../../../common/ChordModel/Track";
-import { mapObject } from "../../../../common/mapObject";
 import ControlPane from "../ControlPane";
 import { useTimeControls } from "../useTimeControls";
 import { getAudioCtx } from "./audioCtx";
-import FourStemControlPane, { StemControl } from "./FourStemControlPane";
+import StemTrackControlPane, {
+    ControlPaneButtonColour,
+    StemControl,
+} from "./StemTrackControlPane";
 
-interface StemToneNodes {
+interface StemToneNodes<StemKey extends string> {
+    label: StemKey;
     playerNode: Tone.Player;
     pitchShiftNode: Tone.PitchShift;
     volumeNode: Tone.Volume;
     endNode: Tone.Volume;
 }
 
-interface StemState {
+interface StemState<StemKey extends string> {
+    key: StemKey;
     muted: boolean;
     volumePercentage: number;
 }
 
-type ToneNodes = Record<FourStemKeys, StemToneNodes>;
-type PlayerState = {
+type ToneNodes<StemKey extends string> = StemToneNodes<StemKey>[];
+
+type PlayerState<StemKey extends string> = {
     masterVolumePercentage: number;
     playratePercentage: number;
-    stems: Record<FourStemKeys, StemState>;
+    stems: StemState<StemKey>[];
 };
 
-interface LoadedFourStemTrackPlayerProps {
+interface StemInput<StemKey extends string> {
+    label: StemKey;
+    buttonColour: ControlPaneButtonColour;
+    audioBuffer: AudioBuffer;
+}
+
+interface LoadedStemTrackPlayerProps<StemKey extends string> {
     show: boolean;
     currentTrack: boolean;
-    audioBuffers: Record<FourStemKeys, AudioBuffer>;
+    stems: StemInput<StemKey>[];
     readonly timeSections: TimeSection[];
 }
 
-const createToneNodes = (audioBuffer: AudioBuffer): StemToneNodes => {
+const createToneNodes = <StemKey extends string>(
+    stem: StemInput<StemKey>
+): StemToneNodes<StemKey> => {
     const volumeNode = new Tone.Volume();
     const pitchShiftNode = new Tone.PitchShift();
     const playerNode = new Tone.Player({
-        url: audioBuffer,
+        url: stem.audioBuffer,
     }).chain(pitchShiftNode, volumeNode);
 
     return {
+        label: stem.label,
         pitchShiftNode: pitchShiftNode,
         volumeNode: volumeNode,
         playerNode: playerNode,
@@ -82,23 +92,28 @@ const createEmptySongURL = (time: number): string => {
     return songURL;
 };
 
-const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
-    props: LoadedFourStemTrackPlayerProps
+const LoadedStemTrackPlayer = <StemKey extends string>(
+    props: LoadedStemTrackPlayerProps<StemKey>
 ): JSX.Element => {
     const playerRef = useRef<FilePlayer>();
     const timeControl = useTimeControls(playerRef.current, props.timeSections);
     const { enqueueSnackbar } = useSnackbar();
 
-    const toneNodes: ToneNodes = useMemo(
-        () => mapObject(props.audioBuffers, createToneNodes),
-        [props.audioBuffers]
+    const toneNodes: ToneNodes<StemKey> = useMemo(
+        () => props.stems.map(createToneNodes),
+        [props.stems]
     );
 
-    const initialPlayerState: PlayerState = (() => {
-        const stemStates = mapObject(FourStemEmptyObject, () => ({
-            muted: false,
-            volumePercentage: 100,
-        }));
+    const initialPlayerState: PlayerState<StemKey> = (() => {
+        const stemStates: StemState<StemKey>[] = props.stems.map(
+            (stem: StemInput<StemKey>) => {
+                return {
+                    key: stem.label,
+                    muted: false,
+                    volumePercentage: 100,
+                };
+            }
+        );
 
         return {
             masterVolumePercentage: 100,
@@ -107,17 +122,20 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
         };
     })();
 
-    const [playerState, setPlayerState] = useState<PlayerState>(
+    const [playerState, setPlayerState] = useState<PlayerState<StemKey>>(
         initialPlayerState
     );
 
     const playerStateRef = useRef(playerState);
     playerStateRef.current = playerState;
 
-    const silentURL = useMemo(
-        () => createEmptySongURL(props.audioBuffers.bass.duration),
-        [props.audioBuffers.bass.duration]
-    );
+    const silentURL: string = useMemo(() => {
+        if (props.stems.length === 0) {
+            return "";
+        }
+
+        return createEmptySongURL(props.stems[0].audioBuffer.duration);
+    }, [props.stems]);
 
     const handleMasterVolumeChange: ReactEventHandler<HTMLAudioElement> = (
         event: SyntheticEvent<HTMLAudioElement>
@@ -155,9 +173,8 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
         let minDuration: number | null = null;
         let maxDuration: number | null = null;
 
-        let stemKey: FourStemKeys;
-        for (stemKey in props.audioBuffers) {
-            const buffer = props.audioBuffers[stemKey];
+        for (const stem of props.stems) {
+            const buffer = stem.audioBuffer;
             if (minDuration === null || buffer.duration < minDuration) {
                 minDuration = buffer.duration;
             }
@@ -177,7 +194,7 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
                 { variant: "warning" }
             );
         }
-    }, [enqueueSnackbar, props.audioBuffers]);
+    }, [enqueueSnackbar, props.stems]);
 
     // synchronize the time control and tone transport
     useEffect(() => {
@@ -203,47 +220,47 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
 
     // synchronize player state and track volumes/mutedness
     useEffect(() => {
-        let stemKey: FourStemKeys;
-        for (stemKey in playerState.stems) {
-            const stemState = playerState.stems[stemKey];
-            const nodes = toneNodes[stemKey];
+        playerState.stems.forEach(
+            (stemState: StemState<StemKey>, stemIndex: number) => {
+                const nodes = toneNodes[stemIndex];
 
-            const stemVolume =
-                (stemState.volumePercentage / 100) *
-                (playerState.masterVolumePercentage / 100);
+                const stemVolume =
+                    (stemState.volumePercentage / 100) *
+                    (playerState.masterVolumePercentage / 100);
 
-            // don't set if fraction is 0, log of 0 is undefined
-            if (stemVolume > 0) {
-                const stemVolumeDecibels = 20 * Math.log10(stemVolume);
-                nodes.volumeNode.volume.value = stemVolumeDecibels;
+                // don't set if fraction is 0, log of 0 is undefined
+                if (stemVolume > 0) {
+                    const stemVolumeDecibels = 20 * Math.log10(stemVolume);
+                    nodes.volumeNode.volume.value = stemVolumeDecibels;
+                }
+
+                // mute needs to be set last because it can be overrided by volume
+                nodes.endNode.mute = stemState.muted || stemVolume === 0;
+
+                const playrate = playerState.playratePercentage / 100;
+
+                nodes.playerNode.playbackRate = playrate;
+                nodes.pitchShiftNode.pitch = semitonesToOffsetPlayrate(
+                    playrate
+                );
             }
-
-            // mute needs to be set last because it can be overrided by volume
-            nodes.endNode.mute = stemState.muted || stemVolume === 0;
-
-            const playrate = playerState.playratePercentage / 100;
-
-            nodes.playerNode.playbackRate = playrate;
-            nodes.pitchShiftNode.pitch = semitonesToOffsetPlayrate(playrate);
-        }
+        );
     }, [toneNodes, playerState]);
 
     // connect and disconnect nodes from the transport when not in focus
     // so that other tracks can use the transport
     useEffect(() => {
         if (props.currentTrack) {
-            let stemKey: FourStemKeys;
-            for (stemKey in toneNodes) {
-                toneNodes[stemKey].playerNode.sync().start(0);
-                toneNodes[stemKey].endNode.toDestination();
-            }
+            toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
+                toneNode.playerNode.sync().start(0);
+                toneNode.endNode.toDestination();
+            });
 
             return () => {
-                let stemKey: FourStemKeys;
-                for (stemKey in toneNodes) {
-                    toneNodes[stemKey].playerNode.unsync();
-                    toneNodes[stemKey].endNode.disconnect();
-                }
+                toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
+                    toneNode.playerNode.unsync();
+                    toneNode.endNode.disconnect();
+                });
             };
         }
     }, [props.currentTrack, toneNodes]);
@@ -258,38 +275,52 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
     // cleanup buffer resources when this component goes out of scope
     useEffect(() => {
         return () => {
-            let stemKey: FourStemKeys;
-            for (stemKey in toneNodes) {
-                toneNodes[stemKey].volumeNode.dispose();
-                toneNodes[stemKey].playerNode.dispose();
-            }
+            toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
+                toneNode.volumeNode.dispose();
+                toneNode.playerNode.dispose();
+            });
         };
     }, [toneNodes]);
 
     const stemControlPane = (() => {
         const makeStemControl = (
-            stemState: StemState,
-            stemKey: FourStemKeys
-        ): StemControl => {
+            stemState: StemState<StemKey>,
+            stemIndex: number
+        ): StemControl<StemKey> => {
+            const buttonColour: ControlPaneButtonColour = (() => {
+                const stemInput = props.stems.find(
+                    (value: StemInput<StemKey>) => value.label === stemState.key
+                );
+                if (stemInput === undefined) {
+                    return "white";
+                }
+
+                return stemInput.buttonColour;
+            })();
+
             return {
+                label: stemState.key,
+                buttonColour: buttonColour,
                 enabled: !stemState.muted,
                 onEnabledChanged: (enabled: boolean) => {
                     const newPlayerState = lodash.cloneDeep(playerState);
-                    newPlayerState.stems[stemKey].muted = !enabled;
+                    newPlayerState.stems[stemIndex].muted = !enabled;
                     setPlayerState(newPlayerState);
                 },
                 volume: stemState.volumePercentage,
                 onVolumeChanged: (newVolume: number) => {
                     const newPlayerState = lodash.cloneDeep(playerState);
-                    newPlayerState.stems[stemKey].volumePercentage = newVolume;
+                    newPlayerState.stems[
+                        stemIndex
+                    ].volumePercentage = newVolume;
                     setPlayerState(newPlayerState);
                 },
             };
         };
 
-        const stemControls = mapObject(playerState.stems, makeStemControl);
+        const stemControls = playerState.stems.map(makeStemControl);
 
-        return <FourStemControlPane {...stemControls} />;
+        return <StemTrackControlPane<StemKey> stemControls={stemControls} />;
     })();
 
     const handlePlayratePercentageChange = (newPlayratePercentage: number) => {
@@ -323,4 +354,4 @@ const LoadedFourStemTrackPlayer: React.FC<LoadedFourStemTrackPlayerProps> = (
     );
 };
 
-export default LoadedFourStemTrackPlayer;
+export default LoadedStemTrackPlayer;

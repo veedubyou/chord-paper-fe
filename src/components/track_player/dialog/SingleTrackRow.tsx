@@ -2,7 +2,7 @@ import { Button, Divider, Grid, Theme } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
-import { SingleTrack } from "../../../common/ChordModel/Track";
+import { SingleTrack } from "../../../common/ChordModel/tracks/SingleTrack";
 import LabelField from "./LabelField";
 import URLField from "./URLField";
 import lodash from "lodash";

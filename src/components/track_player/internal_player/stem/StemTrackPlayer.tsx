@@ -13,15 +13,12 @@ import lodash from "lodash";
 import prettyBytes from "pretty-bytes";
 import React, { useEffect, useRef, useState } from "react";
 import { TimeSection } from "../../../../common/ChordModel/ChordLine";
-import {
-    FourStemEmptyObject,
-    FourStemKeys,
-    FourStemsTrack,
-} from "../../../../common/ChordModel/Track";
-import { FetchState } from "../../../../common/fetch";
+import { StemTrack } from "../../../../common/ChordModel/tracks/StemTrack";
+import { DetailedLoadingFetchState } from "../../../../common/fetch";
 import { mapObject } from "../../../../common/mapObject";
 import { getAudioCtx } from "./audioCtx";
-import LoadedFourStemTrackPlayer from "./LoadedFourStemTrackPlayer";
+import LoadedStemTrackPlayer from "./LoadedStemTrackPlayer";
+import { ControlPaneButtonColour } from "./StemTrackControlPane";
 
 const PaddedBox = withStyles((theme: Theme) => ({
     root: {
@@ -30,11 +27,18 @@ const PaddedBox = withStyles((theme: Theme) => ({
     },
 }))(Box);
 
-interface FourStemTrackPlayerProps {
+export interface StemButtonSpec<StemKey extends string> {
+    label: StemKey;
+    buttonColour: ControlPaneButtonColour;
+}
+
+interface StemTrackPlayerProps<StemKey extends string> {
     show: boolean;
     currentTrack: boolean;
 
-    track: FourStemsTrack;
+    track: StemTrack<StemKey>;
+    buttonSpecs: StemButtonSpec<StemKey>[];
+
     readonly timeSections: TimeSection[];
 }
 
@@ -43,14 +47,20 @@ interface SingleLoadingProgress {
     totalBytes: number | "initial" | "unknown";
 }
 
-type FetchResult = Record<FourStemKeys, AudioBuffer>;
-type LoadingProgress = Record<FourStemKeys, SingleLoadingProgress>;
+type FetchResult<StemKey extends string> = Record<StemKey, AudioBuffer>;
+type LoadingProgress<StemKey extends string> = Record<
+    StemKey,
+    SingleLoadingProgress
+>;
 
-const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
-    props: FourStemTrackPlayerProps
+const StemTrackPlayer = <StemKey extends string>(
+    props: StemTrackPlayerProps<StemKey>
 ): JSX.Element => {
     const [fetchState, setFetchState] = useState<
-        FetchState<FetchResult, LoadingProgress>
+        DetailedLoadingFetchState<
+            FetchResult<StemKey>,
+            LoadingProgress<StemKey>
+        >
     >({
         state: "not-started",
     });
@@ -73,59 +83,90 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
     };
 
     useEffect(() => {
+        type BufferKeyPair = {
+            audioBuffer: AudioBuffer;
+            stemKey: StemKey;
+        };
+
+        const fetchAudioBufferWithProgress = (
+            url: string,
+            stemKey: StemKey
+        ) => {
+            const handleProgress = (progress: DownloadProgress) => {
+                const currentFetchState = fetchStateRef.current;
+                if (currentFetchState.state !== "loading") {
+                    return;
+                }
+
+                const newFetchState = lodash.clone(currentFetchState);
+                newFetchState.details[stemKey].loadedBytes =
+                    progress.transferredBytes;
+                newFetchState.details[stemKey].totalBytes =
+                    progress.totalBytes !== 0 ? progress.totalBytes : "unknown";
+
+                setFetchState(newFetchState);
+            };
+
+            const audioBufferPromise = fetchAudioBuffer(url, handleProgress);
+
+            return audioBufferPromise.then((audioBuffer: AudioBuffer) => ({
+                audioBuffer: audioBuffer,
+                stemKey: stemKey,
+            }));
+        };
+
         const loadPlayers = async () => {
             try {
-                const fetchResponses = mapObject(
-                    props.track.stem_urls,
-                    (url: string, stemKey: FourStemKeys) => {
-                        const handleProgress = (progress: DownloadProgress) => {
-                            const currentFetchState = fetchStateRef.current;
-                            if (currentFetchState.state !== "loading") {
-                                return;
-                            }
+                const audioBufferPromises: Promise<BufferKeyPair>[] = [];
 
-                            const newFetchState = lodash.clone(
-                                currentFetchState
-                            );
-                            newFetchState.details[stemKey].loadedBytes =
-                                progress.transferredBytes;
-                            newFetchState.details[stemKey].totalBytes =
-                                progress.totalBytes !== 0
-                                    ? progress.totalBytes
-                                    : "unknown";
+                let stemKey: StemKey;
+                for (stemKey in props.track.stem_urls) {
+                    const bufferPromise = fetchAudioBufferWithProgress(
+                        props.track.stem_urls[stemKey],
+                        stemKey
+                    );
+                    audioBufferPromises.push(bufferPromise);
+                }
 
-                            setFetchState(newFetchState);
-                        };
+                const resolvedKeyBuffers = await Promise.all(
+                    audioBufferPromises
+                );
 
-                        return fetchAudioBuffer(url, handleProgress);
+                let encounteredError = false;
+                const audioBuffers = mapObject(
+                    props.track.keyObject(),
+                    (_empty: undefined, stemKey: StemKey) => {
+                        const searchResult = resolvedKeyBuffers.find(
+                            (value: BufferKeyPair) => value.stemKey === stemKey
+                        );
+
+                        if (searchResult === undefined) {
+                            encounteredError = true;
+                            return new AudioBuffer({
+                                length: 0,
+                                sampleRate: 1,
+                            });
+                        }
+
+                        return searchResult.audioBuffer;
                     }
                 );
 
-                const [
-                    bassBuffer,
-                    drumsBuffer,
-                    otherBuffer,
-                    vocalsBuffer,
-                ] = await Promise.all([
-                    fetchResponses.bass,
-                    fetchResponses.drums,
-                    fetchResponses.other,
-                    fetchResponses.vocals,
-                ]);
-
-                const players: FetchResult = {
-                    bass: bassBuffer,
-                    drums: drumsBuffer,
-                    other: otherBuffer,
-                    vocals: vocalsBuffer,
-                };
+                if (encounteredError) {
+                    setFetchState({
+                        state: "error",
+                        error: new Error(
+                            "Could not find stem key in audio buffer array to object mapping"
+                        ),
+                    });
+                    return;
+                }
 
                 setFetchState({
                     state: "loaded",
-                    item: players,
+                    item: audioBuffers,
                 });
             } catch (e) {
-                console.error(e);
                 setFetchState({
                     state: "error",
                     error: e,
@@ -139,7 +180,7 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
             setFetchState({
                 state: "loading",
                 details: mapObject(
-                    FourStemEmptyObject,
+                    props.track.keyObject(),
                     (): SingleLoadingProgress => ({
                         loadedBytes: 0,
                         totalBytes: "initial",
@@ -147,7 +188,7 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
                 ),
             });
         }
-    }, [fetchState, setFetchState, props.track.stem_urls]);
+    }, [fetchState, setFetchState, props.track]);
 
     if (fetchState.state === "not-started") {
         return (
@@ -162,7 +203,7 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
     if (fetchState.state === "loading") {
         const totalBytes: number | "unknown" | "initial" = (() => {
             let total = 0;
-            let stemKey: FourStemKeys;
+            let stemKey: StemKey;
             for (stemKey in fetchState.details) {
                 const stemTotal = fetchState.details[stemKey].totalBytes;
 
@@ -186,7 +227,7 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
 
         const loadedBytes: number = (() => {
             let loaded = 0;
-            let stemKey: FourStemKeys;
+            let stemKey: StemKey;
             for (stemKey in fetchState.details) {
                 loaded += fetchState.details[stemKey].loadedBytes;
             }
@@ -236,6 +277,7 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
     }
 
     if (fetchState.state === "error") {
+        console.error(fetchState.error);
         const refresh = () => {
             setFetchState({ state: "not-started" });
         };
@@ -250,14 +292,23 @@ const FourStemTrackPlayer: React.FC<FourStemTrackPlayerProps> = (
         );
     }
 
+    const stems = props.buttonSpecs.map(
+        (buttonSpec: StemButtonSpec<StemKey>) => {
+            return {
+                ...buttonSpec,
+                audioBuffer: fetchState.item[buttonSpec.label],
+            };
+        }
+    );
+
     return (
-        <LoadedFourStemTrackPlayer
+        <LoadedStemTrackPlayer
             show={props.show}
             currentTrack={props.currentTrack}
-            audioBuffers={fetchState.item}
+            stems={stems}
             timeSections={props.timeSections}
         />
     );
 };
 
-export default FourStemTrackPlayer;
+export default StemTrackPlayer;

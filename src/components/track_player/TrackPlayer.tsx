@@ -2,9 +2,15 @@ import { Collapse } from "@material-ui/core";
 import React, { useState } from "react";
 import shortid from "shortid";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
-import { Track } from "../../common/ChordModel/Track";
+import {
+    FourStemKeys,
+    TwoStemKeys,
+} from "../../common/ChordModel/tracks/StemTrack";
+import { Track } from "../../common/ChordModel/tracks/Track";
 import { PlainFn } from "../../common/PlainFn";
-import FourStemTrackPlayer from "./internal_player/4stems/FourStemTrackPlayer";
+import StemTrackPlayer, {
+    StemButtonSpec,
+} from "./internal_player/stem/StemTrackPlayer";
 import SingleTrackPlayer from "./internal_player/single/SingleTrackPlayer";
 
 export interface Refreshable {
@@ -47,13 +53,57 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
                 );
             }
 
-            case "4stems": {
+            case "2stems": {
+                const buttonSpecs: StemButtonSpec<TwoStemKeys>[] = [
+                    {
+                        label: "vocals",
+                        buttonColour: "lightBlue",
+                    },
+                    {
+                        label: "accompaniment",
+                        buttonColour: "purple",
+                    },
+                ];
+
                 return (
-                    <FourStemTrackPlayer
+                    <StemTrackPlayer
                         key={refreshToken}
                         show={props.show}
                         currentTrack={props.currentTrack}
                         track={props.track}
+                        buttonSpecs={buttonSpecs}
+                        timeSections={props.timeSections}
+                    />
+                );
+            }
+
+            case "4stems": {
+                const buttonSpecs: StemButtonSpec<FourStemKeys>[] = [
+                    {
+                        label: "vocals",
+                        buttonColour: "lightBlue",
+                    },
+                    {
+                        label: "other",
+                        buttonColour: "purple",
+                    },
+                    {
+                        label: "bass",
+                        buttonColour: "pink",
+                    },
+                    {
+                        label: "drums",
+                        buttonColour: "yellow",
+                    },
+                ];
+
+                return (
+                    <StemTrackPlayer
+                        key={refreshToken}
+                        show={props.show}
+                        currentTrack={props.currentTrack}
+                        track={props.track}
+                        buttonSpecs={buttonSpecs}
                         timeSections={props.timeSections}
                     />
                 );

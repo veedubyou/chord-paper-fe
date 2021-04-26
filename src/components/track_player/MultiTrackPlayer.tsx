@@ -13,7 +13,8 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import React, { useRef } from "react";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
-import { Track, TrackList } from "../../common/ChordModel/Track";
+import { Track } from "../../common/ChordModel/tracks/Track";
+import { TrackList } from "../../common/ChordModel/tracks/TrackList";
 import { PlainFn } from "../../common/PlainFn";
 import {
     roundedCornersStyle,

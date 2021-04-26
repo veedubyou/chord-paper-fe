@@ -20,13 +20,13 @@ interface LoadedState<T> {
     item: T;
 }
 
-type BasicFetchState<T> =
+export type BasicFetchState<T> =
     | NotStartedState
     | ErrorState
     | LoadingState
     | LoadedState<T>;
 
-type DetailedLoadingFetchState<T, U> =
+export type DetailedLoadingFetchState<T, U> =
     | NotStartedState
     | ErrorState
     | DetailedLoadingState<U>
