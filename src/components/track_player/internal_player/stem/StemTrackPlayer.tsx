@@ -17,7 +17,7 @@ import { StemTrack } from "../../../../common/ChordModel/tracks/StemTrack";
 import { DetailedLoadingFetchState } from "../../../../common/fetch";
 import { mapObject } from "../../../../common/mapObject";
 import { getAudioCtx } from "./audioCtx";
-import LoadedStemTrackPlayer from "./LoadedStemTrackPlayer";
+import LoadedStemTrackPlayer, { StemInput } from "./LoadedStemTrackPlayer";
 import { ControlPaneButtonColour } from "./StemTrackControlPane";
 
 const PaddedBox = withStyles((theme: Theme) => ({
@@ -47,7 +47,7 @@ interface SingleLoadingProgress {
     totalBytes: number | "initial" | "unknown";
 }
 
-type FetchResult<StemKey extends string> = Record<StemKey, AudioBuffer>;
+type FetchResult<StemKey extends string> = StemInput<StemKey>[];
 type LoadingProgress<StemKey extends string> = Record<
     StemKey,
     SingleLoadingProgress
@@ -133,22 +133,30 @@ const StemTrackPlayer = <StemKey extends string>(
                 );
 
                 let encounteredError = false;
-                const audioBuffers = mapObject(
-                    props.track.keyObject(),
-                    (_empty: undefined, stemKey: StemKey) => {
-                        const searchResult = resolvedKeyBuffers.find(
-                            (value: BufferKeyPair) => value.stemKey === stemKey
+                const stemInputs: StemInput<StemKey>[] = props.buttonSpecs.map(
+                    (buttonSpec: StemButtonSpec<StemKey>) => {
+                        const audioBufferSearch = resolvedKeyBuffers.find(
+                            (value: BufferKeyPair) =>
+                                value.stemKey === buttonSpec.label
                         );
 
-                        if (searchResult === undefined) {
+                        let audioBuffer: AudioBuffer;
+                        if (audioBufferSearch === undefined) {
                             encounteredError = true;
-                            return new AudioBuffer({
+
+                            audioBuffer = new AudioBuffer({
                                 length: 0,
                                 sampleRate: 1,
                             });
+                        } else {
+                            audioBuffer = audioBufferSearch.audioBuffer;
                         }
 
-                        return searchResult.audioBuffer;
+                        return {
+                            label: buttonSpec.label,
+                            audioBuffer: audioBuffer,
+                            buttonColour: buttonSpec.buttonColour,
+                        };
                     }
                 );
 
@@ -164,7 +172,7 @@ const StemTrackPlayer = <StemKey extends string>(
 
                 setFetchState({
                     state: "loaded",
-                    item: audioBuffers,
+                    item: stemInputs,
                 });
             } catch (e) {
                 setFetchState({
@@ -188,7 +196,7 @@ const StemTrackPlayer = <StemKey extends string>(
                 ),
             });
         }
-    }, [fetchState, setFetchState, props.track]);
+    }, [fetchState, setFetchState, props.track, props.buttonSpecs]);
 
     if (fetchState.state === "not-started") {
         return (
@@ -292,20 +300,11 @@ const StemTrackPlayer = <StemKey extends string>(
         );
     }
 
-    const stems = props.buttonSpecs.map(
-        (buttonSpec: StemButtonSpec<StemKey>) => {
-            return {
-                ...buttonSpec,
-                audioBuffer: fetchState.item[buttonSpec.label],
-            };
-        }
-    );
-
     return (
         <LoadedStemTrackPlayer
             show={props.show}
             currentTrack={props.currentTrack}
-            stems={stems}
+            stems={fetchState.item}
             timeSections={props.timeSections}
         />
     );

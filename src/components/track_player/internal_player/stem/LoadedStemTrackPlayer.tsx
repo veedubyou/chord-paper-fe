@@ -43,7 +43,7 @@ type PlayerState<StemKey extends string> = {
     stems: StemState<StemKey>[];
 };
 
-interface StemInput<StemKey extends string> {
+export interface StemInput<StemKey extends string> {
     label: StemKey;
     buttonColour: ControlPaneButtonColour;
     audioBuffer: AudioBuffer;
