@@ -10,6 +10,7 @@ import {
     blueGrey,
     grey,
     lightBlue,
+    lightGreen,
     pink,
     purple,
     yellow,
@@ -56,6 +57,7 @@ const ColouredButtons = {
     yellow: withColoredButtonStyle(yellow[200])(UnstyledButton),
     purple: withColoredButtonStyle(purple[100])(UnstyledButton),
     lightBlue: withColoredButtonStyle(lightBlue[200])(UnstyledButton),
+    lightGreen: withColoredButtonStyle(lightGreen[100])(UnstyledButton),
 };
 
 export type ControlPaneButtonColour = keyof typeof ColouredButtons;

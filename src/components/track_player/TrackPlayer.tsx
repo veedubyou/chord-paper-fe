@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import shortid from "shortid";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
 import {
+    FiveStemKeys,
     FourStemKeys,
     TwoStemKeys,
 } from "../../common/ChordModel/tracks/StemTrack";
@@ -86,6 +87,42 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
                     {
                         label: "other",
                         buttonColour: "purple",
+                    },
+                    {
+                        label: "bass",
+                        buttonColour: "pink",
+                    },
+                    {
+                        label: "drums",
+                        buttonColour: "yellow",
+                    },
+                ];
+
+                return (
+                    <StemTrackPlayer
+                        key={refreshToken}
+                        show={props.show}
+                        currentTrack={props.currentTrack}
+                        track={props.track}
+                        buttonSpecs={buttonSpecs}
+                        timeSections={props.timeSections}
+                    />
+                );
+            }
+
+            case "5stems": {
+                const buttonSpecs: StemButtonSpec<FiveStemKeys>[] = [
+                    {
+                        label: "vocals",
+                        buttonColour: "lightBlue",
+                    },
+                    {
+                        label: "other",
+                        buttonColour: "purple",
+                    },
+                    {
+                        label: "piano",
+                        buttonColour: "lightGreen",
                     },
                     {
                         label: "bass",

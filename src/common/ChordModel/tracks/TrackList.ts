@@ -1,7 +1,7 @@
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
 import { SingleTrack } from "./SingleTrack";
-import { FourStemTrack, TwoStemTrack } from "./StemTrack";
+import { FiveStemTrack, FourStemTrack, TwoStemTrack } from "./StemTrack";
 import { Track, TrackValidator } from "./Track";
 
 const TrackListValidator = iots.type({
@@ -36,6 +36,10 @@ export class TrackList implements TrackListValidatedFields {
 
                 case "4stems": {
                     return FourStemTrack.fromValidatedFields(validatedFields);
+                }
+
+                case "5stems": {
+                    return FiveStemTrack.fromValidatedFields(validatedFields);
                 }
             }
         };
