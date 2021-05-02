@@ -127,3 +127,44 @@ export class FourStemTrack extends StemTrack<FourStemKeys>
         );
     }
 }
+
+// Five stems
+const FiveStemEmptyObject = {
+    bass: undefined,
+    drums: undefined,
+    other: undefined,
+    piano: undefined,
+    vocals: undefined,
+};
+
+export type FiveStemKeys = keyof typeof FiveStemEmptyObject;
+export const FiveStemTrackValidator = makeStemTrackValidator(
+    FiveStemEmptyObject,
+    "5stems"
+);
+
+type FiveStemTrackValidatedFields = iots.TypeOf<typeof FiveStemTrackValidator>;
+
+export class FiveStemTrack extends StemTrack<FiveStemKeys>
+    implements FiveStemTrackValidatedFields {
+    track_type: "5stems";
+
+    constructor(id: string, label: string, stem_urls: StemURLs<FiveStemKeys>) {
+        super(id, label, stem_urls);
+        this.track_type = "5stems";
+    }
+
+    keyObject(): Record<FiveStemKeys, undefined> {
+        return FiveStemEmptyObject;
+    }
+
+    static fromValidatedFields(
+        validatedFields: FiveStemTrackValidatedFields
+    ): FiveStemTrack {
+        return new FiveStemTrack(
+            validatedFields.id,
+            validatedFields.label,
+            validatedFields.stem_urls
+        );
+    }
+}

@@ -18,6 +18,8 @@ import lodash from "lodash";
 import React, { useState } from "react";
 import { SingleTrack } from "../../../common/ChordModel/tracks/SingleTrack";
 import {
+    FiveStemKeys,
+    FiveStemTrack,
     FourStemKeys,
     FourStemTrack,
     TwoStemKeys,
@@ -108,6 +110,18 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
             new FourStemTrack("", "", {
                 vocals: "",
                 other: "",
+                bass: "",
+                drums: "",
+            })
+        );
+    };
+
+    const handleAddFiveStemTrack = () => {
+        handleAddTrack(
+            new FiveStemTrack("", "", {
+                vocals: "",
+                other: "",
+                piano: "",
                 bass: "",
                 drums: "",
             })
@@ -238,6 +252,41 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
                             />
                         );
                     }
+
+                    case "5stems": {
+                        const urlFieldLabels: URLFieldLabel<FiveStemKeys>[] = [
+                            {
+                                key: "vocals",
+                                label: "Vocals File URL",
+                            },
+                            {
+                                key: "other",
+                                label: "Other File URL",
+                            },
+                            {
+                                key: "piano",
+                                label: "Piano File URL",
+                            },
+                            {
+                                key: "bass",
+                                label: "Bass File URL",
+                            },
+                            {
+                                key: "drums",
+                                label: "Drums File URL",
+                            },
+                        ];
+
+                        return (
+                            <StemTrackRow
+                                key={rowKey}
+                                track={track}
+                                urlFieldLabels={urlFieldLabels}
+                                onChange={trackChangeHandler(index)}
+                                onRemove={() => removeTrack(index)}
+                            />
+                        );
+                    }
                 }
             }
         );
@@ -268,6 +317,9 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
                     </MenuItem>
                     <MenuItem onClick={handleAddFourStemTrack}>
                         4 Stem Track
+                    </MenuItem>
+                    <MenuItem onClick={handleAddFiveStemTrack}>
+                        5 Stem Track
                     </MenuItem>
                 </Menu>
             </React.Fragment>

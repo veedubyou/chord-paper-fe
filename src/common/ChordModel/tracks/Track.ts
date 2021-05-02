@@ -1,6 +1,8 @@
 import * as iots from "io-ts";
 import { SingleTrack, SingleTrackValidator } from "./SingleTrack";
 import {
+    FiveStemTrack,
+    FiveStemTrackValidator,
     FourStemTrack,
     FourStemTrackValidator,
     TwoStemTrack,
@@ -11,6 +13,7 @@ export const TrackValidator = iots.union([
     SingleTrackValidator,
     TwoStemTrackValidator,
     FourStemTrackValidator,
+    FiveStemTrackValidator,
 ]);
 
-export type Track = SingleTrack | TwoStemTrack | FourStemTrack;
+export type Track = SingleTrack | TwoStemTrack | FourStemTrack | FiveStemTrack;
