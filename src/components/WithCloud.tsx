@@ -1,7 +1,7 @@
 import { isLeft } from "fp-ts/lib/Either";
 import isOnline from "is-online";
 import { useSnackbar } from "notistack";
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { Prompt, useHistory } from "react-router";
 import { useErrorMessage } from "../common/backend/errors";
 import { updateSong } from "../common/backend/requests";
@@ -29,9 +29,18 @@ export const withCloud = <P extends SongProps>(
             props.onSongChanged?.(song);
         };
 
+        const shouldSave = useCallback(
+            (song: ChordSong): boolean => {
+                return (
+                    dirtyRef.current && !song.isUnsaved() && song.isOwner(user)
+                );
+            },
+            [user]
+        );
+
         useEffect(() => {
             const unloadMessageFn = (event: Event) => {
-                if (dirtyRef.current) {
+                if (shouldSave(props.song)) {
                     event.preventDefault();
                     event.returnValue = true;
                 }
@@ -41,18 +50,9 @@ export const withCloud = <P extends SongProps>(
 
             return () =>
                 window.removeEventListener("beforeunload", unloadMessageFn);
-        }, []);
+        }, [props.song, shouldSave]);
 
         useEffect(() => {
-            const shouldSave = async (song: ChordSong): Promise<boolean> => {
-                return (
-                    dirtyRef.current &&
-                    !song.isUnsaved() &&
-                    song.isOwner(user) &&
-                    (await isOnline())
-                );
-            };
-
             const handleError = async (error: Error | string) => {
                 if (typeof error === "string") {
                     enqueueSnackbar(error, { variant: "error" });
@@ -68,7 +68,11 @@ export const withCloud = <P extends SongProps>(
                     return;
                 }
 
-                if (!(await shouldSave(song))) {
+                if (!(await isOnline())) {
+                    return;
+                }
+
+                if (!shouldSave(song)) {
                     return;
                 }
 
@@ -103,7 +107,7 @@ export const withCloud = <P extends SongProps>(
                 10000
             );
             return () => clearInterval(interval);
-        }, [props, user, enqueueSnackbar, showError, dirtyRef]);
+        }, [props, user, enqueueSnackbar, showError, dirtyRef, shouldSave]);
 
         // https://github.com/microsoft/TypeScript/issues/35858
         const originalComponentProps = {
@@ -113,7 +117,7 @@ export const withCloud = <P extends SongProps>(
 
         const showLeavingPrompt = () => {
             if (
-                dirtyRef.current &&
+                shouldSave(props.song) &&
                 SongIDModePath.isEditMode(history.location.pathname)
             ) {
                 return "This page is asking you to confirm that you want to leave - data you have entered may not be saved.";
