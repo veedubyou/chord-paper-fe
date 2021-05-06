@@ -6,17 +6,29 @@ import { getTrackList, updateTrackList } from "../../common/backend/requests";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { TrackList } from "../../common/ChordModel/tracks/TrackList";
 import { FetchState } from "../../common/fetch";
+import { PlainFn } from "../../common/PlainFn";
 import ErrorImage from "../display/ErrorImage";
 import { User, UserContext } from "../user/userContext";
-import MinimizedButton from "./MinimizedButton";
 
 export type TrackListChangeHandler = (tracklist: TrackList) => void;
+
+interface LoadingTrackListState {
+    state: "loading";
+}
+
+interface LoadedTrackListState {
+    state: "loaded";
+    tracklist: TrackList;
+}
+
+export type TrackListLoad = LoadedTrackListState | LoadingTrackListState;
 
 interface TrackListProviderProps {
     song: ChordSong;
     children: (
-        tracklist: TrackList,
-        changeHandler: TrackListChangeHandler
+        tracklistLoad: TrackListLoad,
+        changeHandler: TrackListChangeHandler,
+        onRefresh: PlainFn
     ) => JSX.Element;
 }
 
@@ -63,6 +75,8 @@ const TrackListProvider: React.FC<TrackListProviderProps> = (
         handleFetchedTracklist(updateResult);
     };
 
+    const refresh = () => setFetchState({ state: "not-started" });
+
     switch (fetchState.state) {
         case "not-started": {
             setFetchState({ state: "loading" });
@@ -74,16 +88,18 @@ const TrackListProvider: React.FC<TrackListProviderProps> = (
             return <ErrorImage />;
         }
         case "loading": {
-            return (
-                <MinimizedButton
-                    show
-                    tooltipMessage="Loading tracks..."
-                    onClick={() => {}}
-                />
+            return props.children(
+                { state: "loading" },
+                handleTrackListChanged,
+                refresh
             );
         }
         case "loaded": {
-            return props.children(fetchState.item, handleTrackListChanged);
+            return props.children(
+                { state: "loaded", tracklist: fetchState.item },
+                handleTrackListChanged,
+                refresh
+            );
         }
     }
 };

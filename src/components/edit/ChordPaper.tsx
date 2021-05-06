@@ -3,13 +3,13 @@ import { makeStyles } from "@material-ui/styles";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { TrackList } from "../../common/ChordModel/tracks/TrackList";
 import { PlainFn } from "../../common/PlainFn";
 import PlayerTimeProvider from "../PlayerTimeContext";
+import JamStation from "../track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
+    TrackListLoad,
 } from "../track_player/TrackListProvider";
-import JamStation from "../track_player/JamStation";
 import ChordPaperBody from "./ChordPaperBody";
 import Header from "./Header";
 import ChordPaperMenu from "./menu/ChordPaperMenu";
@@ -52,14 +52,16 @@ const ChordPaper: React.FC<ChordPaperProps> = (
         return (
             <TrackListProvider song={props.song}>
                 {(
-                    tracklist: TrackList,
-                    changeHandler: TrackListChangeHandler
+                    tracklistLoad: TrackListLoad,
+                    changeHandler: TrackListChangeHandler,
+                    onRefresh: PlainFn
                 ) => (
                     <JamStation
                         collapsedButtonClassName={whiteStyle.root}
                         timeSections={props.song.timeSections}
-                        trackList={tracklist}
+                        tracklistLoad={tracklistLoad}
                         onTrackListChanged={changeHandler}
+                        onRefresh={onRefresh}
                     />
                 )}
             </TrackListProvider>

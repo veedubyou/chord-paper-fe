@@ -6,13 +6,16 @@ import MultiTrackPlayer from "./MultiTrackPlayer";
 import MinimizedButton from "./MinimizedButton";
 import TrackListEditDialog from "./dialog/TrackListEditDialog";
 import { useRegisterTopKeyListener } from "../GlobalKeyListener";
+import { PlainFn } from "../../common/PlainFn";
+import { TrackListLoad } from "./TrackListProvider";
 
 type PlayerVisibilityState = "minimized" | "full";
 
 interface JamStationProps {
-    trackList: TrackList;
+    tracklistLoad: TrackListLoad;
     timeSections: TimeSection[];
-    onTrackListChanged?: (trackList: TrackList) => void;
+    onTrackListChanged: (trackList: TrackList) => void;
+    onRefresh?: PlainFn;
     collapsedButtonClassName?: string;
 }
 
@@ -36,8 +39,9 @@ const JamStation: React.FC<JamStationProps> = (
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
     const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
 
-    const canEditTrackList = props.onTrackListChanged !== undefined;
-    const trackListIsEmpty = props.trackList.tracks.length === 0;
+    const trackListIsEmpty =
+        props.tracklistLoad.state === "loaded" &&
+        props.tracklistLoad.tracklist.tracks.length === 0;
 
     const collapsedButtonFn = (
         disabled: boolean,
@@ -70,9 +74,10 @@ const JamStation: React.FC<JamStationProps> = (
         <TrackListEditDialog
             key={trackEditDialogState.randomID}
             open={trackEditDialogState.open}
-            trackList={props.trackList}
+            trackListLoad={props.tracklistLoad}
             onSubmit={handleTrackListChange}
             onClose={closeTrackEditDialog}
+            onRefresh={props.onRefresh}
         />
     );
 
@@ -88,10 +93,8 @@ const JamStation: React.FC<JamStationProps> = (
         setPlayerVisibilityState("minimized");
     }, [setPlayerVisibilityState]);
 
-    const inoperable = trackListIsEmpty && !canEditTrackList;
-
     useEffect(() => {
-        if (inoperable) {
+        if (trackListIsEmpty) {
             return;
         }
 
@@ -124,14 +127,8 @@ const JamStation: React.FC<JamStationProps> = (
         playerVisibilityState,
         showPlayer,
         minimizePlayer,
-        inoperable,
+        trackListIsEmpty,
     ]);
-
-    if (inoperable) {
-        // can't add any tracks, also nothing to play. just show a disabled button
-
-        return collapsedButtonFn(true, () => {}, "No audio tracks available");
-    }
 
     if (trackListIsEmpty) {
         // prompt the user to add tracks if there is none
@@ -146,14 +143,12 @@ const JamStation: React.FC<JamStationProps> = (
     const fullPlayer: false | JSX.Element = loadPlayers && (
         <MultiTrackPlayer
             show={playerVisibilityState === "full"}
-            tracklist={props.trackList}
+            tracklistLoad={props.tracklistLoad}
             timeSections={props.timeSections}
             currentTrackIndex={currentTrackIndex}
             onSelectCurrentTrack={setCurrentTrackIndex}
             onMinimize={minimizePlayer}
-            onOpenTrackEditDialog={
-                canEditTrackList ? openTrackEditDialog : undefined
-            }
+            onOpenTrackEditDialog={openTrackEditDialog}
         />
     );
 
