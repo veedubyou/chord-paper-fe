@@ -1,6 +1,7 @@
 import {
     Box,
     Button,
+    CircularProgress,
     Divider,
     MenuItem,
     Select as UnstyledSelect,
@@ -14,7 +15,6 @@ import { makeStyles, withStyles } from "@material-ui/styles";
 import React, { useRef } from "react";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
 import { Track } from "../../common/ChordModel/tracks/Track";
-import { TrackList } from "../../common/ChordModel/tracks/TrackList";
 import { PlainFn } from "../../common/PlainFn";
 import {
     roundedCornersStyle,
@@ -22,6 +22,7 @@ import {
     TitleBar,
     withBottomRightBox,
 } from "./common";
+import { TrackListLoad } from "./TrackListProvider";
 import TrackPlayer, { Refreshable } from "./TrackPlayer";
 
 const FlexBox = withStyles((theme: Theme) => ({
@@ -63,7 +64,7 @@ const FullPlayerContainer = withStyles((theme: Theme) => ({
 interface MultiTrackPlayerProps {
     show: boolean;
 
-    tracklist: TrackList;
+    tracklistLoad: TrackListLoad;
     readonly timeSections: TimeSection[];
 
     currentTrackIndex: number;
@@ -110,20 +111,32 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
         props.onSelectCurrentTrack(value);
     };
 
-    const trackListPicker = (
-        <Select
-            className={paddingLeftStyle.root}
-            disableUnderline
-            value={props.currentTrackIndex}
-            onChange={trackChangeHandler}
-        >
-            {props.tracklist.tracks.map((track: Track, index: number) => (
-                <MenuItem key={`${index}-${track.label}`} value={index}>
-                    {track.label}
-                </MenuItem>
-            ))}
-        </Select>
-    );
+    const trackListPicker = (() => {
+        const items = (() => {
+            if (props.tracklistLoad.state !== "loaded") {
+                return undefined;
+            }
+
+            return props.tracklistLoad.tracklist.tracks.map(
+                (track: Track, index: number) => (
+                    <MenuItem key={`${index}-${track.label}`} value={index}>
+                        {track.label}
+                    </MenuItem>
+                )
+            );
+        })();
+
+        return (
+            <Select
+                className={paddingLeftStyle.root}
+                disableUnderline
+                value={props.currentTrackIndex}
+                onChange={trackChangeHandler}
+            >
+                {items}
+            </Select>
+        );
+    })();
 
     const titleBar = (
         <TitleBar>
@@ -141,8 +154,12 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
         </TitleBar>
     );
 
-    const players: React.ReactElement[] = props.tracklist.tracks.map(
-        (track: Track, index: number) => {
+    const internalContent: React.ReactNode = (() => {
+        if (props.tracklistLoad.state === "loading") {
+            return <CircularProgress />;
+        }
+
+        const makePlayer = (track: Track, index: number) => {
             const currentTrack = index === props.currentTrackIndex;
             const show = currentTrack && props.show;
             const ref = currentTrack ? refreshActionRef : undefined;
@@ -157,8 +174,10 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
                     timeSections={props.timeSections}
                 />
             );
-        }
-    );
+        };
+
+        return props.tracklistLoad.tracklist.tracks.map(makePlayer);
+    })();
 
     return (
         <Slide in={props.show} direction="up">
@@ -166,7 +185,7 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
                 <FullPlayerContainer>
                     {titleBar}
                     <Divider />
-                    {players}
+                    {internalContent}
                 </FullPlayerContainer>
             )}
         </Slide>

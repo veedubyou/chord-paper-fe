@@ -2,6 +2,7 @@ import {
     Box,
     Box as UnstyledBox,
     Button,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -16,6 +17,8 @@ import AddIcon from "@material-ui/icons/Add";
 import { withStyles } from "@material-ui/styles";
 import lodash from "lodash";
 import React, { useState } from "react";
+import RefreshIcon from "@material-ui/icons/Refresh";
+
 import { SingleTrack } from "../../../common/ChordModel/tracks/SingleTrack";
 import {
     FiveStemKeys,
@@ -28,15 +31,26 @@ import {
 import { Track } from "../../../common/ChordModel/tracks/Track";
 import { TrackList } from "../../../common/ChordModel/tracks/TrackList";
 import { PlainFn } from "../../../common/PlainFn";
+import { TrackListLoad } from "../TrackListProvider";
 import SingleTrackRow from "./SingleTrackRow";
 import StemTrackRow, { URLFieldLabel } from "./StemTrackRow";
 
 interface TrackListEditDialogProps {
     open: boolean;
     onClose?: PlainFn;
-    trackList: TrackList;
+    trackListLoad: TrackListLoad;
     onSubmit?: (trackList: TrackList) => void;
+    onRefresh?: PlainFn;
 }
+
+const FlexBox = withStyles((theme: Theme) => ({
+    root: {
+        display: "flex",
+        padding: theme.spacing(5),
+        alignItems: "center",
+        justifyItems: "center",
+    },
+}))(Box);
 
 const InlineBlockBox = withStyles({
     root: {
@@ -63,6 +77,46 @@ const Typography = withStyles((theme: Theme) => ({
 
 const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
     props: TrackListEditDialogProps
+): JSX.Element => {
+    const internalContent: JSX.Element = (() => {
+        if (props.trackListLoad.state === "loading") {
+            return (
+                <FlexBox>
+                    <CircularProgress size="15rem" />
+                </FlexBox>
+            );
+        }
+
+        return (
+            <LoadedTrackListEditDialog
+                trackList={props.trackListLoad.tracklist}
+                onSubmit={props.onSubmit}
+                onClose={props.onClose}
+            />
+        );
+    })();
+
+    return (
+        <Dialog open={props.open} onClose={props.onClose} maxWidth={false}>
+            <DialogTitle>
+                <Button onClick={props.onRefresh}>
+                    <RefreshIcon />
+                </Button>
+                Edit Track List
+            </DialogTitle>
+            {internalContent}
+        </Dialog>
+    );
+};
+
+interface LoadedTrackListEditDialogProps {
+    trackList: TrackList;
+    onSubmit?: (trackList: TrackList) => void;
+    onClose?: PlainFn;
+}
+
+const LoadedTrackListEditDialog: React.FC<LoadedTrackListEditDialogProps> = (
+    props: LoadedTrackListEditDialogProps
 ): JSX.Element => {
     const emptySingleTrack = (): Track => {
         return new SingleTrack("", "", "");
@@ -337,8 +391,7 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
     };
 
     return (
-        <Dialog open={props.open} onClose={props.onClose} maxWidth={false}>
-            <DialogTitle>Edit Track List</DialogTitle>
+        <>
             <DialogContent>
                 <Typography variant="body2" variantMapping={{ body2: "div" }}>
                     <Box>Add URLs for the audio track this song.</Box>
@@ -365,7 +418,7 @@ const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
                     OK
                 </Button>
             </DialogActions>
-        </Dialog>
+        </>
     );
 };
 
