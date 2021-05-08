@@ -5,6 +5,7 @@ import {
     Theme,
     Typography,
 } from "@material-ui/core";
+import grey from "@material-ui/core/colors/grey";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
@@ -21,7 +22,8 @@ import StemTrackPlayer, {
 
 const PaddedBox = withStyles((theme: Theme) => ({
     root: {
-        margin: theme.spacing(3),
+        padding: theme.spacing(2),
+        backgroundColor: grey[100],
     },
 }))(Box);
 
