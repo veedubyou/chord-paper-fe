@@ -7,6 +7,7 @@ interface URLFieldProps {
     labelText: string;
     value: string;
     onChange: (newValue: string) => void;
+    disabled?: boolean;
 }
 
 const URLField: React.FC<URLFieldProps> = (
@@ -47,6 +48,7 @@ const URLField: React.FC<URLFieldProps> = (
             value={props.value}
             onChange={handleChange}
             onKeyDown={handleKey}
+            disabled={props.disabled}
             {...textFieldValidation(props.value)}
         />
     );

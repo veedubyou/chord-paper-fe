@@ -15,7 +15,7 @@ interface JamStationProps {
     tracklistLoad: TrackListLoad;
     timeSections: TimeSection[];
     onTrackListChanged: (trackList: TrackList) => void;
-    onRefresh?: PlainFn;
+    onRefresh: PlainFn;
     collapsedButtonClassName?: string;
 }
 
@@ -148,6 +148,7 @@ const JamStation: React.FC<JamStationProps> = (
             currentTrackIndex={currentTrackIndex}
             onSelectCurrentTrack={setCurrentTrackIndex}
             onMinimize={minimizePlayer}
+            onRefresh={props.onRefresh}
             onOpenTrackEditDialog={openTrackEditDialog}
         />
     );

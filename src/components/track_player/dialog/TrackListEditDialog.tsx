@@ -34,6 +34,11 @@ import { PlainFn } from "../../../common/PlainFn";
 import { TrackListLoad } from "../TrackListProvider";
 import SingleTrackRow from "./SingleTrackRow";
 import StemTrackRow, { URLFieldLabel } from "./StemTrackRow";
+import SplitStemTrackRow from "./SplitStemTrackRow";
+import {
+    SplitStemTrack,
+    SplitStemTypes,
+} from "../../../common/ChordModel/tracks/SplitStemRequest";
 
 interface TrackListEditDialogProps {
     open: boolean;
@@ -180,6 +185,10 @@ const LoadedTrackListEditDialog: React.FC<LoadedTrackListEditDialogProps> = (
                 drums: "",
             })
         );
+    };
+
+    const handleAddSplitStemTrack = (splitType: SplitStemTypes) => {
+        handleAddTrack(new SplitStemTrack("", "", splitType, ""));
     };
 
     const handleAddTrack = (newTrack: Track) => {
@@ -341,6 +350,19 @@ const LoadedTrackListEditDialog: React.FC<LoadedTrackListEditDialogProps> = (
                             />
                         );
                     }
+
+                    case "split_2stems":
+                    case "split_4stems":
+                    case "split_5stems": {
+                        return (
+                            <SplitStemTrackRow
+                                key={rowKey}
+                                track={track}
+                                onChange={trackChangeHandler(index)}
+                                onRemove={() => removeTrack(index)}
+                            />
+                        );
+                    }
                 }
             }
         );
@@ -374,6 +396,21 @@ const LoadedTrackListEditDialog: React.FC<LoadedTrackListEditDialogProps> = (
                     </MenuItem>
                     <MenuItem onClick={handleAddFiveStemTrack}>
                         5 Stem Track
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => handleAddSplitStemTrack("split_2stems")}
+                    >
+                        Split Track into 2 Stems
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => handleAddSplitStemTrack("split_4stems")}
+                    >
+                        Split Track into 4 Stems
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => handleAddSplitStemTrack("split_5stems")}
+                    >
+                        Split Track into 5 Stems
                     </MenuItem>
                 </Menu>
             </React.Fragment>
