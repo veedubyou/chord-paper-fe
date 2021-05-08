@@ -1,6 +1,7 @@
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
 import { SingleTrack } from "./SingleTrack";
+import { SplitStemTrack } from "./SplitStemRequest";
 import { FiveStemTrack, FourStemTrack, TwoStemTrack } from "./StemTrack";
 import { Track, TrackValidator } from "./Track";
 
@@ -40,6 +41,12 @@ export class TrackList implements TrackListValidatedFields {
 
                 case "5stems": {
                     return FiveStemTrack.fromValidatedFields(validatedFields);
+                }
+
+                case "split_2stems":
+                case "split_4stems":
+                case "split_5stems": {
+                    return SplitStemTrack.fromValidatedFields(validatedFields);
                 }
             }
         };

@@ -1,6 +1,12 @@
-import { Collapse } from "@material-ui/core";
-import React, { useState } from "react";
-import shortid from "shortid";
+import {
+    Box,
+    Collapse,
+    LinearProgress,
+    Theme,
+    Typography,
+} from "@material-ui/core";
+import { withStyles } from "@material-ui/styles";
+import React from "react";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
 import {
     FiveStemKeys,
@@ -8,21 +14,20 @@ import {
     TwoStemKeys,
 } from "../../common/ChordModel/tracks/StemTrack";
 import { Track } from "../../common/ChordModel/tracks/Track";
-import { PlainFn } from "../../common/PlainFn";
+import SingleTrackPlayer from "./internal_player/single/SingleTrackPlayer";
 import StemTrackPlayer, {
     StemButtonSpec,
 } from "./internal_player/stem/StemTrackPlayer";
-import SingleTrackPlayer from "./internal_player/single/SingleTrackPlayer";
 
-export interface Refreshable {
-    refresh: PlainFn;
-}
+const PaddedBox = withStyles((theme: Theme) => ({
+    root: {
+        margin: theme.spacing(3),
+    },
+}))(Box);
 
 interface TrackPlayerProps {
     show: boolean;
     currentTrack: boolean;
-    refreshRef?: React.MutableRefObject<Refreshable | null>;
-
     track: Track;
     readonly timeSections: TimeSection[];
 }
@@ -30,22 +35,11 @@ interface TrackPlayerProps {
 const TrackPlayer: React.FC<TrackPlayerProps> = (
     props: TrackPlayerProps
 ): JSX.Element => {
-    const [refreshToken, setRefreshToken] = useState(shortid.generate());
-
-    if (props.refreshRef !== undefined) {
-        props.refreshRef.current = {
-            refresh: () => {
-                setRefreshToken(shortid.generate());
-            },
-        };
-    }
-
     const innerPlayer: React.ReactElement = (() => {
         switch (props.track.track_type) {
             case "single": {
                 return (
                     <SingleTrackPlayer
-                        key={refreshToken}
                         show={props.show}
                         currentTrack={props.currentTrack}
                         track={props.track}
@@ -68,7 +62,6 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
 
                 return (
                     <StemTrackPlayer
-                        key={refreshToken}
                         show={props.show}
                         currentTrack={props.currentTrack}
                         track={props.track}
@@ -100,7 +93,6 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
 
                 return (
                     <StemTrackPlayer
-                        key={refreshToken}
                         show={props.show}
                         currentTrack={props.currentTrack}
                         track={props.track}
@@ -136,13 +128,25 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
 
                 return (
                     <StemTrackPlayer
-                        key={refreshToken}
                         show={props.show}
                         currentTrack={props.currentTrack}
                         track={props.track}
                         buttonSpecs={buttonSpecs}
                         timeSections={props.timeSections}
                     />
+                );
+            }
+
+            case "split_2stems":
+            case "split_4stems":
+            case "split_5stems": {
+                return (
+                    <PaddedBox>
+                        <Typography variant="body1">
+                            Processing track. Refresh to check progress.
+                        </Typography>
+                        <LinearProgress />
+                    </PaddedBox>
                 );
             }
         }
