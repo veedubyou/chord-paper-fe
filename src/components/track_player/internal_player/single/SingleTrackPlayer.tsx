@@ -21,7 +21,11 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
 ): JSX.Element => {
     const playerRef = useRef<ReactPlayer>();
     const [playratePercentage, setPlayratePercentage] = useState(100);
-    const timeControl = useTimeControls(playerRef.current, props.timeSections);
+    const timeControl = useTimeControls(
+        props.show,
+        playerRef.current,
+        props.timeSections
+    );
     const trackURL: string = useMemo(
         () => ensureGoogleDriveCacheBusted(props.track.url, shortid.generate()),
         [props.track.url]
