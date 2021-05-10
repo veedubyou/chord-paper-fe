@@ -91,7 +91,11 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
     props: LoadedStemTrackPlayerProps<StemKey>
 ): JSX.Element => {
     const playerRef = useRef<FilePlayer>();
-    const timeControl = useTimeControls(playerRef.current, props.timeSections);
+    const timeControl = useTimeControls(
+        props.show,
+        playerRef.current,
+        props.timeSections
+    );
     const { enqueueSnackbar } = useSnackbar();
 
     const toneNodes: ToneNodes<StemKey> = useMemo(

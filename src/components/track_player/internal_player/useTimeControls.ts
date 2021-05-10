@@ -34,6 +34,7 @@ export interface TimeControls {
 }
 
 export const useTimeControls = (
+    focused: boolean,
     currentPlayerRef: ReactPlayer | FilePlayer | undefined,
     timeSections: TimeSection[]
 ): TimeControls => {
@@ -58,8 +59,10 @@ export const useTimeControls = (
         const getCurrentTime = () => currentTimeRef.current;
 
         useEffect(() => {
-            getPlayerTimeRef.current = getCurrentTime;
-        });
+            if (focused) {
+                getPlayerTimeRef.current = getCurrentTime;
+            }
+        }, [focused, getPlayerTimeRef, getCurrentTime]);
     }
 
     const seekTo = (time: number) => {
@@ -237,6 +240,7 @@ export const useTimeControls = (
         loaded: number;
         loadedSeconds: number;
     }) => {
+        console.log("setting progress to ", state.playedSeconds);
         setCurrentTime(state.playedSeconds);
     };
 
