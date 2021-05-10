@@ -23,8 +23,7 @@ import StemTrackControlPane, {
 
 interface StemToneNodes<StemKey extends string> {
     label: StemKey;
-    playerNode: Tone.Player;
-    pitchShiftNode: Tone.PitchShift;
+    playerNode: Tone.GrainPlayer;
     volumeNode: Tone.Volume;
     endNode: Tone.Volume;
 }
@@ -60,22 +59,18 @@ const createToneNodes = <StemKey extends string>(
     stem: StemInput<StemKey>
 ): StemToneNodes<StemKey> => {
     const volumeNode = new Tone.Volume();
-    const pitchShiftNode = new Tone.PitchShift();
-    const playerNode = new Tone.Player({
+    const playerNode = new Tone.GrainPlayer({
         url: stem.audioBuffer,
-    }).chain(pitchShiftNode, volumeNode);
+        grainSize: 0.1,
+        overlap: 0.1,
+    }).chain(volumeNode);
 
     return {
         label: stem.label,
-        pitchShiftNode: pitchShiftNode,
         volumeNode: volumeNode,
         playerNode: playerNode,
         endNode: volumeNode,
     };
-};
-
-const semitonesToOffsetPlayrate = (playrate: number) => {
-    return 12 * Math.log2(1 / playrate);
 };
 
 const createEmptySongURL = (time: number): string => {
@@ -209,8 +204,16 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
             Tone.Transport.pause();
         }
 
-        if (Math.abs(timeControl.currentTime - Tone.Transport.seconds) > 1) {
-            Tone.Transport.seconds = timeControl.currentTime;
+        const playrate = playerState.playratePercentage / 100;
+
+        // Tone transport doesn't observe slowed down time, only each individual node plays the sound back slower
+        // e.g. if a 10s clip is played at 50% speed, then Tone transport will finish playing it from 0s to 20s
+        // so to compare player time and Tone transport time, it needs to be scaled against the playrate
+        const adjustedToneTime = Tone.Transport.seconds * playrate;
+
+        // sync the time
+        if (Math.abs(timeControl.currentTime - adjustedToneTime) > 1) {
+            Tone.Transport.seconds = timeControl.currentTime / playrate;
         }
     }, [
         timeControl.playing,
@@ -237,12 +240,8 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
                 // mute needs to be set last because it can be overrided by volume
                 nodes.endNode.mute = stemState.muted || stemVolume === 0;
 
-                const playrate = playerState.playratePercentage / 100;
-
-                nodes.playerNode.playbackRate = playrate;
-                nodes.pitchShiftNode.pitch = semitonesToOffsetPlayrate(
-                    playrate
-                );
+                nodes.playerNode.playbackRate =
+                    playerState.playratePercentage / 100;
             }
         );
     }, [toneNodes, playerState]);
