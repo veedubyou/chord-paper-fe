@@ -240,7 +240,6 @@ export const useTimeControls = (
         loaded: number;
         loadedSeconds: number;
     }) => {
-        console.log("setting progress to ", state.playedSeconds);
         setCurrentTime(state.playedSeconds);
     };
 
