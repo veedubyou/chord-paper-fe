@@ -99,12 +99,6 @@ const JamStation: React.FC<JamStationProps> = (
         }
 
         const handleKey = (event: KeyboardEvent) => {
-            // only fire for "default" targets, when the user isn't particularly interacting
-            // with anything else
-            if (event.target !== document.body) {
-                return;
-            }
-
             if (event.code !== "Slash") {
                 return;
             }
@@ -116,7 +110,6 @@ const JamStation: React.FC<JamStationProps> = (
             }
 
             event.preventDefault();
-            event.stopImmediatePropagation();
         };
 
         addTopKeyListener(handleKey);

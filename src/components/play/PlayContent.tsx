@@ -189,17 +189,6 @@ const PlayContent: React.FC<PlayContentProps> = (
 
     useEffect(() => {
         const handleKey = (event: KeyboardEvent) => {
-            // do not fire for any typing contexts
-            if (event.target instanceof HTMLElement) {
-                if (
-                    event.target.tagName === "INPUT" ||
-                    event.target.tagName === "TEXTAREA" ||
-                    event.target.isContentEditable
-                ) {
-                    return;
-                }
-            }
-
             if (isScrollBackwardsKey(event.code)) {
                 scrollBackward();
                 event.preventDefault();

@@ -49,30 +49,14 @@ const ControlPane: React.FC<ControlPaneProps> = (
         }
 
         const handleKey = (event: KeyboardEvent) => {
-            // do not fire for any typing contexts
-            if (event.target instanceof HTMLElement) {
-                if (
-                    event.target.tagName === "INPUT" ||
-                    event.target.tagName === "TEXTAREA" ||
-                    event.target.isContentEditable
-                ) {
-                    return;
-                }
-            }
-
-            const stopEvent = () => {
-                event.preventDefault();
-                event.stopImmediatePropagation();
-            };
-
             switch (event.code) {
                 case "Space": {
                     if (props.playing) {
                         props.onPause();
-                        stopEvent();
+                        event.preventDefault();
                     } else {
                         props.onPlay();
-                        stopEvent();
+                        event.preventDefault();
                     }
 
                     break;
@@ -84,7 +68,7 @@ const ControlPane: React.FC<ControlPaneProps> = (
                         props.onJumpBack();
                     }
 
-                    stopEvent();
+                    event.preventDefault();
                     break;
                 }
                 case "ArrowRight": {
@@ -94,7 +78,7 @@ const ControlPane: React.FC<ControlPaneProps> = (
                         props.onJumpForward();
                     }
 
-                    stopEvent();
+                    event.preventDefault();
                     return;
                 }
             }
