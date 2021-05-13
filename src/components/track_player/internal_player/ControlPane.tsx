@@ -8,13 +8,12 @@ import { ControlButton } from "./ControlButton";
 import ControlGroup from "./ControlGroup";
 import PlayrateControl from "./PlayrateControl";
 import SectionLabel from "./SectionLabel";
-import { ButtonActionAndState } from "./useTimeControls";
+import { ButtonActionAndState } from "./usePlayerControls";
 
 interface ControlPaneProps {
     show: boolean;
     playing: boolean;
-    onPlay: PlainFn;
-    onPause: PlainFn;
+    onTogglePlay: PlainFn;
     onJumpBack: PlainFn;
     onJumpForward: PlainFn;
     onGoToBeginning: PlainFn;
@@ -38,9 +37,9 @@ const ControlPane: React.FC<ControlPaneProps> = (
     const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
 
     const playPauseButton = props.playing ? (
-        <ControlButton.Pause onClick={props.onPause} />
+        <ControlButton.Pause onClick={props.onTogglePlay} />
     ) : (
-        <ControlButton.Play onClick={props.onPlay} />
+        <ControlButton.Play onClick={props.onTogglePlay} />
     );
 
     useEffect(() => {
@@ -51,13 +50,8 @@ const ControlPane: React.FC<ControlPaneProps> = (
         const handleKey = (event: KeyboardEvent) => {
             switch (event.code) {
                 case "Space": {
-                    if (props.playing) {
-                        props.onPause();
-                        event.preventDefault();
-                    } else {
-                        props.onPlay();
-                        event.preventDefault();
-                    }
+                    props.onTogglePlay();
+                    event.preventDefault();
 
                     break;
                 }

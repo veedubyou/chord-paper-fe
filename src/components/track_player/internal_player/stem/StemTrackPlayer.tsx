@@ -12,10 +12,10 @@ import ky, { DownloadProgress } from "ky";
 import lodash from "lodash";
 import prettyBytes from "pretty-bytes";
 import React, { useEffect, useRef, useState } from "react";
-import { TimeSection } from "../../../../common/ChordModel/ChordLine";
 import { StemTrack } from "../../../../common/ChordModel/tracks/StemTrack";
 import { DetailedLoadingFetchState } from "../../../../common/fetch";
 import { mapObject } from "../../../../common/mapObject";
+import { PlayerControls } from "../usePlayerControls";
 import { getAudioCtx } from "./audioCtx";
 import LoadedStemTrackPlayer, { StemInput } from "./LoadedStemTrackPlayer";
 import { ControlPaneButtonColour } from "./StemTrackControlPane";
@@ -33,13 +33,13 @@ export interface StemButtonSpec<StemKey extends string> {
 }
 
 interface StemTrackPlayerProps<StemKey extends string> {
-    show: boolean;
+    focused: boolean;
     currentTrack: boolean;
 
     track: StemTrack<StemKey>;
     buttonSpecs: StemButtonSpec<StemKey>[];
 
-    readonly timeSections: TimeSection[];
+    playerControls: PlayerControls;
 }
 
 interface SingleLoadingProgress {
@@ -302,10 +302,10 @@ const StemTrackPlayer = <StemKey extends string>(
 
     return (
         <LoadedStemTrackPlayer
-            show={props.show}
+            focused={props.focused}
             currentTrack={props.currentTrack}
             stems={fetchState.item}
-            timeSections={props.timeSections}
+            playerControls={props.playerControls}
         />
     );
 };

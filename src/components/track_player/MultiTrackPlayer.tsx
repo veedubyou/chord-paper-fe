@@ -12,16 +12,20 @@ import EditIcon from "@material-ui/icons/Edit";
 import CollapseDownIcon from "@material-ui/icons/ExpandMore";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import { makeStyles, withStyles } from "@material-ui/styles";
-import React from "react";
-import { TimeSection } from "../../common/ChordModel/ChordLine";
+import React, { useEffect } from "react";
 import { Track } from "../../common/ChordModel/tracks/Track";
 import { PlainFn } from "../../common/PlainFn";
+import { useRegisterTopKeyListener } from "../GlobalKeyListener";
 import {
     roundedCornersStyle,
     roundedTopCornersStyle,
     TitleBar,
     withBottomRightBox,
 } from "./common";
+import {
+    PlayerControls,
+    unfocusedControls,
+} from "./internal_player/usePlayerControls";
 import { TrackListLoad } from "./TrackListProvider";
 import TrackPlayer from "./TrackPlayer";
 
@@ -65,7 +69,7 @@ interface MultiTrackPlayerProps {
     show: boolean;
 
     tracklistLoad: TrackListLoad;
-    readonly timeSections: TimeSection[];
+    playerControls: PlayerControls;
 
     currentTrackIndex: number;
     onSelectCurrentTrack: (index: number) => void;
@@ -79,6 +83,29 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
     props: MultiTrackPlayerProps
 ): JSX.Element => {
     const paddingLeftStyle = usePaddingLeftStyle();
+    const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
+
+    {
+        const show = props.show;
+        const onMinimize = props.onMinimize;
+        useEffect(() => {
+            if (!show) {
+                return;
+            }
+
+            const handleKey = (event: KeyboardEvent) => {
+                if (event.code !== "Slash") {
+                    return;
+                }
+
+                onMinimize();
+                event.preventDefault();
+            };
+
+            addTopKeyListener(handleKey);
+            return () => removeKeyListener(handleKey);
+        }, [addTopKeyListener, removeKeyListener, onMinimize, show]);
+    }
 
     const trackListEditButton = props.onOpenTrackEditDialog !== undefined && (
         <TitleBarButton onClick={props.onOpenTrackEditDialog}>
@@ -159,15 +186,18 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
 
         const makePlayer = (track: Track, index: number) => {
             const currentTrack = index === props.currentTrackIndex;
-            const show = currentTrack && props.show;
+            const focused = currentTrack && props.show;
+            const playerControls = currentTrack
+                ? props.playerControls
+                : unfocusedControls;
 
             return (
                 <TrackPlayer
                     key={`${index}-${track.id}`}
-                    show={show}
+                    focused={focused}
                     currentTrack={currentTrack}
                     track={track}
-                    timeSections={props.timeSections}
+                    playerControls={playerControls}
                 />
             );
         };

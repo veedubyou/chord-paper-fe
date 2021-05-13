@@ -1,44 +1,35 @@
 import { Box } from "@material-ui/core";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
 import shortid from "shortid";
-import { TimeSection } from "../../../../common/ChordModel/ChordLine";
 import { SingleTrack } from "../../../../common/ChordModel/tracks/SingleTrack";
 import ControlPane from "../ControlPane";
 import { ensureGoogleDriveCacheBusted } from "../google_drive";
-import { useTimeControls } from "../useTimeControls";
+import { PlayerControls } from "../usePlayerControls";
 
 interface SingleTrackPlayerProps {
-    show: boolean;
+    focused: boolean;
     currentTrack: boolean;
-
+    playerControls: PlayerControls;
     track: SingleTrack;
-    readonly timeSections: TimeSection[];
 }
 
 const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
     props: SingleTrackPlayerProps
 ): JSX.Element => {
-    const playerRef = useRef<ReactPlayer>();
-    const [playratePercentage, setPlayratePercentage] = useState(100);
-    const timeControl = useTimeControls(
-        props.show,
-        playerRef.current,
-        props.timeSections
-    );
     const trackURL: string = useMemo(
         () => ensureGoogleDriveCacheBusted(props.track.url, shortid.generate()),
         [props.track.url]
     );
 
     const commonReactPlayerProps: ReactPlayerProps = {
-        ref: playerRef,
-        playing: timeControl.playing,
+        ref: props.playerControls.playerRef,
+        playing: props.playerControls.playing,
         controls: true,
-        playbackRate: playratePercentage / 100,
-        onPlay: timeControl.onPlay,
-        onPause: timeControl.onPause,
-        onProgress: timeControl.onProgress,
+        playbackRate: props.playerControls.playratePercentage / 100,
+        onPlay: props.playerControls.onPlay,
+        onPause: props.playerControls.onPause,
+        onProgress: props.playerControls.onProgress,
         progressInterval: 500,
         style: { minWidth: "50vw" },
         height: "auto",
@@ -46,10 +37,10 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
     };
 
     useEffect(() => {
-        if (!props.currentTrack && timeControl.playing) {
-            timeControl.onPause();
+        if (!props.currentTrack && props.playerControls.playing) {
+            props.playerControls.onPause();
         }
-    }, [props.currentTrack, timeControl]);
+    }, [props.currentTrack, props.playerControls]);
 
     return (
         <Box>
@@ -57,18 +48,19 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
                 <ReactPlayer {...commonReactPlayerProps} url={trackURL} />
             </Box>
             <ControlPane
-                show={props.show}
-                playing={timeControl.playing}
-                sectionLabel={timeControl.currentSectionLabel}
-                onPlay={timeControl.play}
-                onPause={timeControl.pause}
-                onJumpBack={timeControl.jumpBack}
-                onJumpForward={timeControl.jumpForward}
-                onSkipBack={timeControl.skipBack}
-                onSkipForward={timeControl.skipForward}
-                onGoToBeginning={timeControl.goToBeginning}
-                playratePercentage={playratePercentage}
-                onPlayratePercentageChange={setPlayratePercentage}
+                show={props.focused}
+                playing={props.playerControls.playing}
+                sectionLabel={props.playerControls.currentSectionLabel}
+                onTogglePlay={props.playerControls.togglePlay}
+                onJumpBack={props.playerControls.jumpBack}
+                onJumpForward={props.playerControls.jumpForward}
+                onSkipBack={props.playerControls.skipBack}
+                onSkipForward={props.playerControls.skipForward}
+                onGoToBeginning={props.playerControls.goToBeginning}
+                playratePercentage={props.playerControls.playratePercentage}
+                onPlayratePercentageChange={
+                    props.playerControls.onPlayratePercentageChange
+                }
             />
         </Box>
     );
