@@ -224,6 +224,30 @@ export class ChordLine extends Collection<ChordBlock>
         this.elements.splice(index, 0, newPrevBlock);
     }
 
+    splitByCharIndex(splitIndex: number): ChordLine {
+        if (splitIndex === 0) {
+            return new ChordLine();
+        }
+
+        for (let i = 0; i < this.elements.length; i++) {
+            const block = this.elements[i];
+            const lyricLength = block.lyricLength();
+
+            if (splitIndex - lyricLength > 0) {
+                //TODO
+                splitIndex -= lyricLength;
+                continue;
+            }
+
+            const lastBlockOfFirstHalf = block.splitByCharIndex(splitIndex);
+            const blocksOfPrevLine = this.elements.slice(0, i);
+            const blocksOfCurrLine = this.elements.slice(i);
+            blocksOfPrevLine.push(lastBlockOfFirstHalf);
+            this.elements = blocksOfCurrLine;
+            if (this.section) return new ChordLine();
+        }
+    }
+
     // passes through every block to ensure that blocks without chords exist (except for the first)
     normalizeBlocks(): void {
         const newBlocks: ChordBlock[] = [];
