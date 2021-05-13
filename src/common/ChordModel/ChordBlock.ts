@@ -85,9 +85,9 @@ export class ChordBlock implements IDable<ChordBlock> {
     // splitBlock(4) =>
     // {id:"B", chord: "B7", lyric:"my dear "}
     // {id:"A", chord: "", "we're"}
-    split(splitIndex: number): ChordBlock {
+    splitByTokenIndex(splitIndex: number): ChordBlock {
         if (splitIndex === 0) {
-            throw new Error("Split index can't be zero");
+            return new ChordBlock({ chord: "", lyric: new Lyric("") });
         }
 
         const tokens = this.lyricTokens;
@@ -105,11 +105,38 @@ export class ChordBlock implements IDable<ChordBlock> {
         return prevBlock;
     }
 
+    splitByCharIndex(splitIndex: number): ChordBlock {
+        if (splitIndex === 0) {
+            return new ChordBlock({ chord: "", lyric: new Lyric("") });
+        }
+
+        const lyricString: string = this.lyric.get((s: string) => s);
+        const prevBlockLyrics: Lyric = new Lyric(
+            lyricString.slice(0, splitIndex)
+        );
+        const thisBlockLyrics: Lyric = new Lyric(lyricString.slice(splitIndex));
+
+        const prevBlock: ChordBlock = new ChordBlock({
+            chord: this.chord,
+            lyric: prevBlockLyrics,
+        });
+
+        this.chord = "";
+        this.lyric = thisBlockLyrics;
+
+        return prevBlock;
+    }
+
     contentEquals(other: ChordBlock): boolean {
         return this.chord === other.chord && this.lyric.isEqual(other.lyric);
     }
 
     isEmpty(): boolean {
         return this.chord === "" && this.lyric.isEmpty();
+    }
+
+    lyricLength(): number {
+        const lyricString = this.lyric.get((s: string) => s);
+        return lyricString.length;
     }
 }

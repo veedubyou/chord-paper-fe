@@ -220,7 +220,7 @@ export class ChordLine extends Collection<ChordBlock>
     splitBlock(idable: IDable<ChordBlock>, splitIndex: number): void {
         const index = this.indexOf(idable.id);
         const block = this.elements[index];
-        const newPrevBlock = block.split(splitIndex);
+        const newPrevBlock = block.splitByTokenIndex(splitIndex);
         this.elements.splice(index, 0, newPrevBlock);
     }
 
