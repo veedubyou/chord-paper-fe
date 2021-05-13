@@ -73,7 +73,8 @@ const MicroPlayer: React.FC<MicroPlayerProps> = (
 
                 switch (event.code) {
                     // because space doesn't work because FUCK MACOS
-                    case "Enter": {
+                    case "Enter":
+                    case "Space": {
                         togglePlay();
                         event.preventDefault();
                         break;
