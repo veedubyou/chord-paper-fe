@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import shortid from "shortid";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
 import { TrackList } from "../../common/ChordModel/tracks/TrackList";
-import MultiTrackPlayer from "./MultiTrackPlayer";
-import MinimizedButton from "./MinimizedButton";
-import TrackListEditDialog from "./dialog/TrackListEditDialog";
-import { useRegisterTopKeyListener } from "../GlobalKeyListener";
 import { PlainFn } from "../../common/PlainFn";
+import TrackListEditDialog from "./dialog/TrackListEditDialog";
+import { usePlayerControls } from "./internal_player/usePlayerControls";
+import MicroPlayer from "./MicroPlayer";
+import MultiTrackPlayer from "./MultiTrackPlayer";
 import { TrackListLoad } from "./TrackListProvider";
 
 type PlayerVisibilityState = "minimized" | "full";
@@ -34,10 +34,14 @@ const JamStation: React.FC<JamStationProps> = (
     const [trackEditDialogState, setTrackEditDialogState] = useState<
         TrackEditDialogState
     >({ open: false, randomID: "" });
+
+    // lazy loading - if we just render everything it will also
+    // cause heavy network traffic, don't do it without prompt
     const [loadPlayers, setLoadPlayers] = useState(false);
 
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-    const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
+
+    const playerControls = usePlayerControls(props.timeSections);
 
     const trackListIsEmpty =
         props.tracklistLoad.state === "loaded" &&
@@ -48,9 +52,11 @@ const JamStation: React.FC<JamStationProps> = (
         expandFn: () => void,
         tooltipMessage: string
     ) => (
-        <MinimizedButton
+        <MicroPlayer
             className={props.collapsedButtonClassName}
             show={playerVisibilityState === "minimized"}
+            playersLoaded={loadPlayers}
+            playerControls={playerControls}
             tooltipMessage={tooltipMessage}
             disabled={disabled}
             onClick={expandFn}
@@ -93,36 +99,6 @@ const JamStation: React.FC<JamStationProps> = (
         setPlayerVisibilityState("minimized");
     }, [setPlayerVisibilityState]);
 
-    useEffect(() => {
-        if (trackListIsEmpty) {
-            return;
-        }
-
-        const handleKey = (event: KeyboardEvent) => {
-            if (event.code !== "Slash") {
-                return;
-            }
-
-            if (playerVisibilityState === "minimized") {
-                showPlayer();
-            } else {
-                minimizePlayer();
-            }
-
-            event.preventDefault();
-        };
-
-        addTopKeyListener(handleKey);
-        return () => removeKeyListener(handleKey);
-    }, [
-        addTopKeyListener,
-        removeKeyListener,
-        playerVisibilityState,
-        showPlayer,
-        minimizePlayer,
-        trackListIsEmpty,
-    ]);
-
     if (trackListIsEmpty) {
         // prompt the user to add tracks if there is none
         return (
@@ -133,11 +109,15 @@ const JamStation: React.FC<JamStationProps> = (
         );
     }
 
+    if (!loadPlayers) {
+        return collapsedButtonFn(false, showPlayer, "Show Player");
+    }
+
     const fullPlayer: false | JSX.Element = loadPlayers && (
         <MultiTrackPlayer
             show={playerVisibilityState === "full"}
             tracklistLoad={props.tracklistLoad}
-            timeSections={props.timeSections}
+            playerControls={playerControls}
             currentTrackIndex={currentTrackIndex}
             onSelectCurrentTrack={setCurrentTrackIndex}
             onMinimize={minimizePlayer}

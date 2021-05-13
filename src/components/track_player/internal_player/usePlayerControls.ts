@@ -3,7 +3,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import FilePlayer from "react-player/file";
 import { TimeSection } from "../../../common/ChordModel/ChordLine";
-import { PlainFn } from "../../../common/PlainFn";
+import { PlainFn, voidFn } from "../../../common/PlainFn";
 import { PlayerTimeContext } from "../../PlayerTimeContext";
 
 export interface ButtonActionAndState {
@@ -11,10 +11,10 @@ export interface ButtonActionAndState {
     enabled: boolean;
 }
 
-export interface TimeControls {
+export interface PlayerControls {
+    playerRef: React.MutableRefObject<ReactPlayer | FilePlayer | undefined>;
     playing: boolean;
-    play: PlainFn;
-    pause: PlainFn;
+    togglePlay: PlainFn;
     jumpBack: PlainFn;
     jumpForward: PlainFn;
     goToBeginning: PlainFn;
@@ -31,15 +31,56 @@ export interface TimeControls {
     onPlay: PlainFn;
     onPause: PlainFn;
     currentSectionLabel: string;
+    playratePercentage: number;
+    onPlayratePercentageChange: (val: number) => void;
 }
 
-export const useTimeControls = (
-    focused: boolean,
-    currentPlayerRef: ReactPlayer | FilePlayer | undefined,
+class NoopMutableRef {
+    _current: ReactPlayer | FilePlayer | undefined;
+
+    constructor() {
+        this._current = undefined;
+    }
+
+    public set current(newCurrent: ReactPlayer | FilePlayer | undefined) {}
+
+    public get current(): ReactPlayer | FilePlayer | undefined {
+        return undefined;
+    }
+}
+
+export const unfocusedControls: PlayerControls = {
+    playerRef: new NoopMutableRef(),
+    playing: false,
+    togglePlay: voidFn,
+    jumpBack: voidFn,
+    jumpForward: voidFn,
+    goToBeginning: voidFn,
+    skipBack: {
+        action: voidFn,
+        enabled: false,
+    },
+    skipForward: {
+        action: voidFn,
+        enabled: false,
+    },
+    currentTime: 0,
+    currentTimeFormatted: "0:00",
+    onProgress: voidFn,
+    onPlay: voidFn,
+    onPause: voidFn,
+    currentSectionLabel: "",
+    playratePercentage: 100,
+    onPlayratePercentageChange: voidFn,
+};
+
+export const usePlayerControls = (
     timeSections: TimeSection[]
-): TimeControls => {
+): PlayerControls => {
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
+    const playerRef = useRef<ReactPlayer | FilePlayer>();
+    const [playratePercentage, setPlayratePercentage] = useState(100);
 
     // a ref version so that a past render can access a future state
     // see outOfSyncWorkaround for the reason
@@ -59,10 +100,8 @@ export const useTimeControls = (
         const getCurrentTime = () => currentTimeRef.current;
 
         useEffect(() => {
-            if (focused) {
-                getPlayerTimeRef.current = getCurrentTime;
-            }
-        }, [focused, getPlayerTimeRef, getCurrentTime]);
+            getPlayerTimeRef.current = getCurrentTime;
+        }, [getPlayerTimeRef, getCurrentTime]);
     }
 
     const seekTo = (time: number) => {
@@ -70,7 +109,7 @@ export const useTimeControls = (
             time = 0;
         }
 
-        currentPlayerRef?.seekTo(time, "seconds");
+        playerRef.current?.seekTo(time, "seconds");
     };
 
     const handlePlayState = () => {
@@ -79,12 +118,6 @@ export const useTimeControls = (
 
     const handlePauseState = () => {
         setPlaying(false);
-    };
-
-    const playAction = () => {
-        if (!playing) {
-            setPlaying(true);
-        }
     };
 
     const outOfSyncWorkaround = () => {
@@ -102,9 +135,19 @@ export const useTimeControls = (
     };
 
     const pauseAction = () => {
+        setPlaying(false);
+        outOfSyncWorkaround();
+    };
+
+    const playAction = () => {
+        setPlaying(true);
+    };
+
+    const togglePlayAction = () => {
         if (playing) {
-            setPlaying(false);
-            outOfSyncWorkaround();
+            pauseAction();
+        } else {
+            playAction();
         }
     };
 
@@ -249,9 +292,9 @@ export const useTimeControls = (
     })();
 
     return {
+        playerRef: playerRef,
         playing: playing,
-        play: playAction,
-        pause: pauseAction,
+        togglePlay: togglePlayAction,
         skipBack: skipBackButton,
         skipForward: skipForwardButton,
         jumpBack: jumpBackAction,
@@ -263,5 +306,7 @@ export const useTimeControls = (
         onPlay: handlePlayState,
         onPause: handlePauseState,
         currentSectionLabel: currentSectionLabel,
+        playratePercentage: playratePercentage,
+        onPlayratePercentageChange: setPlayratePercentage,
     };
 };

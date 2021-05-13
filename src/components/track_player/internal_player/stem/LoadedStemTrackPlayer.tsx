@@ -12,9 +12,8 @@ import React, {
 } from "react";
 import FilePlayer, { FilePlayerProps } from "react-player/file";
 import * as Tone from "tone";
-import { TimeSection } from "../../../../common/ChordModel/ChordLine";
 import ControlPane from "../ControlPane";
-import { useTimeControls } from "../useTimeControls";
+import { PlayerControls } from "../usePlayerControls";
 import { getAudioCtx } from "./audioCtx";
 import StemTrackControlPane, {
     ControlPaneButtonColour,
@@ -38,7 +37,6 @@ type ToneNodes<StemKey extends string> = StemToneNodes<StemKey>[];
 
 type PlayerState<StemKey extends string> = {
     masterVolumePercentage: number;
-    playratePercentage: number;
     stems: StemState<StemKey>[];
 };
 
@@ -49,10 +47,10 @@ export interface StemInput<StemKey extends string> {
 }
 
 interface LoadedStemTrackPlayerProps<StemKey extends string> {
-    show: boolean;
+    focused: boolean;
     currentTrack: boolean;
     stems: StemInput<StemKey>[];
-    readonly timeSections: TimeSection[];
+    playerControls: PlayerControls;
 }
 
 const createToneNodes = <StemKey extends string>(
@@ -90,12 +88,6 @@ const createEmptySongURL = (time: number): string => {
 const LoadedStemTrackPlayer = <StemKey extends string>(
     props: LoadedStemTrackPlayerProps<StemKey>
 ): JSX.Element => {
-    const playerRef = useRef<FilePlayer>();
-    const timeControl = useTimeControls(
-        props.show,
-        playerRef.current,
-        props.timeSections
-    );
     const { enqueueSnackbar } = useSnackbar();
 
     const toneNodes: ToneNodes<StemKey> = useMemo(
@@ -116,7 +108,6 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
 
         return {
             masterVolumePercentage: 100,
-            playratePercentage: 100,
             stems: stemStates,
         };
     })();
@@ -147,14 +138,14 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
     };
 
     const commonReactPlayerProps: FilePlayerProps = {
-        ref: playerRef,
-        playing: timeControl.playing,
+        ref: props.playerControls.playerRef,
+        playing: props.playerControls.playing,
         controls: true,
         volume: playerState.masterVolumePercentage / 100,
-        playbackRate: playerState.playratePercentage / 100,
-        onPlay: timeControl.onPlay,
-        onPause: timeControl.onPause,
-        onProgress: timeControl.onProgress,
+        playbackRate: props.playerControls.playratePercentage / 100,
+        onPlay: props.playerControls.onPlay,
+        onPause: props.playerControls.onPause,
+        onProgress: props.playerControls.onProgress,
         progressInterval: 500,
         style: { minWidth: "50vw" },
         height: "auto",
@@ -198,17 +189,20 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
     // synchronize the time control and tone transport
     useEffect(() => {
         // sync the play state
-        if (timeControl.playing && Tone.Transport.state !== "started") {
+        if (
+            props.playerControls.playing &&
+            Tone.Transport.state !== "started"
+        ) {
             Tone.Transport.start();
         } else if (
-            !timeControl.playing &&
+            !props.playerControls.playing &&
             Tone.Transport.state !== "paused" &&
             Tone.Transport.state !== "stopped"
         ) {
             Tone.Transport.pause();
         }
 
-        const playrate = playerState.playratePercentage / 100;
+        const playrate = props.playerControls.playratePercentage / 100;
 
         // Tone transport doesn't observe slowed down time, only each individual node plays the sound back slower
         // e.g. if a 10s clip is played at 50% speed, then Tone transport will finish playing it from 0s to 20s
@@ -216,13 +210,14 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         const adjustedToneTime = Tone.Transport.seconds * playrate;
 
         // sync the time
-        if (Math.abs(timeControl.currentTime - adjustedToneTime) > 1) {
-            Tone.Transport.seconds = timeControl.currentTime / playrate;
+        if (Math.abs(props.playerControls.currentTime - adjustedToneTime) > 1) {
+            Tone.Transport.seconds =
+                props.playerControls.currentTime / playrate;
         }
     }, [
-        timeControl.playing,
-        timeControl.currentTime,
-        playerState.playratePercentage,
+        props.playerControls.playing,
+        props.playerControls.currentTime,
+        props.playerControls.playratePercentage,
     ]);
 
     // synchronize player state and track volumes/mutedness
@@ -245,10 +240,10 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
                 nodes.endNode.mute = stemState.muted || stemVolume === 0;
 
                 nodes.playerNode.playbackRate =
-                    playerState.playratePercentage / 100;
+                    props.playerControls.playratePercentage / 100;
             }
         );
-    }, [toneNodes, playerState]);
+    }, [toneNodes, playerState, props.playerControls.playratePercentage]);
 
     // connect and disconnect nodes from the transport when not in focus
     // so that other tracks can use the transport
@@ -270,10 +265,10 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
 
     // pause the track when user switches to a different track
     useEffect(() => {
-        if (!props.currentTrack && timeControl.playing) {
-            timeControl.onPause();
+        if (!props.currentTrack && props.playerControls.playing) {
+            props.playerControls.onPause();
         }
-    }, [props.currentTrack, timeControl]);
+    }, [props.currentTrack, props.playerControls]);
 
     // cleanup buffer resources when this component goes out of scope
     useEffect(() => {
@@ -326,13 +321,6 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         return <StemTrackControlPane<StemKey> stemControls={stemControls} />;
     })();
 
-    const handlePlayratePercentageChange = (newPlayratePercentage: number) => {
-        setPlayerState({
-            ...playerState,
-            playratePercentage: newPlayratePercentage,
-        });
-    };
-
     return (
         <Box>
             <Box>
@@ -340,18 +328,19 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
             </Box>
             {stemControlPane}
             <ControlPane
-                show={props.show}
-                playing={timeControl.playing}
-                sectionLabel={timeControl.currentSectionLabel}
-                onPlay={timeControl.play}
-                onPause={timeControl.pause}
-                onJumpBack={timeControl.jumpBack}
-                onJumpForward={timeControl.jumpForward}
-                onSkipBack={timeControl.skipBack}
-                onSkipForward={timeControl.skipForward}
-                onGoToBeginning={timeControl.goToBeginning}
-                playratePercentage={playerState.playratePercentage}
-                onPlayratePercentageChange={handlePlayratePercentageChange}
+                show={props.focused}
+                playing={props.playerControls.playing}
+                sectionLabel={props.playerControls.currentSectionLabel}
+                onTogglePlay={props.playerControls.togglePlay}
+                onJumpBack={props.playerControls.jumpBack}
+                onJumpForward={props.playerControls.jumpForward}
+                onSkipBack={props.playerControls.skipBack}
+                onSkipForward={props.playerControls.skipForward}
+                onGoToBeginning={props.playerControls.goToBeginning}
+                playratePercentage={props.playerControls.playratePercentage}
+                onPlayratePercentageChange={
+                    props.playerControls.onPlayratePercentageChange
+                }
             />
         </Box>
     );

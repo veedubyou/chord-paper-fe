@@ -8,7 +8,6 @@ import {
 import grey from "@material-ui/core/colors/grey";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
-import { TimeSection } from "../../common/ChordModel/ChordLine";
 import {
     FiveStemKeys,
     FourStemKeys,
@@ -19,6 +18,7 @@ import SingleTrackPlayer from "./internal_player/single/SingleTrackPlayer";
 import StemTrackPlayer, {
     StemButtonSpec,
 } from "./internal_player/stem/StemTrackPlayer";
+import { PlayerControls } from "./internal_player/usePlayerControls";
 
 const PaddedBox = withStyles((theme: Theme) => ({
     root: {
@@ -28,10 +28,10 @@ const PaddedBox = withStyles((theme: Theme) => ({
 }))(Box);
 
 interface TrackPlayerProps {
-    show: boolean;
+    focused: boolean;
     currentTrack: boolean;
     track: Track;
-    readonly timeSections: TimeSection[];
+    playerControls: PlayerControls;
 }
 
 const TrackPlayer: React.FC<TrackPlayerProps> = (
@@ -42,10 +42,10 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             case "single": {
                 return (
                     <SingleTrackPlayer
-                        show={props.show}
+                        focused={props.focused}
                         currentTrack={props.currentTrack}
                         track={props.track}
-                        timeSections={props.timeSections}
+                        playerControls={props.playerControls}
                     />
                 );
             }
@@ -64,11 +64,11 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
 
                 return (
                     <StemTrackPlayer
-                        show={props.show}
+                        focused={props.focused}
                         currentTrack={props.currentTrack}
                         track={props.track}
                         buttonSpecs={buttonSpecs}
-                        timeSections={props.timeSections}
+                        playerControls={props.playerControls}
                     />
                 );
             }
@@ -95,11 +95,11 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
 
                 return (
                     <StemTrackPlayer
-                        show={props.show}
+                        focused={props.focused}
                         currentTrack={props.currentTrack}
                         track={props.track}
                         buttonSpecs={buttonSpecs}
-                        timeSections={props.timeSections}
+                        playerControls={props.playerControls}
                     />
                 );
             }
@@ -130,11 +130,11 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
 
                 return (
                     <StemTrackPlayer
-                        show={props.show}
+                        focused={props.focused}
                         currentTrack={props.currentTrack}
                         track={props.track}
                         buttonSpecs={buttonSpecs}
-                        timeSections={props.timeSections}
+                        playerControls={props.playerControls}
                     />
                 );
             }
@@ -154,7 +154,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
         }
     })();
 
-    return <Collapse in={props.show}>{innerPlayer}</Collapse>;
+    return <Collapse in={props.focused}>{innerPlayer}</Collapse>;
 };
 
 export default TrackPlayer;
