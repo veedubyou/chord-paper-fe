@@ -30,7 +30,7 @@
         "io-ts-types": "^0.5.11",
         "is-online": "^8.5.0",
         "ky": "^0.23.0",
-        "lodash": "^4.17.19",
+        "lodash": "^4.17.21",
         "luxon": "^1.25.0",
         "monocle-ts": "^2.3.3",
         "newtype-ts": "^0.3.4",
