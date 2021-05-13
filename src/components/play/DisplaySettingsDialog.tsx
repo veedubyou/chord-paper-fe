@@ -249,20 +249,20 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
                         onChange={handleScrollTypeChange}
                     >
                         <FormControlLabel
-                            value="page"
-                            control={<Radio size="small" />}
-                            label={
-                                <RadioLabelTypography>
-                                    scroll by page
-                                </RadioLabelTypography>
-                            }
-                        />
-                        <FormControlLabel
                             value="column"
                             control={<Radio size="small" />}
                             label={
                                 <RadioLabelTypography>
                                     scroll by column
+                                </RadioLabelTypography>
+                            }
+                        />
+                        <FormControlLabel
+                            value="page"
+                            control={<Radio size="small" />}
+                            label={
+                                <RadioLabelTypography>
+                                    scroll by page
                                 </RadioLabelTypography>
                             }
                         />
