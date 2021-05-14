@@ -220,8 +220,58 @@ export class ChordLine extends Collection<ChordBlock>
     splitBlock(idable: IDable<ChordBlock>, splitIndex: number): void {
         const index = this.indexOf(idable.id);
         const block = this.elements[index];
-        const newPrevBlock = block.split(splitIndex);
+        const newPrevBlock = block.splitByTokenIndex(splitIndex);
         this.elements.splice(index, 0, newPrevBlock);
+    }
+
+    splitByCharIndex(splitIndex: number): ChordLine {
+        if (splitIndex === 0) {
+            const nextLine = new ChordLine(this.elements);
+            this.elements = [
+                new ChordBlock({ chord: "", lyric: new Lyric("") }),
+            ];
+            return nextLine;
+        }
+
+        const totalLyricLength = this.lyrics.get((s: string) => s).length;
+        if (splitIndex >= totalLyricLength) {
+            return new ChordLine();
+        }
+
+        const [splitCharIndex, i] = (() => {
+            let remainingChars = splitIndex;
+            for (let i = 0; i < this.elements.length; i++) {
+                const block = this.elements[i];
+                const lyricLength = block.lyricLength();
+
+                if (remainingChars - lyricLength >= 0) {
+                    remainingChars -= lyricLength;
+                    continue;
+                }
+
+                return [remainingChars, i];
+            }
+
+            throw new Error(
+                "Unexpected: shouldn't have walked this many characters"
+            );
+        })();
+
+        const blocksOfCurrLine = this.elements.slice(0, i);
+        let blocksOfNextLine: ChordBlock[] = [];
+        if (splitCharIndex > 0) {
+            const block = this.elements[i];
+            const firstHalfBlock = block.splitByCharIndex(splitCharIndex);
+            blocksOfCurrLine.push(firstHalfBlock);
+            blocksOfNextLine.push(block);
+            blocksOfNextLine.push(...this.elements.slice(i + 1));
+        } else {
+            blocksOfNextLine = this.elements.slice(i);
+        }
+
+        this.elements = blocksOfCurrLine;
+
+        return new ChordLine(blocksOfNextLine);
     }
 
     // passes through every block to ensure that blocks without chords exist (except for the first)

@@ -1,6 +1,4 @@
-import { Lyric } from "../../../common/ChordModel/Lyric";
 import { PlainFn } from "../../../common/PlainFn";
-import { serializeLyrics } from "../../lyrics/Serialization";
 import {
     DomLyricTabFn,
     lyricTabTypeOfDOMNode,
@@ -14,7 +12,7 @@ import {
     isSelectionAtBeginning,
     nodeAfterSelection,
     nodeBeforeSelection,
-    splitContentBySelection,
+    selectionRange,
 } from "./SelectionUtils";
 
 type ContentEditableElement = HTMLSpanElement;
@@ -55,7 +53,7 @@ const specialBackspaceHandler = (
 
 const specialEnterHandler = (
     ref: React.RefObject<ContentEditableElement>,
-    callback: (beforeSelection: Lyric, afterSelection: Lyric) => void
+    callback: (splitIndex: number) => void
 ): HandlerFn => {
     return (event: React.KeyboardEvent<ContentEditableElement>): boolean => {
         const specialEnter: boolean =
@@ -64,20 +62,12 @@ const specialEnterHandler = (
             return false;
         }
 
-        const [beforeSelection, afterSelection] = splitContentBySelection(ref);
+        const range = selectionRange(ref);
+        if (range === null) {
+            return false;
+        }
 
-        const serializedLyricsBeforeSelection: Lyric = serializeLyrics(
-            beforeSelection.cloneContents().childNodes
-        );
-
-        const serializedLyricsAfterSelection: Lyric = serializeLyrics(
-            afterSelection.cloneContents().childNodes
-        );
-
-        callback(
-            serializedLyricsBeforeSelection,
-            serializedLyricsAfterSelection
-        );
+        callback(range.startOffset);
 
         return true;
     };
@@ -210,10 +200,7 @@ export interface KeyDownHandlerProps {
     contentEditableRef: React.RefObject<ContentEditableElement>;
     enterCallback: PlainFn;
     specialBackspaceCallback: PlainFn;
-    specialEnterCallback: (
-        beforeSelection: Lyric,
-        afterSelection: Lyric
-    ) => void;
+    specialEnterCallback: (splitIndex: number) => void;
 }
 
 export const useKeyDownHandler = (props: KeyDownHandlerProps) => {

@@ -123,6 +123,17 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         return false;
     };
 
+    const splitLine = (id: IDable<ChordLine>, splitIndex: number): boolean => {
+        const didSplit = props.song.splitLine(id, splitIndex);
+
+        if (didSplit) {
+            notifySongChanged();
+            return true;
+        }
+
+        return false;
+    };
+
     const notifySongChanged = () => {
         props.onSongChanged?.(props.song);
     };
@@ -177,6 +188,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
                         onChangeLine={handleChangeLine}
                         onJSONPaste={handleJSONPaste}
                         onLyricOverflow={handleLyricOverflow}
+                        onSplitLine={splitLine}
                         onMergeWithPreviousLine={mergeWithPreviousLine}
                         onChordDragAndDrop={handleChordDND}
                         data-testid={`Line-${index}`}

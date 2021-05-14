@@ -2,11 +2,11 @@ import { Box, Theme, withStyles } from "@material-ui/core";
 import React from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { IDable } from "../../common/ChordModel/Collection";
+import { Lyric } from "../../common/ChordModel/Lyric";
 import { PlainFn } from "../../common/PlainFn";
 import { lyricStyle, lyricTypographyVariant } from "../display/Lyric";
 import { useEditingState } from "./InteractionContext";
 import UnstyledLyricInput from "./lyric_input/LyricInput";
-import { Lyric } from "../../common/ChordModel/Lyric";
 
 const LyricInput = withStyles((theme: Theme) => ({
     root: {
@@ -24,6 +24,7 @@ interface WithLyricInputProps {
     onLyricOverflow?: (id: IDable<ChordLine>, overflowLyric: Lyric[]) => void;
     onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
     onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;
+    onSplitLine?: (id: IDable<ChordLine>, splitIndex: number) => boolean;
 }
 
 // this component is inherently quite coupled with Line & friends
@@ -63,6 +64,14 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                 }
             }
         },
+        specialEnter: (splitIndex: number) => {
+            if (props.onSplitLine) {
+                const handled = props.onSplitLine(props.chordLine, splitIndex);
+                if (handled) {
+                    finishEdit();
+                }
+            }
+        },
     };
 
     const lineElement: React.ReactElement = props.children(startEdit);
@@ -83,6 +92,7 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                     onJSONPaste={handlers.jsonPaste}
                     onLyricOverflow={handlers.pasteOverflow}
                     onSpecialBackspace={handlers.specialBackspace}
+                    onSpecialEnter={handlers.specialEnter}
                 >
                     {props.chordLine.lyrics}
                 </LyricInput>
