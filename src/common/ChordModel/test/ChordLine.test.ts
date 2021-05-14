@@ -5,6 +5,11 @@ import { Lyric } from "../Lyric";
 
 const rawTextFn = (rawStr: string) => rawStr;
 
+const expectBlock = (block: ChordBlock, chord: string, lyric: string) => {
+    expect(block.chord).toEqual(chord);
+    expect(block.lyric.get(rawTextFn)).toEqual(lyric);
+};
+
 describe("ChordLine", () => {
     const testBlocks = (): ChordBlock[] => {
         return [
@@ -141,6 +146,70 @@ describe("ChordLine", () => {
 
             expect(c.chordBlocks[2].chord).toEqual("");
             expect(c.chordBlocks[2].lyric.get(rawTextFn)).toEqual(" to ");
+        });
+    });
+
+    describe("splitByCharIndex", () => {
+        test("split at beginning", () => {
+            const prevLine = c.splitByCharIndex(0);
+            expect(prevLine.section?.name).toEqual("Verse");
+            expect(prevLine.section?.type).toEqual("time");
+
+            expect(prevLine.elements.length).toEqual(1);
+            expectBlock(prevLine.elements[0], "", "");
+
+            expect(c.section).toEqual(undefined);
+
+            expect(c.elements.length).toEqual(3);
+            expectBlock(c.elements[0], "A7", "We're no ");
+            expectBlock(c.elements[1], "Bm", "strangers to ");
+            expectBlock(c.elements[2], "Cdim", "love");
+        });
+
+        test("split at block boundary", () => {
+            const prevLine = c.splitByCharIndex(9);
+            expect(prevLine.section?.name).toEqual("Verse");
+            expect(prevLine.section?.type).toEqual("time");
+
+            expect(prevLine.elements.length).toEqual(1);
+            expectBlock(prevLine.elements[0], "A7", "We're no ");
+
+            expect(c.section).toEqual(undefined);
+
+            expect(c.elements.length).toEqual(2);
+            expectBlock(c.elements[0], "Bm", "strangers to ");
+            expectBlock(c.elements[1], "Cdim", "love");
+        });
+
+        test("split at middle of block", () => {
+            const prevLine = c.splitByCharIndex(19);
+            expect(prevLine.section?.name).toEqual("Verse");
+            expect(prevLine.section?.type).toEqual("time");
+
+            expect(prevLine.elements.length).toEqual(2);
+            expectBlock(prevLine.elements[0], "A7", "We're no ");
+            expectBlock(prevLine.elements[1], "Bm", "strangers ");
+
+            expect(c.section).toEqual(undefined);
+
+            expect(c.elements.length).toEqual(2);
+            expectBlock(c.elements[0], "", "to ");
+            expectBlock(c.elements[1], "Cdim", "love");
+        });
+
+        test("split at end", () => {
+            const prevLine = c.splitByCharIndex(26);
+            expect(prevLine.section?.name).toEqual("Verse");
+            expect(prevLine.section?.type).toEqual("time");
+
+            expect(prevLine.elements.length).toEqual(3);
+            expectBlock(prevLine.elements[0], "A7", "We're no ");
+            expectBlock(prevLine.elements[1], "Bm", "strangers to ");
+            expectBlock(prevLine.elements[2], "Cdim", "love");
+
+            expect(c.section).toEqual(undefined);
+            expect(c.elements.length).toEqual(1);
+            expectBlock(c.elements[0], "", "");
         });
     });
 

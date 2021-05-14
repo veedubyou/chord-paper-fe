@@ -277,6 +277,15 @@ export class ChordSong extends Collection<ChordLine>
         return true;
     }
 
+    splitLine(idable: IDable<ChordLine>, splitIndex: number): boolean {
+        const chordLine = this.get(idable);
+        const nextLine = chordLine.splitByCharIndex(splitIndex);
+
+        this.addAfter(chordLine, nextLine);
+
+        return true;
+    }
+
     contentEquals(other: ChordSong): boolean {
         if (this.chordLines.length !== other.chordLines.length) {
             return false;

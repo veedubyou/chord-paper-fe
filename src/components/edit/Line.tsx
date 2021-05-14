@@ -46,6 +46,7 @@ interface LineProps extends DataTestID {
     ) => void;
     onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
     onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;
+    onSplitLine?: (id: IDable<ChordLine>, splitIndex: number) => boolean;
     onChordDragAndDrop?: BlockProps["onChordDragAndDrop"];
 }
 
@@ -120,6 +121,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
             onChangeLine={props.onChangeLine}
             onJSONPaste={props.onJSONPaste}
             onMergeWithPreviousLine={props.onMergeWithPreviousLine}
+            onSplitLine={props.onSplitLine}
             onLyricOverflow={props.onLyricOverflow}
         >
             {(startEdit: PlainFn) => withHoverMenu(startEdit, menuItems)}

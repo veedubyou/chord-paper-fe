@@ -87,7 +87,7 @@ export class ChordBlock implements IDable<ChordBlock> {
     // {id:"A", chord: "", "we're"}
     splitByTokenIndex(splitIndex: number): ChordBlock {
         if (splitIndex === 0) {
-            return new ChordBlock({ chord: "", lyric: new Lyric("") });
+            throw new Error("Split index can't be zero");
         }
 
         const tokens = this.lyricTokens;

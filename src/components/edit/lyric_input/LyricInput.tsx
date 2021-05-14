@@ -41,6 +41,7 @@ interface LyricInputProps extends StyledComponentProps {
     children: Lyric;
     onFinish: (newValue: Lyric) => void;
     onSpecialBackspace: PlainFn;
+    onSpecialEnter: (splitIndex: number) => void;
     onLyricOverflow: (overflowContent: Lyric[]) => void;
     onJSONPaste: (jsonStr: string) => boolean;
     variant?: TypographyVariant;
@@ -72,12 +73,9 @@ const LyricInput: React.FC<LyricInputProps> = (
         specialBackspaceCallback: () => {
             props.onSpecialBackspace();
         },
-        specialEnterCallback: (
-            beforeSelection: Lyric,
-            afterSelection: Lyric
-        ) => {
-            finish(beforeSelection);
-            props.onLyricOverflow([afterSelection]);
+        specialEnterCallback: (splitIndex: number) => {
+            finish(value());
+            props.onSpecialEnter(splitIndex);
         },
     };
 
