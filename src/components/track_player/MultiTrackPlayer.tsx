@@ -37,6 +37,14 @@ const FlexBox = withStyles((theme: Theme) => ({
     },
 }))(Box);
 
+const CenteredBox = withStyles((theme: Theme) => ({
+    root: {
+        display: "flex",
+        justifyContent: "center",
+        margin: theme.spacing(0.5),
+    },
+}))(Box);
+
 const TitleBarButton = withStyles((theme: Theme) => ({
     root: {
         minWidth: 0,
@@ -181,7 +189,11 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
 
     const internalContent: React.ReactNode = (() => {
         if (props.tracklistLoad.state === "loading") {
-            return <CircularProgress />;
+            return (
+                <CenteredBox>
+                    <CircularProgress />
+                </CenteredBox>
+            );
         }
 
         const makePlayer = (track: Track, index: number) => {
