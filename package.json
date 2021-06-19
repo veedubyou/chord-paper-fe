@@ -35,6 +35,8 @@
         "monocle-ts": "^2.3.3",
         "newtype-ts": "^0.3.4",
         "notistack": "^0.9.16",
+        "patch-package": "^6.4.7",
+        "postinstall-postinstall": "^2.1.0",
         "pretty-bytes": "^5.6.0",
         "react": "^16.13.1",
         "react-dnd": "^11.1.3",
@@ -46,15 +48,17 @@
         "react-scripts": "3.4.1",
         "react-use-konami": "^1.0.13",
         "shortid": "^2.2.15",
+        "svguitar": "^1.12.3",
         "tone": "^14.7.77",
-        "typescript": "^3.8.0"
+        "typescript": "4.3.2"
     },
     "scripts": {
         "start": "BROWSER=firefox react-scripts start",
         "build": "REACT_APP_BACKEND_URL=https://chord-be.philipwong.pw react-scripts build",
         "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
         "eject": "react-scripts eject",
-        "build-github-pages": "REACT_APP_BACKEND_URL=https://chord-be.philipwong.pw PUBLIC_URL=/chord-paper-fe yarn build"
+        "build-github-pages": "REACT_APP_BACKEND_URL=https://chord-be.philipwong.pw PUBLIC_URL=/chord-paper-fe yarn build",
+        "postinstall": "patch-package"
     },
     "eslintConfig": {
         "extends": "react-app"
@@ -73,8 +77,14 @@
     },
     "devDependencies": {
         "jest-environment-jsdom-sixteen": "^1.0.3",
-        "prettier": "2.0.5",
+        "prettier": "2.3.1",
         "ts-jest": "^26.0.0"
+    },
+    "resolutions": {
+        "**/@typescript-eslint/eslint-plugin": "^4.25.0",
+        "**/@typescript-eslint/parser": "^4.25.0",
+        "@babel/core": "^7.12.3",
+        "eslint-plugin-react-hooks": "^4.2.0"
     },
     "jest": {
         "moduleNameMapper": {

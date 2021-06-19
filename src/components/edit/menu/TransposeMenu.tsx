@@ -5,27 +5,18 @@ import {
     DialogContent,
     DialogTitle,
     FormControl as UnstyledFormControl,
-    FormControlLabel,
     Grid,
     InputLabel,
     MenuItem,
-    Radio,
-    RadioGroup,
     Select as UnstyledSelect,
     Theme,
 } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
+import { AllNotes, Note } from "../../../common/music/foundation/Note";
+import { transposeSong } from "../../../common/music/transpose/Transpose";
 import { PlainFn } from "../../../common/PlainFn";
-import {
-    isMajorKey,
-    isMinorKey,
-    MajorKeys,
-    MinorKeys,
-} from "../../../common/transpose/Keys";
-import { ChromaticScale } from "../../../common/transpose/MusicNotes";
-import { transposeSong } from "../../../common/transpose/Transpose";
 
 interface TransposeMenuProps {
     open: boolean;
@@ -47,122 +38,48 @@ const Select = withStyles((theme: Theme) => ({
     },
 }))(UnstyledSelect);
 
-interface MajorKeySelection {
-    type: "major";
-    originalKey: keyof typeof MajorKeys;
-    transposedKey: keyof typeof MajorKeys;
+interface KeySelection {
+    originalKey: Note;
+    transposedKey: Note;
 }
-
-interface MinorKeySelection {
-    type: "minor";
-    originalKey: keyof typeof MinorKeys;
-    transposedKey: keyof typeof MinorKeys;
-}
-
-type KeySelection = MajorKeySelection | MinorKeySelection;
 
 const TransposeMenu: React.FC<TransposeMenuProps> = (
     props: TransposeMenuProps
 ): JSX.Element => {
     const [keySelection, setKeySelection] = useState<KeySelection>({
-        type: "major",
-        originalKey: ChromaticScale.C,
-        transposedKey: ChromaticScale.C,
+        originalKey: "C",
+        transposedKey: "C",
     });
-
-    const handleModalityChange = (
-        event: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        switch (event.target.value) {
-            case "major": {
-                const newKeySelection: MajorKeySelection = {
-                    type: "major",
-                    originalKey: isMajorKey(keySelection.originalKey)
-                        ? keySelection.originalKey
-                        : ChromaticScale.C,
-                    transposedKey: isMajorKey(keySelection.transposedKey)
-                        ? keySelection.transposedKey
-                        : ChromaticScale.C,
-                };
-
-                setKeySelection(newKeySelection);
-                break;
-            }
-            case "minor": {
-                const newKeySelection: MinorKeySelection = {
-                    type: "minor",
-                    originalKey: isMinorKey(keySelection.originalKey)
-                        ? keySelection.originalKey
-                        : ChromaticScale.C,
-                    transposedKey: isMinorKey(keySelection.transposedKey)
-                        ? keySelection.transposedKey
-                        : ChromaticScale.C,
-                };
-
-                setKeySelection(newKeySelection);
-                break;
-            }
-            default: {
-                throw new Error("Only major or minor is expected");
-            }
-        }
-    };
 
     const keySelectChangeHandler = (
         changedField: "originalKey" | "transposedKey"
     ): ((event: React.ChangeEvent<{ value: unknown }>) => void) => {
         return (event: React.ChangeEvent<{ value: unknown }>) => {
-            const newSelectValue = event.target.value as ChromaticScale;
+            const newSelectValue = event.target.value as Note;
             const newKeySelection = { ...keySelection };
-
-            switch (newKeySelection.type) {
-                case "major":
-                    if (!isMajorKey(newSelectValue)) {
-                        throw new Error(
-                            "Unexpected: Selection is not a major key"
-                        );
-                    }
-                    newKeySelection[changedField] = newSelectValue;
-                    break;
-                case "minor":
-                    if (!isMinorKey(newSelectValue)) {
-                        throw new Error(
-                            "Unexpected: Selection is not a minor key"
-                        );
-                    }
-                    newKeySelection[changedField] = newSelectValue;
-                    break;
-            }
-
+            newKeySelection[changedField] = newSelectValue;
             setKeySelection(newKeySelection);
         };
     };
 
     const handleTransposeAction = (): void => {
-        const fromKey =
-            keySelection.type === "major"
-                ? MajorKeys[keySelection.originalKey]
-                : MinorKeys[keySelection.originalKey];
-        const toKey =
-            keySelection.type === "major"
-                ? MajorKeys[keySelection.transposedKey]
-                : MinorKeys[keySelection.transposedKey];
-
-        transposeSong(props.song, fromKey, toKey);
+        transposeSong(
+            props.song,
+            keySelection.originalKey,
+            keySelection.transposedKey
+        );
         props.onSongChanged(props.song);
         props.onClose();
     };
 
     const createKeySelect = (
         id: string,
-        currentKey: ChromaticScale,
+        currentKey: Note,
         changeHandler: (event: React.ChangeEvent<{ value: unknown }>) => void
     ) => {
-        const keyCollection =
-            keySelection.type === "major" ? MajorKeys : MinorKeys;
         const menuItems: React.ReactElement[] = [];
 
-        for (const keyName in keyCollection) {
+        for (const keyName in AllNotes) {
             menuItems.push(<MenuItem value={keyName}>{keyName}</MenuItem>);
         }
 
@@ -177,26 +94,7 @@ const TransposeMenu: React.FC<TransposeMenuProps> = (
         <Dialog open={props.open} onClose={props.onClose}>
             <DialogTitle>Transpose Key</DialogTitle>
             <DialogContent>
-                <Grid container>
-                    <Grid item>
-                        <FormControl>
-                            <RadioGroup
-                                value={keySelection.type}
-                                onChange={handleModalityChange}
-                            >
-                                <FormControlLabel
-                                    value="major"
-                                    control={<Radio />}
-                                    label="Major"
-                                />
-                                <FormControlLabel
-                                    value="minor"
-                                    control={<Radio />}
-                                    label="Minor"
-                                />
-                            </RadioGroup>
-                        </FormControl>
-                    </Grid>
+                <Grid container direction="row">
                     <Grid item>
                         <FormControl>
                             <InputLabel htmlFor="original-key">
@@ -208,6 +106,8 @@ const TransposeMenu: React.FC<TransposeMenuProps> = (
                                 keySelectChangeHandler("originalKey")
                             )}
                         </FormControl>
+                    </Grid>
+                    <Grid item>
                         <FormControl>
                             <InputLabel htmlFor="transposed-key">
                                 Transposed Key

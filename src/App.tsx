@@ -39,6 +39,7 @@ import Version from "./components/Version";
 import { withSongContext } from "./components/WithSongContext";
 import { withCloud } from "./components/WithCloud";
 import GlobalKeyListenerProvider from "./components/GlobalKeyListener";
+import GuitarDemo from "./components/guitar/GuitarDemo";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -130,6 +131,9 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
             {TutorialSwitches()}
             <Route key={aboutPath.URL()} path={aboutPath.URL()} exact>
                 <About />
+            </Route>
+            <Route key="/guitar-demo" path="/guitar-demo" exact>
+                <GuitarDemo />
             </Route>
             <Redirect to={rootPath.URL()} />
         </Switch>

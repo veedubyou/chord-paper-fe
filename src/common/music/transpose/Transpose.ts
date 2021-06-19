@@ -1,30 +1,27 @@
-import { Key } from "./Keys";
+import { ChordSong } from "../../ChordModel/ChordSong";
+import { AllNotes, Note } from "../foundation/Note";
 import {
-    ChromaticScale,
-    getDifference,
-    getNoteClass,
-    moveUpSemitones,
-    AllChromaticScale,
-} from "./MusicNotes";
-import { ChordSong } from "../ChordModel/ChordSong";
+    IntervalToNote,
+    NoteToInterval,
+} from "../foundation/NoteIntervalConversion";
 
-const transposeNote = (
-    note: ChromaticScale,
-    fromKey: Key,
-    toKey: Key
-): ChromaticScale => {
-    const difference = getDifference(fromKey.Center, toKey.Center);
-    const originalNoteClass = getNoteClass(note);
-    const transposedNoteClass = moveUpSemitones(originalNoteClass, difference);
-    return toKey[transposedNoteClass];
+const transposeNote = (note: Note, fromKey: Note, toKey: Note): Note => {
+    const interval = NoteToInterval[fromKey][note];
+
+    return IntervalToNote[toKey][interval];
 };
 
-const transposeSymbol = (symbol: string, fromKey: Key, toKey: Key): string => {
-    const matchingNotes: ChromaticScale[] = [];
+const transposeSymbol = (
+    symbol: string,
+    fromKey: Note,
+    toKey: Note
+): string => {
+    const matchingNotes: Note[] = [];
 
-    for (const scaleNote of AllChromaticScale) {
-        if (symbol.startsWith(scaleNote)) {
-            matchingNotes.push(scaleNote);
+    let note: Note;
+    for (note in AllNotes) {
+        if (symbol.startsWith(note)) {
+            matchingNotes.push(note);
         }
     }
 
@@ -32,7 +29,7 @@ const transposeSymbol = (symbol: string, fromKey: Key, toKey: Key): string => {
         return symbol;
     }
 
-    let matchingNote: ChromaticScale = matchingNotes[0];
+    let matchingNote: Note = matchingNotes[0];
     for (const note of matchingNotes) {
         // use the longest matching note as the root
         // e.g. in C#7, C# is a better match than C
@@ -45,7 +42,7 @@ const transposeSymbol = (symbol: string, fromKey: Key, toKey: Key): string => {
     return symbol.replace(matchingNote, transposedNote);
 };
 
-const transposeChord = (chord: string, fromKey: Key, toKey: Key): string => {
+const transposeChord = (chord: string, fromKey: Note, toKey: Note): string => {
     let bass: string | null = null;
     let baseChord: string = chord;
     if (chord.includes("/")) {
@@ -67,8 +64,8 @@ const transposeChord = (chord: string, fromKey: Key, toKey: Key): string => {
 
 export const transposeSong = (
     song: ChordSong,
-    fromKey: Key,
-    toKey: Key
+    fromKey: Note,
+    toKey: Note
 ): ChordSong => {
     for (const line of song.chordLines) {
         for (const block of line.chordBlocks) {
