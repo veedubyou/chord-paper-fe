@@ -1,4 +1,5 @@
-import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
+import { Either, isLeft, left, right } from "fp-ts/lib/Either";
+import { Json, parse } from "fp-ts/Json";
 import * as iots from "io-ts";
 import { DateFromISOString } from "io-ts-types";
 import lodash from "lodash";
@@ -140,13 +141,10 @@ export class ChordSong extends Collection<ChordLine>
     }
 
     static deserialize(jsonStr: string): Either<Error, ChordSong> {
-        const result: Either<Error, unknown> = parseJSON(
-            jsonStr,
-            () => new Error("Failed to parse json string")
-        );
+        const result: Either<unknown, Json> = parse(jsonStr);
 
         if (isLeft(result)) {
-            return result;
+            return left(new Error(JSON.stringify(result.left)));
         }
 
         const jsonObj = result.right;

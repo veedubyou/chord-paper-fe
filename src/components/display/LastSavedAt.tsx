@@ -28,7 +28,9 @@ const LastSavedAt: React.FC<LastSavedAtProps> = (
 
         const daysSinceSaved: number = sinceSaved.as("day");
         if (daysSinceSaved <= -1) {
-            return lastSaved.toLocaleString(DateTime.DATETIME_MED);
+            //TODO
+            // return lastSaved.toLocaleString(DateTime.DATETIME_MED);
+            return "sup";
         }
 
         const secondsSinceSaved: number = lastSaved.diffNow().as("second");
