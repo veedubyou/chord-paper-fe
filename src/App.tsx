@@ -24,6 +24,7 @@ import {
     aboutPath,
     DemoModePath,
     demoPath,
+    guitarDemoPath,
     newSongPath,
     rootPath,
     SongIDModePath,
@@ -103,53 +104,64 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
 
     const isFullScreen =
         SongIDModePath.isPlayMode(location.pathname) ||
-        DemoModePath.isPlayMode(location.pathname);
+        DemoModePath.isPlayMode(location.pathname) ||
+        location.pathname === guitarDemoPath.URL();
+
+    const withRegularAppLayout = (child: React.ReactElement) => {
+        return (
+            <>
+                {!isFullScreen && (
+                    <SideMenu onUserChanged={handleUserChanged} />
+                )}
+                <AppLayout container>
+                    <Grid item container justify="center">
+                        {child}
+                    </Grid>
+                </AppLayout>
+                <Version />
+            </>
+        );
+    };
 
     const routes = (
         <Switch>
             <Redirect from={rootPath.URL()} to={newSongPath.URL()} exact />
 
             <Route key={newSongPath.URL()} path={newSongPath.URL()}>
-                <MainSong song={new ChordSong()} path={newSongPath} />
+                {withRegularAppLayout(
+                    <MainSong song={new ChordSong()} path={newSongPath} />
+                )}
             </Route>
 
             <Route key={loadSongPath.URL()} path={loadSongPath.URL()}>
-                <SongFetcher>
-                    {(song: ChordSong) => (
-                        <MainSong
-                            song={song}
-                            path={loadSongPath.parent().withID(song.id)}
-                        />
-                    )}
-                </SongFetcher>
+                {withRegularAppLayout(
+                    <SongFetcher>
+                        {(song: ChordSong) => (
+                            <MainSong
+                                song={song}
+                                path={loadSongPath.parent().withID(song.id)}
+                            />
+                        )}
+                    </SongFetcher>
+                )}
             </Route>
 
             <Route key={demoPath.URL()} path={demoPath.URL()}>
-                <Demo />
+                {withRegularAppLayout(<Demo />)}
             </Route>
 
             {TutorialSwitches()}
             <Route key={aboutPath.URL()} path={aboutPath.URL()} exact>
-                <About />
+                {withRegularAppLayout(<About />)}
             </Route>
-            <Route key="/guitar-demo" path="/guitar-demo" exact>
+            <Route key={guitarDemoPath.URL()} path={guitarDemoPath.URL()} exact>
                 <GuitarDemo />
             </Route>
             <Redirect to={rootPath.URL()} />
         </Switch>
     );
 
-    return (
-        <UserContext.Provider value={user}>
-            {!isFullScreen && <SideMenu onUserChanged={handleUserChanged} />}
-            <AppLayout container>
-                <Grid item container justify="center">
-                    {routes}
-                </Grid>
-            </AppLayout>
-            <Version />
-        </UserContext.Provider>
-    );
+    return <UserContext.Provider value={user}>{routes}</UserContext.Provider>;
 };
 
 function App() {

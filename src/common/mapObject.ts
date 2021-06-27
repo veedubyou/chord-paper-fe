@@ -21,8 +21,8 @@ export function mapObject<T extends object, U>(
 ): {
     [P in keyof T]: U; // ugly to inline this, but this allows the type hints in VS Code to be more explicit
 } {
-    let dest = {} as Dest<T, U>;
-    for (let key in source) {
+    const dest = {} as Dest<T, U>;
+    for (const key in source) {
         if (source.hasOwnProperty(key)) {
             const oldValue = source[key];
             dest[key] = transformFn(oldValue, key);
