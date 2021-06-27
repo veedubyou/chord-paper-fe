@@ -18,6 +18,14 @@ export class AboutPath {
 }
 export const aboutPath = new AboutPath();
 
+export class GuitarDemoPath {
+    URL(): string {
+        return "/guitar-demo";
+    }
+}
+
+export const guitarDemoPath = new GuitarDemoPath();
+
 export class SongPath {
     URL(): string {
         return "/song";

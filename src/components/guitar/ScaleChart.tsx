@@ -9,9 +9,14 @@ import {
 } from "../../common/music/guitar/Scale";
 import { Scale, ScaleUtility } from "../../common/music/scale/Scale";
 
-const RotatedBox = withStyles({
+const ChartBox = withStyles({
     root: {
-        transform: "rotate(270deg) scale(0.5)",
+        transform: "rotate(270deg)",
+
+        "& svg": {
+            // magic number, but it makes charts not overlap
+            transform: "scale(0.85)",
+        },
         "& .title": {
             fontFamily: "PoriChord",
         },
@@ -41,25 +46,30 @@ const convertScaleViewToFingers = (
 
         const fretLabels = scaleView[stringName];
         for (const fretLabel of fretLabels) {
-            const fretNumber = fretLabel.fret - startingFret + 1;
-            if (fretNumber <= 0) {
-                throw new Error(
-                    "Invalid finger generated - got a negative fretting"
-                );
-            }
+            let fretNumber: number = (() => {
+                const fretNumber = fretLabel.fret - startingFret + 1;
+                if (fretNumber <= 0) {
+                    throw new Error(
+                        "Invalid finger generated - got a zero or negative fretting"
+                    );
+                }
+
+                return fretNumber;
+            })();
 
             const labelColour: string | undefined = (() => {
                 switch (fretLabel.importance) {
                     case "normal": {
-                        return undefined;
+                        // black
+                        return "black";
                     }
 
                     case "root": {
-                        return "blue";
+                        return "#f44336";
                     }
 
                     case "chordtone": {
-                        return "red";
+                        return "#ffb74d";
                     }
 
                     case "special": {
@@ -86,14 +96,40 @@ const convertScaleViewToFingers = (
     return fingers;
 };
 
+export type StartingFret =
+    | 1
+    | 2
+    | 3
+    | 4
+    | 5
+    | 6
+    | 7
+    | 8
+    | 9
+    | 10
+    | 11
+    | 12
+    | 13
+    | 14
+    | 15
+    | 16
+    | 17
+    | 18
+    | 19
+    | 20
+    | 21;
+
 interface ScaleChartProps {
     scale: Scale;
-    startingFret: number;
+    startingFret: StartingFret;
 }
 
 const ScaleChart: React.FC<ScaleChartProps> = (
     props: ScaleChartProps
 ): JSX.Element => {
+    const elemRef = useRef<HTMLElement>(null);
+    const prevSVGuitarChord = useRef<SVGuitarChord | null>(null);
+
     const getPos = (elem: SVGTextElement): [number, number] | undefined => {
         if (
             elem.x.baseVal.numberOfItems === 0 ||
@@ -108,12 +144,13 @@ const ScaleChart: React.FC<ScaleChartProps> = (
         ];
     };
 
-    const ref = useRef<HTMLElement>(null);
-
     useEffect(() => {
-        if (ref.current === null) {
-            console.log("BAIL");
+        if (elemRef.current === null) {
             return;
+        }
+
+        if (prevSVGuitarChord.current !== null) {
+            prevSVGuitarChord.current.remove();
         }
 
         const endingFret = props.startingFret + fretWindow;
@@ -124,10 +161,13 @@ const ScaleChart: React.FC<ScaleChartProps> = (
             "note"
         );
 
-        const svguitarChord = new SVGuitarChord(ref.current);
+        const svguitarChord = new SVGuitarChord(elemRef.current);
         svguitarChord.chord({
             barres: [],
-            fingers: convertScaleViewToFingers(guitarScaleView, 7),
+            fingers: convertScaleViewToFingers(
+                guitarScaleView,
+                props.startingFret
+            ),
             title: new ScaleUtility(props.scale).name(),
         });
 
@@ -137,8 +177,9 @@ const ScaleChart: React.FC<ScaleChartProps> = (
         });
 
         svguitarChord.draw();
+        prevSVGuitarChord.current = svguitarChord;
 
-        const texts = ref.current.querySelectorAll(".nut-text,.position");
+        const texts = elemRef.current.querySelectorAll(".nut-text,.position");
         texts.forEach((elem: Element) => {
             if (!(elem instanceof SVGTextElement)) {
                 return;
@@ -157,10 +198,10 @@ const ScaleChart: React.FC<ScaleChartProps> = (
 
     // https://github.com/mui-org/material-ui/issues/17010
     const refProps = {
-        ref: ref,
+        ref: elemRef,
     };
 
-    return <RotatedBox {...refProps}></RotatedBox>;
+    return <ChartBox {...refProps}></ChartBox>;
 };
 
 export default ScaleChart;
