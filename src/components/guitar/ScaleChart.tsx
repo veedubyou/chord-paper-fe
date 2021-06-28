@@ -60,7 +60,6 @@ const convertScaleViewToFingers = (
             const labelColour: string | undefined = (() => {
                 switch (fretLabel.importance) {
                     case "normal": {
-                        // black
                         return "black";
                     }
 
@@ -69,7 +68,7 @@ const convertScaleViewToFingers = (
                     }
 
                     case "chordtone": {
-                        return "#ffb74d";
+                        return "#64b5f6";
                     }
 
                     case "special": {

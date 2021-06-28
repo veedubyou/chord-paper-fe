@@ -115,7 +115,6 @@ const GuitarDemo: React.FC<GuitarDemoProps> = (
         return (
             <Swiper
                 slidesPerView={slidesPerView}
-                slidesPerGroup={slidesPerView}
                 navigation={overflow}
                 loop={overflow}
                 onSlideChange={rotateSecondRow}
