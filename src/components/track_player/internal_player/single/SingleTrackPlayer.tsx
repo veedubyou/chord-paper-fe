@@ -5,6 +5,7 @@ import shortid from "shortid";
 import { SingleTrack } from "../../../../common/ChordModel/tracks/SingleTrack";
 import ControlPane from "../ControlPane";
 import { ensureGoogleDriveCacheBusted } from "../google_drive";
+import { makeReactPlayerProps } from "../reactPlayerProps";
 import { PlayerControls } from "../usePlayerControls";
 
 interface SingleTrackPlayerProps {
@@ -22,19 +23,9 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
         [props.track.url]
     );
 
-    const commonReactPlayerProps: ReactPlayerProps = {
-        ref: props.playerControls.playerRef,
-        playing: props.playerControls.playing,
-        controls: true,
-        playbackRate: props.playerControls.playratePercentage / 100,
-        onPlay: props.playerControls.onPlay,
-        onPause: props.playerControls.onPause,
-        onProgress: props.playerControls.onProgress,
-        progressInterval: 500,
-        style: { minWidth: "50vw" },
-        height: "auto",
-        config: { file: { forceAudio: true } },
-    };
+    const reactPlayerProps: ReactPlayerProps = makeReactPlayerProps(
+        props.playerControls
+    );
 
     useEffect(() => {
         if (!props.currentTrack && props.playerControls.playing) {
@@ -45,7 +36,7 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
     return (
         <Box>
             <Box>
-                <ReactPlayer {...commonReactPlayerProps} url={trackURL} />
+                <ReactPlayer {...reactPlayerProps} url={trackURL} />
             </Box>
             <ControlPane
                 show={props.focused}

@@ -10,9 +10,10 @@ import React, {
     useRef,
     useState,
 } from "react";
-import FilePlayer, { FilePlayerProps } from "react-player/file";
+import FilePlayer from "react-player/file";
 import * as Tone from "tone";
 import ControlPane from "../ControlPane";
+import { makeFilePlayerProps } from "../reactPlayerProps";
 import { PlayerControls } from "../usePlayerControls";
 import { getAudioCtx } from "./audioCtx";
 import StemTrackControlPane, {
@@ -112,9 +113,8 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         };
     })();
 
-    const [playerState, setPlayerState] = useState<PlayerState<StemKey>>(
-        initialPlayerState
-    );
+    const [playerState, setPlayerState] =
+        useState<PlayerState<StemKey>>(initialPlayerState);
 
     const playerStateRef = useRef(playerState);
     playerStateRef.current = playerState;
@@ -137,25 +137,11 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         setPlayerState(newPlayerState);
     };
 
-    const commonReactPlayerProps: FilePlayerProps = {
-        ref: props.playerControls.playerRef,
-        playing: props.playerControls.playing,
-        controls: true,
-        volume: playerState.masterVolumePercentage / 100,
-        playbackRate: props.playerControls.playratePercentage / 100,
-        onPlay: props.playerControls.onPlay,
-        onPause: props.playerControls.onPause,
-        onProgress: props.playerControls.onProgress,
-        progressInterval: 500,
-        style: { minWidth: "50vw" },
-        height: "auto",
-        config: {
-            forceAudio: true,
-            attributes: {
-                onVolumeChange: handleMasterVolumeChange,
-            },
-        },
-    };
+    const filePlayerProps = makeFilePlayerProps(
+        props.playerControls,
+        playerState.masterVolumePercentage,
+        handleMasterVolumeChange
+    );
 
     // check the integrity of the loaded tracks - they should all be the same length
     // otherwise there could be a loading error
@@ -308,9 +294,8 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
                 volume: stemState.volumePercentage,
                 onVolumeChanged: (newVolume: number) => {
                     const newPlayerState = lodash.cloneDeep(playerState);
-                    newPlayerState.stems[
-                        stemIndex
-                    ].volumePercentage = newVolume;
+                    newPlayerState.stems[stemIndex].volumePercentage =
+                        newVolume;
                     setPlayerState(newPlayerState);
                 },
             };
@@ -324,7 +309,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
     return (
         <Box>
             <Box>
-                <FilePlayer {...commonReactPlayerProps} url={silentURL} />
+                <FilePlayer {...filePlayerProps} url={silentURL} />
             </Box>
             {stemControlPane}
             <ControlPane

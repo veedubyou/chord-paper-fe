@@ -53,22 +53,23 @@ const GlobalKeyListenerProvider: React.FC<GlobalKeyListenerProviderProps> = (
     };
 
     const wrapListener = (listener: KeyListener): KeyListener => {
-        return (event: KeyboardEvent) => {
-            // do not fire for any typing contexts
-            if (event.target instanceof HTMLElement) {
-                if (
-                    event.target.tagName === "INPUT" ||
+        return (event: KeyboardEvent): void => {
+            const isTypingContext =
+                event.target instanceof HTMLElement &&
+                (event.target.tagName === "INPUT" ||
                     event.target.tagName === "TEXTAREA" ||
-                    event.target.isContentEditable
-                ) {
-                    return;
-                }
+                    event.target.isContentEditable);
+
+            if (isTypingContext) {
+                return;
             }
 
             listener(event);
+
             if (event.defaultPrevented) {
                 event.stopImmediatePropagation();
             }
+            return;
         };
     };
 
