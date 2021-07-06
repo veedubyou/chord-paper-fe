@@ -28,27 +28,18 @@ const ControlGroup: React.FC<ControlGroupProps> = (
 ): JSX.Element => {
     const contents: React.ReactElement[] = props.children.map(
         (child: React.ReactNode, index: number) => {
-            const content: React.ReactNode[] = (() => {
-                if (props.dividers === "right") {
-                    return [
-                        child,
-                        <VerticalMiddleDivider
-                            key={`divider-${index}`}
-                            orientation="vertical"
-                            flexItem
-                        />,
-                    ];
-                }
+            const divider = (
+                <VerticalMiddleDivider
+                    key={`divider-${index}`}
+                    orientation="vertical"
+                    flexItem
+                />
+            );
 
-                return [
-                    <VerticalMiddleDivider
-                        key={`divider-${index}`}
-                        orientation="vertical"
-                        flexItem
-                    />,
-                    child,
-                ];
-            })();
+            const content: React.ReactNode[] =
+                props.dividers === "right"
+                    ? [child, divider]
+                    : [divider, child];
 
             return <React.Fragment key={index}>{content}</React.Fragment>;
         }
