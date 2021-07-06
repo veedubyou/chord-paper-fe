@@ -38,6 +38,7 @@ type ToneNodes<StemKey extends string> = StemToneNodes<StemKey>[];
 
 type PlayerState<StemKey extends string> = {
     masterVolumePercentage: number;
+    masterPitchShift: number;
     stems: StemState<StemKey>[];
 };
 
@@ -58,11 +59,14 @@ const createToneNodes = <StemKey extends string>(
     stem: StemInput<StemKey>
 ): StemToneNodes<StemKey> => {
     const volumeNode = new Tone.Volume();
+
     const playerNode = new Tone.GrainPlayer({
         url: stem.audioBuffer,
         grainSize: 0.1,
         overlap: 0.1,
-    }).chain(volumeNode);
+    });
+
+    playerNode.chain(volumeNode);
 
     return {
         label: stem.label,
@@ -109,6 +113,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
 
         return {
             masterVolumePercentage: 100,
+            masterPitchShift: 0,
             stems: stemStates,
         };
     })();
@@ -210,7 +215,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
     useEffect(() => {
         playerState.stems.forEach(
             (stemState: StemState<StemKey>, stemIndex: number) => {
-                const nodes = toneNodes[stemIndex];
+                const node = toneNodes[stemIndex];
 
                 const stemVolume =
                     (stemState.volumePercentage / 100) *
@@ -219,17 +224,34 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
                 // don't set if fraction is 0, log of 0 is undefined
                 if (stemVolume > 0) {
                     const stemVolumeDecibels = 20 * Math.log10(stemVolume);
-                    nodes.volumeNode.volume.value = stemVolumeDecibels;
+                    node.volumeNode.volume.value = stemVolumeDecibels;
                 }
 
                 // mute needs to be set last because it can be overrided by volume
-                nodes.endNode.mute = stemState.muted || stemVolume === 0;
+                node.endNode.mute = stemState.muted || stemVolume === 0;
 
-                nodes.playerNode.playbackRate =
+                node.playerNode.playbackRate =
                     props.playerControls.playratePercentage / 100;
             }
         );
     }, [toneNodes, playerState, props.playerControls.playratePercentage]);
+
+    // synchronize player state and pitch shift
+    useEffect(() => {
+        playerState.stems.forEach(
+            (_stemState: StemState<StemKey>, stemIndex: number) => {
+                const node = toneNodes[stemIndex];
+
+                // a hard coded hack - drums don't sound good pitch shifted
+                // and also don't need to be harmonically in step with all the
+                // other tracks
+                const pitchShift = node.label !== "drums";
+                if (pitchShift) {
+                    node.playerNode.detune = playerState.masterPitchShift * 100;
+                }
+            }
+        );
+    }, [toneNodes, playerState]);
 
     // connect and disconnect nodes from the transport when not in focus
     // so that other tracks can use the transport
@@ -306,6 +328,13 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         return <StemTrackControlPane<StemKey> stemControls={stemControls} />;
     })();
 
+    const handlePitchShift = (newPitchShift: number) => {
+        setPlayerState({
+            ...playerState,
+            masterPitchShift: newPitchShift,
+        });
+    };
+
     return (
         <Box>
             <Box>
@@ -326,6 +355,10 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
                 onPlayratePercentageChange={
                     props.playerControls.onPlayratePercentageChange
                 }
+                transpose={{
+                    level: playerState.masterPitchShift,
+                    onChange: handlePitchShift,
+                }}
             />
         </Box>
     );

@@ -19,24 +19,38 @@ export const VerticalMiddleDivider = withStyles((theme: Theme) => ({
 }))(Divider);
 
 interface ControlGroupProps {
-    children: React.ReactElement[];
+    children: React.ReactNode[];
+    dividers: "left" | "right";
 }
 
 const ControlGroup: React.FC<ControlGroupProps> = (
     props: ControlGroupProps
 ): JSX.Element => {
     const contents: React.ReactElement[] = props.children.map(
-        (child: React.ReactElement, index: number) => {
-            return (
-                <React.Fragment key={index}>
-                    {child}
+        (child: React.ReactNode, index: number) => {
+            const content: React.ReactNode[] = (() => {
+                if (props.dividers === "right") {
+                    return [
+                        child,
+                        <VerticalMiddleDivider
+                            key={`divider-${index}`}
+                            orientation="vertical"
+                            flexItem
+                        />,
+                    ];
+                }
+
+                return [
                     <VerticalMiddleDivider
                         key={`divider-${index}`}
                         orientation="vertical"
                         flexItem
-                    />
-                </React.Fragment>
-            );
+                    />,
+                    child,
+                ];
+            })();
+
+            return <React.Fragment key={index}>{content}</React.Fragment>;
         }
     );
 

@@ -18,6 +18,7 @@ const makeBasePlayerProps = (
         progressInterval: 500,
         style: { minWidth: "50vw" },
         height: "auto",
+        width: "unset",
         onKeyUp: (event: KeyboardEvent) => event.preventDefault(),
     };
 };
