@@ -48,10 +48,7 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
                 onSkipBack={props.playerControls.skipBack}
                 onSkipForward={props.playerControls.skipForward}
                 onGoToBeginning={props.playerControls.goToBeginning}
-                playratePercentage={props.playerControls.playratePercentage}
-                onPlayratePercentageChange={
-                    props.playerControls.onPlayratePercentageChange
-                }
+                playrate={props.playerControls.playrate}
             />
         </Box>
     );

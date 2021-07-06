@@ -20,8 +20,10 @@ interface ControlPaneProps {
     onGoToBeginning: PlainFn;
     onSkipBack: ButtonActionAndState;
     onSkipForward: ButtonActionAndState;
-    playratePercentage: number;
-    onPlayratePercentageChange: (newPlayrate: number) => void;
+    playrate: {
+        percentage: number;
+        onChange: (newPercentage: number) => void;
+    };
     transpose?: {
         level: number;
         onChange: (newLevel: number) => void;
@@ -105,8 +107,8 @@ const ControlPane: React.FC<ControlPaneProps> = (
     const rightSideControls: JSX.Element = (() => {
         const playrateControl = (
             <PlayrateControl
-                playratePercentage={props.playratePercentage}
-                onChange={props.onPlayratePercentageChange}
+                playratePercentage={props.playrate.percentage}
+                onChange={props.playrate.onChange}
             />
         );
 

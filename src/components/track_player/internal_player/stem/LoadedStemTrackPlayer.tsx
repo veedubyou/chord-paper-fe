@@ -193,7 +193,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
             Tone.Transport.pause();
         }
 
-        const playrate = props.playerControls.playratePercentage / 100;
+        const playrate = props.playerControls.playrate.percentage / 100;
 
         // Tone transport doesn't observe slowed down time, only each individual node plays the sound back slower
         // e.g. if a 10s clip is played at 50% speed, then Tone transport will finish playing it from 0s to 20s
@@ -208,7 +208,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
     }, [
         props.playerControls.playing,
         props.playerControls.currentTime,
-        props.playerControls.playratePercentage,
+        props.playerControls.playrate.percentage,
     ]);
 
     // synchronize player state and track volumes/mutedness
@@ -231,10 +231,10 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
                 node.endNode.mute = stemState.muted || stemVolume === 0;
 
                 node.playerNode.playbackRate =
-                    props.playerControls.playratePercentage / 100;
+                    props.playerControls.playrate.percentage / 100;
             }
         );
-    }, [toneNodes, playerState, props.playerControls.playratePercentage]);
+    }, [toneNodes, playerState, props.playerControls.playrate.percentage]);
 
     // synchronize player state and pitch shift
     useEffect(() => {
@@ -351,10 +351,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
                 onSkipBack={props.playerControls.skipBack}
                 onSkipForward={props.playerControls.skipForward}
                 onGoToBeginning={props.playerControls.goToBeginning}
-                playratePercentage={props.playerControls.playratePercentage}
-                onPlayratePercentageChange={
-                    props.playerControls.onPlayratePercentageChange
-                }
+                playrate={props.playerControls.playrate}
                 transpose={{
                     level: playerState.masterPitchShift,
                     onChange: handlePitchShift,

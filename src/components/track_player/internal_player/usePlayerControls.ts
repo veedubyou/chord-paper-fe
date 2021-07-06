@@ -31,8 +31,10 @@ export interface PlayerControls {
     onPlay: PlainFn;
     onPause: PlainFn;
     currentSectionLabel: string;
-    playratePercentage: number;
-    onPlayratePercentageChange: (val: number) => void;
+    playrate: {
+        percentage: number;
+        onChange: (val: number) => void;
+    };
 }
 
 class NoopMutableRef {
@@ -70,8 +72,10 @@ export const unfocusedControls: PlayerControls = {
     onPlay: voidFn,
     onPause: voidFn,
     currentSectionLabel: "",
-    playratePercentage: 100,
-    onPlayratePercentageChange: voidFn,
+    playrate: {
+        percentage: 100,
+        onChange: voidFn,
+    },
 };
 
 export const usePlayerControls = (
@@ -306,7 +310,9 @@ export const usePlayerControls = (
         onPlay: handlePlayState,
         onPause: handlePauseState,
         currentSectionLabel: currentSectionLabel,
-        playratePercentage: playratePercentage,
-        onPlayratePercentageChange: setPlayratePercentage,
+        playrate: {
+            percentage: playratePercentage,
+            onChange: setPlayratePercentage,
+        },
     };
 };
