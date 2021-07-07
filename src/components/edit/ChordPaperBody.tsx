@@ -5,17 +5,17 @@ import {
     withStyles,
 } from "@material-ui/core";
 import React, { useState } from "react";
+import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { IDable } from "../../common/ChordModel/Collection";
+import { ChordSongAction } from "../reducer/reducer";
+import { useBatchLineDelete } from "./BatchDelete";
 import { useLineCopyHandler, useLinePasteHandler } from "./CopyAndPaste";
 import DragAndDrop from "./DragAndDrop";
 import { InteractionContext, InteractionSetter } from "./InteractionContext";
 import Line from "./Line";
 import NewLine from "./NewLine";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
-import { Lyric } from "../../common/ChordModel/Lyric";
-import { useBatchLineDelete } from "./BatchDelete";
 
 const useUninteractiveStyle = makeStyles({
     root: {
@@ -31,6 +31,7 @@ const Paper = withStyles({
 
 interface ChordPaperBodyProps {
     song: ChordSong;
+    songDispatch: React.Dispatch<ChordSongAction>;
     onSongChanged?: (updatedSong: ChordSong) => void;
 }
 
@@ -41,6 +42,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     const handleCopy = useLineCopyHandler(props.song);
     const handleLinePaste = useLinePasteHandler(props.song);
     const handleBatchLineDelete = useBatchLineDelete(props.song);
+    const songDispatch = props.songDispatch;
 
     const interactionContextValue: InteractionSetter = {
         startInteraction: () => {
@@ -57,35 +59,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
 
     const uninteractiveStyle = useUninteractiveStyle();
 
-    const handleAddLineToTop = () => {
-        const newLine: ChordLine = new ChordLine();
-        props.song.addBeginning(newLine);
-        notifySongChanged();
-    };
-
-    const handleAddLine = (id: IDable<ChordLine>) => {
-        const newLine: ChordLine = new ChordLine();
-        props.song.addAfter(id, newLine);
-        notifySongChanged();
-    };
-
-    const handleRemoveLine = (id: IDable<ChordLine>) => {
-        props.song.remove(id);
-        notifySongChanged();
-    };
-
     const handleChangeLine = (id: IDable<ChordLine>) => {
-        notifySongChanged();
-    };
-
-    const handleLyricOverflow = (
-        id: IDable<ChordLine>,
-        overflowContent: Lyric[]
-    ) => {
-        const newChordLines = overflowContent.map((newLyricLine: Lyric) =>
-            ChordLine.fromLyrics(newLyricLine)
-        );
-        props.song.addAfter(id, ...newChordLines);
         notifySongChanged();
     };
 
@@ -123,17 +97,6 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         return false;
     };
 
-    const splitLine = (id: IDable<ChordLine>, splitIndex: number): boolean => {
-        const didSplit = props.song.splitLine(id, splitIndex);
-
-        if (didSplit) {
-            notifySongChanged();
-            return true;
-        }
-
-        return false;
-    };
-
     const notifySongChanged = () => {
         props.onSongChanged?.(props.song);
     };
@@ -145,9 +108,8 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         sourceBlockID: IDable<ChordBlock>,
         copyAction: boolean
     ) => {
-        const [sourceLine, sourceBlock] = props.song.findLineAndBlock(
-            sourceBlockID
-        );
+        const [sourceLine, sourceBlock] =
+            props.song.findLineAndBlock(sourceBlockID);
 
         const moveAction = !copyAction;
         if (moveAction) {
@@ -156,9 +118,8 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
             sourceBlock.chord = "";
         }
 
-        const [destinationLine, destinationBlock] = props.song.findLineAndBlock(
-            destinationBlockID
-        );
+        const [destinationLine, destinationBlock] =
+            props.song.findLineAndBlock(destinationBlockID);
 
         if (splitIndex !== 0) {
             destinationLine.splitBlock(destinationBlockID, splitIndex);
@@ -175,27 +136,22 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     const lines = () => {
         const lines = props.song.chordLines.flatMap(
             (line: ChordLine, index: number) => {
-                const addLineBelow = () => {
-                    handleAddLine(line);
-                };
-
                 return [
                     <Line
                         key={line.id}
                         chordLine={line}
+                        songDispatch={songDispatch}
                         data-lineid={line.id}
-                        onRemoveLine={handleRemoveLine}
                         onChangeLine={handleChangeLine}
                         onJSONPaste={handleJSONPaste}
-                        onLyricOverflow={handleLyricOverflow}
-                        onSplitLine={splitLine}
                         onMergeWithPreviousLine={mergeWithPreviousLine}
                         onChordDragAndDrop={handleChordDND}
                         data-testid={`Line-${index}`}
                     />,
                     <NewLine
                         key={"NewLine-" + line.id}
-                        onAdd={addLineBelow}
+                        lineID={line}
+                        songDispatch={songDispatch}
                         data-testid={`NewLine-${index}`}
                     />,
                 ];
@@ -205,7 +161,8 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         const firstNewLine = (
             <NewLine
                 key={"NewLine-Top"}
-                onAdd={handleAddLineToTop}
+                lineID="beginning"
+                songDispatch={songDispatch}
                 data-testid={"NewLine-Top"}
             />
         );

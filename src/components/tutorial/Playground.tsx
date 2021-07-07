@@ -8,6 +8,7 @@ import UnstyledCheckCircleIcon from "@material-ui/icons/CheckCircle";
 import React, { useState } from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import ChordPaperBody from "../edit/ChordPaperBody";
+import { useChordSongReducer } from "../reducer/reducer";
 
 const CheckCircleIcon = withStyles((theme: Theme) => ({
     root: {
@@ -29,13 +30,16 @@ interface PlaygroundProps {
 const Playground: React.FC<PlaygroundProps> = (
     props: PlaygroundProps
 ): JSX.Element => {
-    const [song, setSong] = useState<ChordSong>(props.initialSong);
-    const [finish, setFinish] = useState(false);
-
     const songChangeHandler = (updatedSong: ChordSong) => {
-        setSong(updatedSong.clone());
         checkExpected(updatedSong);
     };
+
+    //TODO: more to wrap up here
+    const [song, songDispatch] = useChordSongReducer(
+        props.initialSong,
+        songChangeHandler
+    );
+    const [finish, setFinish] = useState(false);
 
     const checkExpected = (updatedSong: ChordSong) => {
         // don't undo the green check if it's already been passing
@@ -54,7 +58,11 @@ const Playground: React.FC<PlaygroundProps> = (
     return (
         <Badge badgeContent={<CheckCircleIcon />} invisible={!finish}>
             <Paper elevation={1}>
-                <ChordPaperBody song={song} onSongChanged={songChangeHandler} />
+                <ChordPaperBody
+                    song={song}
+                    songDispatch={songDispatch}
+                    onSongChanged={songChangeHandler}
+                />
             </Paper>
         </Badge>
     );

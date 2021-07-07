@@ -17,7 +17,7 @@ export const withSongContext = <P extends OriginalComponentProps>(
 
         const handleSongChanged = useCallback(
             (song: ChordSong) => {
-                songDispatch({ type: "set-state", song: song });
+                songDispatch({ type: "set-song", song: song });
             },
             [songDispatch]
         );
@@ -49,7 +49,7 @@ export const withCloudSaveSongContext = <P extends OriginalComponentProps>(
 
         const handleSongChanged = useCallback(
             (song: ChordSong) => {
-                songDispatch({ type: "set-state", song: song });
+                songDispatch({ type: "set-song", song: song });
             },
             [songDispatch]
         );

@@ -37,6 +37,7 @@ const SongRouter: MultiFC<SongRouterProps> = (
         <Route key={editPath.URL()} path={editPath.URL()}>
             <ChordPaper
                 song={props.song}
+                songDispatch={props.songDispatch}
                 onSongChanged={props.onSongChanged}
                 onPlay={switchToPlay}
             />

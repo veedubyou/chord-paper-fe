@@ -10,6 +10,7 @@ import { IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { DataTestID } from "../../common/DataTestID";
 import { PlainFn } from "../../common/PlainFn";
+import { ChordSongAction } from "../reducer/reducer";
 import Block, { BlockProps } from "./Block";
 import WithHoverMenu, { MenuItem } from "./WithHoverMenu";
 import WithLyricInput from "./WithLyricInput";
@@ -37,16 +38,11 @@ const HighlightableBox = withStyles({
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
+    songDispatch: React.Dispatch<ChordSongAction>;
     "data-lineid": string;
     onChangeLine?: (id: IDable<ChordLine>) => void;
-    onRemoveLine?: (id: IDable<ChordLine>) => void;
-    onLyricOverflow?: (
-        id: IDable<ChordLine>,
-        overflowLyricContent: Lyric[]
-    ) => void;
     onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
     onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;
-    onSplitLine?: (id: IDable<ChordLine>, splitIndex: number) => boolean;
     onChordDragAndDrop?: BlockProps["onChordDragAndDrop"];
 }
 
@@ -70,13 +66,12 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
 
             setRemoved(true);
 
-            if (props.onRemoveLine) {
-                setTimeout(() => {
-                    if (props.onRemoveLine) {
-                        props.onRemoveLine(props.chordLine);
-                    }
-                }, removalTime);
-            }
+            setTimeout(() => {
+                props.songDispatch({
+                    type: "remove-line",
+                    lineID: props.chordLine,
+                });
+            }, removalTime);
         },
     };
 
@@ -118,11 +113,9 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const withLyricInput = (menuItems: MenuItem[]) => (
         <WithLyricInput
             chordLine={props.chordLine}
-            onChangeLine={props.onChangeLine}
+            songDispatch={props.songDispatch}
             onJSONPaste={props.onJSONPaste}
             onMergeWithPreviousLine={props.onMergeWithPreviousLine}
-            onSplitLine={props.onSplitLine}
-            onLyricOverflow={props.onLyricOverflow}
         >
             {(startEdit: PlainFn) => withHoverMenu(startEdit, menuItems)}
         </WithLyricInput>

@@ -1,10 +1,11 @@
 import { Box, Theme, withStyles } from "@material-ui/core";
-import React from "react";
+import React, { useCallback } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { PlainFn } from "../../common/PlainFn";
 import { lyricStyle, lyricTypographyVariant } from "../display/Lyric";
+import { ChordSongAction } from "../reducer/reducer";
 import { useEditingState } from "./InteractionContext";
 import UnstyledLyricInput from "./lyric_input/LyricInput";
 
@@ -20,11 +21,9 @@ const LyricInput = withStyles((theme: Theme) => ({
 interface WithLyricInputProps {
     children: (handleEdit: PlainFn) => React.ReactElement;
     chordLine: ChordLine;
-    onChangeLine?: (id: IDable<ChordLine>) => void;
-    onLyricOverflow?: (id: IDable<ChordLine>, overflowLyric: Lyric[]) => void;
+    songDispatch: React.Dispatch<ChordSongAction>;
     onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
     onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;
-    onSplitLine?: (id: IDable<ChordLine>, splitIndex: number) => boolean;
 }
 
 // this component is inherently quite coupled with Line & friends
@@ -33,20 +32,32 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
     props: WithLyricInputProps
 ): JSX.Element => {
     const { editing, startEdit, finishEdit } = useEditingState();
+    const { songDispatch, chordLine } = props;
 
     const handlers = {
-        lyricEdit: (newLyrics: Lyric) => {
-            finishEdit();
-
-            props.chordLine.replaceLyrics(newLyrics);
-            props.onChangeLine?.(props.chordLine);
-        },
-        pasteOverflow: (overflowContent: Lyric[]) => {
-            if (props.onLyricOverflow) {
-                props.onLyricOverflow(props.chordLine, overflowContent);
+        lyricEdit: useCallback(
+            (newLyric: Lyric) => {
                 finishEdit();
-            }
-        },
+
+                songDispatch({
+                    type: "replace-line-lyrics",
+                    lineID: chordLine,
+                    newLyric: newLyric,
+                });
+            },
+            [chordLine, songDispatch, finishEdit]
+        ),
+        lyricPasteOverflow: useCallback(
+            (overflowContent: Lyric[]) => {
+                songDispatch({
+                    type: "insert-overflow-lyrics",
+                    insertionLineID: chordLine,
+                    overflowLyrics: overflowContent,
+                });
+                finishEdit();
+            },
+            [chordLine, songDispatch, finishEdit]
+        ),
         jsonPaste: (jsonStr: string): boolean => {
             if (props.onJSONPaste === undefined) {
                 return false;
@@ -64,14 +75,20 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                 }
             }
         },
-        specialEnter: (splitIndex: number) => {
-            if (props.onSplitLine) {
-                const handled = props.onSplitLine(props.chordLine, splitIndex);
-                if (handled) {
-                    finishEdit();
-                }
-            }
-        },
+        specialEnter: useCallback(
+            (splitIndex: number) => {
+                console.log("special enter");
+
+                songDispatch({
+                    type: "split-line",
+                    lineID: chordLine,
+                    splitIndex: splitIndex,
+                });
+
+                finishEdit();
+            },
+            [chordLine, songDispatch, finishEdit]
+        ),
     };
 
     const lineElement: React.ReactElement = props.children(startEdit);
@@ -90,7 +107,7 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                     variant={lyricTypographyVariant}
                     onFinish={handlers.lyricEdit}
                     onJSONPaste={handlers.jsonPaste}
-                    onLyricOverflow={handlers.pasteOverflow}
+                    onLyricOverflow={handlers.lyricPasteOverflow}
                     onSpecialBackspace={handlers.specialBackspace}
                     onSpecialEnter={handlers.specialEnter}
                 >

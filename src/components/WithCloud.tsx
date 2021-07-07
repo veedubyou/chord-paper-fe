@@ -65,6 +65,7 @@ export const useCloud = (): [() => void, (song: ChordSong) => JSX.Element] => {
                     return;
                 }
 
+                //TODO: how to update song before dispatch is finished? hook?
                 newSong.lastSavedAt = deserializeResult.right.lastSavedAt;
             };
 

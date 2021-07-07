@@ -50,7 +50,8 @@ interface LyricInputProps extends StyledComponentProps {
 const LyricInput: React.FC<LyricInputProps> = (
     props: LyricInputProps
 ): JSX.Element => {
-    const contentEditableRef: React.RefObject<HTMLSpanElement> = React.createRef();
+    const contentEditableRef: React.RefObject<HTMLSpanElement> =
+        React.createRef();
 
     const value = (): Lyric => {
         const elem = contentEditableElement(contentEditableRef);
