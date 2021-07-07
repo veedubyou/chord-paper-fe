@@ -37,8 +37,10 @@ import SongRouter from "./components/SongRouter";
 import { TutorialSwitches } from "./components/Tutorial";
 import { User, UserContext } from "./components/user/userContext";
 import Version from "./components/Version";
-import { withSongContext } from "./components/WithSongContext";
-import { withCloud } from "./components/WithCloud";
+import {
+    withCloudSaveSongContext,
+    withSongContext,
+} from "./components/WithSongContext";
 import GlobalKeyListenerProvider from "./components/GlobalKeyListener";
 import GuitarDemo from "./components/guitar/GuitarDemo";
 
@@ -92,7 +94,7 @@ const AppLayout = withStyles({
     },
 })(Grid);
 
-const MainSong = withSongContext(withCloud(SongRouter));
+const MainSong = withCloudSaveSongContext(SongRouter);
 
 const AppContent: React.FC<{}> = (): JSX.Element => {
     const [user, setUser] = useState<User | null>(null);

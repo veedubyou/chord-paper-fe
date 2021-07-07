@@ -21,12 +21,12 @@ const chordSongReducer = (
 
 export const useChordSongReducer = (
     initialSong: ChordSong,
-    onChange: (song: ChordSong) => void
+    onChange?: (song: ChordSong) => void
 ): [ChordSong, React.Dispatch<ChordSongAction>] => {
     const reducerWithChangeCallback = useCallback(
         (song: ChordSong, action: ChordSongAction): ChordSong => {
             const newSong: ChordSong = chordSongReducer(song, action);
-            onChange(newSong);
+            onChange?.(newSong);
             return newSong;
         },
         [onChange]
