@@ -18,8 +18,6 @@ import {
 } from "react-router-dom";
 import Background from "./assets/img/symphony.png";
 import { ChordSong } from "./common/ChordModel/ChordSong";
-import About from "./components/about/About";
-import Demo from "./components/Demo";
 import {
     aboutPath,
     DemoModePath,
@@ -30,19 +28,17 @@ import {
     SongIDModePath,
     songPath,
 } from "./common/paths";
-
+import About from "./components/about/About";
+import Demo from "./components/Demo";
+import GlobalKeyListenerProvider from "./components/GlobalKeyListener";
+import GuitarDemo from "./components/guitar/GuitarDemo";
 import SideMenu from "./components/SideMenu";
 import SongFetcher from "./components/SongFetcher";
 import SongRouter from "./components/SongRouter";
 import { TutorialSwitches } from "./components/Tutorial";
 import { User, UserContext } from "./components/user/userContext";
 import Version from "./components/Version";
-import {
-    withCloudSaveSongContext,
-    withSongContext,
-} from "./components/WithSongContext";
-import GlobalKeyListenerProvider from "./components/GlobalKeyListener";
-import GuitarDemo from "./components/guitar/GuitarDemo";
+import { withCloudSaveSongContext } from "./components/WithSongContext";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {

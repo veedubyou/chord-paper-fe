@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import { useCallback } from "react";
-import { useReducer } from "react";
+import React, { useCallback } from "react";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { ChordSongAction, useChordSongReducer } from "./reducer/reducer";
 import { useCloud } from "./WithCloud";
@@ -17,9 +15,12 @@ export const withSongContext = <P extends OriginalComponentProps>(
     return (props: Omit<P, "songDispatch" | "onSongChanged">): JSX.Element => {
         const [song, songDispatch] = useChordSongReducer(props.song);
 
-        const handleSongChanged = useCallback((song: ChordSong) => {
-            songDispatch({ type: "set-state", song: song });
-        }, []);
+        const handleSongChanged = useCallback(
+            (song: ChordSong) => {
+                songDispatch({ type: "set-state", song: song });
+            },
+            [songDispatch]
+        );
 
         const { song: throwawaySong, ...propsWithoutInitialSong } = props;
 
@@ -46,9 +47,12 @@ export const withCloudSaveSongContext = <P extends OriginalComponentProps>(
         );
         const unsavedPrompt = useSave(song);
 
-        const handleSongChanged = useCallback((song: ChordSong) => {
-            songDispatch({ type: "set-state", song: song });
-        }, []);
+        const handleSongChanged = useCallback(
+            (song: ChordSong) => {
+                songDispatch({ type: "set-state", song: song });
+            },
+            [songDispatch]
+        );
 
         const { song: throwawaySong, ...propsWithoutInitialSong } = props;
 

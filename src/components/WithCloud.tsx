@@ -69,7 +69,6 @@ export const useCloud = (): [() => void, (song: ChordSong) => JSX.Element] => {
             };
 
             const saveIfChanged = async (newSong: ChordSong) => {
-                // debugger;
                 if (user === null) {
                     return;
                 }
@@ -90,7 +89,7 @@ export const useCloud = (): [() => void, (song: ChordSong) => JSX.Element] => {
                 saveInterval
             );
             return () => clearInterval(interval);
-        }, [song, user, enqueueSnackbar, showError, dirtyRef, shouldSave]);
+        }, [song, user, enqueueSnackbar, showError, shouldSave]);
 
         useEffect(() => {
             const unloadMessageFn = (event: Event) => {
