@@ -1,7 +1,7 @@
 import { Button as UnstyledButton, Theme, Tooltip } from "@material-ui/core";
 import { ButtonProps } from "@material-ui/core/Button";
-import DecreasePlayrateIcon from "@material-ui/icons/ArrowDropDown";
-import IncreasePlayrateIcon from "@material-ui/icons/ArrowDropUp";
+import DecreaseIcon from "@material-ui/icons/ArrowDropDown";
+import IncreaseIcon from "@material-ui/icons/ArrowDropUp";
 import PauseIcon from "@material-ui/icons/Pause";
 import PlayIcon from "@material-ui/icons/PlayArrow";
 import JumpBackIcon from "@material-ui/icons/Replay";
@@ -95,15 +95,27 @@ export const ControlButton = {
         "primary"
     ),
     DecreasePlayrate: makeControlButton(
-        <DecreasePlayrateIcon />,
+        <DecreaseIcon />,
         "decrease-playrate-button",
         "Play slower",
         "primary"
     ),
     IncreasePlayrate: makeControlButton(
-        <IncreasePlayrateIcon />,
+        <IncreaseIcon />,
         "increase-playrate-button",
         "Play faster",
+        "primary"
+    ),
+    TransposeDown: makeControlButton(
+        <DecreaseIcon />,
+        "transpose-down-button",
+        "Transpose down half step",
+        "primary"
+    ),
+    TransposeUp: makeControlButton(
+        <IncreaseIcon />,
+        "transpose-up-button",
+        "Transpose up half step",
         "primary"
     ),
 };

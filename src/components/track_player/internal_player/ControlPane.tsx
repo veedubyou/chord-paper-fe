@@ -8,6 +8,7 @@ import { ControlButton } from "./ControlButton";
 import ControlGroup from "./ControlGroup";
 import PlayrateControl from "./PlayrateControl";
 import SectionLabel from "./SectionLabel";
+import TransposeControl from "./TransposeControl";
 import { ButtonActionAndState } from "./usePlayerControls";
 
 interface ControlPaneProps {
@@ -19,8 +20,14 @@ interface ControlPaneProps {
     onGoToBeginning: PlainFn;
     onSkipBack: ButtonActionAndState;
     onSkipForward: ButtonActionAndState;
-    playratePercentage: number;
-    onPlayratePercentageChange: (newPlayrate: number) => void;
+    playrate: {
+        percentage: number;
+        onChange: (newPercentage: number) => void;
+    };
+    transpose?: {
+        level: number;
+        onChange: (newLevel: number) => void;
+    };
     sectionLabel: string;
 }
 
@@ -84,9 +91,42 @@ const ControlPane: React.FC<ControlPaneProps> = (
         };
     }, [props, addTopKeyListener, removeKeyListener]);
 
+    const transposeControl: JSX.Element | null = (() => {
+        if (props.transpose === undefined) {
+            return null;
+        }
+
+        return (
+            <TransposeControl
+                transposeLevel={props.transpose.level}
+                onChange={props.transpose.onChange}
+            />
+        );
+    })();
+
+    const rightSideControls: JSX.Element = (() => {
+        const playrateControl = (
+            <PlayrateControl
+                playratePercentage={props.playrate.percentage}
+                onChange={props.playrate.onChange}
+            />
+        );
+
+        if (transposeControl === null) {
+            return playrateControl;
+        }
+
+        return (
+            <ControlGroup dividers="left">
+                {transposeControl}
+                {playrateControl}
+            </ControlGroup>
+        );
+    })();
+
     return (
         <ControlPaneBox>
-            <ControlGroup>
+            <ControlGroup dividers="right">
                 <ControlButton.Beginning onClick={props.onGoToBeginning} />
                 <ControlButton.SkipBack
                     disabled={!props.onSkipBack.enabled}
@@ -101,10 +141,7 @@ const ControlPane: React.FC<ControlPaneProps> = (
                 />
             </ControlGroup>
             <SectionLabel value={props.sectionLabel} />
-            <PlayrateControl
-                playratePercentage={props.playratePercentage}
-                onChange={props.onPlayratePercentageChange}
-            />
+            {rightSideControls}
         </ControlPaneBox>
     );
 };

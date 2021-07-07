@@ -11,13 +11,14 @@ const makeBasePlayerProps = (
         ref: playerControls.playerRef,
         playing: playerControls.playing,
         controls: true,
-        playbackRate: playerControls.playratePercentage / 100,
+        playbackRate: playerControls.playrate.percentage / 100,
         onPlay: playerControls.onPlay,
         onPause: playerControls.onPause,
         onProgress: playerControls.onProgress,
         progressInterval: 500,
         style: { minWidth: "50vw" },
         height: "auto",
+        width: "unset",
         onKeyUp: (event: KeyboardEvent) => event.preventDefault(),
     };
 };
