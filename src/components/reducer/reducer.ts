@@ -5,6 +5,7 @@ import { IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { Note } from "../../common/music/foundation/Note";
 import { transposeSong } from "../../common/music/transpose/Transpose";
+import lodash from "lodash";
 
 type SetState = {
     type: "set-song";
@@ -44,6 +45,11 @@ type SplitLine = {
     splitIndex: number;
 };
 
+type MergeLines = {
+    type: "merge-lines";
+    latterLineID: IDable<ChordLine>;
+};
+
 type JSONPaste = {
     type: "json-paste";
 };
@@ -67,6 +73,7 @@ export type ChordSongAction =
     | AddLineAfter
     | RemoveLine
     | SplitLine
+    | MergeLines
     | InsertOverflowLyrics
     | ReplaceLineLyrics
     | Transpose;
@@ -112,8 +119,16 @@ const chordSongReducer = (
         }
 
         case "split-line": {
-            console.log("split line");
             song.splitLine(action.lineID, action.splitIndex);
+            return song.clone();
+        }
+
+        case "merge-lines": {
+            const merged = song.mergeLineWithPrevious(action.latterLineID);
+            if (!merged) {
+                return song;
+            }
+
             return song.clone();
         }
 

@@ -23,7 +23,6 @@ interface WithLyricInputProps {
     chordLine: ChordLine;
     songDispatch: React.Dispatch<ChordSongAction>;
     onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
-    onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;
 }
 
 // this component is inherently quite coupled with Line & friends
@@ -65,20 +64,15 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
 
             return props.onJSONPaste(props.chordLine, jsonStr);
         },
-        specialBackspace: () => {
-            if (props.onMergeWithPreviousLine) {
-                const handledAndStopEditing = props.onMergeWithPreviousLine(
-                    props.chordLine
-                );
-                if (handledAndStopEditing) {
-                    finishEdit();
-                }
-            }
-        },
+        specialBackspace: useCallback(() => {
+            songDispatch({
+                type: "merge-lines",
+                latterLineID: chordLine,
+            });
+            finishEdit();
+        }, [chordLine, songDispatch, finishEdit]),
         specialEnter: useCallback(
             (splitIndex: number) => {
-                console.log("special enter");
-
                 songDispatch({
                     type: "split-line",
                     lineID: chordLine,
