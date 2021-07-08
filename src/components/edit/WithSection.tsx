@@ -115,4 +115,4 @@ const WithSection: React.FC<WithSectionProps> = (
     );
 };
 
-export default React.memo(WithSection);
+export default WithSection;

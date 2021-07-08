@@ -3,7 +3,7 @@ import grey from "@material-ui/core/colors/grey";
 import red from "@material-ui/core/colors/red";
 import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
 import ChatBubbleIcon from "@material-ui/icons/ChatBubbleOutline";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { IDable } from "../../common/ChordModel/Collection";
@@ -48,9 +48,9 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const removalTime = 250;
     const { chordLine, songDispatch } = props;
 
-    const handlers = {
-        chordChange: useCallback(
-            (blockID: IDable<ChordBlock>, newChord: string) => {
+    const handlers = useMemo(
+        () => ({
+            chordChange: (blockID: IDable<ChordBlock>, newChord: string) => {
                 songDispatch({
                     type: "change-chord",
                     lineID: chordLine,
@@ -58,10 +58,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                     newChord: newChord,
                 });
             },
-            [chordLine, songDispatch]
-        ),
-        blockSplit: useCallback(
-            (blockID: IDable<ChordBlock>, splitIndex: number) => {
+            blockSplit: (blockID: IDable<ChordBlock>, splitIndex: number) => {
                 songDispatch({
                     type: "split-block",
                     lineID: chordLine,
@@ -69,23 +66,24 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                     splitIndex: splitIndex,
                 });
             },
-            [chordLine, songDispatch]
-        ),
-        remove: useCallback(() => {
-            if (removed) {
-                return;
-            }
 
-            setRemoved(true);
+            remove: () => {
+                if (removed) {
+                    return;
+                }
 
-            setTimeout(() => {
-                songDispatch({
-                    type: "remove-line",
-                    lineID: chordLine,
-                });
-            }, removalTime);
-        }, [chordLine, songDispatch, removed]),
-    };
+                setRemoved(true);
+
+                setTimeout(() => {
+                    songDispatch({
+                        type: "remove-line",
+                        lineID: chordLine,
+                    });
+                }, removalTime);
+            },
+        }),
+        [chordLine, songDispatch, removed]
+    );
 
     let chordBlocks: ChordBlock[] = props.chordLine.chordBlocks;
     if (chordBlocks.length === 0) {
@@ -97,72 +95,55 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         ];
     }
 
-    const blocks: React.ReactElement[] = useMemo(
-        () =>
-            chordBlocks.map((chordBlock: ChordBlock, index: number) => (
-                <Block
-                    key={chordBlock.id}
-                    chordBlock={chordBlock}
-                    songDispatch={songDispatch}
-                    onChordChange={handlers.chordChange}
-                    onBlockSplit={handlers.blockSplit}
-                    data-testid={`Block-${index}`}
-                ></Block>
-            )),
-        [chordBlocks, songDispatch, handlers.blockSplit, handlers.chordChange]
+    const blocks: React.ReactElement[] = chordBlocks.map(
+        (chordBlock: ChordBlock) => (
+            <Block
+                key={chordBlock.id}
+                chordBlock={chordBlock}
+                songDispatch={songDispatch}
+                onChordChange={handlers.chordChange}
+                onBlockSplit={handlers.blockSplit}
+                data-testid="Block"
+            ></Block>
+        )
     );
 
-    const basicLine = useCallback(
-        (startEdit: PlainFn) => (
-            <HighlightableBox
-                data-testid={"NoneditableLine"}
-                onClick={startEdit}
-            >
-                {blocks}
-            </HighlightableBox>
-        ),
-        [blocks]
+    const basicLine = (startEdit: PlainFn) => (
+        <HighlightableBox data-testid={"NoneditableLine"} onClick={startEdit}>
+            {blocks}
+        </HighlightableBox>
     );
 
-    const withHoverMenu = useCallback(
-        (startEdit: PlainFn, menuItems: MenuItem[]) => (
-            <WithHoverMenu menuItems={menuItems}>
-                {basicLine(startEdit)}
-            </WithHoverMenu>
-        ),
-        [basicLine]
+    const withHoverMenu = (startEdit: PlainFn, menuItems: MenuItem[]) => (
+        <WithHoverMenu menuItems={menuItems}>
+            {basicLine(startEdit)}
+        </WithHoverMenu>
     );
 
-    const withLyricInput = useCallback(
-        (menuItems: MenuItem[]) => (
-            <WithLyricInput chordLine={chordLine} songDispatch={songDispatch}>
-                {(startEdit: PlainFn) => withHoverMenu(startEdit, menuItems)}
-            </WithLyricInput>
-        ),
-        [chordLine, songDispatch, withHoverMenu]
+    const withLyricInput = (menuItems: MenuItem[]) => (
+        <WithLyricInput chordLine={chordLine} songDispatch={songDispatch}>
+            {(startEdit: PlainFn) => withHoverMenu(startEdit, menuItems)}
+        </WithLyricInput>
     );
 
     const withSection = (
         <WithSection chordLine={chordLine} songDispatch={songDispatch}>
-            {useCallback(
-                (editLabel: PlainFn) => {
-                    const menuItems: MenuItem[] = [
-                        {
-                            onClick: editLabel,
-                            icon: <ChatBubbleIcon />,
-                            "data-testid": "EditLabel",
-                        },
-                        {
-                            onClick: handlers.remove,
-                            icon: <BackspaceIcon />,
-                            "data-testid": "RemoveButton",
-                        },
-                    ];
+            {(editLabel: PlainFn) => {
+                const menuItems: MenuItem[] = [
+                    {
+                        onClick: editLabel,
+                        icon: <ChatBubbleIcon />,
+                        "data-testid": "EditLabel",
+                    },
+                    {
+                        onClick: handlers.remove,
+                        icon: <BackspaceIcon />,
+                        "data-testid": "RemoveButton",
+                    },
+                ];
 
-                    return withLyricInput(menuItems);
-                },
-                [withLyricInput, handlers.remove]
-            )}
+                return withLyricInput(menuItems);
+            }}
         </WithSection>
     );
 

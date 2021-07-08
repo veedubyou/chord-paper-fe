@@ -73,39 +73,33 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     };
 
     const lines = () => {
-        const lines = props.song.chordLines.flatMap(
-            (line: ChordLine, index: number) => {
-                return [
-                    <Line
-                        key={line.id}
-                        chordLine={line}
-                        jsonHackUntilWeHaveImmutableDataStructures={JSON.stringify(
-                            line
-                        )}
-                        songDispatch={songDispatch}
-                        data-lineid={line.id}
-                        data-testid={line.id}
-                        // TODO
-                        // data-testid={`Line-${index}`}
-                    />,
-                    <NewLine
-                        key={"NewLine-" + line.id}
-                        lineID={line}
-                        songDispatch={songDispatch}
-                        data-testid={line.id}
-                        // TODO
-                        // data-testid={`NewLine-${index}`}
-                    />,
-                ];
-            }
-        );
+        const lines = props.song.chordLines.flatMap((line: ChordLine) => {
+            return [
+                <Line
+                    key={line.id}
+                    chordLine={line}
+                    jsonHackUntilWeHaveImmutableDataStructures={JSON.stringify(
+                        line
+                    )}
+                    songDispatch={songDispatch}
+                    data-lineid={line.id}
+                    data-testid="Line"
+                />,
+                <NewLine
+                    key={"NewLine-" + line.id}
+                    lineID={line}
+                    songDispatch={songDispatch}
+                    data-testid="NewLine"
+                />,
+            ];
+        });
 
         const firstNewLine = (
             <NewLine
                 key={"NewLine-Top"}
                 lineID="beginning"
                 songDispatch={songDispatch}
-                data-testid={"NewLine-Top"}
+                data-testid="NewLine-Top"
             />
         );
         lines.splice(0, 0, firstNewLine);
