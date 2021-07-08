@@ -1,19 +1,19 @@
 {
   "files": {
     "main.css": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css",
-    "main.js": "/chord-paper-fe/static/js/main.54d751db.chunk.js",
-    "main.js.map": "/chord-paper-fe/static/js/main.54d751db.chunk.js.map",
+    "main.js": "/chord-paper-fe/static/js/main.f9a898a3.chunk.js",
+    "main.js.map": "/chord-paper-fe/static/js/main.f9a898a3.chunk.js.map",
     "runtime-main.js": "/chord-paper-fe/static/js/runtime-main.826827a9.js",
     "runtime-main.js.map": "/chord-paper-fe/static/js/runtime-main.826827a9.js.map",
     "static/css/2.da16f061.chunk.css": "/chord-paper-fe/static/css/2.da16f061.chunk.css",
-    "static/js/2.6c40eeca.chunk.js": "/chord-paper-fe/static/js/2.6c40eeca.chunk.js",
-    "static/js/2.6c40eeca.chunk.js.map": "/chord-paper-fe/static/js/2.6c40eeca.chunk.js.map",
+    "static/js/2.e1c80d09.chunk.js": "/chord-paper-fe/static/js/2.e1c80d09.chunk.js",
+    "static/js/2.e1c80d09.chunk.js.map": "/chord-paper-fe/static/js/2.e1c80d09.chunk.js.map",
     "index.html": "/chord-paper-fe/index.html",
-    "precache-manifest.332a65df155c374e588e2dfa45b0d8f1.js": "/chord-paper-fe/precache-manifest.332a65df155c374e588e2dfa45b0d8f1.js",
+    "precache-manifest.00c00a0217ade2f70d4f65b1003914ad.js": "/chord-paper-fe/precache-manifest.00c00a0217ade2f70d4f65b1003914ad.js",
     "service-worker.js": "/chord-paper-fe/service-worker.js",
     "static/css/2.da16f061.chunk.css.map": "/chord-paper-fe/static/css/2.da16f061.chunk.css.map",
     "static/css/main.bea93a8b.chunk.css.map": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css.map",
-    "static/js/2.6c40eeca.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.6c40eeca.chunk.js.LICENSE.txt",
+    "static/js/2.e1c80d09.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.e1c80d09.chunk.js.LICENSE.txt",
     "static/media/index.css": "/chord-paper-fe/static/media/PoriChord.3caa9627.woff2",
     "static/media/error.jpeg": "/chord-paper-fe/static/media/error.c3a3f87e.jpeg",
     "static/media/google_signin.svg": "/chord-paper-fe/static/media/google_signin.c386978e.svg",
@@ -22,8 +22,8 @@
   "entrypoints": [
     "static/js/runtime-main.826827a9.js",
     "static/css/2.da16f061.chunk.css",
-    "static/js/2.6c40eeca.chunk.js",
+    "static/js/2.e1c80d09.chunk.js",
     "static/css/main.bea93a8b.chunk.css",
-    "static/js/main.54d751db.chunk.js"
+    "static/js/main.f9a898a3.chunk.js"
   ]
 }
