@@ -1,14 +1,14 @@
 import { Box, Theme, Tooltip as UnstyledTooltip } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
-import React from "react";
+import React, { useCallback } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { IDable } from "../../common/ChordModel/Collection";
 import { DataTestID } from "../../common/DataTestID";
 import { PlainFn } from "../../common/PlainFn";
 import {
     sectionLabelStyle,
     sectionTypographyVariant,
 } from "../display/SectionLabel";
+import { ChordSongAction } from "../reducer/reducer";
 import UnstyledEditableTypography, { EditControl } from "./EditableTypography";
 import { useEditingState } from "./InteractionContext";
 import TimeInput from "./TimeInput";
@@ -31,8 +31,8 @@ export interface MenuItem extends DataTestID {
 
 export interface WithSectionProps {
     chordLine: ChordLine;
+    songDispatch: React.Dispatch<ChordSongAction>;
     children: (editLabel: PlainFn) => React.ReactElement;
-    onChange?: (id: IDable<ChordLine>) => void;
 }
 
 const WithSection: React.FC<WithSectionProps> = (
@@ -46,21 +46,29 @@ const WithSection: React.FC<WithSectionProps> = (
         onEndEdit: finishEdit,
     };
 
-    const handleLabelChange = (newValue: string) => {
-        const changed = props.chordLine.setSectionName(newValue);
+    const { chordLine, songDispatch } = props;
 
-        if (changed) {
-            props.onChange?.(props.chordLine);
-        }
-    };
+    const handleLabelChange = useCallback(
+        (newValue: string) => {
+            songDispatch({
+                type: "set-section",
+                lineID: chordLine,
+                label: newValue,
+            });
+        },
+        [chordLine, songDispatch]
+    );
 
-    const handleTimeChange = (newValue: number | null) => {
-        const changed = props.chordLine.setSectionTime(newValue);
-
-        if (changed) {
-            props.onChange?.(props.chordLine);
-        }
-    };
+    const handleTimeChange = useCallback(
+        (newValue: number | null) => {
+            songDispatch({
+                type: "set-section",
+                lineID: chordLine,
+                time: newValue,
+            });
+        },
+        [chordLine, songDispatch]
+    );
 
     const childElement: React.ReactElement = props.children(startEdit);
     const section = props.chordLine.section;

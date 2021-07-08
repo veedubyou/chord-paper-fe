@@ -5,6 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { PlainFn } from "../../common/PlainFn";
 import PlayerTimeProvider from "../PlayerTimeContext";
+import { ChordSongAction } from "../reducer/reducer";
 import JamStation from "../track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
@@ -31,7 +32,7 @@ const useWhiteStyle = makeStyles({
 
 interface ChordPaperProps {
     song: ChordSong;
-    onSongChanged?: (song: ChordSong) => void;
+    songDispatch: React.Dispatch<ChordSongAction>;
     onPlay?: PlainFn;
 }
 
@@ -39,10 +40,6 @@ const ChordPaper: React.FC<ChordPaperProps> = (
     props: ChordPaperProps
 ): JSX.Element => {
     const whiteStyle = useWhiteStyle();
-
-    const songChangeHandler = (song: ChordSong) => {
-        props.onSongChanged?.(song);
-    };
 
     const trackPlayer: React.ReactNode = (() => {
         if (props.song.isUnsaved()) {
@@ -81,15 +78,15 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                 <Header
                     data-testid={"Header"}
                     song={props.song}
-                    onSongChanged={songChangeHandler}
+                    songDispatch={props.songDispatch}
                 />
                 <ChordPaperBody
                     song={props.song}
-                    onSongChanged={songChangeHandler}
+                    songDispatch={props.songDispatch}
                 />
                 <ChordPaperMenu
                     song={props.song}
-                    onSongChanged={songChangeHandler}
+                    songDispatch={props.songDispatch}
                     onPlay={props.onPlay}
                 />
                 {trackPlayer}

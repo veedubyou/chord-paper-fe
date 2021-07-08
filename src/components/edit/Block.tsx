@@ -9,6 +9,7 @@ import { Lyric } from "../../common/ChordModel/Lyric";
 import { DataTestID } from "../../common/DataTestID";
 import { inflatingWhitespace } from "../../common/Whitespace";
 import { lyricTypographyVariant } from "../display/Lyric";
+import { ChordSongAction } from "../reducer/reducer";
 import ChordDroppable from "./ChordDroppable";
 import DraggableChordSymbol from "./DraggableChordSymbol";
 import {
@@ -67,13 +68,8 @@ const useNormalTokenStyle = {
 
 export interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
-    onChordDragAndDrop?: (
-        destinationBlockID: IDable<ChordBlock>,
-        splitIndex: number,
-        newChord: string,
-        sourceBlockID: IDable<ChordBlock>,
-        copyAction: boolean
-    ) => void;
+    songDispatch: React.Dispatch<ChordSongAction>;
+
     onChordChange?: (id: IDable<ChordBlock>, newChord: string) => void;
     onBlockSplit?: (id: IDable<ChordBlock>, splitIndex: number) => void;
 }
@@ -128,13 +124,14 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             sourceBlockID: IDable<ChordBlock>,
             copyAction: boolean
         ) => {
-            props.onChordDragAndDrop?.(
-                props.chordBlock,
-                tokenIndex,
-                newChord,
-                sourceBlockID,
-                copyAction
-            );
+            props.songDispatch({
+                type: "drag-and-drop-chord",
+                sourceBlockID: sourceBlockID,
+                newChord: newChord,
+                destinationBlockID: props.chordBlock,
+                splitIndex: tokenIndex,
+                copyAction: copyAction,
+            });
         };
     };
 
