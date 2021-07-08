@@ -8,9 +8,9 @@ import { Lyric } from "../../common/ChordModel/Lyric";
 import { Note } from "../../common/music/foundation/Note";
 import { transposeSong } from "../../common/music/transpose/Transpose";
 
-type SetState = {
-    type: "set-song";
-    song: ChordSong;
+type ReplaceSong = {
+    type: "replace-song";
+    newSong: ChordSong;
 };
 
 type SetHeader = {
@@ -71,8 +71,8 @@ type ReplaceLineLyrics = {
     newLyric: Lyric;
 };
 
-type ChangeChord = {
-    type: "change-chord";
+type SetChord = {
+    type: "set-chord";
     lineID: IDable<ChordLine>;
     blockID: IDable<ChordBlock>;
     newChord: string;
@@ -102,7 +102,7 @@ type SetSection = {
 };
 
 export type ChordSongAction =
-    | SetState
+    | ReplaceSong
     | SetHeader
     | AddLine
     | RemoveLine
@@ -113,7 +113,7 @@ export type ChordSongAction =
     | InsertOverflowLyrics
     | ReplaceLineLyrics
     | DragAndDropChord
-    | ChangeChord
+    | SetChord
     | SplitBlock
     | SetSection
     | Transpose;
@@ -127,8 +127,8 @@ const chordSongReducer = (
     song = lodash.cloneDeep(song);
 
     switch (action.type) {
-        case "set-song": {
-            return action.song.clone();
+        case "replace-song": {
+            return action.newSong.clone();
         }
 
         case "set-header": {
@@ -210,7 +210,7 @@ const chordSongReducer = (
             return song.clone();
         }
 
-        case "change-chord": {
+        case "set-chord": {
             const line: ChordLine = song.get(action.lineID);
             line.setChord(action.blockID, action.newChord);
             return song.clone();

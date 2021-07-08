@@ -49,7 +49,7 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     const user = React.useContext(UserContext);
 
     const setSong = (loadedSong: ChordSong) =>
-        props.songDispatch({ type: "set-song", song: loadedSong });
+        props.songDispatch({ type: "replace-song", newSong: loadedSong });
     const loadAction = useLoadMenuAction(setSong, enqueueSnackbar);
     const saveAction = useSaveMenuAction(props.song);
     const cloudSaveAction = useCloudCreateSong();

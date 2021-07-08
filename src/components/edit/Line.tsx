@@ -53,7 +53,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         () => ({
             chordChange: (blockID: IDable<ChordBlock>, newChord: string) => {
                 songDispatch({
-                    type: "change-chord",
+                    type: "set-chord",
                     lineID: chordLine,
                     blockID: blockID,
                     newChord: newChord,
