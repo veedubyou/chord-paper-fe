@@ -20,6 +20,11 @@ type SetHeader = {
     performedBy?: string;
 };
 
+type SetLastSavedAt = {
+    type: "set-last-saved-at";
+    lastSavedAt: Date | null;
+};
+
 type Transpose = {
     type: "transpose";
     originalKey: Note;
@@ -104,6 +109,7 @@ type SetSection = {
 export type ChordSongAction =
     | ReplaceSong
     | SetHeader
+    | SetLastSavedAt
     | AddLine
     | RemoveLine
     | BatchInsertLines
@@ -144,6 +150,11 @@ const chordSongReducer = (
                 song.performedBy = action.performedBy;
             }
 
+            return song.clone();
+        }
+
+        case "set-last-saved-at": {
+            song.lastSavedAt = action.lastSavedAt;
             return song.clone();
         }
 
@@ -282,12 +293,12 @@ const chordSongReducer = (
 
 export const useChordSongReducer = (
     initialSong: ChordSong,
-    onChange?: (song: ChordSong) => void
+    onChange?: (newSong: ChordSong, action: ChordSongAction) => void
 ): [ChordSong, React.Dispatch<ChordSongAction>] => {
     const reducerWithChangeCallback = useCallback(
         (song: ChordSong, action: ChordSongAction): ChordSong => {
             const newSong: ChordSong = chordSongReducer(song, action);
-            onChange?.(newSong);
+            onChange?.(newSong, action);
 
             return newSong;
         },

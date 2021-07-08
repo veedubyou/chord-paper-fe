@@ -7,18 +7,35 @@ import { useErrorMessage } from "../common/backend/errors";
 import { updateSong } from "../common/backend/requests";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { SongIDModePath } from "../common/paths";
+import { ChordSongAction } from "./reducer/reducer";
 import { User, UserContext } from "./user/userContext";
 
 const saveInterval = 10000;
 
-export const useCloud = (): [() => void, (song: ChordSong) => JSX.Element] => {
+export const useCloud = (): [
+    (song: ChordSong, action: ChordSongAction) => void,
+    (
+        song: ChordSong,
+        songDispatch: React.Dispatch<ChordSongAction>
+    ) => JSX.Element
+] => {
     const dirtyRef = useRef(false);
 
-    const handleSongChanged = useCallback(() => {
-        dirtyRef.current = true;
-    }, []);
+    const handleSongChanged = useCallback(
+        (_song: ChordSong, action: ChordSongAction) => {
+            if (action.type === "set-last-saved-at") {
+                return;
+            }
 
-    const useSave = (song: ChordSong): JSX.Element => {
+            dirtyRef.current = true;
+        },
+        []
+    );
+
+    const useSave = (
+        song: ChordSong,
+        songDispatch: React.Dispatch<ChordSongAction>
+    ): JSX.Element => {
         const user: User | null = React.useContext(UserContext);
         const showError = useErrorMessage();
         const { enqueueSnackbar } = useSnackbar();
@@ -65,8 +82,10 @@ export const useCloud = (): [() => void, (song: ChordSong) => JSX.Element] => {
                     return;
                 }
 
-                //TODO: how to update song before dispatch is finished? hook?
-                newSong.lastSavedAt = deserializeResult.right.lastSavedAt;
+                songDispatch({
+                    type: "set-last-saved-at",
+                    lastSavedAt: deserializeResult.right.lastSavedAt,
+                });
             };
 
             const saveIfChanged = async (newSong: ChordSong) => {
@@ -90,7 +109,7 @@ export const useCloud = (): [() => void, (song: ChordSong) => JSX.Element] => {
                 saveInterval
             );
             return () => clearInterval(interval);
-        }, [song, user, enqueueSnackbar, showError, shouldSave]);
+        }, [song, songDispatch, user, enqueueSnackbar, showError, shouldSave]);
 
         useEffect(() => {
             const unloadMessageFn = (event: Event) => {

@@ -1,7 +1,7 @@
 import React from "react";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { ChordSongAction, useChordSongReducer } from "./reducer/reducer";
-import { useCloud } from "./WithCloud";
+import { useCloud } from "./useCloud";
 
 interface OriginalComponentProps {
     song: ChordSong;
@@ -36,7 +36,7 @@ export const withCloudSaveSongContext = <P extends OriginalComponentProps>(
             props.song,
             onSongChange
         );
-        const unsavedPrompt = useSave(song);
+        const unsavedPrompt = useSave(song, songDispatch);
 
         const { song: throwawaySong, ...propsWithoutInitialSong } = props;
 
