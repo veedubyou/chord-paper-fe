@@ -30,6 +30,7 @@ import {
 } from "./common/paths";
 import About from "./components/about/About";
 import Demo from "./components/Demo";
+import DragAndDrop from "./components/edit/DragAndDrop";
 import GlobalKeyListenerProvider from "./components/GlobalKeyListener";
 import GuitarDemo from "./components/guitar/GuitarDemo";
 import SideMenu from "./components/SideMenu";
@@ -172,9 +173,11 @@ function App() {
                 />
                 <SnackbarProvider>
                     <HashRouter>
-                        <GlobalKeyListenerProvider>
-                            <AppContent />
-                        </GlobalKeyListenerProvider>
+                        <DragAndDrop>
+                            <GlobalKeyListenerProvider>
+                                <AppContent />
+                            </GlobalKeyListenerProvider>
+                        </DragAndDrop>
                     </HashRouter>
                 </SnackbarProvider>
             </ThemeProvider>

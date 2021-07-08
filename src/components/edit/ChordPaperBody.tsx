@@ -121,23 +121,21 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         : uninteractiveStyle.root;
 
     return (
-        <DragAndDrop>
-            <InteractionContext.Provider value={interactionContextValue}>
-                <Paper
-                    onKeyDown={allowInteraction ? handleKeyDown : undefined}
-                    onCopy={allowInteraction ? handleCopy : undefined}
-                    className={paperClassName}
-                    elevation={0}
-                    tabIndex={0}
-                >
-                    <Grid container justify="center">
-                        <Grid item xs={10}>
-                            {lines()}
-                        </Grid>
+        <InteractionContext.Provider value={interactionContextValue}>
+            <Paper
+                onKeyDown={allowInteraction ? handleKeyDown : undefined}
+                onCopy={allowInteraction ? handleCopy : undefined}
+                className={paperClassName}
+                elevation={0}
+                tabIndex={0}
+            >
+                <Grid container justify="center">
+                    <Grid item xs={10}>
+                        {lines()}
                     </Grid>
-                </Paper>
-            </InteractionContext.Provider>
-        </DragAndDrop>
+                </Grid>
+            </Paper>
+        </InteractionContext.Provider>
     );
 };
 
