@@ -10,7 +10,6 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { ChordSongAction } from "../reducer/reducer";
 import { useBatchLineDelete } from "./BatchDelete";
 import { useLineCopyHandler } from "./CopyAndPaste";
-import DragAndDrop from "./DragAndDrop";
 import { InteractionContext, InteractionSetter } from "./InteractionContext";
 import Line from "./Line";
 import NewLine from "./NewLine";
