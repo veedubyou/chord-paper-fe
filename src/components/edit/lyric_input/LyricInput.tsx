@@ -43,7 +43,7 @@ interface LyricInputProps extends StyledComponentProps {
     onSpecialBackspace: PlainFn;
     onSpecialEnter: (splitIndex: number) => void;
     onLyricOverflow: (overflowContent: Lyric[]) => void;
-    onJSONPaste: (jsonStr: string) => boolean;
+    onJSONPaste: (jsonStr: string) => [boolean, PlainFn | null];
     variant?: TypographyVariant;
 }
 
@@ -85,11 +85,13 @@ const LyricInput: React.FC<LyricInputProps> = (
     const pasteHandlerProps: PasteHandlerProps = {
         contentEditableRef: contentEditableRef,
         pasteJSONCallback: (payload: string): boolean => {
-            const handled = props.onJSONPaste(payload);
-            if (handled) {
+            const [canHandle, executePaste] = props.onJSONPaste(payload);
+            if (canHandle) {
                 finish(value());
+                executePaste?.();
             }
-            return handled;
+
+            return canHandle;
         },
         pastePlainTextCallback: (firstLine: Lyric, restOfLines: Lyric[]) => {
             finish(firstLine);

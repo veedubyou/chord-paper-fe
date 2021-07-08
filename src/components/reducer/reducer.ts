@@ -207,13 +207,6 @@ const chordSongReducer = (
         }
 
         case "replace-line-lyrics": {
-            // TODO:
-            // issue in paste handler -
-            // JSON paste fires first, and then removes the existing line
-            // and then this concludes, but the line has already been removed
-            // and can't be called without crashing
-            // const line = song.get(action.lineID);
-            // line.replaceLyrics(action.newLyric);
             const line: ChordLine = song.get(action.lineID);
 
             line.replaceLyrics(action.newLyric);

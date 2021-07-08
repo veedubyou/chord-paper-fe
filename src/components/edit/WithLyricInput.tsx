@@ -56,12 +56,12 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                 });
                 finishEdit();
             },
-            jsonPaste: (jsonStr: string): boolean => {
+            jsonPaste: (jsonStr: string): [boolean, PlainFn | null] => {
                 const deserializedCopyResult =
                     deserializeCopiedChordLines(jsonStr);
                 // not actually a Chord Paper line payload, don't handle it
                 if (deserializedCopyResult === null) {
-                    return false;
+                    return [false, null];
                 }
 
                 if (isLeft(deserializedCopyResult)) {
@@ -69,16 +69,17 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                         "Failed to paste copied lines: " +
                         deserializedCopyResult.left.message;
                     enqueueSnackbar(errorMsg, { variant: "error" });
-                    return true;
+                    return [true, null];
                 }
 
-                songDispatch({
-                    type: "batch-insert-lines",
-                    insertLineID: chordLine,
-                    copiedLines: deserializedCopyResult.right,
-                });
+                const insertLines = () =>
+                    songDispatch({
+                        type: "batch-insert-lines",
+                        insertLineID: chordLine,
+                        copiedLines: deserializedCopyResult.right,
+                    });
 
-                return true;
+                return [true, insertLines];
             },
 
             specialBackspace: () => {
