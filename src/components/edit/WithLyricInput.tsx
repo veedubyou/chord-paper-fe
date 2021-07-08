@@ -73,7 +73,7 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                 }
 
                 songDispatch({
-                    type: "insert-lines",
+                    type: "batch-insert-lines",
                     insertLineID: chordLine,
                     copiedLines: deserializedCopyResult.right,
                 });

@@ -10,7 +10,6 @@ import { ChordSongAction } from "./reducer/reducer";
 interface SongRouterProps {
     path: SongIDPath | DemoPath;
     song: ChordSong;
-    onSongChanged?: (song: ChordSong) => void;
     songDispatch: React.Dispatch<ChordSongAction>;
 }
 
@@ -38,7 +37,6 @@ const SongRouter: MultiFC<SongRouterProps> = (
             <ChordPaper
                 song={props.song}
                 songDispatch={props.songDispatch}
-                onSongChanged={props.onSongChanged}
                 onPlay={switchToPlay}
             />
         </Route>,

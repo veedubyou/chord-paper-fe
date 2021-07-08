@@ -1,4 +1,4 @@
-import { ProviderContext, useSnackbar } from "notistack";
+import lodash from "lodash";
 import { useCallback, useReducer } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
@@ -7,7 +7,6 @@ import { IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { Note } from "../../common/music/foundation/Note";
 import { transposeSong } from "../../common/music/transpose/Transpose";
-import lodash from "lodash";
 
 type SetState = {
     type: "set-song";
@@ -41,6 +40,17 @@ type RemoveLine = {
     lineID: IDable<ChordLine>;
 };
 
+type BatchInsertLines = {
+    type: "batch-insert-lines";
+    insertLineID: IDable<ChordLine>;
+    copiedLines: ChordLine[];
+};
+
+type BatchRemoveLines = {
+    type: "batch-remove-lines";
+    lineIDs: IDable<ChordLine>[];
+};
+
 type SplitLine = {
     type: "split-line";
     lineID: IDable<ChordLine>;
@@ -50,12 +60,6 @@ type SplitLine = {
 type MergeLines = {
     type: "merge-lines";
     latterLineID: IDable<ChordLine>;
-};
-
-type InsertLines = {
-    type: "insert-lines";
-    insertLineID: IDable<ChordLine>;
-    copiedLines: ChordLine[];
 };
 
 type InsertOverflowLyrics = {
@@ -112,9 +116,10 @@ export type ChordSongAction =
     | AddLineBeginning
     | AddLineAfter
     | RemoveLine
+    | BatchInsertLines
+    | BatchRemoveLines
     | SplitLine
     | MergeLines
-    | InsertLines
     | InsertOverflowLyrics
     | ReplaceLineLyrics
     | DragAndDropChord
@@ -126,8 +131,7 @@ export type ChordSongAction =
 
 const chordSongReducer = (
     song: ChordSong,
-    action: ChordSongAction,
-    enqueueSnackbar: ProviderContext["enqueueSnackbar"]
+    action: ChordSongAction
 ): ChordSong => {
     // TODO: performance killer
     // need to change this into immutable object pattern
@@ -183,7 +187,7 @@ const chordSongReducer = (
             return song.clone();
         }
 
-        case "insert-lines": {
+        case "batch-insert-lines": {
             const currLine: ChordLine = song.get(action.insertLineID);
 
             song.addAfter(action.insertLineID, ...action.copiedLines);
@@ -194,6 +198,11 @@ const chordSongReducer = (
                 song.remove(action.insertLineID);
             }
 
+            return song.clone();
+        }
+
+        case "batch-remove-lines": {
+            song.removeMultiple(action.lineIDs);
             return song.clone();
         }
 
@@ -296,20 +305,14 @@ export const useChordSongReducer = (
     initialSong: ChordSong,
     onChange?: (song: ChordSong) => void
 ): [ChordSong, React.Dispatch<ChordSongAction>] => {
-    const { enqueueSnackbar } = useSnackbar();
-
     const reducerWithChangeCallback = useCallback(
         (song: ChordSong, action: ChordSongAction): ChordSong => {
-            const newSong: ChordSong = chordSongReducer(
-                song,
-                action,
-                enqueueSnackbar
-            );
+            const newSong: ChordSong = chordSongReducer(song, action);
             onChange?.(newSong);
 
             return newSong;
         },
-        [onChange, enqueueSnackbar]
+        [onChange]
     );
 
     return useReducer(reducerWithChangeCallback, initialSong);

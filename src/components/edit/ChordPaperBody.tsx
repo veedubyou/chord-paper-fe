@@ -8,7 +8,7 @@ import React, { useMemo, useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { ChordSongAction } from "../reducer/reducer";
-import { useBatchLineDelete } from "./BatchDelete";
+import { handleBatchLineDelete } from "./BatchDelete";
 import { useLineCopyHandler } from "./CopyAndPaste";
 import { InteractionContext, InteractionSetter } from "./InteractionContext";
 import Line from "./Line";
@@ -29,7 +29,6 @@ const Paper = withStyles({
 interface ChordPaperBodyProps {
     song: ChordSong;
     songDispatch: React.Dispatch<ChordSongAction>;
-    onSongChanged?: (updatedSong: ChordSong) => void;
 }
 
 const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
@@ -37,7 +36,6 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
 ): React.ReactElement => {
     const [interacting, setInteracting] = useState(false);
     const handleCopy = useLineCopyHandler(props.song);
-    const handleBatchLineDelete = useBatchLineDelete(props.song);
     const songDispatch = props.songDispatch;
 
     const interactionContextValue: InteractionSetter = useMemo(
@@ -58,18 +56,18 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
 
     const uninteractiveStyle = useUninteractiveStyle();
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        const handled = handleBatchLineDelete(event);
-        if (!handled) {
-            return false;
+    const handleKeyDown = (
+        event: React.KeyboardEvent<HTMLDivElement>
+    ): void => {
+        const lineIDs = handleBatchLineDelete(event);
+        if (!lineIDs) {
+            return;
         }
 
-        notifySongChanged();
-        return true;
-    };
-
-    const notifySongChanged = () => {
-        props.onSongChanged?.(props.song);
+        songDispatch({
+            type: "batch-remove-lines",
+            lineIDs: lineIDs,
+        });
     };
 
     const lines = () => {

@@ -30,12 +30,7 @@ interface PlaygroundProps {
 const Playground: React.FC<PlaygroundProps> = (
     props: PlaygroundProps
 ): JSX.Element => {
-    const songChangeHandler = (updatedSong: ChordSong) => {};
-
-    const [song, songDispatch] = useChordSongReducer(
-        props.initialSong,
-        songChangeHandler
-    );
+    const [song, songDispatch] = useChordSongReducer(props.initialSong);
 
     const [finish, setFinish] = useState(false);
 
@@ -55,11 +50,7 @@ const Playground: React.FC<PlaygroundProps> = (
     return (
         <Badge badgeContent={<CheckCircleIcon />} invisible={!finish}>
             <Paper elevation={1}>
-                <ChordPaperBody
-                    song={song}
-                    songDispatch={songDispatch}
-                    onSongChanged={songChangeHandler}
-                />
+                <ChordPaperBody song={song} songDispatch={songDispatch} />
             </Paper>
         </Badge>
     );

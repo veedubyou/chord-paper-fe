@@ -32,7 +32,6 @@ const useWhiteStyle = makeStyles({
 
 interface ChordPaperProps {
     song: ChordSong;
-    onSongChanged?: (song: ChordSong) => void;
     songDispatch: React.Dispatch<ChordSongAction>;
     onPlay?: PlainFn;
 }
@@ -41,10 +40,6 @@ const ChordPaper: React.FC<ChordPaperProps> = (
     props: ChordPaperProps
 ): JSX.Element => {
     const whiteStyle = useWhiteStyle();
-
-    const songChangeHandler = (song: ChordSong) => {
-        props.onSongChanged?.(song);
-    };
 
     const trackPlayer: React.ReactNode = (() => {
         if (props.song.isUnsaved()) {
@@ -88,7 +83,6 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                 <ChordPaperBody
                     song={props.song}
                     songDispatch={props.songDispatch}
-                    onSongChanged={songChangeHandler}
                 />
                 <ChordPaperMenu
                     song={props.song}
