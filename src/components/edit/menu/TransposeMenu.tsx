@@ -15,14 +15,14 @@ import { withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { AllNotes, Note } from "../../../common/music/foundation/Note";
-import { transposeSong } from "../../../common/music/transpose/Transpose";
 import { PlainFn } from "../../../common/PlainFn";
+import { ChordSongAction } from "../../reducer/reducer";
 
 interface TransposeMenuProps {
     open: boolean;
     song: ChordSong;
+    songDispatch: React.Dispatch<ChordSongAction>;
     onClose: PlainFn;
-    onSongChanged: (song: ChordSong) => void;
 }
 
 const FormControl = withStyles((theme: Theme) => ({
@@ -63,12 +63,12 @@ const TransposeMenu: React.FC<TransposeMenuProps> = (
     };
 
     const handleTransposeAction = (): void => {
-        transposeSong(
-            props.song,
-            keySelection.originalKey,
-            keySelection.transposedKey
-        );
-        props.onSongChanged(props.song);
+        props.songDispatch({
+            type: "transpose",
+            originalKey: keySelection.originalKey,
+            transposeKey: keySelection.transposedKey,
+        });
+
         props.onClose();
     };
 
