@@ -51,7 +51,7 @@ const WithSection: React.FC<WithSectionProps> = (
     const handleLabelChange = useCallback(
         (newValue: string) => {
             songDispatch({
-                type: "set-section-label",
+                type: "set-section",
                 lineID: chordLine,
                 label: newValue,
             });
@@ -62,7 +62,7 @@ const WithSection: React.FC<WithSectionProps> = (
     const handleTimeChange = useCallback(
         (newValue: number | null) => {
             songDispatch({
-                type: "set-section-time",
+                type: "set-section",
                 lineID: chordLine,
                 time: newValue,
             });

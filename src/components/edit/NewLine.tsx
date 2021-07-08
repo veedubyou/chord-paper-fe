@@ -51,14 +51,10 @@ const NewLine: React.FC<NewLineProps> = (props: NewLineProps): JSX.Element => {
     const theme: Theme = useTheme();
 
     const handleAddLine = () => {
-        if (props.lineID === "beginning") {
-            props.songDispatch({ type: "add-line-beginning" });
-        } else {
-            props.songDispatch({
-                type: "add-line-after",
-                lineID: props.lineID,
-            });
-        }
+        props.songDispatch({
+            type: "add-line",
+            lineID: props.lineID,
+        });
     };
 
     const hoverMenu = (): React.ReactElement => {

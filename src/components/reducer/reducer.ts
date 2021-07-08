@@ -26,13 +26,9 @@ type Transpose = {
     transposeKey: Note;
 };
 
-type AddLineBeginning = {
-    type: "add-line-beginning";
-};
-
-type AddLineAfter = {
-    type: "add-line-after";
-    lineID: IDable<ChordLine>;
+type AddLine = {
+    type: "add-line";
+    lineID: IDable<ChordLine> | "beginning";
 };
 
 type RemoveLine = {
@@ -98,23 +94,17 @@ type DragAndDropChord = {
     copyAction: boolean;
 };
 
-type SetSectionLabel = {
-    type: "set-section-label";
+type SetSection = {
+    type: "set-section";
     lineID: IDable<ChordLine>;
-    label: string;
-};
-
-type SetSectionTime = {
-    type: "set-section-time";
-    lineID: IDable<ChordLine>;
-    time: number | null;
+    label?: string;
+    time?: number | null;
 };
 
 export type ChordSongAction =
     | SetState
     | SetHeader
-    | AddLineBeginning
-    | AddLineAfter
+    | AddLine
     | RemoveLine
     | BatchInsertLines
     | BatchRemoveLines
@@ -125,8 +115,7 @@ export type ChordSongAction =
     | DragAndDropChord
     | ChangeChord
     | SplitBlock
-    | SetSectionLabel
-    | SetSectionTime
+    | SetSection
     | Transpose;
 
 const chordSongReducer = (
@@ -158,13 +147,13 @@ const chordSongReducer = (
             return song.clone();
         }
 
-        case "add-line-beginning": {
-            song.addBeginning(new ChordLine());
-            return song.clone();
-        }
+        case "add-line": {
+            if (action.lineID === "beginning") {
+                song.addBeginning(new ChordLine());
+            } else {
+                song.addAfter(action.lineID, new ChordLine());
+            }
 
-        case "add-line-after": {
-            song.addAfter(action.lineID, new ChordLine());
             return song.clone();
         }
 
@@ -264,21 +253,18 @@ const chordSongReducer = (
             return song.clone();
         }
 
-        case "set-section-label": {
+        case "set-section": {
             const line: ChordLine = song.get(action.lineID);
 
-            const changed = line.setSectionName(action.label);
-            if (!changed) {
-                return song;
+            let changed = false;
+            if (action.label !== undefined) {
+                changed = line.setSectionName(action.label) || changed;
             }
 
-            return song.clone();
-        }
+            if (action.time !== undefined) {
+                changed = line.setSectionTime(action.time) || changed;
+            }
 
-        case "set-section-time": {
-            const line: ChordLine = song.get(action.lineID);
-
-            const changed = line.setSectionTime(action.time);
             if (!changed) {
                 return song;
             }
