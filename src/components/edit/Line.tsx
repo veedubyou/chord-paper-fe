@@ -38,6 +38,7 @@ const HighlightableBox = withStyles({
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
+    jsonHackUntilWeHaveImmutableDataStructures: string;
     songDispatch: React.Dispatch<ChordSongAction>;
     "data-lineid": string;
 }

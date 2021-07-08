@@ -1,7 +1,7 @@
 import { Box, Theme, withStyles } from "@material-ui/core";
 import { isLeft } from "fp-ts/lib/Either";
 import { useSnackbar } from "notistack";
-import React, { useCallback } from "react";
+import React, { useMemo } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { PlainFn } from "../../common/PlainFn";
@@ -35,9 +35,9 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
     const { songDispatch, chordLine } = props;
     const { enqueueSnackbar } = useSnackbar();
 
-    const handlers = {
-        lyricEdit: useCallback(
-            (newLyric: Lyric) => {
+    const handlers = useMemo(
+        () => ({
+            lyricEdit: (newLyric: Lyric) => {
                 finishEdit();
 
                 songDispatch({
@@ -47,10 +47,8 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                     newLyric: newLyric,
                 });
             },
-            [chordLine, songDispatch, finishEdit]
-        ),
-        lyricPasteOverflow: useCallback(
-            (overflowContent: Lyric[]) => {
+
+            lyricPasteOverflow: (overflowContent: Lyric[]) => {
                 songDispatch({
                     type: "insert-overflow-lyrics",
                     insertionLineID: chordLine,
@@ -58,10 +56,7 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                 });
                 finishEdit();
             },
-            [chordLine, songDispatch, finishEdit]
-        ),
-        jsonPaste: useCallback(
-            (jsonStr: string): boolean => {
+            jsonPaste: (jsonStr: string): boolean => {
                 const deserializedCopyResult =
                     deserializeCopiedChordLines(jsonStr);
                 // not actually a Chord Paper line payload, don't handle it
@@ -85,17 +80,15 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
 
                 return true;
             },
-            [chordLine, songDispatch, enqueueSnackbar]
-        ),
-        specialBackspace: useCallback(() => {
-            songDispatch({
-                type: "merge-lines",
-                latterLineID: chordLine,
-            });
-            finishEdit();
-        }, [chordLine, songDispatch, finishEdit]),
-        specialEnter: useCallback(
-            (splitIndex: number) => {
+
+            specialBackspace: () => {
+                songDispatch({
+                    type: "merge-lines",
+                    latterLineID: chordLine,
+                });
+                finishEdit();
+            },
+            specialEnter: (splitIndex: number) => {
                 songDispatch({
                     type: "split-line",
                     lineID: chordLine,
@@ -104,9 +97,9 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
 
                 finishEdit();
             },
-            [chordLine, songDispatch, finishEdit]
-        ),
-    };
+        }),
+        [chordLine, songDispatch, finishEdit, enqueueSnackbar]
+    );
 
     const lineElement: React.ReactElement = props.children(startEdit);
 

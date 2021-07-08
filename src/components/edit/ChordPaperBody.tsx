@@ -4,7 +4,7 @@ import {
     Paper as UnstyledPaper,
     withStyles,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { ChordSongAction } from "../reducer/reducer";
@@ -41,18 +41,21 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     const handleBatchLineDelete = useBatchLineDelete(props.song);
     const songDispatch = props.songDispatch;
 
-    const interactionContextValue: InteractionSetter = {
-        startInteraction: () => {
-            setTimeout(() => {
-                setInteracting(true);
-            });
-        },
-        endInteraction: () => {
-            setTimeout(() => {
-                setInteracting(false);
-            });
-        },
-    };
+    const interactionContextValue: InteractionSetter = useMemo(
+        () => ({
+            startInteraction: () => {
+                setTimeout(() => {
+                    setInteracting(true);
+                });
+            },
+            endInteraction: () => {
+                setTimeout(() => {
+                    setInteracting(false);
+                });
+            },
+        }),
+        []
+    );
 
     const uninteractiveStyle = useUninteractiveStyle();
 
@@ -77,6 +80,9 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
                     <Line
                         key={line.id}
                         chordLine={line}
+                        jsonHackUntilWeHaveImmutableDataStructures={JSON.stringify(
+                            line
+                        )}
                         songDispatch={songDispatch}
                         data-lineid={line.id}
                         data-testid={line.id}
