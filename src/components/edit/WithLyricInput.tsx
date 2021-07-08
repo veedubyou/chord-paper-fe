@@ -1,11 +1,13 @@
 import { Box, Theme, withStyles } from "@material-ui/core";
+import { isLeft } from "fp-ts/lib/Either";
+import { useSnackbar } from "notistack";
 import React, { useCallback } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { PlainFn } from "../../common/PlainFn";
 import { lyricStyle, lyricTypographyVariant } from "../display/Lyric";
 import { ChordSongAction } from "../reducer/reducer";
+import { deserializeCopiedChordLines } from "./CopyAndPaste";
 import { useEditingState } from "./InteractionContext";
 import UnstyledLyricInput from "./lyric_input/LyricInput";
 
@@ -22,7 +24,6 @@ interface WithLyricInputProps {
     children: (handleEdit: PlainFn) => React.ReactElement;
     chordLine: ChordLine;
     songDispatch: React.Dispatch<ChordSongAction>;
-    onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
 }
 
 // this component is inherently quite coupled with Line & friends
@@ -32,6 +33,7 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
 ): JSX.Element => {
     const { editing, startEdit, finishEdit } = useEditingState();
     const { songDispatch, chordLine } = props;
+    const { enqueueSnackbar } = useSnackbar();
 
     const handlers = {
         lyricEdit: useCallback(
@@ -40,6 +42,7 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
 
                 songDispatch({
                     type: "replace-line-lyrics",
+                    line: chordLine,
                     lineID: chordLine,
                     newLyric: newLyric,
                 });
@@ -57,13 +60,33 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
             },
             [chordLine, songDispatch, finishEdit]
         ),
-        jsonPaste: (jsonStr: string): boolean => {
-            if (props.onJSONPaste === undefined) {
-                return false;
-            }
+        jsonPaste: useCallback(
+            (jsonStr: string): boolean => {
+                const deserializedCopyResult =
+                    deserializeCopiedChordLines(jsonStr);
+                // not actually a Chord Paper line payload, don't handle it
+                if (deserializedCopyResult === null) {
+                    return false;
+                }
 
-            return props.onJSONPaste(props.chordLine, jsonStr);
-        },
+                if (isLeft(deserializedCopyResult)) {
+                    const errorMsg =
+                        "Failed to paste copied lines: " +
+                        deserializedCopyResult.left.message;
+                    enqueueSnackbar(errorMsg, { variant: "error" });
+                    return true;
+                }
+
+                songDispatch({
+                    type: "insert-lines",
+                    insertLineID: chordLine,
+                    copiedLines: deserializedCopyResult.right,
+                });
+
+                return true;
+            },
+            [chordLine, songDispatch, enqueueSnackbar]
+        ),
         specialBackspace: useCallback(() => {
             songDispatch({
                 type: "merge-lines",

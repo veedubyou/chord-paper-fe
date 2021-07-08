@@ -1,13 +1,12 @@
+import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
+import * as iots from "io-ts";
+import { useSnackbar } from "notistack";
 import {
     ChordLine,
-    ChordLineValidator,
     ChordLineValidatedFields,
+    ChordLineValidator,
 } from "../../common/ChordModel/ChordLine";
-import * as iots from "io-ts";
-import { Either, right, left, isLeft, parseJSON } from "fp-ts/lib/Either";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { IDable } from "../../common/ChordModel/Collection";
-import { useSnackbar } from "notistack";
 import { getSelectedLineIDs } from "./LineSelection";
 
 const CopiedChordLinesValidator = iots.type({
@@ -18,7 +17,7 @@ interface CopiedChordLines {
     copiedChordLines: ChordLine[];
 }
 
-const deserializeCopiedChordLines = (
+export const deserializeCopiedChordLines = (
     jsonStr: string
 ): Either<Error, ChordLine[]> | null => {
     const result: Either<Error, unknown> = parseJSON(
@@ -88,39 +87,6 @@ export const useLineCopyHandler = (song: ChordSong) => {
         }
 
         enqueueSnackbar(copyMsg, { variant: "info" });
-        return true;
-    };
-};
-
-export const useLinePasteHandler = (song: ChordSong) => {
-    const { enqueueSnackbar } = useSnackbar();
-
-    return (id: IDable<ChordLine>, jsonStr: string): boolean => {
-        const deserializedCopyResult = deserializeCopiedChordLines(jsonStr);
-        // not actually a Chord Paper line payload, don't handle it
-        if (deserializedCopyResult === null) {
-            return false;
-        }
-
-        if (isLeft(deserializedCopyResult)) {
-            const errorMsg =
-                "Failed to paste copied lines: " +
-                deserializedCopyResult.left.message;
-            enqueueSnackbar(errorMsg, { variant: "error" });
-            return true;
-        }
-
-        const currLine: ChordLine = song.get(id);
-
-        const copiedLines: ChordLine[] = deserializedCopyResult.right;
-        song.addAfter(id, ...copiedLines);
-
-        // if the line is empty, the user was probably trying to paste into the current line, and not the next
-        // so just remove the current line to simulate that
-        if (currLine.isEmpty()) {
-            song.remove(id);
-        }
-
         return true;
     };
 };

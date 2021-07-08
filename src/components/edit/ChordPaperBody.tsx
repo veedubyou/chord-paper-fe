@@ -5,13 +5,11 @@ import {
     withStyles,
 } from "@material-ui/core";
 import React, { useState } from "react";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { IDable } from "../../common/ChordModel/Collection";
 import { ChordSongAction } from "../reducer/reducer";
 import { useBatchLineDelete } from "./BatchDelete";
-import { useLineCopyHandler, useLinePasteHandler } from "./CopyAndPaste";
+import { useLineCopyHandler } from "./CopyAndPaste";
 import DragAndDrop from "./DragAndDrop";
 import { InteractionContext, InteractionSetter } from "./InteractionContext";
 import Line from "./Line";
@@ -40,7 +38,6 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
 ): React.ReactElement => {
     const [interacting, setInteracting] = useState(false);
     const handleCopy = useLineCopyHandler(props.song);
-    const handleLinePaste = useLinePasteHandler(props.song);
     const handleBatchLineDelete = useBatchLineDelete(props.song);
     const songDispatch = props.songDispatch;
 
@@ -59,23 +56,6 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
 
     const uninteractiveStyle = useUninteractiveStyle();
 
-    const handleChangeLine = (id: IDable<ChordLine>) => {
-        notifySongChanged();
-    };
-
-    const handleJSONPaste = (
-        id: IDable<ChordLine>,
-        jsonStr: string
-    ): boolean => {
-        const handled = handleLinePaste(id, jsonStr);
-        if (!handled) {
-            return false;
-        }
-
-        notifySongChanged();
-        return true;
-    };
-
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
         const handled = handleBatchLineDelete(event);
         if (!handled) {
@@ -90,38 +70,6 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         props.onSongChanged?.(props.song);
     };
 
-    const handleChordDND = (
-        destinationBlockID: IDable<ChordBlock>,
-        splitIndex: number,
-        newChord: string,
-        sourceBlockID: IDable<ChordBlock>,
-        copyAction: boolean
-    ) => {
-        const [sourceLine, sourceBlock] =
-            props.song.findLineAndBlock(sourceBlockID);
-
-        const moveAction = !copyAction;
-        if (moveAction) {
-            // clearing the source block first allows handling of when the chord
-            // is dropped onto another token in the same block without special cases
-            sourceBlock.chord = "";
-        }
-
-        const [destinationLine, destinationBlock] =
-            props.song.findLineAndBlock(destinationBlockID);
-
-        if (splitIndex !== 0) {
-            destinationLine.splitBlock(destinationBlockID, splitIndex);
-        }
-
-        destinationBlock.chord = newChord;
-
-        sourceLine.normalizeBlocks();
-        destinationLine.normalizeBlocks();
-
-        notifySongChanged();
-    };
-
     const lines = () => {
         const lines = props.song.chordLines.flatMap(
             (line: ChordLine, index: number) => {
@@ -131,16 +79,17 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
                         chordLine={line}
                         songDispatch={songDispatch}
                         data-lineid={line.id}
-                        onChangeLine={handleChangeLine}
-                        onJSONPaste={handleJSONPaste}
-                        onChordDragAndDrop={handleChordDND}
-                        data-testid={`Line-${index}`}
+                        data-testid={line.id}
+                        // TODO
+                        // data-testid={`Line-${index}`}
                     />,
                     <NewLine
                         key={"NewLine-" + line.id}
                         lineID={line}
                         songDispatch={songDispatch}
-                        data-testid={`NewLine-${index}`}
+                        data-testid={line.id}
+                        // TODO
+                        // data-testid={`NewLine-${index}`}
                     />,
                 ];
             }
