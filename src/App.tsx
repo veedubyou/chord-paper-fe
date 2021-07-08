@@ -106,7 +106,9 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
         DemoModePath.isPlayMode(location.pathname) ||
         location.pathname === guitarDemoPath.URL();
 
-    const withRegularAppLayout = (child: React.ReactElement) => {
+    const withRegularAppLayout = (
+        child: React.ReactElement | React.ReactElement[]
+    ) => {
         return (
             <>
                 {!isFullScreen && (
@@ -149,7 +151,7 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
                 {withRegularAppLayout(<Demo />)}
             </Route>
 
-            {TutorialSwitches()}
+            {TutorialSwitches(withRegularAppLayout)}
             <Route key={aboutPath.URL()} path={aboutPath.URL()} exact>
                 {withRegularAppLayout(<About />)}
             </Route>

@@ -157,10 +157,14 @@ interface TutorialProps {
     route: string;
 }
 
-export const TutorialSwitches = (): React.ReactElement[] => {
+type WrapperFn = (child: React.ReactElement) => React.ReactElement;
+
+export const TutorialSwitches = (
+    wrapperFn: WrapperFn
+): React.ReactElement[] => {
     return allExercises.map((exerciseEntry: ExerciseEntry) => (
         <Route key={exerciseEntry.route} exact path={exerciseEntry.route}>
-            <Tutorial route={exerciseEntry.route} />
+            {wrapperFn(<Tutorial route={exerciseEntry.route} />)}
         </Route>
     ));
 };
@@ -172,9 +176,8 @@ const Tutorial: React.FC<TutorialProps> = (
         return entry.route === props.route;
     };
 
-    const exerciseEntry: ExerciseEntry | undefined = allExercises.find(
-        matchEntry
-    );
+    const exerciseEntry: ExerciseEntry | undefined =
+        allExercises.find(matchEntry);
 
     if (exerciseEntry === undefined) {
         return <ErrorPage />;

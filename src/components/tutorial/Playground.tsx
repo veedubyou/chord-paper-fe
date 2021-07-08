@@ -5,7 +5,7 @@ import {
     withStyles,
 } from "@material-ui/core";
 import UnstyledCheckCircleIcon from "@material-ui/icons/CheckCircle";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import ChordPaperBody from "../edit/ChordPaperBody";
 import { useChordSongReducer } from "../reducer/reducer";
@@ -30,30 +30,27 @@ interface PlaygroundProps {
 const Playground: React.FC<PlaygroundProps> = (
     props: PlaygroundProps
 ): JSX.Element => {
-    const songChangeHandler = (updatedSong: ChordSong) => {
-        checkExpected(updatedSong);
-    };
+    const songChangeHandler = (updatedSong: ChordSong) => {};
 
-    //TODO: more to wrap up here
     const [song, songDispatch] = useChordSongReducer(
         props.initialSong,
         songChangeHandler
     );
+
     const [finish, setFinish] = useState(false);
 
-    const checkExpected = (updatedSong: ChordSong) => {
+    const { expectedSong } = props;
+
+    useEffect(() => {
         // don't undo the green check if it's already been passing
         if (finish) {
             return;
         }
 
-        if (
-            props.expectedSong !== undefined &&
-            props.expectedSong.contentEquals(updatedSong)
-        ) {
+        if (expectedSong !== undefined && expectedSong.contentEquals(song)) {
             setFinish(true);
         }
-    };
+    }, [song, expectedSong, finish, setFinish]);
 
     return (
         <Badge badgeContent={<CheckCircleIcon />} invisible={!finish}>

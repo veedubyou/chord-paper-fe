@@ -7,6 +7,7 @@ import { IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { Note } from "../../common/music/foundation/Note";
 import { transposeSong } from "../../common/music/transpose/Transpose";
+import lodash from "lodash";
 
 type SetState = {
     type: "set-song";
@@ -128,6 +129,10 @@ const chordSongReducer = (
     action: ChordSongAction,
     enqueueSnackbar: ProviderContext["enqueueSnackbar"]
 ): ChordSong => {
+    // TODO: performance killer
+    // need to change this into immutable object pattern
+    song = lodash.cloneDeep(song);
+
     switch (action.type) {
         case "set-song": {
             return action.song.clone();
@@ -200,7 +205,9 @@ const chordSongReducer = (
             // and can't be called without crashing
             // const line = song.get(action.lineID);
             // line.replaceLyrics(action.newLyric);
-            action.line.replaceLyrics(action.newLyric);
+            const line: ChordLine = song.get(action.lineID);
+
+            line.replaceLyrics(action.newLyric);
             return song.clone();
         }
 
