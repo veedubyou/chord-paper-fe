@@ -11,8 +11,9 @@ const defaultSetter: InteractionSetter = {
     endInteraction: () => {},
 };
 
-export const InteractionContext =
-    React.createContext<InteractionSetter>(defaultSetter);
+export const InteractionContext = React.createContext<InteractionSetter>(
+    defaultSetter
+);
 
 interface EditingState {
     editing: boolean;

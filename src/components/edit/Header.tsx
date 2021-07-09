@@ -3,7 +3,6 @@ import { useTheme, withStyles } from "@material-ui/styles";
 import React from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import UnstyledLastSavedAt from "../display/LastSavedAt";
-import { ChordSongAction } from "../reducer/reducer";
 import EditableTypography from "./EditableTypography";
 
 const LastSavedAt = withStyles((theme: Theme) => ({
@@ -16,22 +15,31 @@ const LastSavedAt = withStyles((theme: Theme) => ({
 
 interface HeaderProps {
     song: ChordSong;
-    songDispatch: React.Dispatch<ChordSongAction>;
+    onSongChanged?: (updatedSong: ChordSong) => void;
 }
 
 const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
     const theme: Theme = useTheme();
 
+    const notifySongChanged = (): void => {
+        if (props.onSongChanged) {
+            props.onSongChanged(props.song);
+        }
+    };
+
     const updateTitleHandler = (newTitle: string) => {
-        props.songDispatch({ type: "set-header", title: newTitle });
+        props.song.title = newTitle;
+        notifySongChanged();
     };
 
     const updateComposeHandler = (newComposer: string) => {
-        props.songDispatch({ type: "set-header", composedBy: newComposer });
+        props.song.composedBy = newComposer;
+        notifySongChanged();
     };
 
     const updatePerformerHandler = (newPerformer: string) => {
-        props.songDispatch({ type: "set-header", performedBy: newPerformer });
+        props.song.performedBy = newPerformer;
+        notifySongChanged();
     };
 
     const title = (

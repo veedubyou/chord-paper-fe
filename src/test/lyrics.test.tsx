@@ -37,8 +37,8 @@ const basicChordPaper = () => {
     return chordPaperFromLyrics(lyrics);
 };
 
-const getFindAllByTestId = (chordSong: ChordSong) => {
-    return render(chordPaperFromSong(chordSong)).findAllByTestId;
+const getFindByTestId = (chordSong: ChordSong) => {
+    return render(chordPaperFromSong(chordSong)).findByTestId;
 };
 
 describe("Rendering initial lyrics", () => {
@@ -66,10 +66,7 @@ describe("Plain text edit action", () => {
     let asyncExpectChordAndLyric: ExpectChordAndLyricFn;
 
     const clickFirstLine = async () => {
-        const line = await findByTestIdChain(
-            ["Line", 0],
-            ["NoneditableLine", 0]
-        );
+        const line = await findByTestIdChain("Line-0", "NoneditableLine");
         expect(line).toBeInTheDocument();
         fireEvent.mouseOver(line);
         fireEvent.click(line);
@@ -77,11 +74,7 @@ describe("Plain text edit action", () => {
 
     const changeLyric = async (newLyric: string) => {
         const findContentEditableElem = async (): Promise<HTMLElement> => {
-            return findByTestIdChain(
-                ["Line", 0],
-                ["LyricInput", 0],
-                ["InnerInput", 0]
-            );
+            return findByTestIdChain("Line-0", "LyricInput", "InnerInput");
         };
 
         expect(await findContentEditableElem()).toBeInTheDocument();
@@ -93,7 +86,7 @@ describe("Plain text edit action", () => {
         beforeEach(async () => {
             const song = new ChordSong();
 
-            const findByTestId = getFindAllByTestId(song);
+            const findByTestId = getFindByTestId(song);
             findByTestIdChain = getFindByTestIdChain(findByTestId);
             asyncExpectChordAndLyric = getExpectChordAndLyric(findByTestId);
 
@@ -104,9 +97,9 @@ describe("Plain text edit action", () => {
             await changeLyric("Never Gonna Give You Up");
 
             await asyncExpectChordAndLyric("", "Never Gonna Give You Up", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
         });
     });
@@ -117,7 +110,7 @@ describe("Plain text edit action", () => {
                 new Lyric("We've known each other for so long"),
             ]);
 
-            const findByTestId = getFindAllByTestId(song);
+            const findByTestId = getFindByTestId(song);
             findByTestIdChain = getFindByTestIdChain(findByTestId);
             asyncExpectChordAndLyric = getExpectChordAndLyric(findByTestId);
 
@@ -128,9 +121,9 @@ describe("Plain text edit action", () => {
             await changeLyric("Never Gonna Give You Up");
 
             await asyncExpectChordAndLyric("", "Never Gonna Give You Up", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
         });
     });
@@ -145,27 +138,20 @@ describe("Tab spacing", () => {
             new Lyric("Put some old bay on it and now it's a crab claw"),
         ]);
 
-        const findByTestId = getFindAllByTestId(song);
+        const findByTestId = getFindByTestId(song);
         findByTestIdChain = getFindByTestIdChain(findByTestId);
         asyncExpectChordAndLyric = getExpectChordAndLyric(findByTestId);
     });
 
     const clickFirstLine = async () => {
-        const line = await findByTestIdChain(
-            ["Line", 0],
-            ["NoneditableLine", 0]
-        );
+        const line = await findByTestIdChain("Line-0", "NoneditableLine");
         expect(line).toBeInTheDocument();
         fireEvent.mouseOver(line);
         fireEvent.click(line);
     };
 
     const contentEditableElem = async (): Promise<HTMLElement> => {
-        return findByTestIdChain(
-            ["Line", 0],
-            ["LyricInput", 0],
-            ["InnerInput", 0]
-        );
+        return findByTestIdChain("Line-0", "LyricInput", "InnerInput");
     };
 
     describe("simple insertion", () => {
@@ -183,9 +169,9 @@ describe("Tab spacing", () => {
                 pressKey(await contentEditableElem(), Keys.enter);
 
                 await asyncExpectChordAndLyric("", expectedLyrics, [
-                    ["Line", 0],
-                    ["NoneditableLine", 0],
-                    ["Block", 0],
+                    "Line-0",
+                    "NoneditableLine",
+                    "Block-0",
                 ]);
             });
         };
@@ -240,22 +226,14 @@ describe("Tab spacing", () => {
             await asyncExpectChordAndLyric(
                 "",
                 "Put some old bay on it and now it's a crab claw\ue200",
-                [
-                    ["Line", 0],
-                    ["NoneditableLine", 0],
-                    ["Block", 0],
-                ]
+                ["Line-0", "NoneditableLine", "Block-0"]
             );
 
             await backspaceTab();
             await asyncExpectChordAndLyric(
                 "",
                 "Put some old bay on it and now it's a crab claw",
-                [
-                    ["Line", 0],
-                    ["NoneditableLine", 0],
-                    ["Block", 0],
-                ]
+                ["Line-0", "NoneditableLine", "Block-0"]
             );
         });
     });
@@ -332,14 +310,11 @@ describe("Edit action with chords", () => {
             ]),
         ]);
 
-        const findByTestId = getFindAllByTestId(song);
+        const findByTestId = getFindByTestId(song);
         findByTestIdChain = getFindByTestIdChain(findByTestId);
         expectChordAndLyric = getExpectChordAndLyric(findByTestId);
 
-        const line = await findByTestIdChain(
-            ["Line", 0],
-            ["NoneditableLine", 0]
-        );
+        const line = await findByTestIdChain("Line-0", "NoneditableLine");
         expect(line).toBeInTheDocument();
         fireEvent.mouseOver(line);
 
@@ -348,11 +323,7 @@ describe("Edit action with chords", () => {
 
     const changeLyric = async (newLyric: string) => {
         const findInputElem = async (): Promise<HTMLElement> => {
-            return findByTestIdChain(
-                ["Line", 0],
-                ["LyricInput", 0],
-                ["InnerInput", 0]
-            );
+            return findByTestIdChain("Line-0", "LyricInput", "InnerInput");
         };
 
         expect(await findInputElem()).toBeInTheDocument();
@@ -367,15 +338,15 @@ describe("Edit action with chords", () => {
             await changeLyric("It's your fault that I'm in trouble");
 
             await expectChordAndLyric("F", "It's your fault ", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
 
             await expectChordAndLyric("C", "that I'm in trouble", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 1],
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
             ]);
         });
     });
@@ -385,15 +356,15 @@ describe("Edit action with chords", () => {
             await changeLyric("It's your fault so I'm in trouble");
 
             await expectChordAndLyric("F", "It's your fault ", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
 
             await expectChordAndLyric("C", "so I'm in trouble", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 1],
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
             ]);
         });
 
@@ -401,15 +372,15 @@ describe("Edit action with chords", () => {
             await changeLyric("Not really my fault that I am trooble");
 
             await expectChordAndLyric("F", "Not really my fault ", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
 
             await expectChordAndLyric("C", "that I am trooble", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 1],
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
             ]);
         });
     });
@@ -419,15 +390,15 @@ describe("Edit action with chords", () => {
             await changeLyric("It's really your fault that I'm in trouble");
 
             await expectChordAndLyric("F", "It's really your fault ", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
 
             await expectChordAndLyric("C", "that I'm in trouble", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 1],
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
             ]);
         });
 
@@ -435,15 +406,15 @@ describe("Edit action with chords", () => {
             await changeLyric("It's your fault really that I'm in trouble");
 
             await expectChordAndLyric("F", "It's your fault really ", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
 
             await expectChordAndLyric("C", "that I'm in trouble", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 1],
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
             ]);
         });
 
@@ -451,21 +422,21 @@ describe("Edit action with chords", () => {
             await changeLyric("Verse: It's your fault that I'm in trouble");
 
             await expectChordAndLyric("", "Verse: ", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
 
             await expectChordAndLyric("F", "It's your fault ", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 1],
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
             ]);
 
             await expectChordAndLyric("C", "that I'm in trouble", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 2],
+                "Line-0",
+                "NoneditableLine",
+                "Block-2",
             ]);
         });
     });
@@ -475,15 +446,15 @@ describe("Edit action with chords", () => {
             await changeLyric("It's your that I'm in trouble");
 
             await expectChordAndLyric("F", "It's your ", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
 
             await expectChordAndLyric("C", "that I'm in trouble", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 1],
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
             ]);
         });
 
@@ -491,15 +462,15 @@ describe("Edit action with chords", () => {
             await changeLyric("It's your fault that I'm in");
 
             await expectChordAndLyric("F", "It's your fault ", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
 
             await expectChordAndLyric("C", "that I'm in", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 1],
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
             ]);
         });
 
@@ -507,15 +478,15 @@ describe("Edit action with chords", () => {
             await changeLyric("your fault that I'm in trouble");
 
             await expectChordAndLyric("F", "your fault ", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
 
             await expectChordAndLyric("C", "that I'm in trouble", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 1],
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
             ]);
         });
 
@@ -523,15 +494,15 @@ describe("Edit action with chords", () => {
             await changeLyric("It your fut hat I'm trouble");
 
             await expectChordAndLyric("F", "It your fut ", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
 
             await expectChordAndLyric("C", "hat I'm trouble", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 1],
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
             ]);
         });
 
@@ -539,15 +510,15 @@ describe("Edit action with chords", () => {
             await changeLyric("that I'm in trouble");
 
             await expectChordAndLyric("F", "\ue100", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
 
             await expectChordAndLyric("C", "that I'm in trouble", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 1],
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
             ]);
         });
 
@@ -555,15 +526,15 @@ describe("Edit action with chords", () => {
             await changeLyric("It's your fault");
 
             await expectChordAndLyric("F", "It's your fault", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 0],
+                "Line-0",
+                "NoneditableLine",
+                "Block-0",
             ]);
 
             await expectChordAndLyric("C", "\ue100", [
-                ["Line", 0],
-                ["NoneditableLine", 0],
-                ["Block", 1],
+                "Line-0",
+                "NoneditableLine",
+                "Block-1",
             ]);
         });
     });
@@ -574,16 +545,16 @@ describe("Add action", () => {
     let subject: () => Promise<void>;
 
     beforeEach(async () => {
-        const { findAllByTestId } = render(basicChordPaper());
+        const { findByTestId } = render(basicChordPaper());
 
-        findByTestIdChain = getFindByTestIdChain(findAllByTestId);
+        findByTestIdChain = getFindByTestIdChain(findByTestId);
 
-        const line = await findByTestIdChain(["NewLine", 2]);
+        const line = await findByTestIdChain("NewLine-2");
         expect(line).toBeInTheDocument();
 
         subject = async () => {
             fireEvent.mouseOver(line);
-            const addButton = (await findAllByTestId("AddButton"))[0];
+            const addButton = await findByTestId("AddButton");
             expect(addButton).toBeInTheDocument();
             fireEvent.click(addButton);
         };
@@ -591,20 +562,14 @@ describe("Add action", () => {
 
     it("adds a new empty line", async () => {
         await subject();
-        const newLine = await findByTestIdChain(
-            ["Line", 3],
-            ["NoneditableLine", 0]
-        );
+        const newLine = await findByTestIdChain("Line-3", "NoneditableLine");
         expect(newLine).toBeInTheDocument();
         expect(newLine).toHaveTextContent("", { normalizeWhitespace: true });
     });
 
     it("pushes the next line down", async () => {
         await subject();
-        const pushedLine = await findByTestIdChain(
-            ["Line", 4],
-            ["NoneditableLine", 0]
-        );
+        const pushedLine = await findByTestIdChain("Line-4", "NoneditableLine");
         expect(pushedLine).toBeInTheDocument();
 
         const lyrics = lyricsInElement(pushedLine);
@@ -622,12 +587,9 @@ describe("Remove action", () => {
         const rendered = render(basicChordPaper());
         queryByText = rendered.queryByText;
 
-        findByTestIdChain = getFindByTestIdChain(rendered.findAllByTestId);
+        findByTestIdChain = getFindByTestIdChain(rendered.findByTestId);
 
-        const line = await findByTestIdChain(
-            ["Line", 2],
-            ["NoneditableLine", 0]
-        );
+        const line = await findByTestIdChain("Line-2", "NoneditableLine");
         expect(line).toBeInTheDocument();
 
         const lyrics = lyricsInElement(line);
@@ -635,7 +597,7 @@ describe("Remove action", () => {
 
         subject = async () => {
             fireEvent.mouseOver(line);
-            const removeButton = await findByTestIdChain(["RemoveButton", 0]);
+            const removeButton = await findByTestIdChain("RemoveButton");
             expect(removeButton).toBeInTheDocument();
             fireEvent.click(removeButton);
         };
@@ -654,10 +616,7 @@ describe("Remove action", () => {
             queryByText(matchLyric("Never gonna run around"))
         );
 
-        const line = await findByTestIdChain(
-            ["Line", 2],
-            ["NoneditableLine", 0]
-        );
+        const line = await findByTestIdChain("Line-2", "NoneditableLine");
         const lyrics = lyricsInElement(line);
         expect(lyrics).toEqual("Never gonna make you cry");
     });

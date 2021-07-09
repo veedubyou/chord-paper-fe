@@ -18,6 +18,8 @@ import {
 } from "react-router-dom";
 import Background from "./assets/img/symphony.png";
 import { ChordSong } from "./common/ChordModel/ChordSong";
+import About from "./components/about/About";
+import Demo from "./components/Demo";
 import {
     aboutPath,
     DemoModePath,
@@ -28,18 +30,17 @@ import {
     SongIDModePath,
     songPath,
 } from "./common/paths";
-import About from "./components/about/About";
-import Demo from "./components/Demo";
-import DragAndDrop from "./components/edit/DragAndDrop";
-import GlobalKeyListenerProvider from "./components/GlobalKeyListener";
-import GuitarDemo from "./components/guitar/GuitarDemo";
+
 import SideMenu from "./components/SideMenu";
 import SongFetcher from "./components/SongFetcher";
 import SongRouter from "./components/SongRouter";
 import { TutorialSwitches } from "./components/Tutorial";
 import { User, UserContext } from "./components/user/userContext";
 import Version from "./components/Version";
-import { withCloudSaveSongContext } from "./components/WithSongContext";
+import { withSongContext } from "./components/WithSongContext";
+import { withCloud } from "./components/WithCloud";
+import GlobalKeyListenerProvider from "./components/GlobalKeyListener";
+import GuitarDemo from "./components/guitar/GuitarDemo";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -91,7 +92,7 @@ const AppLayout = withStyles({
     },
 })(Grid);
 
-const MainSong = withCloudSaveSongContext(SongRouter);
+const MainSong = withSongContext(withCloud(SongRouter));
 
 const AppContent: React.FC<{}> = (): JSX.Element => {
     const [user, setUser] = useState<User | null>(null);
@@ -106,9 +107,7 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
         DemoModePath.isPlayMode(location.pathname) ||
         location.pathname === guitarDemoPath.URL();
 
-    const withRegularAppLayout = (
-        child: React.ReactElement | React.ReactElement[]
-    ) => {
+    const withRegularAppLayout = (child: React.ReactElement) => {
         return (
             <>
                 {!isFullScreen && (
@@ -151,7 +150,7 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
                 {withRegularAppLayout(<Demo />)}
             </Route>
 
-            {TutorialSwitches(withRegularAppLayout)}
+            {TutorialSwitches()}
             <Route key={aboutPath.URL()} path={aboutPath.URL()} exact>
                 {withRegularAppLayout(<About />)}
             </Route>
@@ -175,11 +174,9 @@ function App() {
                 />
                 <SnackbarProvider>
                     <HashRouter>
-                        <DragAndDrop>
-                            <GlobalKeyListenerProvider>
-                                <AppContent />
-                            </GlobalKeyListenerProvider>
-                        </DragAndDrop>
+                        <GlobalKeyListenerProvider>
+                            <AppContent />
+                        </GlobalKeyListenerProvider>
                     </HashRouter>
                 </SnackbarProvider>
             </ThemeProvider>

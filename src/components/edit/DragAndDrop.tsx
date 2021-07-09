@@ -57,13 +57,15 @@ export const HTML5BackendWithCTRLKey = (
 const RNDContext = createDndContext(HTML5BackendWithCTRLKey);
 
 interface DragAndDropProps {
-    children: React.ReactElement;
+    children: React.ReactElement | null;
 }
 
-const DragAndDrop: React.FC<DragAndDropProps> = (
-    props: DragAndDropProps
-): JSX.Element => {
+function useDNDProviderElement(props: DragAndDropProps) {
     const manager = useRef(RNDContext);
+
+    if (!props.children) {
+        throw new Error("No children provided to DND wrapper");
+    }
 
     if (manager.current.dragDropManager === undefined) {
         throw new Error("No DND manager found");
@@ -74,6 +76,13 @@ const DragAndDrop: React.FC<DragAndDropProps> = (
             {props.children}
         </DndProvider>
     );
+}
+
+const DragAndDrop: React.FC<DragAndDropProps> = (
+    props: DragAndDropProps
+): JSX.Element => {
+    const DNDElement = useDNDProviderElement(props);
+    return <React.Fragment>{DNDElement}</React.Fragment>;
 };
 
 export default DragAndDrop;
