@@ -30,19 +30,19 @@ describe("Renders", () => {
     });
 
     test("renders at least a line", async () => {
-        const { findAllByTestId } = render(demo());
-        const expectChordAndLyric = getExpectChordAndLyric(findAllByTestId);
+        const { findByTestId } = render(demo());
+        const expectChordAndLyric = getExpectChordAndLyric(findByTestId);
 
         await expectChordAndLyric("Em7", "We're no strangers to ", [
-            ["Line", 4],
-            ["NoneditableLine", 0],
-            ["Block", 0],
+            "Line-4",
+            "NoneditableLine",
+            "Block-0",
         ]);
 
         await expectChordAndLyric("A7", "love", [
-            ["Line", 4],
-            ["NoneditableLine", 0],
-            ["Block", 1],
+            "Line-4",
+            "NoneditableLine",
+            "Block-1",
         ]);
     });
 });

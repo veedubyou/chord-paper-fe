@@ -8,10 +8,8 @@ import {
 import UnstyledAddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import { useTheme, withStyles } from "@material-ui/styles";
 import React from "react";
-import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { IDable } from "../../common/ChordModel/Collection";
 import { DataTestID } from "../../common/DataTestID";
-import { ChordSongAction } from "../reducer/reducer";
+import { PlainFn } from "../../common/PlainFn";
 
 const HighlightableGrid = withStyles({
     root: {
@@ -43,23 +41,15 @@ const AddCircleOutlineIcon = withStyles((theme: Theme) => ({
 }))(UnstyledAddCircleOutlineIcon);
 
 interface NewLineProps extends DataTestID {
-    lineID: IDable<ChordLine> | "beginning";
-    songDispatch: React.Dispatch<ChordSongAction>;
+    onAdd?: PlainFn;
 }
 
 const NewLine: React.FC<NewLineProps> = (props: NewLineProps): JSX.Element => {
     const theme: Theme = useTheme();
 
-    const handleAddLine = () => {
-        props.songDispatch({
-            type: "add-line",
-            lineID: props.lineID,
-        });
-    };
-
     const hoverMenu = (): React.ReactElement => {
         return (
-            <Button data-testid={"AddButton"} onClick={handleAddLine}>
+            <Button data-testid={"AddButton"} onClick={props.onAdd}>
                 <AddCircleOutlineIcon />
             </Button>
         );
@@ -71,7 +61,7 @@ const NewLine: React.FC<NewLineProps> = (props: NewLineProps): JSX.Element => {
                 container
                 direction="column"
                 justify="center"
-                onClick={handleAddLine}
+                onClick={props.onAdd}
                 data-testid={props["data-testid"]}
                 style={{
                     minHeight: theme.spacing(3),

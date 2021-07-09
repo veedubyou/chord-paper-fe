@@ -1,13 +1,10 @@
 import { Box, Theme, withStyles } from "@material-ui/core";
-import { isLeft } from "fp-ts/lib/Either";
-import { useSnackbar } from "notistack";
-import React, { useMemo } from "react";
+import React from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
+import { IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { PlainFn } from "../../common/PlainFn";
 import { lyricStyle, lyricTypographyVariant } from "../display/Lyric";
-import { ChordSongAction } from "../reducer/reducer";
-import { deserializeCopiedChordLines } from "./CopyAndPaste";
 import { useEditingState } from "./InteractionContext";
 import UnstyledLyricInput from "./lyric_input/LyricInput";
 
@@ -23,7 +20,11 @@ const LyricInput = withStyles((theme: Theme) => ({
 interface WithLyricInputProps {
     children: (handleEdit: PlainFn) => React.ReactElement;
     chordLine: ChordLine;
-    songDispatch: React.Dispatch<ChordSongAction>;
+    onChangeLine?: (id: IDable<ChordLine>) => void;
+    onLyricOverflow?: (id: IDable<ChordLine>, overflowLyric: Lyric[]) => void;
+    onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
+    onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;
+    onSplitLine?: (id: IDable<ChordLine>, splitIndex: number) => boolean;
 }
 
 // this component is inherently quite coupled with Line & friends
@@ -32,75 +33,46 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
     props: WithLyricInputProps
 ): JSX.Element => {
     const { editing, startEdit, finishEdit } = useEditingState();
-    const { songDispatch, chordLine } = props;
-    const { enqueueSnackbar } = useSnackbar();
 
-    const handlers = useMemo(
-        () => ({
-            lyricEdit: (newLyric: Lyric) => {
+    const handlers = {
+        lyricEdit: (newLyrics: Lyric) => {
+            finishEdit();
+
+            props.chordLine.replaceLyrics(newLyrics);
+            props.onChangeLine?.(props.chordLine);
+        },
+        pasteOverflow: (overflowContent: Lyric[]) => {
+            if (props.onLyricOverflow) {
+                props.onLyricOverflow(props.chordLine, overflowContent);
                 finishEdit();
+            }
+        },
+        jsonPaste: (jsonStr: string): boolean => {
+            if (props.onJSONPaste === undefined) {
+                return false;
+            }
 
-                songDispatch({
-                    type: "replace-line-lyrics",
-                    line: chordLine,
-                    lineID: chordLine,
-                    newLyric: newLyric,
-                });
-            },
-
-            lyricPasteOverflow: (overflowContent: Lyric[]) => {
-                songDispatch({
-                    type: "insert-overflow-lyrics",
-                    insertionLineID: chordLine,
-                    overflowLyrics: overflowContent,
-                });
-                finishEdit();
-            },
-            jsonPaste: (jsonStr: string): [boolean, PlainFn | null] => {
-                const deserializedCopyResult =
-                    deserializeCopiedChordLines(jsonStr);
-                // not actually a Chord Paper line payload, don't handle it
-                if (deserializedCopyResult === null) {
-                    return [false, null];
+            return props.onJSONPaste(props.chordLine, jsonStr);
+        },
+        specialBackspace: () => {
+            if (props.onMergeWithPreviousLine) {
+                const handledAndStopEditing = props.onMergeWithPreviousLine(
+                    props.chordLine
+                );
+                if (handledAndStopEditing) {
+                    finishEdit();
                 }
-
-                if (isLeft(deserializedCopyResult)) {
-                    const errorMsg =
-                        "Failed to paste copied lines: " +
-                        deserializedCopyResult.left.message;
-                    enqueueSnackbar(errorMsg, { variant: "error" });
-                    return [true, null];
+            }
+        },
+        specialEnter: (splitIndex: number) => {
+            if (props.onSplitLine) {
+                const handled = props.onSplitLine(props.chordLine, splitIndex);
+                if (handled) {
+                    finishEdit();
                 }
-
-                const insertLines = () =>
-                    songDispatch({
-                        type: "batch-insert-lines",
-                        insertLineID: chordLine,
-                        copiedLines: deserializedCopyResult.right,
-                    });
-
-                return [true, insertLines];
-            },
-
-            specialBackspace: () => {
-                songDispatch({
-                    type: "merge-lines",
-                    latterLineID: chordLine,
-                });
-                finishEdit();
-            },
-            specialEnter: (splitIndex: number) => {
-                songDispatch({
-                    type: "split-line",
-                    lineID: chordLine,
-                    splitIndex: splitIndex,
-                });
-
-                finishEdit();
-            },
-        }),
-        [chordLine, songDispatch, finishEdit, enqueueSnackbar]
-    );
+            }
+        },
+    };
 
     const lineElement: React.ReactElement = props.children(startEdit);
 
@@ -118,7 +90,7 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
                     variant={lyricTypographyVariant}
                     onFinish={handlers.lyricEdit}
                     onJSONPaste={handlers.jsonPaste}
-                    onLyricOverflow={handlers.lyricPasteOverflow}
+                    onLyricOverflow={handlers.pasteOverflow}
                     onSpecialBackspace={handlers.specialBackspace}
                     onSpecialEnter={handlers.specialEnter}
                 >

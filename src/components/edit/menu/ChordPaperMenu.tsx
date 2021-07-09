@@ -21,11 +21,10 @@ import { useCloudCreateSong } from "./cloudSave";
 import { useLoadMenuAction } from "./load";
 import { useSaveMenuAction } from "./save";
 import TransposeMenu from "./TransposeMenu";
-import { ChordSongAction } from "../../reducer/reducer";
 
 interface ChordPaperMenuProps {
     song: ChordSong;
-    songDispatch: React.Dispatch<ChordSongAction>;
+    onSongChanged: (song: ChordSong) => void;
     onPlay?: PlainFn;
 }
 
@@ -47,10 +46,7 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     const { enqueueSnackbar } = useSnackbar();
 
     const user = React.useContext(UserContext);
-
-    const setSong = (loadedSong: ChordSong) =>
-        props.songDispatch({ type: "replace-song", newSong: loadedSong });
-    const loadAction = useLoadMenuAction(setSong, enqueueSnackbar);
+    const loadAction = useLoadMenuAction(props.onSongChanged, enqueueSnackbar);
     const saveAction = useSaveMenuAction(props.song);
     const cloudSaveAction = useCloudCreateSong();
 
@@ -78,11 +74,11 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
         return (
             <TransposeMenu
                 song={props.song}
-                songDispatch={props.songDispatch}
                 open
                 onClose={() => {
                     setTransposeMenuOpen(false);
                 }}
+                onSongChanged={props.onSongChanged}
             ></TransposeMenu>
         );
     }
