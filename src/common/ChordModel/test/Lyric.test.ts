@@ -1,3 +1,4 @@
+import { List } from "immutable";
 import { Lyric } from "../Lyric";
 
 describe("lyric tokenizer", () => {
@@ -12,15 +13,15 @@ describe("lyric tokenizer", () => {
         });
 
         test("appending some content", () => {
-            lyric.append(new Lyric(", the wind tore my hood"));
-            expect(lyric.get(rawStringGetter)).toEqual(
+            const newLyric = lyric.append(new Lyric(", the wind tore my hood"));
+            expect(newLyric.get(rawStringGetter)).toEqual(
                 "The rain pelted cruelly, the wind tore my hood"
             );
         });
 
         test("appending no content", () => {
-            lyric.append(new Lyric(""));
-            expect(lyric.get(rawStringGetter)).toEqual(
+            const newLyric = lyric.append(new Lyric(""));
+            expect(newLyric.get(rawStringGetter)).toEqual(
                 "The rain pelted cruelly"
             );
         });
@@ -39,7 +40,7 @@ describe("lyric tokenizer", () => {
                 (rawStr: string) => new Lyric(rawStr)
             );
 
-            const joinedLyric = Lyric.join(lyrics, "");
+            const joinedLyric = Lyric.join(List(lyrics), "");
             expect(joinedLyric.get(rawStringGetter)).toEqual(
                 "You must trade me a treasure That's of commensurate or greater value Than the suggested retail price Of this mystical ancient antique"
             );
@@ -90,7 +91,9 @@ describe("lyric tokenizer", () => {
         const tokenize = (serializedStr: string): string[] => {
             const lyric = new Lyric(serializedStr);
             const tokens = lyric.tokenize();
-            return tokens.map((lyric: Lyric) => lyric.get(rawStringGetter));
+            return tokens
+                .map((lyric: Lyric) => lyric.get(rawStringGetter))
+                .toArray();
         };
 
         describe("whitespace", () => {

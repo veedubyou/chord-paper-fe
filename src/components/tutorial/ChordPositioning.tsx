@@ -8,54 +8,66 @@ import { LineBreak, LyricsTypography, ChordTypography } from "./Common";
 import { Lyric } from "../../common/ChordModel/Lyric";
 
 const ChordPositioning: React.FC<{}> = (): JSX.Element => {
-    const initialSong = new ChordSong([
-        new ChordLine([
-            new ChordBlock({
-                chord: "C^",
-                lyric: new Lyric("Why do birds suddenly "),
+    const initialSong = new ChordSong({
+        lines: [
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "C^",
+                        lyric: new Lyric("Why do birds suddenly "),
+                    }),
+                    new ChordBlock({
+                        chord: "",
+                        lyric: new Lyric("appear?"),
+                    }),
+                ],
             }),
-            new ChordBlock({
-                chord: "",
-                lyric: new Lyric("appear?"),
-            }),
-        ]),
-    ]);
+        ],
+    });
 
-    const example = new ChordSong([
-        new ChordLine([
-            new ChordBlock({
-                chord: "C^",
-                lyric: new Lyric("Why do birds suddenly"),
+    const example = new ChordSong({
+        lines: [
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "C^",
+                        lyric: new Lyric("Why do birds suddenly"),
+                    }),
+                    new ChordBlock({
+                        chord: "F#7",
+                        lyric: new Lyric(" ap-"),
+                    }),
+                    new ChordBlock({
+                        chord: "B7sus4",
+                        lyric: new Lyric("pear?"),
+                    }),
+                    new ChordBlock({ chord: "B7", lyric: new Lyric("\ue200") }),
+                ],
             }),
-            new ChordBlock({
-                chord: "F#7",
-                lyric: new Lyric(" ap-"),
-            }),
-            new ChordBlock({
-                chord: "B7sus4",
-                lyric: new Lyric("pear?"),
-            }),
-            new ChordBlock({ chord: "B7", lyric: new Lyric("\ue200") }),
-        ]),
-    ]);
+        ],
+    });
 
-    const expectedSong = new ChordSong([
-        new ChordLine([
-            new ChordBlock({
-                chord: "C^",
-                lyric: new Lyric("Why do birds suddenly"),
+    const expectedSong = new ChordSong({
+        lines: [
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "C^",
+                        lyric: new Lyric("Why do birds suddenly"),
+                    }),
+                    new ChordBlock({
+                        chord: "F#7",
+                        lyric: new Lyric(" ap-"),
+                    }),
+                    new ChordBlock({
+                        chord: "B7sus4",
+                        lyric: new Lyric("pear?"),
+                    }),
+                    new ChordBlock({ chord: "B7", lyric: new Lyric("\ue200") }),
+                ],
             }),
-            new ChordBlock({
-                chord: "F#7",
-                lyric: new Lyric(" ap-"),
-            }),
-            new ChordBlock({
-                chord: "B7sus4",
-                lyric: new Lyric("pear?"),
-            }),
-            new ChordBlock({ chord: "B7", lyric: new Lyric("\ue200") }),
-        ]),
-    ]);
+        ],
+    });
 
     return (
         <>

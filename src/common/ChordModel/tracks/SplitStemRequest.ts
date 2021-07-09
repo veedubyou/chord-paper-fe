@@ -1,5 +1,6 @@
 import * as iots from "io-ts";
 import { BaseTrackValidator, validateValue } from "./BaseTrack";
+import { Record } from "immutable";
 
 export const SplitStemTrackValidator = iots.intersection([
     BaseTrackValidator,
@@ -18,22 +19,30 @@ type SplitStemTrackValidatedFields = iots.TypeOf<
 >;
 
 export type SplitStemTypes = "split_2stems" | "split_4stems" | "split_5stems";
-export class SplitStemTrack implements SplitStemTrackValidatedFields {
-    id: string;
-    track_type: SplitStemTypes;
-    label: string;
-    original_url: string;
 
+const DefaultSplitStemTrackRecord = {
+    id: "",
+    track_type: "split_2stems" as SplitStemTypes,
+    label: "",
+    original_url: "",
+};
+
+export class SplitStemTrack
+    extends Record(DefaultSplitStemTrackRecord)
+    implements SplitStemTrackValidatedFields
+{
     constructor(
         id: string,
         label: string,
         splitType: SplitStemTypes,
         originalURL: string
     ) {
-        this.id = id;
-        this.track_type = splitType;
-        this.label = label;
-        this.original_url = originalURL;
+        super({
+            id: id,
+            track_type: splitType,
+            label: label,
+            original_url: originalURL,
+        });
     }
 
     static fromValidatedFields(

@@ -1,3 +1,4 @@
+import { ChordBlock } from "../../ChordModel/ChordBlock";
 import { ChordSong } from "../../ChordModel/ChordSong";
 import { AllNotes, Note } from "../foundation/Note";
 import {
@@ -67,15 +68,21 @@ export const transposeSong = (
     fromKey: Note,
     toKey: Note
 ): ChordSong => {
-    for (const line of song.chordLines) {
-        for (const block of line.chordBlocks) {
-            if (block.chord === "") {
-                continue;
-            }
-
-            block.chord = transposeChord(block.chord, fromKey, toKey);
+    const transposeBlock = (block: ChordBlock): ChordBlock => {
+        if (block.chord === "") {
+            return block;
         }
-    }
 
-    return song;
+        return block.update("chord", (chord: string) =>
+            transposeChord(chord, fromKey, toKey)
+        );
+    };
+
+    const newSong = song.updateAllElements((line) => {
+        return line.updateAllElements((block) => {
+            return transposeBlock(block);
+        });
+    });
+
+    return newSong;
 };

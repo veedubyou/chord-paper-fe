@@ -4,6 +4,7 @@ import {
     Paper as UnstyledPaper,
     withStyles,
 } from "@material-ui/core";
+import { List } from "immutable";
 import React, { useMemo, useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
@@ -60,7 +61,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         event: React.KeyboardEvent<HTMLDivElement>
     ): void => {
         const lineIDs = handleBatchLineDelete(event);
-        if (!lineIDs) {
+        if (lineIDs === false) {
             return;
         }
 
@@ -70,15 +71,12 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         });
     };
 
-    const lines = () => {
-        const lines = props.song.chordLines.flatMap((line: ChordLine) => {
+    const lines: List<JSX.Element> = (() => {
+        let lines = props.song.chordLines.list.flatMap((line: ChordLine) => {
             return [
                 <Line
                     key={line.id}
                     chordLine={line}
-                    jsonHackUntilWeHaveImmutableDataStructures={JSON.stringify(
-                        line
-                    )}
                     songDispatch={songDispatch}
                     data-lineid={line.id}
                     data-testid="Line"
@@ -100,10 +98,11 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
                 data-testid="NewLine-Top"
             />
         );
-        lines.splice(0, 0, firstNewLine);
+
+        lines = lines.splice(0, 0, firstNewLine);
 
         return lines;
-    };
+    })();
 
     // prevent other interactions if currently interacting
     const allowInteraction: boolean = !interacting;
@@ -122,7 +121,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
             >
                 <Grid container justify="center">
                     <Grid item xs={10}>
-                        {lines()}
+                        {lines}
                     </Grid>
                 </Grid>
             </Paper>

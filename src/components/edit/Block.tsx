@@ -2,6 +2,7 @@ import { Box, Grid, makeStyles, Theme } from "@material-ui/core";
 import red from "@material-ui/core/colors/red";
 import { withStyles } from "@material-ui/styles";
 import clsx from "clsx";
+import { List } from "immutable";
 import React from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { IDable } from "../../common/ChordModel/Collection";
@@ -77,10 +78,11 @@ export interface BlockProps extends DataTestID {
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     const { editing, startEdit, finishEdit } = useEditingState();
 
-    let lyricTokens: Lyric[] = props.chordBlock.lyricTokens;
+    let lyricTokens: List<Lyric> = props.chordBlock.lyricTokens;
 
-    if (lyricTokens.length === 0) {
-        lyricTokens = [new Lyric(inflatingWhitespace())];
+    if (lyricTokens.size === 0) {
+        const whitespaceLyric = new Lyric(inflatingWhitespace());
+        lyricTokens = List([whitespaceLyric]);
     }
 
     const firstTokenStyle = {

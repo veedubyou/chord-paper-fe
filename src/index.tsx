@@ -5,10 +5,9 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
-    // TODO - fix when using immutable
-    // <React.StrictMode>
-    <App />,
-    // </React.StrictMode>,
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>,
     document.getElementById("root")
 );
 

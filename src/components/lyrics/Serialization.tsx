@@ -1,3 +1,4 @@
+import { List } from "immutable";
 import React from "react";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import Tab, {
@@ -25,10 +26,13 @@ export const deserializeLyrics = (
     edit: boolean
 ): (React.ReactElement | string)[] => {
     const nodes: (React.ReactElement | string)[] = [];
-    const tokens: Lyric[] = lyric.tokenize();
+    const tokens: List<Lyric> = lyric.tokenize();
 
-    for (let i = 0; i < tokens.length; i++) {
-        const token = tokens[i];
+    for (let i = 0; i < tokens.size; i++) {
+        const token = tokens.get(i);
+        if (token === undefined) {
+            throw new Error("Token index not found");
+        }
         const node: React.ReactElement | string = token.get((lyrics: string) =>
             deserializeLyricStr(lyrics, i, edit)
         );

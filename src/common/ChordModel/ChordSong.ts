@@ -12,8 +12,11 @@ import {
     TimeSection,
     timeSectionSortFn,
 } from "./ChordLine";
-import { Collection, IDable } from "./Collection";
+import { Collection, CollectionMethods, IDable } from "./Collection";
 import { Lyric } from "./Lyric";
+import { List, Record } from "immutable";
+import { Note } from "../music/foundation/Note";
+import { transposeSong } from "../music/transpose/Transpose";
 
 const MetadataValidator = iots.type({
     title: iots.string,
@@ -95,37 +98,128 @@ const ChordSongValidator = iots.type({
 
 type ChordSongValidatedFields = iots.TypeOf<typeof ChordSongValidator>;
 
-export class ChordSong extends Collection<ChordLine>
-    implements SongSummaryValidatedFields {
+type RecordType = {
     id: string;
     owner: string;
     lastSavedAt: Date | null;
     metadata: Metadata;
+    elements: Collection<ChordLine>;
+};
 
-    constructor(
-        input_elements?: ChordLine[],
-        fields?: SongSummaryValidatedFields
-    ) {
-        const elements = input_elements ?? [new ChordLine()];
+const DefaultRecord: RecordType = {
+    id: "",
+    owner: "",
+    lastSavedAt: null,
+    metadata: {
+        title: "",
+        composedBy: "",
+        performedBy: "",
+    },
+    elements: new Collection<ChordLine>(),
+};
 
-        super(elements);
+const RecordConstructor = Record(DefaultRecord);
+type ChordSongRecord = ReturnType<typeof RecordConstructor>;
 
-        if (fields === undefined) {
-            this.id = "";
-            this.owner = "";
-            this.metadata = {
-                title: "",
-                composedBy: "",
-                performedBy: "",
-            };
-            this.lastSavedAt = null;
+type ConstructorParams = {
+    lines?: Collection<ChordLine> | ChordLine[];
+    fields?: SongSummaryValidatedFields;
+};
+
+export class ChordSong
+    extends CollectionMethods<ChordSong, ChordLine>
+    implements SongSummaryValidatedFields
+{
+    readonly record: ChordSongRecord;
+
+    constructor(params: ConstructorParams | ChordSongRecord) {
+        super();
+
+        if (ChordSong.isChordSongRecord(params)) {
+            this.record = params as ChordSongRecord;
             return;
         }
 
-        this.id = fields.id;
-        this.owner = fields.owner;
-        this.metadata = fields.metadata;
-        this.lastSavedAt = fields.lastSavedAt;
+        const record: RecordType = {
+            ...DefaultRecord,
+            metadata: { ...DefaultRecord.metadata },
+        };
+
+        if (params.lines === undefined) {
+            record.elements = new Collection([new ChordLine({})]);
+        } else {
+            if (params.lines instanceof Collection) {
+                record.elements = params.lines;
+            } else {
+                record.elements = new Collection(params.lines);
+            }
+        }
+
+        if (params.fields !== undefined) {
+            record.id = params.fields.id;
+            record.owner = params.fields.owner;
+            record.metadata = params.fields.metadata;
+            record.lastSavedAt = params.fields.lastSavedAt;
+        }
+
+        this.record = RecordConstructor(record);
+    }
+
+    static isChordSongRecord(
+        params: ConstructorParams | ChordSongRecord
+    ): params is ChordSongRecord {
+        return Record.isRecord(params);
+    }
+
+    toJSON(): object {
+        return this.record.toJSON();
+    }
+
+    private new(maybeNew: ChordSongRecord): ChordSong {
+        if (maybeNew === this.record) {
+            return this;
+        }
+
+        return new ChordSong(maybeNew);
+    }
+
+    get id(): string {
+        return this.record.id;
+    }
+
+    get owner(): string {
+        return this.record.owner;
+    }
+
+    get metadata(): Metadata {
+        return this.record.metadata;
+    }
+
+    get lastSavedAt(): Date | null {
+        return this.record.lastSavedAt;
+    }
+
+    protected get elements(): Collection<ChordLine> {
+        return this.record.elements;
+    }
+
+    updateCollection(
+        updater: (collection: Collection<ChordLine>) => Collection<ChordLine>
+    ): ChordSong {
+        return this.update("elements", updater);
+    }
+
+    set<K extends keyof RecordType>(key: K, value: RecordType[K]): ChordSong {
+        const newRecord = this.record.set(key, value);
+        return this.new(newRecord);
+    }
+
+    update<K extends keyof RecordType>(
+        key: K,
+        updater: (value: RecordType[K]) => RecordType[K]
+    ): ChordSong {
+        const newRecord = this.record.update(key, updater);
+        return this.new(newRecord);
     }
 
     static fromValidatedFields(
@@ -137,7 +231,10 @@ export class ChordSong extends Collection<ChordLine>
             }
         );
 
-        return new ChordSong(chordLines, validatedFields);
+        return new ChordSong({
+            lines: new Collection(chordLines),
+            fields: validatedFields,
+        });
     }
 
     static deserialize(jsonStr: string): Either<Error, ChordSong> {
@@ -165,28 +262,29 @@ export class ChordSong extends Collection<ChordLine>
         const chordLines: ChordLine[] = lyricLines.map((lyricLine: Lyric) =>
             ChordLine.fromLyrics(lyricLine)
         );
-        return new ChordSong(chordLines);
+
+        const params: ConstructorParams = {
+            lines: new Collection(chordLines),
+        };
+
+        return new ChordSong(params);
     }
 
-    get chordLines(): ChordLine[] {
+    get chordLines(): Collection<ChordLine> {
         return this.elements;
     }
 
-    get timeSections(): TimeSection[] {
-        const collectSections = (
-            timeSections: TimeSection[],
-            line: ChordLine
-        ): TimeSection[] => {
+    get timeSections(): List<TimeSection> {
+        const timeSections: TimeSection[] = [];
+
+        this.chordLines.forEach((line: ChordLine) => {
             if (line.section?.type === "time") {
                 timeSections.push(line.section);
             }
+        });
 
-            return timeSections;
-        };
-
-        const timeSections = this.elements.reduce(collectSections, []);
         timeSections.sort(timeSectionSortFn);
-        return timeSections;
+        return List(timeSections);
     }
 
     get title(): string {
@@ -213,24 +311,18 @@ export class ChordSong extends Collection<ChordLine>
         this.metadata.composedBy = newComposedBy;
     }
 
-    clone(): ChordSong {
-        return new ChordSong(this.elements, {
-            ...this,
-        });
+    get(idable: IDable<ChordLine>): ChordLine {
+        return this.chordLines.get(idable);
     }
 
     // deep clone clones only the contents of the song, not the ownership information
     // i.e. not ID, not owner ID, not last saved, etc
-    deepClone(): ChordSong {
-        const clone = lodash.cloneDeep(this);
-        clone.id = "";
-        clone.owner = "";
-        clone.lastSavedAt = null;
-        return clone;
-    }
+    fork(): ChordSong {
+        const clone = this.set("id", "")
+            .set("owner", "")
+            .set("lastSavedAt", null);
 
-    toJSON(): object {
-        return this;
+        return clone;
     }
 
     isUnsaved(): boolean {
@@ -249,11 +341,13 @@ export class ChordSong extends Collection<ChordLine>
         return this.owner === user.userID;
     }
 
-    mergeLineWithPrevious(idable: IDable<ChordLine>): boolean {
-        const index = this.indexOf(idable.id);
+    mergeLineWithPrevious(idable: IDable<ChordLine>): [ChordSong, boolean] {
+        const currIndex = this.chordLines.indexOf(idable.id);
+
+        const hasPreviousLine = currIndex > 0;
         // no previous line to merge with, just bail
-        if (index === 0) {
-            return false;
+        if (!hasPreviousLine) {
+            return [this, false];
         }
 
         // the user experience usually would like a space between lines when they're merged
@@ -262,26 +356,70 @@ export class ChordSong extends Collection<ChordLine>
         // Give You Up
         // =>
         // Never GonnaGive You Up is awkward
-        const prevLine = this.chordLines[index - 1];
-        const lastBlockIndex = prevLine.chordBlocks.length - 1;
-        prevLine.chordBlocks[lastBlockIndex].lyric.append(new Lyric(" "));
+        // const prevLine = this.chordLines.getAtIndex(index - 1);
 
-        const currLine = this.chordLines[index];
-        prevLine.chordBlocks.push(...currLine.chordBlocks);
-        prevLine.normalizeBlocks();
+        const addSpaceToEndOfLine = (line: ChordLine): ChordLine => {
+            const lastBlockIndex = line.chordBlocks.length - 1;
 
-        this.chordLines.splice(index, 1);
+            return line.update("elements", (elements) => {
+                return elements.update(lastBlockIndex, (block) => {
+                    return block.update("lyric", (lyric) => {
+                        return lyric.append(new Lyric(" "));
+                    });
+                });
+            });
+        };
 
-        return true;
+        const appendLineToPrev = (
+            prevLine: ChordLine,
+            currLine: ChordLine
+        ): ChordLine => {
+            return prevLine.update("elements", (elements) => {
+                return elements.transform((list) =>
+                    list.push(...currLine.chordBlocks.toArray())
+                );
+            });
+        };
+
+        const mergeLines = (
+            prevLine: ChordLine,
+            currLine: ChordLine
+        ): ChordLine => {
+            prevLine = addSpaceToEndOfLine(prevLine);
+            prevLine = appendLineToPrev(prevLine, currLine);
+            prevLine = prevLine.normalizeBlocks();
+
+            return prevLine;
+        };
+
+        const newChordSong = this.update("elements", (elements) => {
+            const currLine = elements.getAtIndex(currIndex);
+
+            elements = elements.update(currIndex - 1, (prevLine) =>
+                mergeLines(prevLine, currLine)
+            );
+
+            elements = elements.remove(currLine);
+
+            return elements;
+        });
+
+        return [newChordSong, true];
     }
 
-    splitLine(idable: IDable<ChordLine>, splitIndex: number): boolean {
-        const chordLine = this.get(idable);
-        const nextLine = chordLine.splitByCharIndex(splitIndex);
+    splitLine(
+        idable: IDable<ChordLine>,
+        splitIndex: number
+    ): [ChordSong, boolean] {
+        const chordLine = this.chordLines.get(idable);
 
-        this.addAfter(chordLine, nextLine);
+        const [newCurrLine, nextLine] = chordLine.splitByCharIndex(splitIndex);
 
-        return true;
+        const newChordSong = this.update("elements", (elements) => {
+            return elements.splice(chordLine, 1, newCurrLine, nextLine);
+        });
+
+        return [newChordSong, true];
     }
 
     contentEquals(other: ChordSong): boolean {
@@ -293,36 +431,66 @@ export class ChordSong extends Collection<ChordLine>
             return false;
         }
 
-        const reducer = (
-            isEqual: boolean,
-            value: ChordLine,
-            index: number
-        ): boolean => {
-            if (!isEqual) {
-                return false;
+        let linesAreEqual = true;
+        this.chordLines.forEach(
+            (line: ChordLine, index: number): void | false => {
+                const otherLine = other.chordLines.getAtIndex(index);
+                if (!line.contentEquals(otherLine)) {
+                    linesAreEqual = false;
+                    return false;
+                }
             }
+        );
 
-            const otherLine = other.chordLines[index];
-            if (!value.contentEquals(otherLine)) {
-                return false;
-            }
-
-            return true;
-        };
-
-        return this.chordLines.reduce(reducer, true);
+        return linesAreEqual;
     }
 
-    findLineAndBlock(blockID: IDable<ChordBlock>): [ChordLine, ChordBlock] {
-        for (const line of this.chordLines) {
-            const block: ChordBlock | undefined = line.chordBlocks.find(
+    //TODO
+    // replaceLineAndBlock(
+    //     blockID: IDable<ChordBlock>,
+    //     replacer: (
+    //         line: ChordLine,
+    //         block: ChordBlock
+    //     ) => [ChordLine, ChordBlock]
+    // ): ChordSong {
+    //     const block = line.chordBlocks.getAtIndex(blockIndex);
+
+    //     const [newLine, newBlock] = replacer(line, block);
+
+    //     this.update("elements", (elements) => {
+    //         elements.update(lineIndex);
+    //     });
+
+    //     // const findBlock = (line: ChordLine): boolean => {
+    //     //     line.chordBlocks.
+    //     // }
+
+    //     // this.chordLines.updateWhere((line) => {
+
+    //     //     line.chordBlocks.updateWhere((block) => block.id === blockID.id, )
+    //     // })
+    //     // this.chordLines.transform((lineList) => {
+    //     //     lineList.findEntry
+    //     // })
+    // }
+
+    findLineWithBlock(blockID: IDable<ChordBlock>): ChordLine {
+        const line = this.chordLines.list.find((line): boolean => {
+            const blockResult = line.chordBlocks.list.find(
                 (block: ChordBlock) => block.id === blockID.id
             );
-            if (block !== undefined) {
-                return [line, block];
-            }
+
+            return blockResult !== undefined;
+        });
+
+        if (line === undefined) {
+            throw new Error("BlockID can't be found in the entire song");
         }
 
-        throw new Error("BlockID can't be found in the entire song");
+        return line;
+    }
+
+    transpose(fromKey: Note, toKey: Note): ChordSong {
+        return transposeSong(this, fromKey, toKey);
     }
 }
