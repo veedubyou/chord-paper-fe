@@ -445,35 +445,6 @@ export class ChordSong
         return linesAreEqual;
     }
 
-    //TODO
-    // replaceLineAndBlock(
-    //     blockID: IDable<ChordBlock>,
-    //     replacer: (
-    //         line: ChordLine,
-    //         block: ChordBlock
-    //     ) => [ChordLine, ChordBlock]
-    // ): ChordSong {
-    //     const block = line.chordBlocks.getAtIndex(blockIndex);
-
-    //     const [newLine, newBlock] = replacer(line, block);
-
-    //     this.update("elements", (elements) => {
-    //         elements.update(lineIndex);
-    //     });
-
-    //     // const findBlock = (line: ChordLine): boolean => {
-    //     //     line.chordBlocks.
-    //     // }
-
-    //     // this.chordLines.updateWhere((line) => {
-
-    //     //     line.chordBlocks.updateWhere((block) => block.id === blockID.id, )
-    //     // })
-    //     // this.chordLines.transform((lineList) => {
-    //     //     lineList.findEntry
-    //     // })
-    // }
-
     findLineWithBlock(blockID: IDable<ChordBlock>): ChordLine {
         const line = this.chordLines.list.find((line): boolean => {
             const blockResult = line.chordBlocks.list.find(
