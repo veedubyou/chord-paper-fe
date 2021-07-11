@@ -20,14 +20,19 @@ export const ChordBlockValidator = iots.type({
 
 export type ChordBlockValidatedFields = iots.TypeOf<typeof ChordBlockValidator>;
 
-const DefaultRecord = {
+type RecordType = {
+    id: string;
+    chord: string;
+    lyric: Lyric;
+    type: "ChordBlock";
+};
+
+const DefaultRecord: RecordType = {
     id: "",
     chord: "",
     lyric: new Lyric(""),
     type: "ChordBlock" as "ChordBlock",
 };
-
-type RecordType = typeof DefaultRecord;
 
 const RecordConstructor = Record(DefaultRecord);
 type ChordBlockRecord = ReturnType<typeof RecordConstructor>;
@@ -36,8 +41,8 @@ export class ChordBlock implements IDable<ChordBlock> {
     readonly record: ChordBlockRecord;
 
     constructor(params: ChordBlockConstructorParams | ChordBlockRecord) {
-        if (Record.isRecord(params)) {
-            this.record = params as ChordBlockRecord;
+        if (ChordBlock.isChordBlockRecord(params)) {
+            this.record = params;
             return;
         }
 
@@ -51,6 +56,12 @@ export class ChordBlock implements IDable<ChordBlock> {
             lyric: lyric,
             type: "ChordBlock",
         });
+    }
+
+    static isChordBlockRecord(
+        params: ChordBlockConstructorParams | ChordBlockRecord
+    ): params is ChordBlockRecord {
+        return Record.isRecord(params);
     }
 
     get id(): string {
@@ -159,11 +170,10 @@ export class ChordBlock implements IDable<ChordBlock> {
             lyric: Lyric.join(prevBlockLyricTokens, ""),
         });
 
-        const newCurrBlock: ChordBlock = new ChordBlock({
-            chord: "",
-            lyric: Lyric.join(thisBlockLyricTokens, ""),
-            id: this.id,
-        });
+        const newCurrBlock: ChordBlock = this.set("chord", "").set(
+            "lyric",
+            Lyric.join(thisBlockLyricTokens, "")
+        );
 
         return [prevBlock, newCurrBlock];
     }
@@ -184,11 +194,10 @@ export class ChordBlock implements IDable<ChordBlock> {
             lyric: prevBlockLyrics,
         });
 
-        const newCurrBlock: ChordBlock = new ChordBlock({
-            chord: "",
-            lyric: thisBlockLyrics,
-            id: this.id,
-        });
+        const newCurrBlock = this.set("chord", "").set(
+            "lyric",
+            thisBlockLyrics
+        );
 
         return [prevBlock, newCurrBlock];
     }
