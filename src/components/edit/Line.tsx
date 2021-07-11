@@ -3,10 +3,11 @@ import grey from "@material-ui/core/colors/grey";
 import red from "@material-ui/core/colors/red";
 import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
 import ChatBubbleIcon from "@material-ui/icons/ChatBubbleOutline";
+import { List } from "immutable";
 import React, { useMemo, useState } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { IDable } from "../../common/ChordModel/Collection";
+import { Collection, IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { DataTestID } from "../../common/DataTestID";
 import { PlainFn } from "../../common/PlainFn";
@@ -38,8 +39,6 @@ const HighlightableBox = withStyles({
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
-    //TODO
-    jsonHackUntilWeHaveImmutableDataStructures: string;
     songDispatch: React.Dispatch<ChordSongAction>;
     "data-lineid": string;
 }
@@ -86,18 +85,18 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
         [chordLine, songDispatch, removed]
     );
 
-    let chordBlocks: ChordBlock[] = props.chordLine.chordBlocks;
+    let chordBlocks: Collection<ChordBlock> = props.chordLine.chordBlocks;
     if (chordBlocks.length === 0) {
-        chordBlocks = [
+        chordBlocks = new Collection([
             new ChordBlock({
                 chord: "",
                 lyric: new Lyric(""),
             }),
-        ];
+        ]);
     }
 
-    const blocks: React.ReactElement[] = chordBlocks.map(
-        (chordBlock: ChordBlock) => (
+    const blocks: List<React.ReactElement> = chordBlocks.list.map(
+        (chordBlock: ChordBlock): React.ReactElement => (
             <Block
                 key={chordBlock.id}
                 chordBlock={chordBlock}

@@ -1,3 +1,4 @@
+import { List } from "immutable";
 import React, { useCallback, useState } from "react";
 import shortid from "shortid";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
@@ -13,7 +14,7 @@ type PlayerVisibilityState = "minimized" | "full";
 
 interface JamStationProps {
     tracklistLoad: TrackListLoad;
-    timeSections: TimeSection[];
+    timeSections: List<TimeSection>;
     onTrackListChanged: (trackList: TrackList) => void;
     onRefresh: PlainFn;
     collapsedButtonClassName?: string;
@@ -27,13 +28,11 @@ interface TrackEditDialogState {
 const JamStation: React.FC<JamStationProps> = (
     props: JamStationProps
 ): JSX.Element => {
-    const [playerVisibilityState, setPlayerVisibilityState] = useState<
-        PlayerVisibilityState
-    >("minimized");
+    const [playerVisibilityState, setPlayerVisibilityState] =
+        useState<PlayerVisibilityState>("minimized");
 
-    const [trackEditDialogState, setTrackEditDialogState] = useState<
-        TrackEditDialogState
-    >({ open: false, randomID: "" });
+    const [trackEditDialogState, setTrackEditDialogState] =
+        useState<TrackEditDialogState>({ open: false, randomID: "" });
 
     // lazy loading - if we just render everything it will also
     // cause heavy network traffic, don't do it without prompt

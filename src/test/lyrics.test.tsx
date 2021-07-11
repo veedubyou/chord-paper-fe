@@ -91,7 +91,7 @@ describe("Plain text edit action", () => {
 
     describe("From an empty song", () => {
         beforeEach(async () => {
-            const song = new ChordSong();
+            const song = new ChordSong({});
 
             const findByTestId = getFindAllByTestId(song);
             findByTestIdChain = getFindByTestIdChain(findByTestId);
@@ -319,18 +319,22 @@ describe("Edit action with chords", () => {
     let findByTestIdChain: FindByTestIdChainFn;
     let expectChordAndLyric: ExpectChordAndLyricFn;
     beforeEach(async () => {
-        const song = new ChordSong([
-            new ChordLine([
-                new ChordBlock({
-                    chord: "F",
-                    lyric: new Lyric("It's your fault "),
+        const song = new ChordSong({
+            lines: [
+                new ChordLine({
+                    blocks: [
+                        new ChordBlock({
+                            chord: "F",
+                            lyric: new Lyric("It's your fault "),
+                        }),
+                        new ChordBlock({
+                            chord: "C",
+                            lyric: new Lyric("that I'm in trouble"),
+                        }),
+                    ],
                 }),
-                new ChordBlock({
-                    chord: "C",
-                    lyric: new Lyric("that I'm in trouble"),
-                }),
-            ]),
-        ]);
+            ],
+        });
 
         const findByTestId = getFindAllByTestId(song);
         findByTestIdChain = getFindByTestIdChain(findByTestId);

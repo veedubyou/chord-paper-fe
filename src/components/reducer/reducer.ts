@@ -1,4 +1,3 @@
-import lodash from "lodash";
 import { useCallback, useReducer } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
@@ -6,7 +5,6 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { Note } from "../../common/music/foundation/Note";
-import { transposeSong } from "../../common/music/transpose/Transpose";
 
 type ReplaceSong = {
     type: "replace-song";
@@ -128,165 +126,207 @@ const chordSongReducer = (
     song: ChordSong,
     action: ChordSongAction
 ): ChordSong => {
-    // TODO: performance killer
-    // need to change this into immutable object pattern
-    song = lodash.cloneDeep(song);
-
     switch (action.type) {
         case "replace-song": {
-            return action.newSong.clone();
+            return action.newSong;
         }
 
         case "set-header": {
             if (action.title !== undefined) {
-                song.title = action.title;
+                const title: string = action.title;
+                song = song.update("metadata", (metadata) => ({
+                    ...metadata,
+                    title: title,
+                }));
             }
 
             if (action.composedBy !== undefined) {
-                song.composedBy = action.composedBy;
+                const composedBy: string = action.composedBy;
+                song = song.update("metadata", (metadata) => ({
+                    ...metadata,
+                    composedBy: composedBy,
+                }));
             }
 
             if (action.performedBy !== undefined) {
-                song.performedBy = action.performedBy;
+                const performedBy: string = action.performedBy;
+                song = song.update("metadata", (metadata) => ({
+                    ...metadata,
+                    performedBy: performedBy,
+                }));
             }
 
-            return song.clone();
+            return song;
         }
 
         case "set-last-saved-at": {
-            song.lastSavedAt = action.lastSavedAt;
-            return song.clone();
+            return song.set("lastSavedAt", action.lastSavedAt);
         }
 
         case "add-line": {
             if (action.lineID === "beginning") {
-                song.addBeginning(new ChordLine());
-            } else {
-                song.addAfter(action.lineID, new ChordLine());
+                return song.addBeginning(new ChordLine({}));
             }
-
-            return song.clone();
+            return song.addAfter(action.lineID, new ChordLine({}));
         }
 
         case "remove-line": {
-            song.remove(action.lineID);
-            return song.clone();
+            return song.removeElement(action.lineID);
         }
 
         case "split-line": {
-            song.splitLine(action.lineID, action.splitIndex);
-            return song.clone();
+            const [newSong, splitted] = song.splitLine(
+                action.lineID,
+                action.splitIndex
+            );
+            if (!splitted) {
+                return song;
+            }
+
+            return newSong;
         }
 
         case "merge-lines": {
-            const merged = song.mergeLineWithPrevious(action.latterLineID);
+            const [newSong, merged] = song.mergeLineWithPrevious(
+                action.latterLineID
+            );
             if (!merged) {
                 return song;
             }
 
-            return song.clone();
+            return newSong;
         }
 
         case "batch-insert-lines": {
             const currLine: ChordLine = song.get(action.insertLineID);
 
-            song.addAfter(action.insertLineID, ...action.copiedLines);
+            song = song.addAfter(action.insertLineID, ...action.copiedLines);
 
             // if the line is empty, the user was probably trying to paste into the current line, and not the next
             // so just remove the current line to simulate that
             if (currLine.isEmpty()) {
-                song.remove(action.insertLineID);
+                song = song.removeElement(action.insertLineID);
             }
 
-            return song.clone();
+            return song;
         }
 
         case "batch-remove-lines": {
-            song.removeMultiple(action.lineIDs);
-            return song.clone();
+            return song.removeMultipleElements(action.lineIDs);
         }
 
         case "replace-line-lyrics": {
-            const line: ChordLine = song.get(action.lineID);
-
-            line.replaceLyrics(action.newLyric);
-            return song.clone();
+            return song.replaceElement(action.lineID, (line) => {
+                return line.replaceLyrics(action.newLyric);
+            });
         }
 
         case "insert-overflow-lyrics": {
             const newChordLines: ChordLine[] = action.overflowLyrics.map(
                 (newLyricLine: Lyric) => ChordLine.fromLyrics(newLyricLine)
             );
-            song.addAfter(action.insertionLineID, ...newChordLines);
-            return song.clone();
+            return song.addAfter(action.insertionLineID, ...newChordLines);
         }
 
         case "set-chord": {
-            const line: ChordLine = song.get(action.lineID);
-            line.setChord(action.blockID, action.newChord);
-            return song.clone();
+            return song.replaceElement(action.lineID, (line) => {
+                return line.setChord(action.blockID, action.newChord);
+            });
         }
 
         case "split-block": {
-            const line: ChordLine = song.get(action.lineID);
-            line.splitBlock(action.blockID, action.splitIndex);
-            return song.clone();
+            return song.replaceElement(action.lineID, (line) => {
+                return line.splitBlock(action.blockID, action.splitIndex);
+            });
         }
 
         case "drag-and-drop-chord": {
-            const [sourceLine, sourceBlock] = song.findLineAndBlock(
-                action.sourceBlockID
+            let sourceLine = song.findLineWithBlock(action.sourceBlockID);
+
+            let destinationLine = song.findLineWithBlock(
+                action.destinationBlockID
             );
+
+            const sameLine = sourceLine === destinationLine;
+            const syncSameLines = (newLine: ChordLine) => {
+                if (sameLine) {
+                    sourceLine = newLine;
+                    destinationLine = newLine;
+                }
+            };
 
             const moveAction = !action.copyAction;
             if (moveAction) {
                 // clearing the source block first allows handling of when the chord
                 // is dropped onto another token in the same block without special cases
-                sourceBlock.chord = "";
+                sourceLine = sourceLine.replaceElement(
+                    action.sourceBlockID,
+                    (block) => block.set("chord", "")
+                );
+
+                syncSameLines(sourceLine);
             }
 
-            const [destinationLine, destinationBlock] = song.findLineAndBlock(
-                action.destinationBlockID
-            );
-
             if (action.splitIndex !== 0) {
-                destinationLine.splitBlock(
+                destinationLine = destinationLine.splitBlock(
                     action.destinationBlockID,
                     action.splitIndex
                 );
+
+                syncSameLines(destinationLine);
             }
 
-            destinationBlock.chord = action.newChord;
+            destinationLine = destinationLine.replaceElement(
+                action.destinationBlockID,
+                (block) => {
+                    return block.set("chord", action.newChord);
+                }
+            );
 
-            sourceLine.normalizeBlocks();
-            destinationLine.normalizeBlocks();
+            syncSameLines(destinationLine);
 
-            return song.clone();
+            if (sameLine) {
+                sourceLine = sourceLine.normalizeBlocks();
+                syncSameLines(sourceLine);
+            } else {
+                sourceLine = sourceLine.normalizeBlocks();
+                destinationLine = destinationLine.normalizeBlocks();
+            }
+
+            song = song.replaceElement(sourceLine, () => sourceLine);
+            song = song.replaceElement(destinationLine, () => destinationLine);
+
+            return song;
         }
 
         case "set-section": {
-            const line: ChordLine = song.get(action.lineID);
+            const updateName = (line: ChordLine): ChordLine => {
+                if (action.label !== undefined) {
+                    [line] = line.setSectionName(action.label);
+                }
 
-            let changed = false;
-            if (action.label !== undefined) {
-                changed = line.setSectionName(action.label) || changed;
-            }
+                return line;
+            };
 
-            if (action.time !== undefined) {
-                changed = line.setSectionTime(action.time) || changed;
-            }
+            const updateTime = (line: ChordLine): ChordLine => {
+                if (action.time !== undefined) {
+                    [line] = line.setSectionTime(action.time);
+                }
 
-            if (!changed) {
-                return song;
-            }
+                return line;
+            };
 
-            return song.clone();
+            return song.updateCollection((elements) => {
+                return elements.replace(action.lineID, (line) => {
+                    line = updateName(line);
+                    line = updateTime(line);
+                    return line;
+                });
+            });
         }
 
         case "transpose": {
-            transposeSong(song, action.originalKey, action.transposeKey);
-
-            return song.clone();
+            return song.transpose(action.originalKey, action.transposeKey);
         }
     }
 };

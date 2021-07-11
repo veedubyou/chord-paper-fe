@@ -83,4 +83,4 @@ const NewLine: React.FC<NewLineProps> = (props: NewLineProps): JSX.Element => {
     );
 };
 
-export default NewLine;
+export default React.memo(NewLine);

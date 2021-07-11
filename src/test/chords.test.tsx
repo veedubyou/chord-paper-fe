@@ -16,17 +16,27 @@ afterEach(cleanup);
 
 const song = (): ChordSong => {
     const lines: ChordLine[] = [
-        new ChordLine([
-            new ChordBlock({ chord: "C", lyric: new Lyric("Fly me ") }),
-            new ChordBlock({ chord: "D", lyric: new Lyric("to the moon") }),
-        ]),
-        new ChordLine([
-            new ChordBlock({ chord: "", lyric: new Lyric("And let me play ") }),
-            new ChordBlock({ chord: "E", lyric: new Lyric("among the stars") }),
-        ]),
+        new ChordLine({
+            blocks: [
+                new ChordBlock({ chord: "C", lyric: new Lyric("Fly me ") }),
+                new ChordBlock({ chord: "D", lyric: new Lyric("to the moon") }),
+            ],
+        }),
+        new ChordLine({
+            blocks: [
+                new ChordBlock({
+                    chord: "",
+                    lyric: new Lyric("And let me play "),
+                }),
+                new ChordBlock({
+                    chord: "E",
+                    lyric: new Lyric("among the stars"),
+                }),
+            ],
+        }),
     ];
 
-    return new ChordSong(lines);
+    return new ChordSong({ lines: lines });
 };
 
 const basicChordPaper = () => {

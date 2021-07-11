@@ -1,3 +1,4 @@
+import { List } from "immutable";
 import * as iots from "io-ts";
 import { allTabTypes, isValidTabValue } from "../../components/lyrics/Tab";
 import { isWhitespace } from "../Whitespace";
@@ -24,7 +25,7 @@ const tokenizationRegex: RegExp = ((): RegExp => {
 })();
 
 export class Lyric {
-    private serializedLyric: string;
+    private readonly serializedLyric: string;
 
     constructor(serializedLyrics: string) {
         this.serializedLyric = serializedLyrics;
@@ -34,20 +35,21 @@ export class Lyric {
         return transformFn(this.serializedLyric);
     }
 
-    tokenize(): Lyric[] {
+    tokenize(): List<Lyric> {
         const matches = this.serializedLyric.match(tokenizationRegex);
         if (matches === null) {
-            return [];
+            return List();
         }
 
-        return matches.map((rawStr: string) => new Lyric(rawStr));
+        const lyricsArr = matches.map((rawStr: string) => new Lyric(rawStr));
+        return List(lyricsArr);
     }
 
-    append(other: Lyric | string) {
+    append(other: Lyric | string): Lyric {
         if (typeof other === "string") {
-            this.serializedLyric += other;
+            return new Lyric(this.serializedLyric + other);
         } else {
-            this.serializedLyric += other.serializedLyric;
+            return new Lyric(this.serializedLyric + other.serializedLyric);
         }
     }
 
@@ -66,8 +68,8 @@ export class Lyric {
         return this.serializedLyric === other.serializedLyric;
     }
 
-    static join(arr: Lyric[], joinChar: string): Lyric {
-        const rawLyricStrs: string[] = arr.map((container: Lyric) => {
+    static join(arr: List<Lyric>, joinChar: string): Lyric {
+        const rawLyricStrs: List<string> = arr.map((container: Lyric) => {
             return container.serializedLyric;
         });
 

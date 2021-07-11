@@ -130,7 +130,7 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
 
             <Route key={newSongPath.URL()} path={newSongPath.URL()}>
                 {withRegularAppLayout(
-                    <MainSong song={new ChordSong()} path={newSongPath} />
+                    <MainSong song={new ChordSong({})} path={newSongPath} />
                 )}
             </Route>
 

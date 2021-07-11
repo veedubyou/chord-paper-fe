@@ -5,7 +5,6 @@ import React from "react";
 import { SingleTrack } from "../../../common/ChordModel/tracks/SingleTrack";
 import LabelField from "./LabelField";
 import URLField from "./URLField";
-import lodash from "lodash";
 
 interface SingleTrackRowProps {
     track: SingleTrack;
@@ -23,14 +22,12 @@ const SingleTrackRow: React.FC<SingleTrackRowProps> = (
     props: SingleTrackRowProps
 ): JSX.Element => {
     const handleLabelChange = (newLabel: string) => {
-        const updatedTrack = lodash.clone(props.track);
-        updatedTrack.label = newLabel;
+        const updatedTrack = props.track.set("label", newLabel);
         props.onChange(updatedTrack);
     };
 
     const handleURLChange = (newURL: string) => {
-        const updatedTrack = lodash.clone(props.track);
-        updatedTrack.url = newURL;
+        const updatedTrack = props.track.set("url", newURL);
         props.onChange(updatedTrack);
     };
 

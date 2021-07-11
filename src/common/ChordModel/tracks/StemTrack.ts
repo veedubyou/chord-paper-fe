@@ -22,9 +22,9 @@ type StemURLs<StemKey extends string> = {
 };
 
 export abstract class StemTrack<StemKey extends string> {
-    id: string;
-    label: string;
-    stem_urls: StemURLs<StemKey>;
+    readonly id: string;
+    readonly label: string;
+    readonly stem_urls: StemURLs<StemKey>;
 
     constructor(id: string, label: string, stems_urls: StemURLs<StemKey>) {
         this.id = id;
@@ -33,6 +33,8 @@ export abstract class StemTrack<StemKey extends string> {
     }
 
     abstract keyObject(): Record<StemKey, undefined>;
+
+    abstract setLabel(newLabel: string): this;
 
     validate(): boolean {
         if (!validateValue(this.label)) {
@@ -64,9 +66,11 @@ export const TwoStemTrackValidator = makeStemTrackValidator(
 
 type TwoStemTrackValidatedFields = iots.TypeOf<typeof TwoStemTrackValidator>;
 
-export class TwoStemTrack extends StemTrack<TwoStemKeys>
-    implements TwoStemTrackValidatedFields {
-    track_type: "2stems";
+export class TwoStemTrack
+    extends StemTrack<TwoStemKeys>
+    implements TwoStemTrackValidatedFields
+{
+    readonly track_type: "2stems";
 
     constructor(id: string, label: string, stem_urls: StemURLs<TwoStemKeys>) {
         super(id, label, stem_urls);
@@ -75,6 +79,11 @@ export class TwoStemTrack extends StemTrack<TwoStemKeys>
 
     keyObject(): Record<TwoStemKeys, undefined> {
         return TwoStemEmptyObject;
+    }
+
+    setLabel(newLabel: string): this {
+        // nobody else will extend this
+        return new TwoStemTrack(this.id, newLabel, this.stem_urls) as this;
     }
 
     static fromValidatedFields(
@@ -104,9 +113,11 @@ export const FourStemTrackValidator = makeStemTrackValidator(
 
 type FourStemTrackValidatedFields = iots.TypeOf<typeof FourStemTrackValidator>;
 
-export class FourStemTrack extends StemTrack<FourStemKeys>
-    implements FourStemTrackValidatedFields {
-    track_type: "4stems";
+export class FourStemTrack
+    extends StemTrack<FourStemKeys>
+    implements FourStemTrackValidatedFields
+{
+    readonly track_type: "4stems";
 
     constructor(id: string, label: string, stem_urls: StemURLs<FourStemKeys>) {
         super(id, label, stem_urls);
@@ -115,6 +126,11 @@ export class FourStemTrack extends StemTrack<FourStemKeys>
 
     keyObject(): Record<FourStemKeys, undefined> {
         return FourStemEmptyObject;
+    }
+
+    setLabel(newLabel: string): this {
+        // nobody else will extend this
+        return new FourStemTrack(this.id, newLabel, this.stem_urls) as this;
     }
 
     static fromValidatedFields(
@@ -145,9 +161,11 @@ export const FiveStemTrackValidator = makeStemTrackValidator(
 
 type FiveStemTrackValidatedFields = iots.TypeOf<typeof FiveStemTrackValidator>;
 
-export class FiveStemTrack extends StemTrack<FiveStemKeys>
-    implements FiveStemTrackValidatedFields {
-    track_type: "5stems";
+export class FiveStemTrack
+    extends StemTrack<FiveStemKeys>
+    implements FiveStemTrackValidatedFields
+{
+    readonly track_type: "5stems";
 
     constructor(id: string, label: string, stem_urls: StemURLs<FiveStemKeys>) {
         super(id, label, stem_urls);
@@ -156,6 +174,11 @@ export class FiveStemTrack extends StemTrack<FiveStemKeys>
 
     keyObject(): Record<FiveStemKeys, undefined> {
         return FiveStemEmptyObject;
+    }
+
+    setLabel(newLabel: string): this {
+        // nobody else will extend this
+        return new FiveStemTrack(this.id, newLabel, this.stem_urls) as this;
     }
 
     static fromValidatedFields(

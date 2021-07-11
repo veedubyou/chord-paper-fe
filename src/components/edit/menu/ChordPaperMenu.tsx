@@ -63,7 +63,7 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     };
 
     const forkSong = (song: ChordSong, user: User) => {
-        const songClone = song.deepClone();
+        const songClone = song.fork();
         cloudSaveAction(songClone, user);
     };
 

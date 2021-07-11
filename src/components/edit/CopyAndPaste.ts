@@ -1,4 +1,5 @@
 import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
+import { List } from "immutable";
 import * as iots from "io-ts";
 import { useSnackbar } from "notistack";
 import {
@@ -53,9 +54,9 @@ export const deserializeCopiedChordLines = (
     return right(chordLines);
 };
 
-const serializeCopiedChordLines = (chordLines: ChordLine[]): string => {
+const serializeCopiedChordLines = (chordLines: List<ChordLine>): string => {
     const payload: CopiedChordLines = {
-        copiedChordLines: chordLines,
+        copiedChordLines: chordLines.toArray(),
     };
 
     return JSON.stringify(payload);
@@ -66,11 +67,13 @@ export const useLineCopyHandler = (song: ChordSong) => {
 
     return (event: React.ClipboardEvent<HTMLDivElement>): boolean => {
         const lineIDs: string[] = getSelectedLineIDs();
-        const lines = song.chordLines.filter((line: ChordLine): boolean => {
-            return lineIDs.includes(line.id);
-        });
+        const lines: List<ChordLine> = song.chordLines.list.filter(
+            (line: ChordLine): boolean => {
+                return lineIDs.includes(line.id);
+            }
+        );
 
-        if (lines.length === 0) {
+        if (lines.size === 0) {
             return false;
         }
 
@@ -80,10 +83,10 @@ export const useLineCopyHandler = (song: ChordSong) => {
         event.preventDefault();
 
         let copyMsg: string;
-        if (lines.length === 1) {
+        if (lines.size === 1) {
             copyMsg = `1 line copied to your clipboard`;
         } else {
-            copyMsg = `${lines.length} lines copied to your clipboard`;
+            copyMsg = `${lines.size} lines copied to your clipboard`;
         }
 
         enqueueSnackbar(copyMsg, { variant: "info" });

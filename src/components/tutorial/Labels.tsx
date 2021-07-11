@@ -12,54 +12,64 @@ import Playground from "./Playground";
 const LabelTypography = withStyles(sectionLabelStyle)(Typography);
 
 const Labels: React.FC<{}> = (): JSX.Element => {
-    const initialSong = new ChordSong([
-        new ChordLine([
-            new ChordBlock({
-                chord: "C^",
-                lyric: new Lyric("Why do birds suddenly ap-"),
+    const initialSong = new ChordSong({
+        lines: [
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "C^",
+                        lyric: new Lyric("Why do birds suddenly ap-"),
+                    }),
+                    new ChordBlock({
+                        chord: "B7sus4",
+                        lyric: new Lyric("pear?"),
+                    }),
+                    new ChordBlock({ chord: "B7", lyric: new Lyric("\ue200") }),
+                ],
             }),
-            new ChordBlock({
-                chord: "B7sus4",
-                lyric: new Lyric("pear?"),
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "",
+                        lyric: new Lyric("Every time you are near"),
+                    }),
+                ],
             }),
-            new ChordBlock({ chord: "B7", lyric: new Lyric("\ue200") }),
-        ]),
-        new ChordLine([
-            new ChordBlock({
-                chord: "",
-                lyric: new Lyric("Every time you are near"),
-            }),
-        ]),
-    ]);
+        ],
+    });
 
-    const expectedSong = new ChordSong([
-        new ChordLine(
-            [
-                new ChordBlock({
-                    chord: "C^",
-                    lyric: new Lyric("Why do birds suddenly ap-"),
-                }),
-                new ChordBlock({
-                    chord: "B7sus4",
-                    lyric: new Lyric("pear?"),
-                }),
-                new ChordBlock({
-                    chord: "B7",
-                    lyric: new Lyric("\ue200"),
-                }),
-            ],
-            {
-                type: "label",
-                name: "Verse",
-            }
-        ),
-        new ChordLine([
-            new ChordBlock({
-                chord: "",
-                lyric: new Lyric("Every time you are near"),
+    const expectedSong = new ChordSong({
+        lines: [
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "C^",
+                        lyric: new Lyric("Why do birds suddenly ap-"),
+                    }),
+                    new ChordBlock({
+                        chord: "B7sus4",
+                        lyric: new Lyric("pear?"),
+                    }),
+                    new ChordBlock({
+                        chord: "B7",
+                        lyric: new Lyric("\ue200"),
+                    }),
+                ],
+                section: {
+                    type: "label",
+                    name: "Verse",
+                },
             }),
-        ]),
-    ]);
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "",
+                        lyric: new Lyric("Every time you are near"),
+                    }),
+                ],
+            }),
+        ],
+    });
 
     return (
         <>

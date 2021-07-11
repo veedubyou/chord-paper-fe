@@ -8,37 +8,47 @@ import { LineBreak } from "./Common";
 import Playground from "./Playground";
 
 const MergeLine: React.FC<{}> = (): JSX.Element => {
-    const initialSong = new ChordSong([
-        new ChordLine([
-            new ChordBlock({
-                chord: "C^",
-                lyric: new Lyric("Why do birds"),
+    const initialSong = new ChordSong({
+        lines: [
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "C^",
+                        lyric: new Lyric("Why do birds"),
+                    }),
+                ],
             }),
-        ]),
-        new ChordLine([
-            new ChordBlock({
-                chord: "",
-                lyric: new Lyric("suddenly "),
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "",
+                        lyric: new Lyric("suddenly "),
+                    }),
+                    new ChordBlock({
+                        chord: "B7",
+                        lyric: new Lyric("appear?"),
+                    }),
+                ],
             }),
-            new ChordBlock({
-                chord: "B7",
-                lyric: new Lyric("appear?"),
-            }),
-        ]),
-    ]);
+        ],
+    });
 
-    const expectedSong = new ChordSong([
-        new ChordLine([
-            new ChordBlock({
-                chord: "C^",
-                lyric: new Lyric("Why do birds suddenly "),
+    const expectedSong = new ChordSong({
+        lines: [
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "C^",
+                        lyric: new Lyric("Why do birds suddenly "),
+                    }),
+                    new ChordBlock({
+                        chord: "B7",
+                        lyric: new Lyric("appear?"),
+                    }),
+                ],
             }),
-            new ChordBlock({
-                chord: "B7",
-                lyric: new Lyric("appear?"),
-            }),
-        ]),
-    ]);
+        ],
+    });
 
     return (
         <>

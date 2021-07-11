@@ -102,4 +102,4 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
     );
 };
 
-export default Header;
+export default React.memo(Header);
