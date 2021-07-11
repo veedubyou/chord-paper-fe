@@ -1,13 +1,13 @@
+import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
+import { List } from "immutable";
+import * as iots from "io-ts";
+import { useSnackbar } from "notistack";
 import {
     ChordLine,
-    ChordLineValidator,
     ChordLineValidatedFields,
+    ChordLineValidator,
 } from "../../common/ChordModel/ChordLine";
-import * as iots from "io-ts";
-import { Either, right, left, isLeft, parseJSON } from "fp-ts/lib/Either";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { IDable } from "../../common/ChordModel/Collection";
-import { useSnackbar } from "notistack";
 import { getSelectedLineIDs } from "./LineSelection";
 
 const CopiedChordLinesValidator = iots.type({
@@ -18,7 +18,7 @@ interface CopiedChordLines {
     copiedChordLines: ChordLine[];
 }
 
-const deserializeCopiedChordLines = (
+export const deserializeCopiedChordLines = (
     jsonStr: string
 ): Either<Error, ChordLine[]> | null => {
     const result: Either<Error, unknown> = parseJSON(
@@ -54,9 +54,9 @@ const deserializeCopiedChordLines = (
     return right(chordLines);
 };
 
-const serializeCopiedChordLines = (chordLines: ChordLine[]): string => {
+const serializeCopiedChordLines = (chordLines: List<ChordLine>): string => {
     const payload: CopiedChordLines = {
-        copiedChordLines: chordLines,
+        copiedChordLines: chordLines.toArray(),
     };
 
     return JSON.stringify(payload);
@@ -67,11 +67,13 @@ export const useLineCopyHandler = (song: ChordSong) => {
 
     return (event: React.ClipboardEvent<HTMLDivElement>): boolean => {
         const lineIDs: string[] = getSelectedLineIDs();
-        const lines = song.chordLines.filter((line: ChordLine): boolean => {
-            return lineIDs.includes(line.id);
-        });
+        const lines: List<ChordLine> = song.chordLines.list.filter(
+            (line: ChordLine): boolean => {
+                return lineIDs.includes(line.id);
+            }
+        );
 
-        if (lines.length === 0) {
+        if (lines.size === 0) {
             return false;
         }
 
@@ -81,46 +83,13 @@ export const useLineCopyHandler = (song: ChordSong) => {
         event.preventDefault();
 
         let copyMsg: string;
-        if (lines.length === 1) {
+        if (lines.size === 1) {
             copyMsg = `1 line copied to your clipboard`;
         } else {
-            copyMsg = `${lines.length} lines copied to your clipboard`;
+            copyMsg = `${lines.size} lines copied to your clipboard`;
         }
 
         enqueueSnackbar(copyMsg, { variant: "info" });
-        return true;
-    };
-};
-
-export const useLinePasteHandler = (song: ChordSong) => {
-    const { enqueueSnackbar } = useSnackbar();
-
-    return (id: IDable<ChordLine>, jsonStr: string): boolean => {
-        const deserializedCopyResult = deserializeCopiedChordLines(jsonStr);
-        // not actually a Chord Paper line payload, don't handle it
-        if (deserializedCopyResult === null) {
-            return false;
-        }
-
-        if (isLeft(deserializedCopyResult)) {
-            const errorMsg =
-                "Failed to paste copied lines: " +
-                deserializedCopyResult.left.message;
-            enqueueSnackbar(errorMsg, { variant: "error" });
-            return true;
-        }
-
-        const currLine: ChordLine = song.get(id);
-
-        const copiedLines: ChordLine[] = deserializedCopyResult.right;
-        song.addAfter(id, ...copiedLines);
-
-        // if the line is empty, the user was probably trying to paste into the current line, and not the next
-        // so just remove the current line to simulate that
-        if (currLine.isEmpty()) {
-            song.remove(id);
-        }
-
         return true;
     };
 };

@@ -1,67 +1,65 @@
 import { getOrElse, isLeft } from "fp-ts/lib/Either";
-import { ChordLine } from "../ChordLine";
 import { ChordBlock } from "../ChordBlock";
+import { ChordLine } from "../ChordLine";
 import { ChordSong } from "../ChordSong";
 import { Lyric } from "../Lyric";
+import "./matcher";
 
 describe("Chord Song", () => {
     const testLines = (): ChordLine[] => {
         return [
-            new ChordLine([
-                new ChordBlock({
-                    chord: "A7",
-                    lyric: new Lyric("We're no "),
-                }),
-                new ChordBlock({
-                    chord: "Bm",
-                    lyric: new Lyric("strangers to "),
-                }),
-                new ChordBlock({
-                    chord: "Cdim",
-                    lyric: new Lyric("love"),
-                }),
-            ]),
-            new ChordLine([
-                new ChordBlock({
-                    chord: "D7b9#11",
-                    lyric: new Lyric("You know the rules "),
-                }),
-                new ChordBlock({
-                    chord: "Eb9",
-                    lyric: new Lyric("and so do I"),
-                }),
-            ]),
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "A7",
+                        lyric: new Lyric("We're no "),
+                    }),
+                    new ChordBlock({
+                        chord: "Bm",
+                        lyric: new Lyric("strangers to "),
+                    }),
+                    new ChordBlock({
+                        chord: "Cdim",
+                        lyric: new Lyric("love"),
+                    }),
+                ],
+            }),
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "D7b9#11",
+                        lyric: new Lyric("You know the rules "),
+                    }),
+                    new ChordBlock({
+                        chord: "Eb9",
+                        lyric: new Lyric("and so do I"),
+                    }),
+                ],
+            }),
         ];
     };
 
     let c: ChordSong;
     beforeEach(() => {
-        c = new ChordSong(testLines(), {
-            id: "idiomatic",
-            owner: "Crick Ghastley",
-            metadata: {
-                title: "Never Gonna Give You Up",
-                composedBy: "Me",
-                performedBy: "Rick Astley",
+        c = new ChordSong({
+            lines: testLines(),
+            fields: {
+                id: "idiomatic",
+                owner: "Crick Ghastley",
+                metadata: {
+                    title: "Never Gonna Give You Up",
+                    composedBy: "Me",
+                    performedBy: "Rick Astley",
+                },
+                lastSavedAt: new Date(2021, 0, 2, 3, 4, 5),
             },
-            lastSavedAt: new Date(),
         });
     });
 
-    describe("clone", () => {
-        test("is not object identity equal", () => {
-            expect(c !== c.clone()).toEqual(true);
-        });
-
-        test("is deep equal", () => {
-            expect(c.clone()).toEqual(c);
-        });
-    });
-
-    describe("deepClone", () => {
+    describe("fork", () => {
         let clone: ChordSong;
         beforeEach(() => {
-            clone = c.deepClone();
+            clone = c.fork();
         });
 
         test("has no id", () => {
@@ -75,20 +73,12 @@ describe("Chord Song", () => {
         test("has no last saved time", () => {
             expect(clone.lastSavedAt).toEqual(null);
         });
-
-        test("modifying clone does not affect original", () => {
-            const line = clone.elements[0];
-            const block = line.elements[0];
-            block.chord = "Abm9";
-
-            expect(c.elements[0].elements[0].chord).toEqual("A7");
-        });
     });
 
     describe("de/serialization", () => {
         const failSong = (): ChordSong => {
             expect(false).toEqual(true);
-            return new ChordSong();
+            return new ChordSong({});
         };
 
         test("deserializing a serialized chordsong", () => {
@@ -96,42 +86,43 @@ describe("Chord Song", () => {
             const results = ChordSong.deserialize(json);
 
             const deserialized: ChordSong = getOrElse(failSong)(results);
-            expect(deserialized).toMatchObject({
-                id: "idiomatic",
-                owner: "Crick Ghastley",
-                metadata: {
-                    title: "Never Gonna Give You Up",
-                    composedBy: "Me",
-                    performedBy: "Rick Astley",
+            expect(deserialized).toMatchSong({
+                summary: {
+                    id: "idiomatic",
+                    owner: "Crick Ghastley",
+                    metadata: {
+                        title: "Never Gonna Give You Up",
+                        composedBy: "Me",
+                        performedBy: "Rick Astley",
+                    },
+                    lastSavedAt: new Date(2021, 0, 2, 3, 4, 5),
                 },
-                elements: [
+                lines: [
                     {
-                        elements: [
+                        blocks: [
                             {
                                 chord: "A7",
-                                lyric: { serializedLyric: "We're no " },
+                                lyric: "We're no ",
                             },
                             {
                                 chord: "Bm",
-                                lyric: { serializedLyric: "strangers to " },
+                                lyric: "strangers to ",
                             },
                             {
                                 chord: "Cdim",
-                                lyric: { serializedLyric: "love" },
+                                lyric: "love",
                             },
                         ],
                     },
                     {
-                        elements: [
+                        blocks: [
                             {
                                 chord: "D7b9#11",
-                                lyric: {
-                                    serializedLyric: "You know the rules ",
-                                },
+                                lyric: "You know the rules ",
                             },
                             {
                                 chord: "Eb9",
-                                lyric: { serializedLyric: "and so do I" },
+                                lyric: "and so do I",
                             },
                         ],
                     },
@@ -166,64 +157,54 @@ describe("Chord Song", () => {
         ]);
 
         expect(song.chordLines).toHaveLength(2);
-        expect(song.chordLines[0].chordBlocks).toHaveLength(1);
-        expect(song.chordLines[0].chordBlocks[0].chord).toEqual("");
-        expect(song.chordLines[0].chordBlocks[0].lyric).toEqual(
+        const firstLineChordBlocks = song.chordLines.getAtIndex(0).chordBlocks;
+        expect(firstLineChordBlocks).toHaveLength(1);
+        expect(firstLineChordBlocks.getAtIndex(0).chord).toEqual("");
+        expect(firstLineChordBlocks.getAtIndex(0).lyric).toEqual(
             new Lyric("A full commitment's what I'm thinking of")
         );
 
-        expect(song.chordLines[1].chordBlocks).toHaveLength(1);
-        expect(song.chordLines[1].chordBlocks[0].chord).toEqual("");
-        expect(song.chordLines[1].chordBlocks[0].lyric).toEqual(
+        const secondLineChordBlocks = song.chordLines.getAtIndex(1).chordBlocks;
+        expect(secondLineChordBlocks).toHaveLength(1);
+        expect(secondLineChordBlocks.getAtIndex(0).chord).toEqual("");
+        expect(secondLineChordBlocks.getAtIndex(0).lyric).toEqual(
             new Lyric("You wouldn't get this from any other guy")
         );
     });
 
     describe("mergeLineWithPrevious", () => {
         test("merging first line is no-op", () => {
-            const firstLine = c.chordLines[0];
-            const didMerge = c.mergeLineWithPrevious(firstLine);
+            const priorFirstLine: ChordLine = c.chordLines.getAtIndex(0);
+            const priorSecondLine: ChordLine = c.chordLines.getAtIndex(1);
+
+            const [newSong, didMerge] = c.mergeLineWithPrevious(priorFirstLine);
 
             expect(didMerge).toEqual(false);
-            expect(c.elements).toMatchObject([
-                {
-                    elements: [
-                        { chord: "A7", lyric: new Lyric("We're no ") },
-                        { chord: "Bm", lyric: new Lyric("strangers to ") },
-                        { chord: "Cdim", lyric: new Lyric("love") },
-                    ],
-                },
-                {
-                    elements: [
-                        {
-                            chord: "D7b9#11",
-                            lyric: new Lyric("You know the rules "),
-                        },
-                        { chord: "Eb9", lyric: new Lyric("and so do I") },
-                    ],
-                },
-            ]);
+            expect(newSong.chordLines.getAtIndex(0)).toEqual(priorFirstLine);
+            expect(newSong.chordLines.getAtIndex(1)).toEqual(priorSecondLine);
         });
 
         test("merging subsequent lines into the first", () => {
-            const secondLine = c.chordLines[1];
-            const didMerge = c.mergeLineWithPrevious(secondLine);
-            expect(didMerge).toEqual(true);
+            const secondLine: ChordLine = c.chordLines.getAtIndex(1);
+            const [newSong, didMerge] = c.mergeLineWithPrevious(secondLine);
 
-            expect(c.elements).toMatchObject([
-                {
-                    elements: [
-                        { chord: "A7", lyric: new Lyric("We're no ") },
-                        { chord: "Bm", lyric: new Lyric("strangers to ") },
-                        { chord: "Cdim", lyric: new Lyric("love ") },
-                        {
-                            chord: "D7b9#11",
-                            lyric: new Lyric("You know the rules "),
-                        },
-                        { chord: "Eb9", lyric: new Lyric("and so do I") },
-                    ],
-                },
-            ]);
+            expect(didMerge).toEqual(true);
+            expect(newSong.chordLines).toHaveLength(1);
+
+            const newLine = newSong.chordLines.getAtIndex(0);
+
+            expect(newLine).toMatchLine({
+                blocks: [
+                    { chord: "A7", lyric: "We're no " },
+                    { chord: "Bm", lyric: "strangers to " },
+                    { chord: "Cdim", lyric: "love " },
+                    {
+                        chord: "D7b9#11",
+                        lyric: "You know the rules ",
+                    },
+                    { chord: "Eb9", lyric: "and so do I" },
+                ],
+            });
         });
     });
 
@@ -235,10 +216,10 @@ describe("Chord Song", () => {
             beforeEach(() => {
                 now = new Date("2020-10-16T11:57:09.952Z");
 
-                original = new ChordSong(
-                    [
-                        new ChordLine(
-                            [
+                original = new ChordSong({
+                    lines: [
+                        new ChordLine({
+                            blocks: [
                                 new ChordBlock({
                                     chord: "A7",
                                     lyric: new Lyric("We're no "),
@@ -252,24 +233,26 @@ describe("Chord Song", () => {
                                     lyric: new Lyric("love"),
                                 }),
                             ],
-                            {
+                            section: {
                                 type: "time",
                                 name: "Verse",
                                 time: 35,
-                            }
-                        ),
-                        new ChordLine([
-                            new ChordBlock({
-                                chord: "D7b9#11",
-                                lyric: new Lyric("You know the rules "),
-                            }),
-                            new ChordBlock({
-                                chord: "Eb9",
-                                lyric: new Lyric("and so do I"),
-                            }),
-                        ]),
+                            },
+                        }),
+                        new ChordLine({
+                            blocks: [
+                                new ChordBlock({
+                                    chord: "D7b9#11",
+                                    lyric: new Lyric("You know the rules "),
+                                }),
+                                new ChordBlock({
+                                    chord: "Eb9",
+                                    lyric: new Lyric("and so do I"),
+                                }),
+                            ],
+                        }),
                     ],
-                    {
+                    fields: {
                         id: "idiomatic",
                         owner: "Crick Ghastley",
                         lastSavedAt: now,
@@ -278,15 +261,15 @@ describe("Chord Song", () => {
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
                         },
-                    }
-                );
+                    },
+                });
             });
 
             test("passes if the same", () => {
-                const other = new ChordSong(
-                    [
-                        new ChordLine(
-                            [
+                const other = new ChordSong({
+                    lines: [
+                        new ChordLine({
+                            blocks: [
                                 new ChordBlock({
                                     chord: "A7",
                                     lyric: new Lyric("We're no "),
@@ -300,24 +283,26 @@ describe("Chord Song", () => {
                                     lyric: new Lyric("love"),
                                 }),
                             ],
-                            {
+                            section: {
                                 type: "time",
                                 name: "Verse",
                                 time: 35,
-                            }
-                        ),
-                        new ChordLine([
-                            new ChordBlock({
-                                chord: "D7b9#11",
-                                lyric: new Lyric("You know the rules "),
-                            }),
-                            new ChordBlock({
-                                chord: "Eb9",
-                                lyric: new Lyric("and so do I"),
-                            }),
-                        ]),
+                            },
+                        }),
+                        new ChordLine({
+                            blocks: [
+                                new ChordBlock({
+                                    chord: "D7b9#11",
+                                    lyric: new Lyric("You know the rules "),
+                                }),
+                                new ChordBlock({
+                                    chord: "Eb9",
+                                    lyric: new Lyric("and so do I"),
+                                }),
+                            ],
+                        }),
                     ],
-                    {
+                    fields: {
                         id: "idiomatic",
                         owner: "Crick Ghastley",
                         lastSavedAt: now,
@@ -326,17 +311,17 @@ describe("Chord Song", () => {
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
                         },
-                    }
-                );
+                    },
+                });
 
                 expect(original.contentEquals(other)).toEqual(true);
             });
 
             test("fails if label is different", () => {
-                const other = new ChordSong(
-                    [
-                        new ChordLine(
-                            [
+                const other = new ChordSong({
+                    lines: [
+                        new ChordLine({
+                            blocks: [
                                 new ChordBlock({
                                     chord: "A7",
                                     lyric: new Lyric("We're no "),
@@ -350,24 +335,26 @@ describe("Chord Song", () => {
                                     lyric: new Lyric("love"),
                                 }),
                             ],
-                            {
+                            section: {
                                 type: "time",
                                 name: "Durp",
                                 time: 35,
-                            }
-                        ),
-                        new ChordLine([
-                            new ChordBlock({
-                                chord: "D7b9#11",
-                                lyric: new Lyric("You know the rules "),
-                            }),
-                            new ChordBlock({
-                                chord: "Eb9",
-                                lyric: new Lyric("and so do I"),
-                            }),
-                        ]),
+                            },
+                        }),
+                        new ChordLine({
+                            blocks: [
+                                new ChordBlock({
+                                    chord: "D7b9#11",
+                                    lyric: new Lyric("You know the rules "),
+                                }),
+                                new ChordBlock({
+                                    chord: "Eb9",
+                                    lyric: new Lyric("and so do I"),
+                                }),
+                            ],
+                        }),
                     ],
-                    {
+                    fields: {
                         id: "idiomatic",
                         owner: "Crick Ghastley",
                         lastSavedAt: now,
@@ -376,17 +363,17 @@ describe("Chord Song", () => {
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
                         },
-                    }
-                );
+                    },
+                });
 
                 expect(original.contentEquals(other)).toEqual(false);
             });
 
             test("fails if any blocks are different", () => {
-                const other = new ChordSong(
-                    [
-                        new ChordLine(
-                            [
+                const other = new ChordSong({
+                    lines: [
+                        new ChordLine({
+                            blocks: [
                                 new ChordBlock({
                                     chord: "Am",
                                     lyric: new Lyric("We're no "),
@@ -400,24 +387,26 @@ describe("Chord Song", () => {
                                     lyric: new Lyric("love"),
                                 }),
                             ],
-                            {
+                            section: {
                                 type: "time",
                                 name: "Verse",
                                 time: 35,
-                            }
-                        ),
-                        new ChordLine([
-                            new ChordBlock({
-                                chord: "D7b9#11",
-                                lyric: new Lyric("You know the rules "),
-                            }),
-                            new ChordBlock({
-                                chord: "Eb9",
-                                lyric: new Lyric("and so do I"),
-                            }),
-                        ]),
+                            },
+                        }),
+                        new ChordLine({
+                            blocks: [
+                                new ChordBlock({
+                                    chord: "D7b9#11",
+                                    lyric: new Lyric("You know the rules "),
+                                }),
+                                new ChordBlock({
+                                    chord: "Eb9",
+                                    lyric: new Lyric("and so do I"),
+                                }),
+                            ],
+                        }),
                     ],
-                    {
+                    fields: {
                         id: "idiomatic",
                         owner: "Crick Ghastley",
                         lastSavedAt: now,
@@ -426,26 +415,28 @@ describe("Chord Song", () => {
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
                         },
-                    }
-                );
+                    },
+                });
                 expect(original.contentEquals(other)).toEqual(false);
             });
 
             test("fails if any lines are out of order", () => {
-                const other = new ChordSong(
-                    [
-                        new ChordLine([
-                            new ChordBlock({
-                                chord: "D7b9#11",
-                                lyric: new Lyric("You know the rules "),
-                            }),
-                            new ChordBlock({
-                                chord: "Eb9",
-                                lyric: new Lyric("and so do I"),
-                            }),
-                        ]),
-                        new ChordLine(
-                            [
+                const other = new ChordSong({
+                    lines: [
+                        new ChordLine({
+                            blocks: [
+                                new ChordBlock({
+                                    chord: "D7b9#11",
+                                    lyric: new Lyric("You know the rules "),
+                                }),
+                                new ChordBlock({
+                                    chord: "Eb9",
+                                    lyric: new Lyric("and so do I"),
+                                }),
+                            ],
+                        }),
+                        new ChordLine({
+                            blocks: [
                                 new ChordBlock({
                                     chord: "A7",
                                     lyric: new Lyric("We're no "),
@@ -459,14 +450,14 @@ describe("Chord Song", () => {
                                     lyric: new Lyric("love"),
                                 }),
                             ],
-                            {
+                            section: {
                                 type: "time",
                                 name: "Verse",
                                 time: 35,
-                            }
-                        ),
+                            },
+                        }),
                     ],
-                    {
+                    fields: {
                         id: "idiomatic",
                         owner: "Crick Ghastley",
                         lastSavedAt: now,
@@ -475,8 +466,8 @@ describe("Chord Song", () => {
                             composedBy: "Stock Aitken Waterman",
                             performedBy: "Rick Astley",
                         },
-                    }
-                );
+                    },
+                });
                 expect(original.contentEquals(other)).toEqual(false);
             });
         });
@@ -484,41 +475,47 @@ describe("Chord Song", () => {
         describe("without content", () => {
             let original: ChordSong;
             beforeEach(() => {
-                original = new ChordSong();
+                original = new ChordSong({});
             });
             test("passes if the same", () => {
-                const other = new ChordSong();
+                const other = new ChordSong({});
                 expect(original.contentEquals(other)).toEqual(true);
             });
 
             test("fails there's content", () => {
-                const other = new ChordSong([
-                    new ChordLine([
-                        new ChordBlock({
-                            chord: "Am",
-                            lyric: new Lyric(""),
+                const other = new ChordSong({
+                    lines: [
+                        new ChordLine({
+                            blocks: [
+                                new ChordBlock({
+                                    chord: "Am",
+                                    lyric: new Lyric(""),
+                                }),
+                            ],
                         }),
-                    ]),
-                ]);
+                    ],
+                });
                 expect(original.contentEquals(other)).toEqual(false);
             });
         });
     });
 
-    describe("findLineAndBlock", () => {
+    describe("findLineWithBlock", () => {
         describe("finding the block with the line", () => {
             test("in the first line", () => {
-                const blockID = c.chordLines[0].chordBlocks[1];
-                const [line, block] = c.findLineAndBlock(blockID);
-                expect(line).toEqual(c.chordLines[0]);
-                expect(block).toEqual(c.chordLines[0].chordBlocks[1]);
+                const blockID = c.chordLines
+                    .getAtIndex(0)
+                    .chordBlocks.getAtIndex(1);
+                const line = c.findLineWithBlock(blockID);
+                expect(line).toEqual(c.chordLines.getAtIndex(0));
             });
 
             test("in the second line", () => {
-                const blockID = c.chordLines[1].chordBlocks[0];
-                const [line, block] = c.findLineAndBlock(blockID);
-                expect(line).toEqual(c.chordLines[1]);
-                expect(block).toEqual(c.chordLines[1].chordBlocks[0]);
+                const blockID = c.chordLines
+                    .getAtIndex(1)
+                    .chordBlocks.getAtIndex(0);
+                const line = c.findLineWithBlock(blockID);
+                expect(line).toEqual(c.chordLines.getAtIndex(1));
             });
         });
     });

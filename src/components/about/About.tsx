@@ -1,6 +1,6 @@
-import React from "react";
-import { Paper, Typography, Theme, Grid } from "@material-ui/core";
+import { Grid, Paper, Theme, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
+import React from "react";
 import { inflatingWhitespace } from "../../common/Whitespace";
 
 const RootPaper = withStyles((theme: Theme) => ({

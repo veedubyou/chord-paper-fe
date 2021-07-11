@@ -33,8 +33,7 @@ const StemTrackRow = <StemKey extends string, T extends StemTrack<StemKey>>(
     props: StemTrackRowProps<StemKey, T>
 ): JSX.Element => {
     const handleLabelChange = (newLabel: string) => {
-        const updatedTrack = lodash.clone(props.track);
-        updatedTrack.label = newLabel;
+        const updatedTrack = props.track.setLabel(newLabel);
         props.onChange(updatedTrack);
     };
 

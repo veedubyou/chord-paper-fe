@@ -1,5 +1,6 @@
 import * as iots from "io-ts";
 import { BaseTrackValidator, validateValue } from "./BaseTrack";
+import { Record } from "immutable";
 
 export const SingleTrackValidator = iots.intersection([
     BaseTrackValidator,
@@ -10,17 +11,24 @@ export const SingleTrackValidator = iots.intersection([
 ]);
 
 type SingleTrackValidatedFields = iots.TypeOf<typeof SingleTrackValidator>;
-export class SingleTrack implements SingleTrackValidatedFields {
-    id: string;
-    track_type: "single";
-    label: string;
-    url: string;
+const DefaultSingleTrackRecord = {
+    id: "",
+    track_type: "single" as "single",
+    label: "",
+    url: "",
+};
 
+export class SingleTrack
+    extends Record(DefaultSingleTrackRecord)
+    implements SingleTrackValidatedFields
+{
     constructor(id: string, label: string, url: string) {
-        this.id = id;
-        this.track_type = "single";
-        this.label = label;
-        this.url = url;
+        super({
+            id: id,
+            track_type: "single",
+            label: label,
+            url: url,
+        });
     }
 
     static fromValidatedFields(

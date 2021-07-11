@@ -8,31 +8,57 @@ import { LineBreak, LyricsTypography } from "./Common";
 import Playground from "./Playground";
 
 const SplitLine: React.FC<{}> = (): JSX.Element => {
-    const initialSong = new ChordSong([
-        new ChordLine([
-            new ChordBlock({
-                chord: "",
-                lyric: new Lyric(
-                    "Why do birds suddenly appear? Every time you are near"
-                ),
-            }),
-        ]),
-    ]);
+    const initialSong = new ChordSong({
+        lines: [
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "C^",
+                        lyric: new Lyric("Why do birds suddenly ap-"),
+                    }),
 
-    const expectedSong = new ChordSong([
-        new ChordLine([
-            new ChordBlock({
-                chord: "",
-                lyric: new Lyric("Why do birds suddenly appear? "),
+                    new ChordBlock({
+                        chord: "B7sus4",
+                        lyric: new Lyric("pear? Every "),
+                    }),
+                    new ChordBlock({
+                        chord: "B7",
+                        lyric: new Lyric("time you are near"),
+                    }),
+                ],
             }),
-        ]),
-        new ChordLine([
-            new ChordBlock({
-                chord: "",
-                lyric: new Lyric("Every time you are near"),
+        ],
+    });
+
+    const expectedSong = new ChordSong({
+        lines: [
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "C^",
+                        lyric: new Lyric("Why do birds suddenly ap-"),
+                    }),
+
+                    new ChordBlock({
+                        chord: "B7sus4",
+                        lyric: new Lyric("pear? "),
+                    }),
+                ],
             }),
-        ]),
-    ]);
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "",
+                        lyric: new Lyric("Every "),
+                    }),
+                    new ChordBlock({
+                        chord: "B7",
+                        lyric: new Lyric("time you are near"),
+                    }),
+                ],
+            }),
+        ],
+    });
 
     return (
         <>

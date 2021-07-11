@@ -1,8 +1,9 @@
-import { ChordLine } from "./ChordLine";
-import { ChordBlock } from "./ChordBlock";
 import { DiffMatchPatch, DiffOperation } from "diff-match-patch-typescript";
-import { Lyric } from "./Lyric";
 import { findTabType, SizedTab } from "../../components/lyrics/Tab";
+import { ChordBlock } from "./ChordBlock";
+import { ChordLine } from "./ChordLine";
+import { Collection } from "./Collection";
+import { Lyric } from "./Lyric";
 
 const differ: DiffMatchPatch = (() => {
     const dmp = new DiffMatchPatch();
@@ -27,7 +28,7 @@ class ChordLineIterator {
         this.currBlockIndex = 0;
         this.currCharIndex = 0;
 
-        this.blockBuffer = chordLine.elements.map(() => "");
+        this.blockBuffer = chordLine.chordBlocks.list.map(() => "").toArray();
         this.prependLyrics = "";
     }
 
@@ -36,7 +37,7 @@ class ChordLineIterator {
     }
 
     private currentBlock(): ChordBlock {
-        return this.chordLine.elements[this.currBlockIndex];
+        return this.chordLine.getElementAtIndex(this.currBlockIndex);
     }
 
     private currentRawLyrics(): string {
@@ -70,7 +71,7 @@ class ChordLineIterator {
         if (!this.atBlockBoundary()) {
             this.blockBuffer[this.currBlockIndex] += insertChar;
         } else {
-            // bias towards inserting  at the end of the previous block if between two blocks
+            // bias towards inserting at the end of the previous block if between two blocks
             // since chords are aligned to the beginning of the block, we don't want to shift the lyrics
             // inside a block unnecessarily
             const prevBlockIndex = this.currBlockIndex - 1;
@@ -90,15 +91,14 @@ class ChordLineIterator {
         this.nextChar();
     }
 
-    finish(): void {
-        for (let i = 0; i < this.chordLine.elements.length; i++) {
-            this.chordLine.elements[i].lyric = new Lyric(this.blockBuffer[i]);
-        }
+    finish(): ChordLine {
+        this.chordLine = this.chordLine.updateAllElements((block, index) => {
+            const lyric = new Lyric(this.blockBuffer[index]);
+            return block.set("lyric", lyric);
+        });
 
         if (this.prependLyrics !== "") {
-            this.chordLine.elements.splice(
-                0,
-                0,
+            this.chordLine = this.chordLine.addBeginning(
                 new ChordBlock({
                     chord: "",
                     lyric: new Lyric(this.prependLyrics),
@@ -106,41 +106,43 @@ class ChordLineIterator {
             );
         }
 
-        this.chordLine.normalizeBlocks();
+        return this.chordLine.normalizeBlocks();
     }
 }
 
-const removeOrphanedBlocksWithNoChords = (chordLine: ChordLine): void => {
+const removeOrphanedBlocksWithNoChords = (chordLine: ChordLine): ChordLine => {
     const newBlocks: ChordBlock[] = [];
 
-    for (const block of chordLine.elements) {
+    for (const block of chordLine.chordBlocks.toArray()) {
         if (!block.lyric.isEmpty() || block.chord !== "") {
             newBlocks.push(block);
         }
     }
 
-    chordLine.elements = newBlocks;
+    return chordLine.updateCollection(() => new Collection(newBlocks));
 };
 
-const orphanTab: string = findTabType("sizedTab", SizedTab.SmallTab)
-    .serializedStr;
+const orphanTab: string = findTabType(
+    "sizedTab",
+    SizedTab.SmallTab
+).serializedStr;
 
-const addTabsToOrphanedBlocks = (chordLine: ChordLine): void => {
-    const blocks: ChordBlock[] = chordLine.elements;
-    for (let i = 0; i < blocks.length; i++) {
-        const block = blocks[i];
+const addTabsToOrphanedBlocks = (chordLine: ChordLine): ChordLine => {
+    const orphanTabBlockIfEmpty = (block: ChordBlock): ChordBlock => {
         if (!block.lyric.isEmpty()) {
-            continue;
+            return block;
         }
 
-        block.lyric = new Lyric(orphanTab);
-    }
+        return block.set("lyric", new Lyric(orphanTab));
+    };
+
+    return chordLine.updateAllElements(orphanTabBlockIfEmpty);
 };
 
 export const replaceChordLineLyrics = (
     chordLine: ChordLine,
     newLyrics: Lyric
-): void => {
+): ChordLine => {
     const currRawLyrics = chordLine.lyrics.get(rawStringGetter);
     const newRawLyrics = newLyrics.get(rawStringGetter);
 
@@ -169,8 +171,9 @@ export const replaceChordLineLyrics = (
         }
     }
 
-    iterator.finish();
+    chordLine = iterator.finish();
 
-    removeOrphanedBlocksWithNoChords(chordLine);
-    addTabsToOrphanedBlocks(chordLine);
+    chordLine = removeOrphanedBlocksWithNoChords(chordLine);
+    chordLine = addTabsToOrphanedBlocks(chordLine);
+    return chordLine;
 };

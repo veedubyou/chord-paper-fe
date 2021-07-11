@@ -3,14 +3,16 @@ import grey from "@material-ui/core/colors/grey";
 import red from "@material-ui/core/colors/red";
 import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
 import ChatBubbleIcon from "@material-ui/icons/ChatBubbleOutline";
-import React, { useState } from "react";
+import { List } from "immutable";
+import React, { useMemo, useState } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { IDable } from "../../common/ChordModel/Collection";
+import { Collection, IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { DataTestID } from "../../common/DataTestID";
 import { PlainFn } from "../../common/PlainFn";
-import Block, { BlockProps } from "./Block";
+import { ChordSongAction } from "../reducer/reducer";
+import Block from "./Block";
 import WithHoverMenu, { MenuItem } from "./WithHoverMenu";
 import WithLyricInput from "./WithLyricInput";
 import WithSection from "./WithSection";
@@ -37,68 +39,71 @@ const HighlightableBox = withStyles({
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
+    songDispatch: React.Dispatch<ChordSongAction>;
     "data-lineid": string;
-    onChangeLine?: (id: IDable<ChordLine>) => void;
-    onRemoveLine?: (id: IDable<ChordLine>) => void;
-    onLyricOverflow?: (
-        id: IDable<ChordLine>,
-        overflowLyricContent: Lyric[]
-    ) => void;
-    onJSONPaste?: (id: IDable<ChordLine>, jsonStr: string) => boolean;
-    onMergeWithPreviousLine?: (id: IDable<ChordLine>) => boolean;
-    onSplitLine?: (id: IDable<ChordLine>, splitIndex: number) => boolean;
-    onChordDragAndDrop?: BlockProps["onChordDragAndDrop"];
 }
 
 const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     const [removed, setRemoved] = useState(false);
     const removalTime = 250;
+    const { chordLine, songDispatch } = props;
 
-    const handlers = {
-        chordChange: (id: IDable<ChordBlock>, newChord: string) => {
-            props.chordLine.setChord(id, newChord);
-            props.onChangeLine?.(props.chordLine);
-        },
-        blockSplit: (id: IDable<ChordBlock>, splitIndex: number) => {
-            props.chordLine.splitBlock(id, splitIndex);
-            props.onChangeLine?.(props.chordLine);
-        },
-        remove: () => {
-            if (removed) {
-                return;
-            }
+    const handlers = useMemo(
+        () => ({
+            chordChange: (blockID: IDable<ChordBlock>, newChord: string) => {
+                songDispatch({
+                    type: "set-chord",
+                    lineID: chordLine,
+                    blockID: blockID,
+                    newChord: newChord,
+                });
+            },
+            blockSplit: (blockID: IDable<ChordBlock>, splitIndex: number) => {
+                songDispatch({
+                    type: "split-block",
+                    lineID: chordLine,
+                    blockID: blockID,
+                    splitIndex: splitIndex,
+                });
+            },
 
-            setRemoved(true);
+            remove: () => {
+                if (removed) {
+                    return;
+                }
 
-            if (props.onRemoveLine) {
+                setRemoved(true);
+
                 setTimeout(() => {
-                    if (props.onRemoveLine) {
-                        props.onRemoveLine(props.chordLine);
-                    }
+                    songDispatch({
+                        type: "remove-line",
+                        lineID: chordLine,
+                    });
                 }, removalTime);
-            }
-        },
-    };
+            },
+        }),
+        [chordLine, songDispatch, removed]
+    );
 
-    let chordBlocks: ChordBlock[] = props.chordLine.chordBlocks;
+    let chordBlocks: Collection<ChordBlock> = props.chordLine.chordBlocks;
     if (chordBlocks.length === 0) {
-        chordBlocks = [
+        chordBlocks = new Collection([
             new ChordBlock({
                 chord: "",
                 lyric: new Lyric(""),
             }),
-        ];
+        ]);
     }
 
-    const blocks: React.ReactElement[] = chordBlocks.map(
-        (chordBlock: ChordBlock, index: number) => (
+    const blocks: List<React.ReactElement> = chordBlocks.list.map(
+        (chordBlock: ChordBlock): React.ReactElement => (
             <Block
                 key={chordBlock.id}
                 chordBlock={chordBlock}
-                onChordDragAndDrop={props.onChordDragAndDrop}
+                songDispatch={songDispatch}
                 onChordChange={handlers.chordChange}
                 onBlockSplit={handlers.blockSplit}
-                data-testid={`Block-${index}`}
+                data-testid="Block"
             ></Block>
         )
     );
@@ -116,20 +121,13 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     );
 
     const withLyricInput = (menuItems: MenuItem[]) => (
-        <WithLyricInput
-            chordLine={props.chordLine}
-            onChangeLine={props.onChangeLine}
-            onJSONPaste={props.onJSONPaste}
-            onMergeWithPreviousLine={props.onMergeWithPreviousLine}
-            onSplitLine={props.onSplitLine}
-            onLyricOverflow={props.onLyricOverflow}
-        >
+        <WithLyricInput chordLine={chordLine} songDispatch={songDispatch}>
             {(startEdit: PlainFn) => withHoverMenu(startEdit, menuItems)}
         </WithLyricInput>
     );
 
     const withSection = (
-        <WithSection chordLine={props.chordLine} onChange={props.onChangeLine}>
+        <WithSection chordLine={chordLine} songDispatch={songDispatch}>
             {(editLabel: PlainFn) => {
                 const menuItems: MenuItem[] = [
                     {
@@ -169,4 +167,4 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     );
 };
 
-export default Line;
+export default React.memo(Line);

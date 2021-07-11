@@ -13,11 +13,7 @@ describe("Collection", () => {
         }
     }
 
-    class ItemCollection extends Collection<Item> {
-        clone(): ItemCollection {
-            return new ItemCollection(this.elements);
-        }
-    }
+    class ItemCollection extends Collection<Item> {}
 
     const testItems = () => [
         new Item("1", "a"),
@@ -31,17 +27,60 @@ describe("Collection", () => {
     });
 
     test("constructor", () => {
-        expect(c.elements).toEqual(testItems());
+        expect(c.list.toJS()).toEqual(testItems());
     });
 
     test("remove", () => {
-        c.remove({ id: "2", type: "Item" });
-        expect(c.elements).toEqual([new Item("1", "a"), new Item("3", "c")]);
+        c = c.remove({ id: "2", type: "Item" });
+        expect(c.list.toJS()).toEqual([new Item("1", "a"), new Item("3", "c")]);
+    });
+
+    test("removeMultiple", () => {
+        c = c.removeMultiple([
+            { id: "2", type: "Item" },
+            { id: "3", type: "Item" },
+        ]);
+        expect(c.list.toJS()).toEqual([new Item("1", "a")]);
+    });
+
+    test("replace", () => {
+        c = c.replace({ id: "2", type: "Item" }, () => {
+            return { id: "2", value: "d", type: "Item" };
+        });
+        expect(c.list.toJS()).toEqual([
+            new Item("1", "a"),
+            new Item("2", "d"),
+            new Item("3", "c"),
+        ]);
+    });
+
+    test("update", () => {
+        c = c.update(2, (item) => {
+            item.value += " updated";
+            return item;
+        });
+        expect(c.list.toJS()).toEqual([
+            new Item("1", "a"),
+            new Item("2", "b"),
+            new Item("3", "c updated"),
+        ]);
+    });
+
+    test("updateAll", () => {
+        c = c.updateAll((item, index) => {
+            item.value += " updated " + index;
+            return item;
+        });
+        expect(c.list.toJS()).toEqual([
+            new Item("1", "a updated 0"),
+            new Item("2", "b updated 1"),
+            new Item("3", "c updated 2"),
+        ]);
     });
 
     test("addAfter", () => {
-        c.addAfter({ id: "1", type: "Item" }, new Item("4", "d"));
-        expect(c.elements).toEqual([
+        c = c.addAfter({ id: "1", type: "Item" }, new Item("4", "d"));
+        expect(c.list.toJS()).toEqual([
             new Item("1", "a"),
             new Item("4", "d"),
             new Item("2", "b"),
@@ -50,8 +89,8 @@ describe("Collection", () => {
     });
 
     test("addBeginning", () => {
-        c.addBeginning(new Item("4", "d"));
-        expect(c.elements).toEqual([
+        c = c.addBeginning(new Item("4", "d"));
+        expect(c.list.toJS()).toEqual([
             new Item("4", "d"),
             new Item("1", "a"),
             new Item("2", "b"),

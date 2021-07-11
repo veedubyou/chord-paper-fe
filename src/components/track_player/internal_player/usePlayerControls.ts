@@ -1,3 +1,4 @@
+import { List } from "immutable";
 import { Duration } from "luxon";
 import { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
@@ -78,8 +79,20 @@ export const unfocusedControls: PlayerControls = {
     },
 };
 
+const getSection = (
+    timeSections: List<TimeSection>,
+    index: number
+): TimeSection => {
+    const section = timeSections.get(index);
+    if (section === undefined) {
+        throw new Error("Section index is out of range, unexpected");
+    }
+
+    return section;
+};
+
 export const usePlayerControls = (
-    timeSections: TimeSection[]
+    timeSections: List<TimeSection>
 ): PlayerControls => {
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -174,7 +187,7 @@ export const usePlayerControls = (
     };
 
     const currentSectionIndex = ((): number | null => {
-        if (timeSections.length === 0) {
+        if (timeSections.size === 0) {
             return null;
         }
 
@@ -184,7 +197,8 @@ export const usePlayerControls = (
             if (currentTime >= section.time) {
                 if (
                     currentSectionIndex === null ||
-                    section.time > timeSections[currentSectionIndex].time
+                    section.time >
+                        getSection(timeSections, currentSectionIndex).time
                 ) {
                     currentSectionIndex = index;
                 }
@@ -195,7 +209,9 @@ export const usePlayerControls = (
     })();
 
     const currentSection: TimeSection | null =
-        currentSectionIndex != null ? timeSections[currentSectionIndex] : null;
+        currentSectionIndex != null
+            ? getSection(timeSections, currentSectionIndex)
+            : null;
 
     const currentSectionLabel =
         currentSection !== null ? currentSection.name : "";
@@ -211,7 +227,7 @@ export const usePlayerControls = (
                     return null;
                 }
 
-                return timeSections[currentSectionIndex - 1];
+                return getSection(timeSections, currentSectionIndex - 1);
             })();
 
             if (
@@ -231,7 +247,7 @@ export const usePlayerControls = (
         const findNextSectionIndex = (
             sectionIndex: number | null
         ): number | null => {
-            if (timeSections.length === 0) {
+            if (timeSections.size === 0) {
                 return null;
             }
 
@@ -239,7 +255,7 @@ export const usePlayerControls = (
                 return 0;
             }
 
-            if (sectionIndex === timeSections.length - 1) {
+            if (sectionIndex === timeSections.size - 1) {
                 return null;
             }
 
@@ -254,7 +270,7 @@ export const usePlayerControls = (
                 return null;
             }
 
-            const nextSection = timeSections[nextSectionIndex];
+            const nextSection = getSection(timeSections, nextSectionIndex);
 
             // we could return section (n + 1) or section (n + 2)
             // the idea is that, e.g. the user is at 1:05 but the next section is at 1:06, and next next section is 1:30
@@ -268,7 +284,7 @@ export const usePlayerControls = (
                 return null;
             }
 
-            return timeSections[nextNextSectionIndex];
+            return getSection(timeSections, nextNextSectionIndex);
         })();
 
         return {

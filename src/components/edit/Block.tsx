@@ -2,6 +2,7 @@ import { Box, Grid, makeStyles, Theme } from "@material-ui/core";
 import red from "@material-ui/core/colors/red";
 import { withStyles } from "@material-ui/styles";
 import clsx from "clsx";
+import { List } from "immutable";
 import React from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { IDable } from "../../common/ChordModel/Collection";
@@ -9,6 +10,7 @@ import { Lyric } from "../../common/ChordModel/Lyric";
 import { DataTestID } from "../../common/DataTestID";
 import { inflatingWhitespace } from "../../common/Whitespace";
 import { lyricTypographyVariant } from "../display/Lyric";
+import { ChordSongAction } from "../reducer/reducer";
 import ChordDroppable from "./ChordDroppable";
 import DraggableChordSymbol from "./DraggableChordSymbol";
 import {
@@ -67,13 +69,8 @@ const useNormalTokenStyle = {
 
 export interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
-    onChordDragAndDrop?: (
-        destinationBlockID: IDable<ChordBlock>,
-        splitIndex: number,
-        newChord: string,
-        sourceBlockID: IDable<ChordBlock>,
-        copyAction: boolean
-    ) => void;
+    songDispatch: React.Dispatch<ChordSongAction>;
+
     onChordChange?: (id: IDable<ChordBlock>, newChord: string) => void;
     onBlockSplit?: (id: IDable<ChordBlock>, splitIndex: number) => void;
 }
@@ -81,10 +78,11 @@ export interface BlockProps extends DataTestID {
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     const { editing, startEdit, finishEdit } = useEditingState();
 
-    let lyricTokens: Lyric[] = props.chordBlock.lyricTokens;
+    let lyricTokens: List<Lyric> = props.chordBlock.lyricTokens;
 
-    if (lyricTokens.length === 0) {
-        lyricTokens = [new Lyric(inflatingWhitespace())];
+    if (lyricTokens.size === 0) {
+        const whitespaceLyric = new Lyric(inflatingWhitespace());
+        lyricTokens = List([whitespaceLyric]);
     }
 
     const firstTokenStyle = {
@@ -128,13 +126,14 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             sourceBlockID: IDable<ChordBlock>,
             copyAction: boolean
         ) => {
-            props.onChordDragAndDrop?.(
-                props.chordBlock,
-                tokenIndex,
-                newChord,
-                sourceBlockID,
-                copyAction
-            );
+            props.songDispatch({
+                type: "drag-and-drop-chord",
+                sourceBlockID: sourceBlockID,
+                newChord: newChord,
+                destinationBlockID: props.chordBlock,
+                splitIndex: tokenIndex,
+                copyAction: copyAction,
+            });
         };
     };
 

@@ -4,6 +4,7 @@ import lodash from "lodash";
 import shortid from "shortid";
 import { IDable } from "./Collection";
 import { Lyric, LyricValidator } from "./Lyric";
+import { List, Record } from "immutable";
 
 interface ChordBlockConstructorParams {
     chord: string;
@@ -18,21 +19,88 @@ export const ChordBlockValidator = iots.type({
 
 export type ChordBlockValidatedFields = iots.TypeOf<typeof ChordBlockValidator>;
 
-export class ChordBlock implements IDable<ChordBlock> {
+type RecordType = {
     id: string;
     chord: string;
     lyric: Lyric;
     type: "ChordBlock";
+};
 
-    constructor({ chord, lyric }: ChordBlockConstructorParams) {
-        this.id = shortid.generate();
-        this.chord = chord;
-        this.lyric = lyric;
-        this.type = "ChordBlock";
+const DefaultRecord: RecordType = {
+    id: "",
+    chord: "",
+    lyric: new Lyric(""),
+    type: "ChordBlock" as "ChordBlock",
+};
+
+const RecordConstructor = Record(DefaultRecord);
+type ChordBlockRecord = ReturnType<typeof RecordConstructor>;
+
+export class ChordBlock implements IDable<ChordBlock> {
+    readonly record: ChordBlockRecord;
+
+    constructor(params: ChordBlockConstructorParams | ChordBlockRecord) {
+        if (ChordBlock.isChordBlockRecord(params)) {
+            this.record = params;
+            return;
+        }
+
+        let { chord, lyric } = params;
+
+        this.record = new RecordConstructor({
+            id: shortid.generate(),
+            chord: chord,
+            lyric: lyric,
+            type: "ChordBlock",
+        });
+    }
+
+    static isChordBlockRecord(
+        params: ChordBlockConstructorParams | ChordBlockRecord
+    ): params is ChordBlockRecord {
+        return Record.isRecord(params);
+    }
+
+    get id(): string {
+        return this.record.id;
+    }
+
+    get lyric(): Lyric {
+        return this.record.lyric;
+    }
+
+    get chord(): string {
+        return this.record.chord;
+    }
+
+    get type(): "ChordBlock" {
+        return this.record.type;
+    }
+
+    private new(maybeNew: ChordBlockRecord): ChordBlock {
+        if (maybeNew === this.record) {
+            return this;
+        }
+
+        return new ChordBlock(maybeNew);
+    }
+
+    set<K extends keyof RecordType>(key: K, value: RecordType[K]): ChordBlock {
+        const newRecord = this.record.set(key, value);
+        return this.new(newRecord);
+    }
+
+    update<K extends keyof RecordType>(
+        key: K,
+        updater: (value: RecordType[K]) => RecordType[K]
+    ): ChordBlock {
+        const newRecord = this.record.update(key, updater);
+        return this.new(newRecord);
     }
 
     toJSON(): object {
-        return lodash.omit(this, "id");
+        const plainObject = this.record.toJS();
+        return lodash.omit(plainObject, "id");
     }
 
     static fromValidatedFields(
@@ -75,7 +143,7 @@ export class ChordBlock implements IDable<ChordBlock> {
         );
     }
 
-    get lyricTokens(): Lyric[] {
+    get lyricTokens(): List<Lyric> {
         return this.lyric.tokenize();
     }
 
@@ -85,29 +153,31 @@ export class ChordBlock implements IDable<ChordBlock> {
     // splitBlock(4) =>
     // {id:"B", chord: "B7", lyric:"my dear "}
     // {id:"A", chord: "", "we're"}
-    splitByTokenIndex(splitIndex: number): ChordBlock {
+    splitByTokenIndex(splitIndex: number): [ChordBlock, ChordBlock] {
         if (splitIndex === 0) {
             throw new Error("Split index can't be zero");
         }
 
         const tokens = this.lyricTokens;
-        const prevBlockLyricTokens: Lyric[] = tokens.slice(0, splitIndex);
-        const thisBlockLyricTokens: Lyric[] = tokens.slice(splitIndex);
+        const prevBlockLyricTokens = tokens.slice(0, splitIndex);
+        const thisBlockLyricTokens = tokens.slice(splitIndex);
 
         const prevBlock: ChordBlock = new ChordBlock({
             chord: this.chord,
             lyric: Lyric.join(prevBlockLyricTokens, ""),
         });
 
-        this.chord = "";
-        this.lyric = Lyric.join(thisBlockLyricTokens, "");
+        const newCurrBlock: ChordBlock = this.set("chord", "").set(
+            "lyric",
+            Lyric.join(thisBlockLyricTokens, "")
+        );
 
-        return prevBlock;
+        return [prevBlock, newCurrBlock];
     }
 
-    splitByCharIndex(splitIndex: number): ChordBlock {
+    splitByCharIndex(splitIndex: number): [ChordBlock, ChordBlock] {
         if (splitIndex === 0) {
-            return new ChordBlock({ chord: "", lyric: new Lyric("") });
+            return [new ChordBlock({ chord: "", lyric: new Lyric("") }), this];
         }
 
         const lyricString: string = this.lyric.get((s: string) => s);
@@ -121,10 +191,12 @@ export class ChordBlock implements IDable<ChordBlock> {
             lyric: prevBlockLyrics,
         });
 
-        this.chord = "";
-        this.lyric = thisBlockLyrics;
+        const newCurrBlock = this.set("chord", "").set(
+            "lyric",
+            thisBlockLyrics
+        );
 
-        return prevBlock;
+        return [prevBlock, newCurrBlock];
     }
 
     contentEquals(other: ChordBlock): boolean {

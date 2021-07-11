@@ -8,23 +8,31 @@ import { ChordTypography, LineBreak, LyricsTypography } from "./Common";
 import Playground from "./Playground";
 
 const Instrumental: React.FC<{}> = (): JSX.Element => {
-    const tabExample = new ChordSong([
-        new ChordLine([
-            new ChordBlock({ chord: "Bm", lyric: new Lyric("\ue200") }),
-            new ChordBlock({ chord: "A", lyric: new Lyric("\ue200") }),
-            new ChordBlock({ chord: "E", lyric: new Lyric("\ue400") }),
-        ]),
-    ]);
+    const tabExample = new ChordSong({
+        lines: [
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({ chord: "Bm", lyric: new Lyric("\ue200") }),
+                    new ChordBlock({ chord: "A", lyric: new Lyric("\ue200") }),
+                    new ChordBlock({ chord: "E", lyric: new Lyric("\ue400") }),
+                ],
+            }),
+        ],
+    });
 
-    const initialSong = new ChordSong();
+    const initialSong = new ChordSong({});
 
-    const expectedSong = new ChordSong([
-        new ChordLine([
-            new ChordBlock({ chord: "Bm", lyric: new Lyric("\ue200") }),
-            new ChordBlock({ chord: "A", lyric: new Lyric("\ue200") }),
-            new ChordBlock({ chord: "E", lyric: new Lyric("\ue400") }),
-        ]),
-    ]);
+    const expectedSong = new ChordSong({
+        lines: [
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({ chord: "Bm", lyric: new Lyric("\ue200") }),
+                    new ChordBlock({ chord: "A", lyric: new Lyric("\ue200") }),
+                    new ChordBlock({ chord: "E", lyric: new Lyric("\ue400") }),
+                ],
+            }),
+        ],
+    });
 
     return (
         <>

@@ -12,8 +12,8 @@ const TrackListValidator = iots.type({
 
 type TrackListValidatedFields = iots.TypeOf<typeof TrackListValidator>;
 export class TrackList implements TrackListValidatedFields {
-    song_id: string;
-    tracks: Track[];
+    readonly song_id: string;
+    readonly tracks: Track[];
 
     constructor(songID: string, tracks: Track[]) {
         this.song_id = songID;

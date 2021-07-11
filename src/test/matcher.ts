@@ -44,7 +44,7 @@ export const lyricsInElement = (parentElement: Element): string | null => {
         }
 
         const isTokenAttribute = testID.startsWith("Token-");
-        if (!testID.startsWith("Token-")) {
+        if (!isTokenAttribute) {
             return null;
         }
 
@@ -78,41 +78,50 @@ export const matchLyric: (lyricToMatch: string) => MatcherFunction = (
 };
 
 export type FindByTestIdChainFn = (
-    ...testIDChain: string[]
+    ...testIDChain: TestIDParam[]
 ) => Promise<HTMLElement>;
 
+type FindAllByTestIdFn = (testID: string) => Promise<HTMLElement[]>;
+export type TestIDParam = [string, number];
+
 export const getFindByTestIdChain = (
-    findByTestId: (testID: string) => Promise<HTMLElement>
-): ((...testIDChain: string[]) => Promise<HTMLElement>) => {
-    return async (...testIDChain: string[]): Promise<HTMLElement> => {
+    findAllByTestId: FindAllByTestIdFn
+): FindByTestIdChainFn => {
+    return async (...testIDChain: TestIDParam[]): Promise<HTMLElement> => {
         expect(testIDChain.length).toBeGreaterThanOrEqual(1);
 
-        let parent: HTMLElement = await findByTestId(testIDChain[0]);
+        let parentsCollection: HTMLElement[] = await findAllByTestId(
+            testIDChain[0][0]
+        );
+        let parent: HTMLElement = parentsCollection[testIDChain[0][1]];
         for (let i = 1; i < testIDChain.length; i++) {
-            parent = await within(parent).findByTestId(testIDChain[i]);
+            parentsCollection = await within(parent).findAllByTestId(
+                testIDChain[i][0]
+            );
+            parent = parentsCollection[testIDChain[i][1]];
         }
 
         return parent;
     };
 };
 
-type FindByTestIdFn = (testID: string) => Promise<HTMLElement>;
-
 export type ExpectChordAndLyricFn = (
     chord: string,
     lyric: string,
-    testIDChain: string[]
+    testIDChain: TestIDParam[]
 ) => Promise<void>;
 
 export const getExpectChordAndLyric = (
-    findByTestId: FindByTestIdFn
+    findAllByTestId: FindAllByTestIdFn
 ): ExpectChordAndLyricFn => {
     return async (
         expectedChord: string,
         expectedLyrics: string,
-        testIDChain: string[]
+        testIDChain: TestIDParam[]
     ): Promise<void> => {
-        const parent = await getFindByTestIdChain(findByTestId)(...testIDChain);
+        const parent = await getFindByTestIdChain(findAllByTestId)(
+            ...testIDChain
+        );
 
         const chordElem = await within(parent).findByTestId("ChordSymbol");
         const lyricElem = await within(parent).findByTestId("Lyric");
@@ -124,6 +133,7 @@ export const getExpectChordAndLyric = (
         });
         await waitFor(() => {
             const lyrics = lyricsInElement(lyricElem);
+
             expect(lyrics).toEqual(expectedLyrics);
         });
     };

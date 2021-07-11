@@ -1,7 +1,6 @@
 import { Button, Divider, Grid, Theme } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { withStyles } from "@material-ui/styles";
-import lodash from "lodash";
 import React from "react";
 import { SplitStemTrack } from "../../../common/ChordModel/tracks/SplitStemRequest";
 import LabelField from "./LabelField";
@@ -23,14 +22,12 @@ const SplitStemTrackRow: React.FC<SplitStemTrackRowProps> = (
     props: SplitStemTrackRowProps
 ): JSX.Element => {
     const handleLabelChange = (newLabel: string) => {
-        const updatedTrack = lodash.clone(props.track);
-        updatedTrack.label = newLabel;
+        const updatedTrack = props.track.set("label", newLabel);
         props.onChange(updatedTrack);
     };
 
     const handleURLChange = (newURL: string) => {
-        const updatedTrack = lodash.clone(props.track);
-        updatedTrack.original_url = newURL;
+        const updatedTrack = props.track.set("original_url", newURL);
         props.onChange(updatedTrack);
     };
 

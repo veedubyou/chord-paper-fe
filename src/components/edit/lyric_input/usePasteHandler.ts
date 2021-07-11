@@ -17,10 +17,13 @@ const composeMultilinePaste = (
     pasteContent: string[]
 ): [Lyric, Lyric[]] => {
     const [beforeSelection, afterSelection] = splitContentBySelection(ref);
-    const serializedLyricsForThisLine: Lyric = serializedLyricsFromRange(
-        beforeSelection
+
+    let serializedLyricsForThisLine: Lyric =
+        serializedLyricsFromRange(beforeSelection);
+
+    serializedLyricsForThisLine = serializedLyricsForThisLine.append(
+        pasteContent[0]
     );
-    serializedLyricsForThisLine.append(pasteContent[0]);
 
     const newPasteLines = pasteContent.slice(1);
     const remainingSerializedLyrics: Lyric[] = newPasteLines.map(
@@ -30,9 +33,10 @@ const composeMultilinePaste = (
     );
 
     const lastIndex = remainingSerializedLyrics.length - 1;
-    remainingSerializedLyrics[lastIndex].append(
+    const lastLyric = remainingSerializedLyrics[lastIndex].append(
         serializedLyricsFromRange(afterSelection)
     );
+    remainingSerializedLyrics[lastIndex] = lastLyric;
 
     return [serializedLyricsForThisLine, remainingSerializedLyrics];
 };

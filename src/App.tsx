@@ -18,8 +18,6 @@ import {
 } from "react-router-dom";
 import Background from "./assets/img/symphony.png";
 import { ChordSong } from "./common/ChordModel/ChordSong";
-import About from "./components/about/About";
-import Demo from "./components/Demo";
 import {
     aboutPath,
     DemoModePath,
@@ -30,17 +28,18 @@ import {
     SongIDModePath,
     songPath,
 } from "./common/paths";
-
+import About from "./components/about/About";
+import Demo from "./components/Demo";
+import DragAndDrop from "./components/edit/DragAndDrop";
+import GlobalKeyListenerProvider from "./components/GlobalKeyListener";
+import GuitarDemo from "./components/guitar/GuitarDemo";
 import SideMenu from "./components/SideMenu";
 import SongFetcher from "./components/SongFetcher";
 import SongRouter from "./components/SongRouter";
 import { TutorialSwitches } from "./components/Tutorial";
 import { User, UserContext } from "./components/user/userContext";
 import Version from "./components/Version";
-import { withSongContext } from "./components/WithSongContext";
-import { withCloud } from "./components/WithCloud";
-import GlobalKeyListenerProvider from "./components/GlobalKeyListener";
-import GuitarDemo from "./components/guitar/GuitarDemo";
+import { withCloudSaveSongContext } from "./components/WithSongContext";
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -92,7 +91,7 @@ const AppLayout = withStyles({
     },
 })(Grid);
 
-const MainSong = withSongContext(withCloud(SongRouter));
+const MainSong = withCloudSaveSongContext(SongRouter);
 
 const AppContent: React.FC<{}> = (): JSX.Element => {
     const [user, setUser] = useState<User | null>(null);
@@ -107,7 +106,9 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
         DemoModePath.isPlayMode(location.pathname) ||
         location.pathname === guitarDemoPath.URL();
 
-    const withRegularAppLayout = (child: React.ReactElement) => {
+    const withRegularAppLayout = (
+        child: React.ReactElement | React.ReactElement[]
+    ) => {
         return (
             <>
                 {!isFullScreen && (
@@ -129,7 +130,7 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
 
             <Route key={newSongPath.URL()} path={newSongPath.URL()}>
                 {withRegularAppLayout(
-                    <MainSong song={new ChordSong()} path={newSongPath} />
+                    <MainSong song={new ChordSong({})} path={newSongPath} />
                 )}
             </Route>
 
@@ -150,7 +151,7 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
                 {withRegularAppLayout(<Demo />)}
             </Route>
 
-            {TutorialSwitches()}
+            {TutorialSwitches(withRegularAppLayout)}
             <Route key={aboutPath.URL()} path={aboutPath.URL()} exact>
                 {withRegularAppLayout(<About />)}
             </Route>
@@ -174,9 +175,11 @@ function App() {
                 />
                 <SnackbarProvider>
                     <HashRouter>
-                        <GlobalKeyListenerProvider>
-                            <AppContent />
-                        </GlobalKeyListenerProvider>
+                        <DragAndDrop>
+                            <GlobalKeyListenerProvider>
+                                <AppContent />
+                            </GlobalKeyListenerProvider>
+                        </DragAndDrop>
                     </HashRouter>
                 </SnackbarProvider>
             </ThemeProvider>

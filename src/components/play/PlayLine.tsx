@@ -25,7 +25,7 @@ const PlayLine: React.FC<PlayLineProps> = (
 ): JSX.Element => {
     let lineComponent: React.ReactElement = (
         <Box>
-            {props.chordLine.chordBlocks.map((block: ChordBlock) => (
+            {props.chordLine.chordBlocks.list.map((block: ChordBlock) => (
                 <PlayBlock block={block} key={block.id}></PlayBlock>
             ))}
         </Box>
