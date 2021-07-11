@@ -34,6 +34,9 @@ const HighlightableBox = withStyles({
         "&:hover": {
             backgroundColor: grey[100],
         },
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
     },
 })(Box);
 
@@ -109,7 +112,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     );
 
     const basicLine = (startEdit: PlainFn) => (
-        <HighlightableBox data-testid={"NoneditableLine"} onClick={startEdit}>
+        <HighlightableBox data-testid="NoneditableLine" onClick={startEdit}>
             {blocks}
         </HighlightableBox>
     );
