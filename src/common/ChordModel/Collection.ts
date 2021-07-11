@@ -155,18 +155,21 @@ export class Collection<T extends IDable<T>> {
         return this.new(newList);
     }
 
-    updateAll(updater: (value: T) => T): Collection<T> {
-        const wrappedUpdater = (value: T | undefined): T => {
+    updateAll(updater: (value: T, index: number) => T): Collection<T> {
+        const wrappedUpdater = (value: T | undefined, index: number): T => {
             if (value === undefined) {
                 throw new Error("Can't have undefined indices");
             }
 
-            return updater(value);
+            return updater(value, index);
         };
 
         const newList = this.list.withMutations((list) => {
             for (let i = 0; i < list.size; i++) {
-                list.update(i, wrappedUpdater);
+                list.update(
+                    i,
+                    (value: T | undefined): T => wrappedUpdater(value, i)
+                );
             }
         });
 

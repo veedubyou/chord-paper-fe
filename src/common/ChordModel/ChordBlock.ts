@@ -9,7 +9,6 @@ import { List, Record } from "immutable";
 interface ChordBlockConstructorParams {
     chord: string;
     lyric: Lyric;
-    id?: string;
 }
 
 export const ChordBlockValidator = iots.type({
@@ -46,12 +45,10 @@ export class ChordBlock implements IDable<ChordBlock> {
             return;
         }
 
-        let { chord, lyric, id } = params;
-        if (id === undefined) {
-            id = shortid.generate();
-        }
+        let { chord, lyric } = params;
+
         this.record = new RecordConstructor({
-            id: id,
+            id: shortid.generate(),
             chord: chord,
             lyric: lyric,
             type: "ChordBlock",

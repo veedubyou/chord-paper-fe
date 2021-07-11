@@ -1,10 +1,9 @@
-import { ChordLine } from "./ChordLine";
-import { ChordBlock } from "./ChordBlock";
 import { DiffMatchPatch, DiffOperation } from "diff-match-patch-typescript";
-import { Lyric } from "./Lyric";
 import { findTabType, SizedTab } from "../../components/lyrics/Tab";
+import { ChordBlock } from "./ChordBlock";
+import { ChordLine } from "./ChordLine";
 import { Collection } from "./Collection";
-import { List } from "immutable";
+import { Lyric } from "./Lyric";
 
 const differ: DiffMatchPatch = (() => {
     const dmp = new DiffMatchPatch();
@@ -38,7 +37,7 @@ class ChordLineIterator {
     }
 
     private currentBlock(): ChordBlock {
-        return this.chordLine.chordBlocks.getAtIndex(this.currBlockIndex);
+        return this.chordLine.getElementAtIndex(this.currBlockIndex);
     }
 
     private currentRawLyrics(): string {
@@ -93,25 +92,18 @@ class ChordLineIterator {
     }
 
     finish(): ChordLine {
-        for (let i = 0; i < this.chordLine.chordBlocks.length; i++) {
-            const lyric = new Lyric(this.blockBuffer[i]);
-
-            this.chordLine = this.chordLine.update("elements", (elements) => {
-                return elements.update(i, (block) => {
-                    return block.set("lyric", lyric);
-                });
-            });
-        }
+        this.chordLine = this.chordLine.updateAllElements((block, index) => {
+            const lyric = new Lyric(this.blockBuffer[index]);
+            return block.set("lyric", lyric);
+        });
 
         if (this.prependLyrics !== "") {
-            this.chordLine = this.chordLine.update("elements", (elements) => {
-                return elements.addBeginning(
-                    new ChordBlock({
-                        chord: "",
-                        lyric: new Lyric(this.prependLyrics),
-                    })
-                );
-            });
+            this.chordLine = this.chordLine.addBeginning(
+                new ChordBlock({
+                    chord: "",
+                    lyric: new Lyric(this.prependLyrics),
+                })
+            );
         }
 
         return this.chordLine.normalizeBlocks();
@@ -127,7 +119,7 @@ const removeOrphanedBlocksWithNoChords = (chordLine: ChordLine): ChordLine => {
         }
     }
 
-    return chordLine.set("elements", new Collection(newBlocks));
+    return chordLine.updateCollection(() => new Collection(newBlocks));
 };
 
 const orphanTab: string = findTabType(
@@ -136,7 +128,7 @@ const orphanTab: string = findTabType(
 ).serializedStr;
 
 const addTabsToOrphanedBlocks = (chordLine: ChordLine): ChordLine => {
-    const blockTransformer = (block: ChordBlock): ChordBlock => {
+    const orphanTabBlockIfEmpty = (block: ChordBlock): ChordBlock => {
         if (!block.lyric.isEmpty()) {
             return block;
         }
@@ -144,10 +136,7 @@ const addTabsToOrphanedBlocks = (chordLine: ChordLine): ChordLine => {
         return block.set("lyric", new Lyric(orphanTab));
     };
 
-    return chordLine.update("elements", (elements) => {
-        const newList: List<ChordBlock> = elements.list.map(blockTransformer);
-        return new Collection(newList);
-    });
+    return chordLine.updateAllElements(orphanTabBlockIfEmpty);
 };
 
 export const replaceChordLineLyrics = (

@@ -315,7 +315,7 @@ export class ChordSong
         return this.chordLines.get(idable);
     }
 
-    // deep clone clones only the contents of the song, not the ownership information
+    // fork clones only the contents of the song, not the ownership information
     // i.e. not ID, not owner ID, not last saved, etc
     fork(): ChordSong {
         const clone = this.set("id", "")
@@ -356,16 +356,13 @@ export class ChordSong
         // Give You Up
         // =>
         // Never GonnaGive You Up is awkward
-        // const prevLine = this.chordLines.getAtIndex(index - 1);
 
         const addSpaceToEndOfLine = (line: ChordLine): ChordLine => {
             const lastBlockIndex = line.chordBlocks.length - 1;
 
-            return line.update("elements", (elements) => {
-                return elements.update(lastBlockIndex, (block) => {
-                    return block.update("lyric", (lyric) => {
-                        return lyric.append(new Lyric(" "));
-                    });
+            return line.updateElement(lastBlockIndex, (block) => {
+                return block.update("lyric", (lyric) => {
+                    return lyric.append(" ");
                 });
             });
         };
@@ -374,7 +371,7 @@ export class ChordSong
             prevLine: ChordLine,
             currLine: ChordLine
         ): ChordLine => {
-            return prevLine.update("elements", (elements) => {
+            return prevLine.updateCollection((elements) => {
                 return elements.transform((list) =>
                     list.push(...currLine.chordBlocks.toArray())
                 );
@@ -392,7 +389,7 @@ export class ChordSong
             return prevLine;
         };
 
-        const newChordSong = this.update("elements", (elements) => {
+        const newChordSong = this.updateCollection((elements) => {
             const currLine = elements.getAtIndex(currIndex);
 
             elements = elements.update(currIndex - 1, (prevLine) =>
@@ -415,7 +412,7 @@ export class ChordSong
 
         const [newCurrLine, nextLine] = chordLine.splitByCharIndex(splitIndex);
 
-        const newChordSong = this.update("elements", (elements) => {
+        const newChordSong = this.updateCollection((elements) => {
             return elements.splice(chordLine, 1, newCurrLine, nextLine);
         });
 

@@ -97,7 +97,7 @@ export class ChordLine
         }
 
         let elements: Collection<ChordBlock>;
-        // let elements = params.elements;
+
         if (params.blocks === undefined) {
             elements = new Collection([
                 new ChordBlock({ chord: "", lyric: new Lyric("") }),
@@ -255,10 +255,8 @@ export class ChordLine
     }
 
     setChord(idable: IDable<ChordBlock>, newChord: string): ChordLine {
-        const newChordLine = this.update("elements", (elements) => {
-            return elements.replace(idable, (block) => {
-                return block.set("chord", newChord);
-            });
+        const newChordLine = this.replaceElement(idable, (block) => {
+            return block.set("chord", newChord);
         });
 
         return newChordLine.normalizeBlocks();
@@ -347,9 +345,10 @@ export class ChordLine
     }
 
     splitByCharIndex(splitIndex: number): [ChordLine, ChordLine] {
-        if (splitIndex === 0) {
+        const splitAtBeginning = splitIndex === 0;
+        if (splitAtBeginning) {
             const nextLine = new ChordLine({
-                blocks: this.elements,
+                blocks: this.chordBlocks,
             });
 
             const newCurrLine = this.updateCollection(
@@ -363,11 +362,14 @@ export class ChordLine
         }
 
         const totalLyricLength = this.lyrics.get((s: string) => s).length;
-        if (splitIndex >= totalLyricLength) {
+        const splitAtEnd = splitIndex >= totalLyricLength;
+        if (splitAtEnd) {
             return [this, new ChordLine({})];
         }
 
-        const [splitCharIndex, i] = (() => {
+        // split in the middle otherwise
+
+        const [splitCharIndex, blockIndex] = (() => {
             let remainingChars = splitIndex;
 
             for (let i = 0; i < this.elements.length; i++) {
@@ -388,11 +390,11 @@ export class ChordLine
         })();
 
         let blocksOfCurrLine = this.elements.transform((list) =>
-            list.slice(0, i)
+            list.slice(0, blockIndex)
         );
         let blocksOfNextLine = new Collection<ChordBlock>();
         if (splitCharIndex > 0) {
-            const block = this.elements.getAtIndex(i);
+            const block = this.elements.getAtIndex(blockIndex);
 
             const [firstHalfBlock, secondHalfBlock] =
                 block.splitByCharIndex(splitCharIndex);
@@ -405,13 +407,15 @@ export class ChordLine
             );
 
             const remainingBlocks = this.elements.transform((list) =>
-                list.slice(i + 1)
+                list.slice(blockIndex + 1)
             );
             blocksOfNextLine = blocksOfNextLine.transform((list) =>
                 list.push(...remainingBlocks.toArray())
             );
         } else {
-            blocksOfNextLine = this.elements.transform((list) => list.slice(i));
+            blocksOfNextLine = this.elements.transform((list) =>
+                list.slice(blockIndex)
+            );
         }
 
         const newCurrLine = this.set("elements", blocksOfCurrLine);
@@ -425,7 +429,10 @@ export class ChordLine
         const newBlocks: ChordBlock[] = [];
 
         this.elements.forEach((block: ChordBlock) => {
-            if (block.chord === "" && newBlocks.length > 0) {
+            const hasLastBlock = newBlocks.length > 0;
+            const shouldMergeWithLastBlock = block.chord === "" && hasLastBlock;
+
+            if (shouldMergeWithLastBlock) {
                 const lastIndex = newBlocks.length - 1;
                 newBlocks[lastIndex] = newBlocks[lastIndex].update(
                     "lyric",

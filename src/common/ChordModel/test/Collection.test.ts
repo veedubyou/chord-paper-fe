@@ -67,14 +67,14 @@ describe("Collection", () => {
     });
 
     test("updateAll", () => {
-        c = c.updateAll((item) => {
-            item.value += " updated";
+        c = c.updateAll((item, index) => {
+            item.value += " updated " + index;
             return item;
         });
         expect(c.list.toJS()).toEqual([
-            new Item("1", "a updated"),
-            new Item("2", "b updated"),
-            new Item("3", "c updated"),
+            new Item("1", "a updated 0"),
+            new Item("2", "b updated 1"),
+            new Item("3", "c updated 2"),
         ]);
     });
 
