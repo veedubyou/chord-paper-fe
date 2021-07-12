@@ -16,7 +16,6 @@ const makeBasePlayerProps = (
         onPause: playerControls.onPause,
         onProgress: playerControls.onProgress,
         progressInterval: 500,
-        style: { minWidth: "50vw" },
         height: "auto",
         width: "unset",
         onKeyUp: (event: KeyboardEvent) => event.preventDefault(),
