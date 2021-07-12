@@ -1,20 +1,22 @@
-import { Theme, Typography } from "@material-ui/core";
+import { Box, Theme, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
 import { greyTextColour } from "../common";
-import { VerticalMiddleDivider } from "./ControlGroup";
 
-const SectionLabelTypography = withStyles((theme: Theme) => ({
+const SectionLabelBox = withStyles((theme: Theme) => ({
     root: {
         marginLeft: theme.spacing(1.5),
         marginRight: theme.spacing(1.5),
         color: greyTextColour,
+        flexShrink: 1,
+        flexGrow: 1,
+        display: "flex",
+        justifyContent: "center",
     },
-}))(Typography);
+}))(Box);
 
 interface SectionLabelProps {
     value: string;
-    divider?: boolean;
 }
 
 const SectionLabel: React.FC<SectionLabelProps> = (
@@ -25,14 +27,9 @@ const SectionLabel: React.FC<SectionLabelProps> = (
     }
 
     return (
-        <>
-            <SectionLabelTypography variant="body1">
-                {props.value}
-            </SectionLabelTypography>
-            {props.divider && (
-                <VerticalMiddleDivider orientation="vertical" flexItem />
-            )}
-        </>
+        <SectionLabelBox>
+            <Typography variant="body1">{props.value}</Typography>
+        </SectionLabelBox>
     );
 };
 

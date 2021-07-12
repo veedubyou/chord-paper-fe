@@ -66,12 +66,18 @@ const Select = withStyles((theme: Theme) => ({
     },
 }))(UnstyledSelect);
 
-const FullPlayerContainer = withStyles((theme: Theme) => ({
-    root: {
-        backgroundColor: "white",
-        ...roundedTopCornersStyle(theme),
-    },
-}))(Box);
+const FullPlayerContainer = withStyles((theme: Theme) => {
+    const transportControlsWidth = theme.spacing(36);
+
+    return {
+        root: {
+            backgroundColor: "white",
+            minWidth: "50vw",
+            maxWidth: transportControlsWidth,
+            ...roundedTopCornersStyle(theme),
+        },
+    };
+})(Box);
 
 interface MultiTrackPlayerProps {
     show: boolean;

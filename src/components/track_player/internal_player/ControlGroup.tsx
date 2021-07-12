@@ -6,6 +6,8 @@ export const ControlGroupBox = withStyles({
     root: {
         display: "flex",
         alignContent: "center",
+        flexShrink: 0,
+        flexGrow: 0,
     },
 })(Box);
 
@@ -26,7 +28,13 @@ interface ControlGroupProps {
 const ControlGroup: React.FC<ControlGroupProps> = (
     props: ControlGroupProps
 ): JSX.Element => {
-    const contents: React.ReactElement[] = props.children.map(
+    const isRealNode = (node: React.ReactNode): boolean => {
+        return node !== null && node !== undefined;
+    };
+
+    const realContents: React.ReactNode[] = props.children.filter(isRealNode);
+
+    const contents: React.ReactElement[] = realContents.map(
         (child: React.ReactNode, index: number) => {
             const divider = (
                 <VerticalMiddleDivider

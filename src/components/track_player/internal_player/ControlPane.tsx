@@ -1,4 +1,4 @@
-import { Box } from "@material-ui/core";
+import { Box, Theme } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import React, { useEffect } from "react";
 import { PlainFn } from "../../../common/PlainFn";
@@ -31,11 +31,19 @@ interface ControlPaneProps {
     sectionLabel: string;
 }
 
-const ControlPaneBox = withStyles({
-    root: {
-        ...controlPaneStyle,
-        justifyContent: "space-between",
-    },
+const ControlPaneBox = withStyles((theme: Theme) => {
+    const buttonHeight = theme.spacing(5);
+    return {
+        root: {
+            ...controlPaneStyle,
+            justifyContent: "space-between",
+            // these series of CSS allows flex items
+            // to be "pushed off" when they run out of space
+            flexWrap: "wrap",
+            overflow: "hidden",
+            maxHeight: buttonHeight,
+        },
+    };
 })(Box);
 
 const ControlPane: React.FC<ControlPaneProps> = (
@@ -97,29 +105,13 @@ const ControlPane: React.FC<ControlPaneProps> = (
         }
 
         return (
-            <TransposeControl
-                transposeLevel={props.transpose.level}
-                onChange={props.transpose.onChange}
-            />
-        );
-    })();
-
-    const rightSideControls: JSX.Element = (() => {
-        const playrateControl = (
-            <PlayrateControl
-                playratePercentage={props.playrate.percentage}
-                onChange={props.playrate.onChange}
-            />
-        );
-
-        if (transposeControl === null) {
-            return playrateControl;
-        }
-
-        return (
             <ControlGroup dividers="left">
-                {transposeControl}
-                {playrateControl}
+                {[
+                    <TransposeControl
+                        transposeLevel={props.transpose.level}
+                        onChange={props.transpose.onChange}
+                    />,
+                ]}
             </ControlGroup>
         );
     })();
@@ -141,7 +133,15 @@ const ControlPane: React.FC<ControlPaneProps> = (
                 />
             </ControlGroup>
             <SectionLabel value={props.sectionLabel} />
-            {rightSideControls}
+            {transposeControl}
+            <ControlGroup dividers="left">
+                {[
+                    <PlayrateControl
+                        playratePercentage={props.playrate.percentage}
+                        onChange={props.playrate.onChange}
+                    />,
+                ]}
+            </ControlGroup>
         </ControlPaneBox>
     );
 };
