@@ -55,8 +55,11 @@ export const deserializeCopiedChordLines = (
 };
 
 const serializeCopiedChordLines = (chordLines: List<ChordLine>): string => {
+    const copyableLines: List<ChordLine> = chordLines.map((line: ChordLine) =>
+        line.forCopying()
+    );
     const payload: CopiedChordLines = {
-        copiedChordLines: chordLines.toArray(),
+        copiedChordLines: copyableLines.toArray(),
     };
 
     return JSON.stringify(payload);
