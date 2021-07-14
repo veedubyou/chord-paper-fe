@@ -129,6 +129,12 @@ export class ChordLine
         return lodash.omit(plainObject, "id");
     }
 
+    // for copying purposes, the section is usually not
+    // intended to be pasted elsewhere
+    forCopying(): ChordLine {
+        return this.set("section", undefined);
+    }
+
     private new(maybeNew: ChordLineRecord): ChordLine {
         if (maybeNew === this.record) {
             return this;
