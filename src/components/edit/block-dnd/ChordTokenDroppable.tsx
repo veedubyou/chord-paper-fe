@@ -23,7 +23,6 @@ const ChordTokenDroppable: React.FC<ChordTokenDroppableProps> = (
     const [{ isOver }, dropRef] = useDrop<DNDChord, DropParams, DropCollector>({
         accept: DNDChordType,
         drop: (): TypedDropParams => {
-            console.log("dropping");
             return {
                 type: "dropped-chord-result",
                 tokenIndex: 0,
