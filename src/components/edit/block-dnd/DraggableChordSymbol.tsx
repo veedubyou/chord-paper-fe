@@ -4,7 +4,8 @@ import { DragSourceMonitor, useDrag } from "react-dnd";
 import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
 import { IDable } from "../../../common/ChordModel/Collection";
 import ChordSymbol, { ChordSymbolProps } from "../../display/ChordSymbol";
-import { DNDChord, isDropResult, NewDNDChord } from "./common";
+import { DNDChord, NewDNDChord } from "./common";
+import { isDropResult } from "./useChordDrop";
 
 interface DraggableChordSymbolProps extends ChordSymbolProps {
     chordBlockID: IDable<ChordBlock>;
