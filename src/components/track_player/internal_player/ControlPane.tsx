@@ -133,7 +133,6 @@ const ControlPane: React.FC<ControlPaneProps> = (
                 />
             </ControlGroup>
             <SectionLabel value={props.sectionLabel} />
-            {transposeControl}
             <ControlGroup dividers="left">
                 {[
                     <PlayrateControl
@@ -142,6 +141,7 @@ const ControlPane: React.FC<ControlPaneProps> = (
                     />,
                 ]}
             </ControlGroup>
+            {transposeControl}
         </ControlPaneBox>
     );
 };
