@@ -136,14 +136,20 @@ export const hoverChordLyricStyle = (
 
         return {
             root: {
-                [`& ${chordTargetSelector}:hover ~ ${spaceClassSelector}`]: highlightedSpace,
-                [`& ${chordTargetSelector}:hover ~ * ${spaceClassSelector}`]: highlightedSpace,
+                [`& ${chordTargetSelector}:hover ~ ${spaceClassSelector}`]:
+                    highlightedSpace,
+                [`& ${chordTargetSelector}:hover ~ * ${spaceClassSelector}`]:
+                    highlightedSpace,
 
-                [`& ${chordTargetSelector}:hover ~ ${wordClassSelector}`]: highlightedWord,
-                [`& ${chordTargetSelector}:hover ~ * ${wordClassSelector}`]: highlightedWord,
+                [`& ${chordTargetSelector}:hover ~ ${wordClassSelector}`]:
+                    highlightedWord,
+                [`& ${chordTargetSelector}:hover ~ * ${wordClassSelector}`]:
+                    highlightedWord,
 
-                [`& ${chordTargetSelector}${chordSymbolSelector}:hover`]: outline,
-                [`& ${chordTargetSelector}:hover ${chordSymbolSelector}`]: outline,
+                [`& ${chordTargetSelector}${chordSymbolSelector}:hover`]:
+                    outline,
+                [`& ${chordTargetSelector}:hover ${chordSymbolSelector}`]:
+                    outline,
             },
         };
     };
