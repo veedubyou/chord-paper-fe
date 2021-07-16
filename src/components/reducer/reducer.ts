@@ -94,7 +94,7 @@ type DragAndDropChord = {
     newChord: string;
     destinationBlockID: IDable<ChordBlock>;
     splitIndex: number;
-    copyAction: boolean;
+    dropType: "move" | "copy";
 };
 
 type SetSection = {
@@ -255,8 +255,7 @@ const chordSongReducer = (
                 }
             };
 
-            const moveAction = !action.copyAction;
-            if (moveAction) {
+            if (action.dropType === "move") {
                 // clearing the source block first allows handling of when the chord
                 // is dropped onto another token in the same block without special cases
                 sourceLine = sourceLine.replaceElement(

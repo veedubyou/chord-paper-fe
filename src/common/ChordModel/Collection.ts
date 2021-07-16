@@ -3,8 +3,8 @@ import { List } from "immutable";
 // use the name of the class the ID is describing for T
 // e.g. IDable<Person>
 export interface IDable<T extends IDable<T>> {
-    id: string;
-    type: T["type"];
+    readonly id: string;
+    readonly type: T["type"];
 }
 
 export abstract class CollectionMethods<

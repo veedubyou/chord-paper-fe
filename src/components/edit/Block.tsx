@@ -9,10 +9,14 @@ import { IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { DataTestID } from "../../common/DataTestID";
 import { inflatingWhitespace } from "../../common/Whitespace";
+import ChordSymbol from "../display/ChordSymbol";
 import { lyricTypographyVariant } from "../display/Lyric";
 import { ChordSongAction } from "../reducer/reducer";
-import ChordDroppable from "./ChordDroppable";
-import DraggableChordSymbol from "./DraggableChordSymbol";
+import ChordlessTokenDroppable from "./block-dnd/ChordlessTokenDroppable";
+import ChordTokenDroppable from "./block-dnd/ChordTokenDroppable";
+import { DropParams } from "./block-dnd/common";
+import DraggableChordSymbol from "./block-dnd/DraggableChordSymbol";
+import { useChordTokenDragState } from "./block-dnd/useChordTokenDragState";
 import {
     chordTargetClassName,
     dragOverChordLyricStyle,
@@ -71,12 +75,27 @@ export interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
     songDispatch: React.Dispatch<ChordSongAction>;
 
-    onChordChange?: (id: IDable<ChordBlock>, newChord: string) => void;
-    onBlockSplit?: (id: IDable<ChordBlock>, splitIndex: number) => void;
+    onChordChange: (id: IDable<ChordBlock>, newChord: string) => void;
+    onBlockSplit: (id: IDable<ChordBlock>, splitIndex: number) => void;
 }
 
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
+    const chordTokenStyle = {
+        hoverable: useFirstTokenStyle.hoverable(),
+        dragOver: useFirstTokenStyle.dragOver(),
+    };
+
+    const chordlessTokenStyle = {
+        hoverable: useNormalTokenStyle.hoverable(),
+        dragOver: useNormalTokenStyle.dragOver(),
+    };
     const { editing, startEdit, finishEdit } = useEditingState();
+
+    const [gridClassName, onChordDragOver, onLyricDragOver] =
+        useChordTokenDragState(
+            chordTokenStyle.hoverable.root,
+            chordTokenStyle.dragOver.root
+        );
 
     let lyricTokens: List<Lyric> = props.chordBlock.lyricTokens;
 
@@ -84,19 +103,6 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         const whitespaceLyric = new Lyric(inflatingWhitespace());
         lyricTokens = List([whitespaceLyric]);
     }
-
-    const firstTokenStyle = {
-        hoverable: useFirstTokenStyle.hoverable(),
-        dragOver: useFirstTokenStyle.dragOver(),
-    };
-
-    const normalTokenStyle = {
-        hoverable: useNormalTokenStyle.hoverable(),
-        dragOver: useNormalTokenStyle.dragOver(),
-    };
-
-    const invisibleTargetForFirstToken: boolean =
-        props.chordBlock.chord === "" && !editing;
 
     const clickHandler: (
         tokenIndex: number
@@ -106,7 +112,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         return (event: React.MouseEvent<HTMLSpanElement>) => {
             // block splitting happens after the first token
             // as first token is already aligned with the current chord
-            if (tokenIndex !== 0 && props.onBlockSplit) {
+            if (tokenIndex !== 0) {
                 props.onBlockSplit(props.chordBlock, tokenIndex);
             }
 
@@ -116,25 +122,21 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         };
     };
 
-    const handleDragged = () => {
-        props.onChordChange?.(props.chordBlock, "");
-    };
-
-    const dropHandler = (tokenIndex: number) => {
-        return (
-            newChord: string,
-            sourceBlockID: IDable<ChordBlock>,
-            copyAction: boolean
-        ) => {
-            props.songDispatch({
-                type: "drag-and-drop-chord",
-                sourceBlockID: sourceBlockID,
-                newChord: newChord,
-                destinationBlockID: props.chordBlock,
-                splitIndex: tokenIndex,
-                copyAction: copyAction,
-            });
-        };
+    const onDrop = (params: {
+        chord: string;
+        sourceBlockID: IDable<ChordBlock>;
+        destinationBlockID: IDable<ChordBlock>;
+        splitIndex: number;
+        dropType: "move" | "copy";
+    }) => {
+        props.songDispatch({
+            type: "drag-and-drop-chord",
+            sourceBlockID: params.sourceBlockID,
+            newChord: params.chord,
+            dropType: params.dropType,
+            destinationBlockID: params.destinationBlockID,
+            splitIndex: params.splitIndex,
+        });
     };
 
     const endEdit = (newChord: string) => {
@@ -143,38 +145,66 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         finishEdit();
     };
 
-    const lyricBlock = (lyric: Lyric, index: number): React.ReactElement => {
-        // every above lyric target above after the first should get its own highlightable outline chord target box
-        // the first one will depend if it has a chord above it.
-        // if it does not, then treat it the same as all other tokens
-        // if it does, then don't let it be highlightable, defer it to the chord row for highlighting
-        const hasInvisibleTarget = index > 0 || invisibleTargetForFirstToken;
-
-        const invisibleTargetOption = hasInvisibleTarget
-            ? {
-                  onClick: clickHandler(index),
-              }
-            : undefined;
+    const makeFirstToken = (lyric: Lyric): React.ReactElement => {
+        const blockHasChord = props.chordBlock.chord !== "";
+        if (!blockHasChord) {
+            return makeChordlessToken(lyric, 0);
+        }
 
         return (
-            <ChordDroppable
+            <ChordTokenDroppable
+                key={0}
+                blockID={props.chordBlock}
+                onDragOver={onLyricDragOver}
+            >
+                <Token index={0}>{lyric}</Token>
+            </ChordTokenDroppable>
+        );
+    };
+
+    const makeChordlessToken = (
+        lyric: Lyric,
+        index: number
+    ): React.ReactElement => {
+        const invisibleTargetOption = {
+            onClick: clickHandler(index),
+        };
+
+        const dropParams: DropParams = {
+            blockID: props.chordBlock,
+            tokenIndex: index,
+        };
+
+        return (
+            <ChordlessTokenDroppable
                 key={index}
-                onDropped={dropHandler(index)}
-                hoverableClassName={normalTokenStyle.hoverable.root}
-                dragOverClassName={normalTokenStyle.dragOver.root}
+                dropParams={dropParams}
+                hoverableClassName={chordlessTokenStyle.hoverable.root}
+                dragOverClassName={chordlessTokenStyle.dragOver.root}
             >
                 <Token index={index} invisibleTarget={invisibleTargetOption}>
                     {lyric}
                 </Token>
-            </ChordDroppable>
+            </ChordlessTokenDroppable>
         );
     };
 
-    const lyricBlocks = lyricTokens.map((lyricToken: Lyric, index: number) =>
-        lyricBlock(lyricToken, index)
+    const firstLyricToken = lyricTokens.get(0);
+    if (firstLyricToken === undefined) {
+        throw new Error("Lyric tokens list guaranteed at least one token");
+    }
+
+    const subsequentLyricTokens = lyricTokens.slice(1);
+
+    const firstLyricBlock = makeFirstToken(firstLyricToken);
+    const subsequentLyricBlocks = subsequentLyricTokens.map(
+        (lyricToken: Lyric, index: number) =>
+            makeChordlessToken(lyricToken, index + 1)
     );
 
-    const chordRow = (): JSX.Element => {
+    const lyricBlocks = subsequentLyricBlocks.unshift(firstLyricBlock);
+
+    const chordRow: React.ReactElement = (() => {
         if (editing) {
             return (
                 <Box data-testid="ChordEdit">
@@ -188,10 +218,14 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             );
         }
 
+        if (props.chordBlock.chord === "") {
+            return <ChordSymbol>{props.chordBlock.chord}</ChordSymbol>;
+        }
+
         return (
             <DraggableChordSymbol
                 chordBlockID={props.chordBlock}
-                onDragged={handleDragged}
+                onDrop={onDrop}
                 className={clsx(
                     chordSymbolClassName,
                     blockChordSymbolClassName
@@ -200,35 +234,35 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                 {props.chordBlock.chord}
             </DraggableChordSymbol>
         );
-    };
+    })();
 
     return (
         <Box display="inline-block">
-            <ChordDroppable
-                onDropped={dropHandler(0)}
-                hoverableClassName={firstTokenStyle.hoverable.root}
-                dragOverClassName={firstTokenStyle.dragOver.root}
+            <Grid
+                container
+                direction="column"
+                data-testid={props["data-testid"]}
+                className={gridClassName}
             >
                 <Grid
-                    container
-                    direction="column"
-                    data-testid={props["data-testid"]}
+                    className={clsx(
+                        chordTargetClassName,
+                        blockChordTargetClassName
+                    )}
+                    onClick={clickHandler(0)}
+                    item
                 >
-                    <Grid
-                        className={clsx(
-                            chordTargetClassName,
-                            blockChordTargetClassName
-                        )}
-                        onClick={clickHandler(0)}
-                        item
+                    <ChordTokenDroppable
+                        blockID={props.chordBlock}
+                        onDragOver={onChordDragOver}
                     >
-                        {chordRow()}
-                    </Grid>
-                    <Grid item data-testid="Lyric">
-                        {lyricBlocks}
-                    </Grid>
+                        {chordRow}
+                    </ChordTokenDroppable>
                 </Grid>
-            </ChordDroppable>
+                <Grid item data-testid="Lyric">
+                    {lyricBlocks}
+                </Grid>
+            </Grid>
         </Box>
     );
 };
