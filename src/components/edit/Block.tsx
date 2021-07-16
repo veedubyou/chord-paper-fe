@@ -14,7 +14,6 @@ import { lyricTypographyVariant } from "../display/Lyric";
 import { ChordSongAction } from "../reducer/reducer";
 import ChordlessTokenDroppable from "./block-dnd/ChordlessTokenDroppable";
 import ChordTokenDroppable from "./block-dnd/ChordTokenDroppable";
-import { DropParams } from "./block-dnd/common";
 import DraggableChordSymbol from "./block-dnd/DraggableChordSymbol";
 import { useChordTokenDragState } from "./block-dnd/useChordTokenDragState";
 import {
@@ -170,15 +169,11 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             onClick: clickHandler(index),
         };
 
-        const dropParams: DropParams = {
-            blockID: props.chordBlock,
-            tokenIndex: index,
-        };
-
         return (
             <ChordlessTokenDroppable
                 key={index}
-                dropParams={dropParams}
+                blockID={props.chordBlock}
+                tokenIndex={index}
                 hoverableClassName={chordlessTokenStyle.hoverable.root}
                 dragOverClassName={chordlessTokenStyle.dragOver.root}
             >
