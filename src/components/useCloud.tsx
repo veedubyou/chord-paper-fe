@@ -93,11 +93,11 @@ export const useCloud = (): [
                     return;
                 }
 
-                if (!(await isOnline())) {
+                if (!shouldSave(newSong)) {
                     return;
                 }
 
-                if (!shouldSave(newSong)) {
+                if (!(await isOnline())) {
                     return;
                 }
 
