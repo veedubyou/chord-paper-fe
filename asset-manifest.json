@@ -1,29 +1,29 @@
 {
   "files": {
     "main.css": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css",
-    "main.js": "/chord-paper-fe/static/js/main.6f611860.chunk.js",
-    "main.js.map": "/chord-paper-fe/static/js/main.6f611860.chunk.js.map",
-    "runtime-main.js": "/chord-paper-fe/static/js/runtime-main.826827a9.js",
-    "runtime-main.js.map": "/chord-paper-fe/static/js/runtime-main.826827a9.js.map",
+    "main.js": "/chord-paper-fe/static/js/main.6f76a8a6.chunk.js",
+    "main.js.map": "/chord-paper-fe/static/js/main.6f76a8a6.chunk.js.map",
+    "runtime-main.js": "/chord-paper-fe/static/js/runtime-main.9ec9571f.js",
+    "runtime-main.js.map": "/chord-paper-fe/static/js/runtime-main.9ec9571f.js.map",
     "static/css/2.da16f061.chunk.css": "/chord-paper-fe/static/css/2.da16f061.chunk.css",
-    "static/js/2.f4022708.chunk.js": "/chord-paper-fe/static/js/2.f4022708.chunk.js",
-    "static/js/2.f4022708.chunk.js.map": "/chord-paper-fe/static/js/2.f4022708.chunk.js.map",
+    "static/js/2.fc0cf04e.chunk.js": "/chord-paper-fe/static/js/2.fc0cf04e.chunk.js",
+    "static/js/2.fc0cf04e.chunk.js.map": "/chord-paper-fe/static/js/2.fc0cf04e.chunk.js.map",
     "index.html": "/chord-paper-fe/index.html",
-    "precache-manifest.2822053ef35c80d10412248ed4e0cbeb.js": "/chord-paper-fe/precache-manifest.2822053ef35c80d10412248ed4e0cbeb.js",
+    "precache-manifest.430dcdac986af779f9f4d2d975c140ad.js": "/chord-paper-fe/precache-manifest.430dcdac986af779f9f4d2d975c140ad.js",
     "service-worker.js": "/chord-paper-fe/service-worker.js",
     "static/css/2.da16f061.chunk.css.map": "/chord-paper-fe/static/css/2.da16f061.chunk.css.map",
     "static/css/main.bea93a8b.chunk.css.map": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css.map",
-    "static/js/2.f4022708.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.f4022708.chunk.js.LICENSE.txt",
+    "static/js/2.fc0cf04e.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.fc0cf04e.chunk.js.LICENSE.txt",
     "static/media/index.css": "/chord-paper-fe/static/media/PoriChord.3caa9627.woff2",
     "static/media/error.jpeg": "/chord-paper-fe/static/media/error.c3a3f87e.jpeg",
     "static/media/google_signin.svg": "/chord-paper-fe/static/media/google_signin.c386978e.svg",
     "static/media/symphony.png": "/chord-paper-fe/static/media/symphony.4ca23f9c.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.826827a9.js",
+    "static/js/runtime-main.9ec9571f.js",
     "static/css/2.da16f061.chunk.css",
-    "static/js/2.f4022708.chunk.js",
+    "static/js/2.fc0cf04e.chunk.js",
     "static/css/main.bea93a8b.chunk.css",
-    "static/js/main.6f611860.chunk.js"
+    "static/js/main.6f76a8a6.chunk.js"
   ]
 }
