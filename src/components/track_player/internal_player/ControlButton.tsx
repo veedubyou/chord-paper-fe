@@ -40,10 +40,22 @@ const makeControlButton = (
 ): React.FC<ButtonProps> => {
     const ColoredButton = color === "primary" ? PrimaryButton : SecondaryButton;
 
+    // the keyboard usage of the player collides with any keyboard triggers of control buttons
+    // so disable them entirely, which may happen through keyups
+    const preventKeyInvocation = (
+        event: React.KeyboardEvent<HTMLButtonElement>
+    ) => {
+        event.preventDefault();
+    };
+
     return (props: ButtonProps) => (
         <Tooltip key={key} title={tooltipMsg}>
             <span>
-                <ColoredButton {...props} size="large">
+                <ColoredButton
+                    {...props}
+                    onKeyUp={preventKeyInvocation}
+                    size="large"
+                >
                     {child}
                 </ColoredButton>
             </span>
