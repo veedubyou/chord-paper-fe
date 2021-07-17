@@ -54,8 +54,8 @@ const DragAndDropChord: React.FC<{}> = (): JSX.Element => {
             </Typography>
             <LineBreak />
             <Typography>
-                If you hold CTRL or CMD while dragging and dropping, the chord
-                will be copied instead of moved over.
+                If you hold CTRL/CMD/ALT/Option while dragging and dropping, the
+                chord will be copied instead of moved over.
             </Typography>
             <LineBreak />
             <Typography>

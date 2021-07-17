@@ -47,7 +47,7 @@ export const HTML5BackendWithCTRLKey = (
 
     untypesafeBackend.handleTopDragEnter = (e: DragEvent) => {
         untypesafeBackend.__original__handleTopDragEnter?.(e);
-        untypesafeBackend.altKeyPressed = e.ctrlKey || e.metaKey;
+        untypesafeBackend.altKeyPressed = e.ctrlKey || e.metaKey || e.altKey;
     };
 
     if (
@@ -61,7 +61,7 @@ export const HTML5BackendWithCTRLKey = (
         untypesafeBackend.handleTopDragOver;
     untypesafeBackend.handleTopDragOver = (e: DragEvent) => {
         untypesafeBackend.__original__handleTopDragOver?.(e);
-        untypesafeBackend.altKeyPressed = e.ctrlKey || e.metaKey;
+        untypesafeBackend.altKeyPressed = e.ctrlKey || e.metaKey || e.altKey;
     };
 
     return backend;
