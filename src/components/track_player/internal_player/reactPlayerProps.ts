@@ -16,27 +16,23 @@ const makeBasePlayerProps = (
         onPause: playerControls.onPause,
         onProgress: playerControls.onProgress,
         progressInterval: 500,
-        style: { height: "revert" },
         height: "auto",
         width: "unset",
         onKeyUp: (event: KeyboardEvent) => event.preventDefault(),
     };
 };
 
+const filePlayerStyle = { width: "100%", height: "revert" };
+
 export const makeFilePlayerProps = (
     playerControls: PlayerControls,
     masterVolumePercentage: number,
     onVolumeChange?: ReactEventHandler<HTMLAudioElement>
 ): FilePlayerProps => {
-    const attributes = (() => {
-        if (onVolumeChange === undefined) {
-            return undefined;
-        }
-
-        return {
-            onVolumeChange: onVolumeChange,
-        };
-    })();
+    const attributes = {
+        onVolumeChange: onVolumeChange,
+        style: filePlayerStyle,
+    };
 
     const basePlayerProps = makeBasePlayerProps(playerControls);
 
@@ -57,6 +53,13 @@ export const makeReactPlayerProps = (
 
     return {
         ...basePlayerProps,
-        config: { file: { forceAudio: true } },
+        config: {
+            file: {
+                forceAudio: true,
+                attributes: {
+                    style: filePlayerStyle,
+                },
+            },
+        },
     };
 };
