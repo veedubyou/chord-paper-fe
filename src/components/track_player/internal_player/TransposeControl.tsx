@@ -61,7 +61,6 @@ const TransposeControl: React.FC<TransposeControlProps> = (
                     <Box>{transposeText}</Box>
                 </TransposeDisplay>
             </Tooltip>
-
             <ControlButton.TransposeUp
                 onClick={onIncrease}
                 disabled={increaseDisabled}
