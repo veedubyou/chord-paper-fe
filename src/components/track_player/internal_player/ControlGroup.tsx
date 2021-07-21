@@ -1,5 +1,5 @@
 import { Box, Divider, Theme } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { StyledComponentProps, withStyles } from "@material-ui/styles";
 import React from "react";
 
 export const ControlGroupBox = withStyles({
@@ -20,9 +20,10 @@ export const VerticalMiddleDivider = withStyles((theme: Theme) => ({
     },
 }))(Divider);
 
-interface ControlGroupProps {
+interface ControlGroupProps extends StyledComponentProps {
     children: React.ReactNode[];
     dividers: "left" | "right";
+    edgeDivider?: boolean;
 }
 
 const ControlGroup: React.FC<ControlGroupProps> = (
@@ -36,6 +37,15 @@ const ControlGroup: React.FC<ControlGroupProps> = (
 
     const contents: React.ReactElement[] = realContents.map(
         (child: React.ReactNode, index: number) => {
+            const isEdge =
+                (props.dividers === "left" && index === 0) ||
+                (props.dividers === "right" &&
+                    index === realContents.length - 1);
+
+            if (props.edgeDivider !== true && isEdge) {
+                return <React.Fragment key={index}>{child}</React.Fragment>;
+            }
+
             const divider = (
                 <VerticalMiddleDivider
                     key={`divider-${index}`}
@@ -53,7 +63,9 @@ const ControlGroup: React.FC<ControlGroupProps> = (
         }
     );
 
-    return <ControlGroupBox>{contents}</ControlGroupBox>;
+    return (
+        <ControlGroupBox classes={props.classes}>{contents}</ControlGroupBox>
+    );
 };
 
 export default ControlGroup;
