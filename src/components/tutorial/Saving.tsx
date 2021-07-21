@@ -6,7 +6,7 @@ import { LineBreak } from "./Common";
 const Saving: React.FC<{}> = (): JSX.Element => {
     return (
         <>
-            <Typography variant="h6">Saving and Loading</Typography>
+            <Typography variant="h5">Saving and Loading</Typography>
             <LineBreak />
             <Typography>
                 You can save and load your songs if you have logged in. When you

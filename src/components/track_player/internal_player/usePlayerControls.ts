@@ -4,7 +4,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import FilePlayer from "react-player/file";
 import { TimeSection } from "../../../common/ChordModel/ChordLine";
-import { PlainFn, voidFn } from "../../../common/PlainFn";
+import { PlainFn, noopFn } from "../../../common/PlainFn";
 import { PlayerTimeContext } from "../../PlayerTimeContext";
 
 export interface ButtonActionAndState {
@@ -55,27 +55,27 @@ class NoopMutableRef {
 export const unfocusedControls: PlayerControls = {
     playerRef: new NoopMutableRef(),
     playing: false,
-    togglePlay: voidFn,
-    jumpBack: voidFn,
-    jumpForward: voidFn,
-    goToBeginning: voidFn,
+    togglePlay: noopFn,
+    jumpBack: noopFn,
+    jumpForward: noopFn,
+    goToBeginning: noopFn,
     skipBack: {
-        action: voidFn,
+        action: noopFn,
         enabled: false,
     },
     skipForward: {
-        action: voidFn,
+        action: noopFn,
         enabled: false,
     },
     currentTime: 0,
     currentTimeFormatted: "0:00",
-    onProgress: voidFn,
-    onPlay: voidFn,
-    onPause: voidFn,
+    onProgress: noopFn,
+    onPlay: noopFn,
+    onPause: noopFn,
     currentSectionLabel: "",
     playrate: {
         percentage: 100,
-        onChange: voidFn,
+        onChange: noopFn,
     },
 };
 

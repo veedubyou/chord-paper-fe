@@ -40,7 +40,7 @@ const RemoveChord: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h6">Removing Chords</Typography>
+            <Typography variant="h5">Removing Chords</Typography>
             <LineBreak />
             <Typography>
                 Simply remove all the chord text when editing to clear the

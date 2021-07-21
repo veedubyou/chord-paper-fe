@@ -52,7 +52,7 @@ const MergeLine: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h6">Merging Lines</Typography>
+            <Typography variant="h5">Merging Lines</Typography>
             <LineBreak />
             <Typography>
                 Sometimes the lyrics that we paste in is not the division we

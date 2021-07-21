@@ -21,6 +21,9 @@ import Labels from "./tutorial/Labels";
 import PlayMode from "./tutorial/PlayMode";
 import SplitLine from "./tutorial/SplitLine";
 import Saving from "./tutorial/Saving";
+import RemoveMultipleLines from "./tutorial/RemoveMultipleLines";
+import TrackPlayer from "./tutorial/TrackPlayer";
+import TimeLabels from "./tutorial/TimeLabels";
 
 type ExerciseEntry = {
     title: string;
@@ -41,27 +44,27 @@ const allExercises: ExerciseEntry[] = [
     },
     {
         title: "Edit a Chord",
-        route: "/learn/edit_chord",
+        route: "/learn/edit-chord",
         component: EditChord,
     },
     {
         title: "Remove a Chord",
-        route: "/learn/remove_chord",
+        route: "/learn/remove-chord",
         component: RemoveChord,
     },
     {
         title: "Add a Chord",
-        route: "/learn/add_chord",
+        route: "/learn/add-chord",
         component: AddChord,
     },
     {
         title: "Drag and Drop Chords",
-        route: "/learn/drag_and_drop_chord",
+        route: "/learn/drag-and-drop-chord",
         component: DragAndDropChord,
     },
     {
         title: "Edit Lyrics",
-        route: "/learn/edit_lyrics",
+        route: "/learn/edit-lyrics",
         component: EditLyrics,
     },
     {
@@ -71,37 +74,42 @@ const allExercises: ExerciseEntry[] = [
     },
     {
         title: "Chord Positioning",
-        route: "/learn/chord_positioning",
+        route: "/learn/chord-positioning",
         component: ChordPositioning,
     },
     {
         title: "Adding New Line",
-        route: "/learn/add_line",
+        route: "/learn/add-line",
         component: AddLine,
     },
     {
         title: "Removing a Line",
-        route: "/learn/remove_line",
+        route: "/learn/remove-line",
         component: RemoveLine,
     },
     {
         title: "Pasting Lyrics",
-        route: "/learn/paste_lyrics",
+        route: "/learn/paste-lyrics",
         component: PasteLyrics,
     },
     {
+        title: "Removing Multiple Lines",
+        route: "/learn/remove-multiple-lines",
+        component: RemoveMultipleLines,
+    },
+    {
         title: "Merging Lines",
-        route: "/learn/merge_lines",
+        route: "/learn/merge-lines",
         component: MergeLine,
     },
     {
         title: "Splitting Lines",
-        route: "/learn/split_lines",
+        route: "/learn/split-lines",
         component: SplitLine,
     },
     {
         title: "Copying and Pasting Lines",
-        route: "/learn/copy_and_paste",
+        route: "/learn/copy-and-paste",
         component: CopyAndPaste,
     },
     {
@@ -110,14 +118,24 @@ const allExercises: ExerciseEntry[] = [
         component: Labels,
     },
     {
+        title: "Labels with Timestamp",
+        route: "/learn/time-labels",
+        component: TimeLabels,
+    },
+    {
         title: "Play Mode",
-        route: "/learn/play_mode",
+        route: "/learn/play-mode",
         component: PlayMode,
     },
     {
         title: "Saving and Loading",
         route: "/learn/saving",
         component: Saving,
+    },
+    {
+        title: "Track Player",
+        route: "/learn/track-player",
+        component: TrackPlayer,
     },
 ];
 

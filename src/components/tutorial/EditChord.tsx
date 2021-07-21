@@ -44,7 +44,7 @@ const EditChord: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h6">Editing Chords</Typography>
+            <Typography variant="h5">Editing Chords</Typography>
             <LineBreak />
             <Typography>
                 Click on a chord to change it, then press enter to commit your

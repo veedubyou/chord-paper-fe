@@ -232,7 +232,7 @@ const CopyAndPaste: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h6">Copying and Pasting Lines</Typography>
+            <Typography variant="h5">Copying and Pasting Lines</Typography>
             <LineBreak />
             <Typography>
                 Sometimes you want to just repeat what's on the page without

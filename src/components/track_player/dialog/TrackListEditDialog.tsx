@@ -138,10 +138,8 @@ const LoadedTrackListEditDialog: React.FC<LoadedTrackListEditDialogProps> = (
 
     const [trackList, setTrackList] = useState<TrackList>(initialTrackList);
     const [version, setVersion] = useState(0);
-    const [
-        addTrackMenuElement,
-        setAddTrackMenuElement,
-    ] = useState<HTMLElement | null>(null);
+    const [addTrackMenuElement, setAddTrackMenuElement] =
+        useState<HTMLElement | null>(null);
 
     const bumpVersion = () => setVersion(version + 1);
     const cloneTrackList = () => lodash.cloneDeep(trackList);
@@ -388,15 +386,6 @@ const LoadedTrackListEditDialog: React.FC<LoadedTrackListEditDialogProps> = (
                     <MenuItem onClick={handleAddSingleTrack}>
                         Single Track
                     </MenuItem>
-                    <MenuItem onClick={handleAddTwoStemTrack}>
-                        2 Stem Track
-                    </MenuItem>
-                    <MenuItem onClick={handleAddFourStemTrack}>
-                        4 Stem Track
-                    </MenuItem>
-                    <MenuItem onClick={handleAddFiveStemTrack}>
-                        5 Stem Track
-                    </MenuItem>
                     <MenuItem
                         onClick={() => handleAddSplitStemTrack("split_2stems")}
                     >
@@ -411,6 +400,15 @@ const LoadedTrackListEditDialog: React.FC<LoadedTrackListEditDialogProps> = (
                         onClick={() => handleAddSplitStemTrack("split_5stems")}
                     >
                         Split Track into 5 Stems
+                    </MenuItem>
+                    <MenuItem onClick={handleAddTwoStemTrack}>
+                        2 Stem Track
+                    </MenuItem>
+                    <MenuItem onClick={handleAddFourStemTrack}>
+                        4 Stem Track
+                    </MenuItem>
+                    <MenuItem onClick={handleAddFiveStemTrack}>
+                        5 Stem Track
                     </MenuItem>
                 </Menu>
             </React.Fragment>

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { PlainFn } from "../../common/PlainFn";
+import { noopFn, PlainFn } from "../../common/PlainFn";
 
 export interface InteractionSetter {
     startInteraction: PlainFn;
@@ -7,8 +7,8 @@ export interface InteractionSetter {
 }
 
 const defaultSetter: InteractionSetter = {
-    startInteraction: () => {},
-    endInteraction: () => {},
+    startInteraction: noopFn,
+    endInteraction: noopFn,
 };
 
 export const InteractionContext =

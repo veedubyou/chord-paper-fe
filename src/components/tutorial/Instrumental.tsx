@@ -36,7 +36,7 @@ const Instrumental: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h6">Instrumental Sections</Typography>
+            <Typography variant="h5">Instrumental Sections</Typography>
             <LineBreak />
             <Typography>
                 In addition to putting chords over lyrics, you can also put them

@@ -31,7 +31,7 @@ interface ControlPaneProps {
     sectionLabel: string;
 }
 
-const ControlPaneBox = withStyles((theme: Theme) => {
+export const ControlPaneBox = withStyles((theme: Theme) => {
     const buttonHeight = theme.spacing(5);
     return {
         root: {

@@ -1,2 +1,2 @@
 export type PlainFn = () => void;
-export const voidFn: PlainFn = () => {};
+export const noopFn: PlainFn = () => {};

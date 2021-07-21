@@ -1,44 +1,25 @@
 import { Typography, withStyles } from "@material-ui/core";
-import ChatBubbleIcon from "@material-ui/icons/ChatBubbleOutline";
-import React from "react";
+import SlowMotionVideoIcon from "@material-ui/icons/SlowMotionVideo";
+import React, { useContext } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { sectionLabelStyle } from "../display/SectionLabel";
+import PlayerTimeProvider, { PlayerTimeContext } from "../PlayerTimeContext";
 import { LineBreak } from "./Common";
 import Playground from "./Playground";
 
 const LabelTypography = withStyles(sectionLabelStyle)(Typography);
 
-const Labels: React.FC<{}> = (): JSX.Element => {
-    const initialSong = new ChordSong({
-        lines: [
-            new ChordLine({
-                blocks: [
-                    new ChordBlock({
-                        chord: "C^",
-                        lyric: new Lyric("Why do birds suddenly ap-"),
-                    }),
-                    new ChordBlock({
-                        chord: "B7sus4",
-                        lyric: new Lyric("pear?"),
-                    }),
-                    new ChordBlock({ chord: "B7", lyric: new Lyric("\ue200") }),
-                ],
-            }),
-            new ChordLine({
-                blocks: [
-                    new ChordBlock({
-                        chord: "",
-                        lyric: new Lyric("Every time you are near"),
-                    }),
-                ],
-            }),
-        ],
-    });
+const TimeSetter: React.FC<{}> = (): null => {
+    const getPlayerTimeRef = useContext(PlayerTimeContext);
+    getPlayerTimeRef.current = () => 83;
+    return null;
+};
 
-    const expectedSong = new ChordSong({
+const TimeLabels: React.FC<{}> = (): JSX.Element => {
+    const initialSong = new ChordSong({
         lines: [
             new ChordLine({
                 blocks: [
@@ -71,28 +52,78 @@ const Labels: React.FC<{}> = (): JSX.Element => {
         ],
     });
 
+    const expectedSong = new ChordSong({
+        lines: [
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "C^",
+                        lyric: new Lyric("Why do birds suddenly ap-"),
+                    }),
+                    new ChordBlock({
+                        chord: "B7sus4",
+                        lyric: new Lyric("pear?"),
+                    }),
+                    new ChordBlock({
+                        chord: "B7",
+                        lyric: new Lyric("\ue200"),
+                    }),
+                ],
+                section: {
+                    type: "time",
+                    name: "Verse",
+                    time: 83,
+                },
+            }),
+            new ChordLine({
+                blocks: [
+                    new ChordBlock({
+                        chord: "",
+                        lyric: new Lyric("Every time you are near"),
+                    }),
+                ],
+            }),
+        ],
+    });
+
     return (
         <>
-            <Typography variant="h5">Labels</Typography>
+            <Typography variant="h5">Labels with Timestamp</Typography>
             <LineBreak />
             <Typography>
-                It's common to label sections to navigate easily within the
-                song. For example, some common labels are "Verse", "Chorus",
-                "Bridge", or more simplified markers like "A", "B", etc.
+                After creating a label, it's possible to annotate each section
+                with the time of recording, e.g. this verse is at 2:10.
             </Typography>
             <LineBreak />
             <Typography>
-                Add a label to a line by hovering over the line, and then
-                clicking the <ChatBubbleIcon /> icon to insert a label for that
-                line. Let's add{" "}
-                <LabelTypography display="inline">Verse</LabelTypography> to the
-                first line.
+                If you hover over the{" "}
+                <LabelTypography display="inline">Verse</LabelTypography> label,
+                a floating input will show up. You can enter a time by typing it
+                in, and then pressing enter.
+            </Typography>
+            <LineBreak />
+            <Typography>
+                Alternatively, you can set the time to the current time in the
+                track player (see the Track Player tutorial) by clicking the{" "}
+                <SlowMotionVideoIcon /> button.
+            </Typography>
+            <LineBreak />
+            <Typography>
+                In this example, pretend that the current verse starts at time
+                1:23 and that is the current time in the track player. Let's set
+                the time of the label to 1:23.
             </Typography>
             <LineBreak />
             <Typography>Try it!</Typography>
-            <Playground initialSong={initialSong} expectedSong={expectedSong} />
+            <PlayerTimeProvider>
+                <TimeSetter />
+                <Playground
+                    initialSong={initialSong}
+                    expectedSong={expectedSong}
+                />
+            </PlayerTimeProvider>
         </>
     );
 };
 
-export default Labels;
+export default TimeLabels;
