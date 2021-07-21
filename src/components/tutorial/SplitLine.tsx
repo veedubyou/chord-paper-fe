@@ -62,7 +62,7 @@ const SplitLine: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h6">Splitting Lines</Typography>
+            <Typography variant="h5">Splitting Lines</Typography>
             <LineBreak />
             <Typography>
                 Similarly, we can split lines that may be too long for our chart

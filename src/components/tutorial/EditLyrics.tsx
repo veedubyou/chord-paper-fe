@@ -44,7 +44,7 @@ const EditLyrics: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h6">Editing Lyrics</Typography>
+            <Typography variant="h5">Editing Lyrics</Typography>
             <LineBreak />
             <Typography>
                 You can edit the lyrics by clicking anywhere along the lyrics.

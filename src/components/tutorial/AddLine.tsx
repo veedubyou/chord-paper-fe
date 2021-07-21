@@ -54,7 +54,7 @@ const AddLine: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h6">Adding New Lines</Typography>
+            <Typography variant="h5">Adding New Lines</Typography>
             <LineBreak />
             <Typography>
                 You can add more lines by hovering below (or above) and existing

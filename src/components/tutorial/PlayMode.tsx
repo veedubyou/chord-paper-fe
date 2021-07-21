@@ -6,7 +6,7 @@ import { LineBreak } from "./Common";
 const PlayMode: React.FC<{}> = (): JSX.Element => {
     return (
         <>
-            <Typography variant="h6">Play Mode</Typography>
+            <Typography variant="h5">Play Mode</Typography>
             <LineBreak />
             <Typography>
                 Play mode is where you focus on playing the song rather than

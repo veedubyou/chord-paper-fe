@@ -1,4 +1,5 @@
 import React, { useContext, useRef } from "react";
+import { noopFn } from "../common/PlainFn";
 
 type KeyListener = (event: KeyboardEvent) => void;
 interface StoredKeyListener {
@@ -9,7 +10,7 @@ type RegisterKeyListenerFn = (listener: KeyListener) => void;
 
 const GlobalKeyListenerContext = React.createContext<
     [RegisterKeyListenerFn, RegisterKeyListenerFn, RegisterKeyListenerFn]
->([() => {}, () => {}, () => {}]);
+>([noopFn, noopFn, noopFn]);
 
 interface GlobalKeyListenerProviderProps {
     children: React.ReactNode;

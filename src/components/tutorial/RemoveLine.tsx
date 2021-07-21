@@ -62,7 +62,7 @@ const RemoveLine: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h6">Removing Lines</Typography>
+            <Typography variant="h5">Removing Lines</Typography>
             <LineBreak />
             <Typography>
                 Similarly, you can remove a line by hovering over the line, and

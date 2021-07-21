@@ -44,7 +44,7 @@ const DragAndDropChord: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h6">Dragging and Dropping Chords</Typography>
+            <Typography variant="h5">Dragging and Dropping Chords</Typography>
             <LineBreak />
             <Typography>
                 It's also possible to drag and drop chords onto different parts

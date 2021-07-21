@@ -40,7 +40,7 @@ const AddChord: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h6">Adding Chords</Typography>
+            <Typography variant="h5">Adding Chords</Typography>
             <LineBreak />
             <Typography>
                 Add a chord by hovering above a word, and clicking the outlined

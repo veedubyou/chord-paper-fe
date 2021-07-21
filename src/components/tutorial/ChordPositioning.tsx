@@ -71,7 +71,7 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h6">Chord Positioning</Typography>
+            <Typography variant="h5">Chord Positioning</Typography>
             <LineBreak />
             <Typography>
                 Sometimes you want to emphasize a chord landing on a specific
