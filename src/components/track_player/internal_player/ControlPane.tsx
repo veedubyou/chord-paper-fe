@@ -31,6 +31,12 @@ interface ControlPaneProps {
     sectionLabel: string;
 }
 
+const RightJustifiedControlGroup = withStyles({
+    root: {
+        marginLeft: "auto",
+    },
+})(ControlGroup);
+
 export const ControlPaneBox = withStyles((theme: Theme) => {
     const buttonHeight = theme.spacing(5);
     return {
@@ -105,7 +111,7 @@ const ControlPane: React.FC<ControlPaneProps> = (
         }
 
         return (
-            <ControlGroup dividers="left">
+            <ControlGroup dividers="left" edgeDivider>
                 {[
                     <TransposeControl
                         transposeLevel={props.transpose.level}
@@ -133,14 +139,14 @@ const ControlPane: React.FC<ControlPaneProps> = (
                 />
             </ControlGroup>
             <SectionLabel value={props.sectionLabel} />
-            <ControlGroup dividers="left">
+            <RightJustifiedControlGroup dividers="left">
                 {[
                     <PlayrateControl
                         playratePercentage={props.playrate.percentage}
                         onChange={props.playrate.onChange}
                     />,
                 ]}
-            </ControlGroup>
+            </RightJustifiedControlGroup>
             {transposeControl}
         </ControlPaneBox>
     );
