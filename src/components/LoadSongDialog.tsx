@@ -138,7 +138,7 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
                 : "(Untitled)";
 
         return (
-            <>
+            <React.Fragment key={summary.id}>
                 <ListItem key={summary.id} button onClick={navigateToSong}>
                     <ListItemText
                         primary={title}
@@ -152,7 +152,7 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
                     />
                 </ListItem>
                 <Divider key={`${summary.id}-divider`} />
-            </>
+            </React.Fragment>
         );
     };
 

@@ -108,7 +108,7 @@ const StemTrackControlPane = <StemKey extends string>(
         };
 
         return (
-            <Grid item xs>
+            <Grid key={stemButton.label} item xs>
                 <RenderedButton variant="contained" onClick={handleClick}>
                     <FullSizedBox>
                         <Typography variant="body1">

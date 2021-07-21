@@ -114,6 +114,7 @@ const ControlPane: React.FC<ControlPaneProps> = (
             <ControlGroup dividers="left" edgeDivider>
                 {[
                     <TransposeControl
+                        key="transpose-control"
                         transposeLevel={props.transpose.level}
                         onChange={props.transpose.onChange}
                     />,
@@ -142,6 +143,7 @@ const ControlPane: React.FC<ControlPaneProps> = (
             <RightJustifiedControlGroup dividers="left">
                 {[
                     <PlayrateControl
+                        key="playrate-control"
                         playratePercentage={props.playrate.percentage}
                         onChange={props.playrate.onChange}
                     />,
