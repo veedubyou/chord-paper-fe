@@ -1,10 +1,11 @@
 import { Theme } from "@material-ui/core";
+import ForkIcon from "@material-ui/icons/CallSplit";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import DeleteIcon from "@material-ui/icons/Delete";
 import FolderOpenIcon from "@material-ui/icons/FolderOpen";
 import TransposeIcon from "@material-ui/icons/ImportExport";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import PlayIcon from "@material-ui/icons/PlayArrow";
-import ForkIcon from "@material-ui/icons/CallSplit";
 import SaveIcon from "@material-ui/icons/Save";
 import {
     SpeedDial as UnstyledSpeedDial,
@@ -16,12 +17,12 @@ import React, { useState } from "react";
 import useKonamiCode from "react-use-konami";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { PlainFn } from "../../../common/PlainFn";
+import { ChordSongAction } from "../../reducer/reducer";
 import { User, UserContext } from "../../user/userContext";
-import { useCloudCreateSong } from "./cloudSave";
+import { useCloudCreateSong, useCloudDeleteSongDialog } from "./cloudSave";
 import { useLoadMenuAction } from "./load";
 import { useSaveMenuAction } from "./save";
 import TransposeMenu from "./TransposeMenu";
-import { ChordSongAction } from "../../reducer/reducer";
 
 interface ChordPaperMenuProps {
     song: ChordSong;
@@ -53,6 +54,10 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     const loadAction = useLoadMenuAction(setSong, enqueueSnackbar);
     const saveAction = useSaveMenuAction(props.song);
     const cloudSaveAction = useCloudCreateSong();
+    const [showDeleteDialog, deleteDialog] = useCloudDeleteSongDialog(
+        props.song,
+        user
+    );
 
     const openMenu = () => {
         setOpen(true);
@@ -85,6 +90,10 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                 }}
             ></TransposeMenu>
         );
+    }
+
+    if (deleteDialog !== null) {
+        return deleteDialog;
     }
 
     return (
@@ -139,6 +148,14 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                     icon={<FolderOpenIcon />}
                     tooltipTitle="Load from computer"
                     onClick={loadAction}
+                />
+            )}
+
+            {!props.song.isUnsaved() && user !== null && (
+                <SpeedDialAction
+                    icon={<DeleteIcon />}
+                    tooltipTitle="Delete Song"
+                    onClick={showDeleteDialog}
                 />
             )}
         </SpeedDial>

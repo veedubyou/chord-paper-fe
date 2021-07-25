@@ -143,6 +143,29 @@ export const updateSong = async (
     return right(parsed);
 };
 
+export const deleteSong = async (
+    song: ChordSong,
+    authToken: string
+): Promise<Either<Error, true>> => {
+    if (song.isUnsaved()) {
+        return left(
+            new Error("A song that hasn't been created can't be deleted")
+        );
+    }
+
+    try {
+        await ky.delete(`${backendHost}/songs/${song.id}`, {
+            headers: {
+                Authorization: "Bearer " + authToken,
+            },
+        });
+    } catch (e) {
+        return left(e);
+    }
+
+    return right(true);
+};
+
 export const updateTrackList = async (
     tracklist: TrackList,
     authToken: string
