@@ -14,7 +14,6 @@ import { useLineCopyHandler } from "./CopyAndPaste";
 import { InteractionContext, InteractionSetter } from "./InteractionContext";
 import Line from "./Line";
 import NewLine from "./NewLine";
-import { handleUndoRedo } from "./Undo";
 
 const useUninteractiveStyle = makeStyles({
     root: {
@@ -27,11 +26,6 @@ const Paper = withStyles({
         width: "auto",
     },
 })(UnstyledPaper);
-
-type KeyDownHandler = (
-    event: React.KeyboardEvent<HTMLDivElement>,
-    songDispatch: React.Dispatch<ChordSongAction>
-) => boolean;
 
 interface ChordPaperBodyProps {
     song: ChordSong;
@@ -66,18 +60,15 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     const handleKeyDown = (
         event: React.KeyboardEvent<HTMLDivElement>
     ): void => {
-        const handlers: KeyDownHandler[] = [
-            handleBatchLineDelete,
-            handleUndoRedo,
-        ];
-
-        for (const handler of handlers) {
-            const handled = handler(event, songDispatch);
-            if (handled) {
-                event.preventDefault();
-                return;
-            }
+        const lineIDs = handleBatchLineDelete(event);
+        if (lineIDs === false) {
+            return;
         }
+
+        songDispatch({
+            type: "batch-remove-lines",
+            lineIDs: lineIDs,
+        });
     };
 
     const lines: List<JSX.Element> = (() => {
