@@ -1,3 +1,4 @@
+import { List, Record } from "immutable";
 import { useCallback, useReducer } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
@@ -9,6 +10,14 @@ import { Note } from "../../common/music/foundation/Note";
 type ReplaceSong = {
     type: "replace-song";
     newSong: ChordSong;
+};
+
+type Undo = {
+    type: "undo";
+};
+
+type Redo = {
+    type: "redo";
 };
 
 type SetHeader = {
@@ -106,6 +115,8 @@ type SetSection = {
 
 export type ChordSongAction =
     | ReplaceSong
+    | Undo
+    | Redo
     | SetHeader
     | SetLastSavedAt
     | AddLine
@@ -122,9 +133,90 @@ export type ChordSongAction =
     | SetSection
     | Transpose;
 
+export type ChordSongActionWithoutUndo = Exclude<ChordSongAction, Undo | Redo>;
+
+type ChordSongStackType = {
+    undoStack: List<ChordSong>;
+    currentSongIndex: number;
+};
+
+const ChordSongStackConstructor = Record<ChordSongStackType>({
+    undoStack: List(),
+    currentSongIndex: -1,
+});
+
+type ChordSongStack = ReturnType<typeof ChordSongStackConstructor>;
+
+const getCurrentSong = (state: ChordSongStack): ChordSong => {
+    const currentSong: ChordSong | undefined = state.undoStack.get(
+        state.currentSongIndex
+    );
+
+    if (currentSong === undefined) {
+        throw new Error(
+            "Invalid state: no valid entry found in undo stack for current state"
+        );
+    }
+
+    return currentSong;
+};
+
+// the separation between these two reducer functions is that
+// most operations don't need to understand then undo stack, only
+// undo and redo operations require it, so splitting these keeps each
+// easier to manage
 const chordSongReducer = (
-    song: ChordSong,
+    state: ChordSongStack,
     action: ChordSongAction
+): ChordSongStack => {
+    switch (action.type) {
+        case "undo": {
+            if (state.currentSongIndex === 0) {
+                return state;
+            }
+
+            state = state.update("currentSongIndex", (index) => index - 1);
+            return state;
+        }
+
+        case "redo": {
+            const lastIndex = state.undoStack.size - 1;
+
+            if (state.currentSongIndex === lastIndex) {
+                return state;
+            }
+
+            state = state.update("currentSongIndex", (index) => index + 1);
+            return state;
+        }
+
+        default: {
+            const currentSong = getCurrentSong(state);
+            const newSong = chordSongReducerWithoutUndo(currentSong, action);
+            const currentSongIndex = state.currentSongIndex;
+
+            const blowAwayRedoStack = (
+                list: List<ChordSong>
+            ): List<ChordSong> => {
+                return list.slice(0, currentSongIndex + 1);
+            };
+
+            state = state.update("undoStack", (list) => {
+                list = blowAwayRedoStack(list);
+                list = list.push(newSong);
+                return list;
+            });
+
+            state = state.update("currentSongIndex", (index) => index + 1);
+
+            return state;
+        }
+    }
+};
+
+const chordSongReducerWithoutUndo = (
+    song: ChordSong,
+    action: ChordSongActionWithoutUndo
 ): ChordSong => {
     switch (action.type) {
         case "replace-song": {
@@ -335,14 +427,28 @@ export const useChordSongReducer = (
     onChange?: (newSong: ChordSong, action: ChordSongAction) => void
 ): [ChordSong, React.Dispatch<ChordSongAction>] => {
     const reducerWithChangeCallback = useCallback(
-        (song: ChordSong, action: ChordSongAction): ChordSong => {
-            const newSong: ChordSong = chordSongReducer(song, action);
+        (state: ChordSongStack, action: ChordSongAction): ChordSongStack => {
+            const newState = chordSongReducer(state, action);
+            const newSong = getCurrentSong(state);
+
             onChange?.(newSong, action);
 
-            return newSong;
+            return newState;
         },
         [onChange]
     );
 
-    return useReducer(reducerWithChangeCallback, initialSong);
+    const initialState = ChordSongStackConstructor({
+        undoStack: List([initialSong]),
+        currentSongIndex: 0,
+    });
+
+    const [state, dispatch] = useReducer(
+        reducerWithChangeCallback,
+        initialState
+    );
+
+    const currentSong = getCurrentSong(state);
+
+    return [currentSong, dispatch];
 };
