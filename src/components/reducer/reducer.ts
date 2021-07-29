@@ -1,4 +1,5 @@
-import { useCallback, useReducer } from "react";
+import { Map, Record } from "immutable";
+import React, { useCallback, useReducer } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
@@ -34,20 +35,22 @@ type AddLine = {
     lineID: IDable<ChordLine> | "beginning";
 };
 
-type RemoveLine = {
-    type: "remove-line";
-    lineID: IDable<ChordLine>;
-};
-
 type BatchInsertLines = {
     type: "batch-insert-lines";
     insertLineID: IDable<ChordLine>;
     copiedLines: ChordLine[];
 };
 
-type BatchRemoveLines = {
-    type: "batch-remove-lines";
+type StartRemoveLines = {
+    type: "start-remove-lines";
     lineIDs: IDable<ChordLine>[];
+    dontUseThisDirectly: "ok-i-wont";
+};
+
+type RemoveLines = {
+    type: "remove-lines";
+    lineIDs: IDable<ChordLine>[];
+    dontUseThisDirectly: "ok-i-wont";
 };
 
 type SplitLine = {
@@ -109,9 +112,9 @@ export type ChordSongAction =
     | SetHeader
     | SetLastSavedAt
     | AddLine
-    | RemoveLine
+    | StartRemoveLines
+    | RemoveLines
     | BatchInsertLines
-    | BatchRemoveLines
     | SplitLine
     | MergeLines
     | InsertOverflowLyrics
@@ -122,13 +125,53 @@ export type ChordSongAction =
     | SetSection
     | Transpose;
 
+export const lineRemovalTime = 250;
+export type RemovingLines = Map<string, boolean>;
+
+export const removeLines = (
+    songDispatch: React.Dispatch<ChordSongAction>,
+    lineIDs: IDable<ChordLine>[]
+) => {
+    songDispatch({
+        type: "start-remove-lines",
+        lineIDs: lineIDs,
+        dontUseThisDirectly: "ok-i-wont",
+    });
+
+    setTimeout(() => {
+        songDispatch({
+            type: "remove-lines",
+            lineIDs: lineIDs,
+            dontUseThisDirectly: "ok-i-wont",
+        });
+    }, lineRemovalTime);
+};
+
+type ChordPaperStateType = {
+    song: ChordSong;
+    removingLines: RemovingLines;
+};
+
+const ChordPaperStateConstructor = Record<ChordPaperStateType>({
+    song: new ChordSong({}),
+    removingLines: Map<string, boolean>(),
+});
+
+export type ChordPaperState = ReturnType<typeof ChordPaperStateConstructor>;
+
 const chordSongReducer = (
-    song: ChordSong,
+    state: ChordPaperState,
     action: ChordSongAction
-): ChordSong => {
+): ChordPaperState => {
+    const withNewSong = (song: ChordSong): ChordPaperState => {
+        return state.set("song", song);
+    };
+
+    let song: ChordSong = state.song;
+
     switch (action.type) {
         case "replace-song": {
-            return action.newSong;
+            return withNewSong(action.newSong);
         }
 
         case "set-header": {
@@ -156,22 +199,47 @@ const chordSongReducer = (
                 }));
             }
 
-            return song;
+            return withNewSong(song);
         }
 
         case "set-last-saved-at": {
-            return song.set("lastSavedAt", action.lastSavedAt);
+            song = song.set("lastSavedAt", action.lastSavedAt);
+            return withNewSong(song);
         }
 
         case "add-line": {
             if (action.lineID === "beginning") {
-                return song.addBeginning(new ChordLine({}));
+                song = song.addBeginning(new ChordLine({}));
+            } else {
+                song = song.addAfter(action.lineID, new ChordLine({}));
             }
-            return song.addAfter(action.lineID, new ChordLine({}));
+
+            return withNewSong(song);
         }
 
-        case "remove-line": {
-            return song.removeElement(action.lineID);
+        case "start-remove-lines": {
+            state = state.update("removingLines", (removingLines) => {
+                for (const lineID of action.lineIDs) {
+                    removingLines = removingLines.set(lineID.id, true);
+                }
+
+                return removingLines;
+            });
+
+            return state;
+        }
+
+        case "remove-lines": {
+            state = state.update("removingLines", (removingLines) => {
+                const lineIDStrs: string[] = action.lineIDs.map(
+                    (lineID) => lineID.id
+                );
+                return removingLines.deleteAll(lineIDStrs);
+            });
+
+            song = song.removeMultipleElements(action.lineIDs);
+
+            return withNewSong(song);
         }
 
         case "split-line": {
@@ -179,22 +247,24 @@ const chordSongReducer = (
                 action.lineID,
                 action.splitIndex
             );
+
             if (!splitted) {
-                return song;
+                return withNewSong(song);
             }
 
-            return newSong;
+            return withNewSong(newSong);
         }
 
         case "merge-lines": {
             const [newSong, merged] = song.mergeLineWithPrevious(
                 action.latterLineID
             );
+
             if (!merged) {
-                return song;
+                return withNewSong(song);
             }
 
-            return newSong;
+            return withNewSong(newSong);
         }
 
         case "batch-insert-lines": {
@@ -208,36 +278,40 @@ const chordSongReducer = (
                 song = song.removeElement(action.insertLineID);
             }
 
-            return song;
-        }
-
-        case "batch-remove-lines": {
-            return song.removeMultipleElements(action.lineIDs);
+            return withNewSong(song);
         }
 
         case "replace-line-lyrics": {
-            return song.replaceElement(action.lineID, (line) => {
+            song = song.replaceElement(action.lineID, (line) => {
                 return line.replaceLyrics(action.newLyric);
             });
+
+            return withNewSong(song);
         }
 
         case "insert-overflow-lyrics": {
             const newChordLines: ChordLine[] = action.overflowLyrics.map(
                 (newLyricLine: Lyric) => ChordLine.fromLyrics(newLyricLine)
             );
-            return song.addAfter(action.insertionLineID, ...newChordLines);
+            song = song.addAfter(action.insertionLineID, ...newChordLines);
+
+            return withNewSong(song);
         }
 
         case "set-chord": {
-            return song.replaceElement(action.lineID, (line) => {
+            song = song.replaceElement(action.lineID, (line) => {
                 return line.setChord(action.blockID, action.newChord);
             });
+
+            return withNewSong(song);
         }
 
         case "split-block": {
-            return song.replaceElement(action.lineID, (line) => {
+            song = song.replaceElement(action.lineID, (line) => {
                 return line.splitBlock(action.blockID, action.splitIndex);
             });
+
+            return withNewSong(song);
         }
 
         case "drag-and-drop-chord": {
@@ -295,7 +369,7 @@ const chordSongReducer = (
             song = song.replaceElement(sourceLine, () => sourceLine);
             song = song.replaceElement(destinationLine, () => destinationLine);
 
-            return song;
+            return withNewSong(song);
         }
 
         case "set-section": {
@@ -315,17 +389,20 @@ const chordSongReducer = (
                 return line;
             };
 
-            return song.updateCollection((elements) => {
+            song = song.updateCollection((elements) => {
                 return elements.replace(action.lineID, (line) => {
                     line = updateName(line);
                     line = updateTime(line);
                     return line;
                 });
             });
+
+            return withNewSong(song);
         }
 
         case "transpose": {
-            return song.transpose(action.originalKey, action.transposeKey);
+            song = song.transpose(action.originalKey, action.transposeKey);
+            return withNewSong(song);
         }
     }
 };
@@ -333,16 +410,21 @@ const chordSongReducer = (
 export const useChordSongReducer = (
     initialSong: ChordSong,
     onChange?: (newSong: ChordSong, action: ChordSongAction) => void
-): [ChordSong, React.Dispatch<ChordSongAction>] => {
+): [ChordPaperState, React.Dispatch<ChordSongAction>] => {
     const reducerWithChangeCallback = useCallback(
-        (song: ChordSong, action: ChordSongAction): ChordSong => {
-            const newSong: ChordSong = chordSongReducer(song, action);
-            onChange?.(newSong, action);
+        (state: ChordPaperState, action: ChordSongAction): ChordPaperState => {
+            const newState: ChordPaperState = chordSongReducer(state, action);
+            onChange?.(newState.song, action);
 
-            return newSong;
+            return newState;
         },
         [onChange]
     );
 
-    return useReducer(reducerWithChangeCallback, initialSong);
+    const initialState = ChordPaperStateConstructor({
+        song: initialSong,
+        removingLines: Map<string, boolean>(),
+    });
+
+    return useReducer(reducerWithChangeCallback, initialState);
 };

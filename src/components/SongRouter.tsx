@@ -5,11 +5,12 @@ import { MultiFC, transformToFC } from "../common/FunctionalComponent";
 import ChordPaper from "./edit/ChordPaper";
 import { DemoPath, SongIDPath } from "../common/paths";
 import Play from "./play/Play";
-import { ChordSongAction } from "./reducer/reducer";
+import { ChordSongAction, RemovingLines } from "./reducer/reducer";
 
 interface SongRouterProps {
     path: SongIDPath | DemoPath;
     song: ChordSong;
+    removingLines: RemovingLines;
     songDispatch: React.Dispatch<ChordSongAction>;
 }
 
@@ -36,6 +37,7 @@ const SongRouter: MultiFC<SongRouterProps> = (
         <Route key={editPath.URL()} path={editPath.URL()}>
             <ChordPaper
                 song={props.song}
+                removingLines={props.removingLines}
                 songDispatch={props.songDispatch}
                 onPlay={switchToPlay}
             />

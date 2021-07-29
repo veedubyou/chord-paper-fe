@@ -1,18 +1,30 @@
 import React from "react";
 import { ChordSong } from "../common/ChordModel/ChordSong";
-import { ChordSongAction, useChordSongReducer } from "./reducer/reducer";
+import {
+    ChordSongAction,
+    RemovingLines,
+    useChordSongReducer,
+} from "./reducer/reducer";
 import { useCloud } from "./useCloud";
 
-interface OriginalComponentProps {
+interface BaseOriginalComponentProps {
     song: ChordSong;
+    removingLines: RemovingLines;
     songDispatch: React.Dispatch<ChordSongAction>;
 }
 
-export const withSongContext = <P extends OriginalComponentProps>(
+type WrappedComponentProps<P extends BaseOriginalComponentProps> = Omit<
+    P,
+    "removingLines" | "songDispatch"
+>;
+
+export const withSongContext = <P extends BaseOriginalComponentProps>(
     OriginalComponent: React.FC<P>
-): React.FC<Omit<P, "songDispatch">> => {
-    return (props: Omit<P, "songDispatch">): JSX.Element => {
-        const [song, songDispatch] = useChordSongReducer(props.song);
+): React.FC<WrappedComponentProps<P>> => {
+    return (props: WrappedComponentProps<P>): JSX.Element => {
+        const [{ song, removingLines }, songDispatch] = useChordSongReducer(
+            props.song
+        );
 
         const { song: throwawaySong, ...propsWithoutInitialSong } = props;
 
@@ -20,6 +32,7 @@ export const withSongContext = <P extends OriginalComponentProps>(
         const originalComponentProps = {
             ...propsWithoutInitialSong,
             song: song,
+            removingLines: removingLines,
             songDispatch: songDispatch,
         } as P;
 
@@ -27,12 +40,12 @@ export const withSongContext = <P extends OriginalComponentProps>(
     };
 };
 
-export const withCloudSaveSongContext = <P extends OriginalComponentProps>(
+export const withCloudSaveSongContext = <P extends BaseOriginalComponentProps>(
     OriginalComponent: React.FC<P>
-): React.FC<Omit<P, "songDispatch">> => {
-    return (props: Omit<P, "songDispatch">): JSX.Element => {
+): React.FC<WrappedComponentProps<P>> => {
+    return (props: WrappedComponentProps<P>): JSX.Element => {
         const [onSongChange, useSave] = useCloud();
-        const [song, songDispatch] = useChordSongReducer(
+        const [{ song, removingLines }, songDispatch] = useChordSongReducer(
             props.song,
             onSongChange
         );
@@ -44,6 +57,7 @@ export const withCloudSaveSongContext = <P extends OriginalComponentProps>(
         const originalComponentProps = {
             ...propsWithoutInitialSong,
             song: song,
+            removingLines: removingLines,
             songDispatch: songDispatch,
         } as P;
 

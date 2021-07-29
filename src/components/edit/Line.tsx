@@ -4,14 +4,18 @@ import red from "@material-ui/core/colors/red";
 import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
 import ChatBubbleIcon from "@material-ui/icons/ChatBubbleOutline";
 import { List } from "immutable";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { Collection, IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { DataTestID } from "../../common/DataTestID";
 import { PlainFn } from "../../common/PlainFn";
-import { ChordSongAction } from "../reducer/reducer";
+import {
+    ChordSongAction,
+    lineRemovalTime,
+    removeLines,
+} from "../reducer/reducer";
 import Block from "./Block";
 import WithHoverMenu, { MenuItem } from "./WithHoverMenu";
 import WithLyricInput from "./WithLyricInput";
@@ -42,12 +46,12 @@ const HighlightableBox = withStyles({
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
+    removing: boolean;
     songDispatch: React.Dispatch<ChordSongAction>;
     "data-lineid": string;
 }
 
 const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
-    const [removing, setRemoving] = useState(false);
     const { chordLine, songDispatch } = props;
 
     const handlers = useMemo(
@@ -69,15 +73,8 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 });
             },
 
-            startRemove: () => {
-                setRemoving(true);
-            },
-
             remove: () => {
-                songDispatch({
-                    type: "remove-line",
-                    lineID: chordLine,
-                });
+                removeLines(songDispatch, [chordLine]);
             },
         }),
         [chordLine, songDispatch]
@@ -134,7 +131,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                         "data-testid": "EditLabel",
                     },
                     {
-                        onClick: handlers.startRemove,
+                        onClick: handlers.remove,
                         icon: <BackspaceIcon />,
                         "data-testid": "RemoveButton",
                     },
@@ -146,14 +143,13 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     );
 
     const lineContent: React.ReactElement = withSection;
-    const yeetDirection = removing ? "up" : "down";
+    const yeetDirection = props.removing ? "up" : "down";
 
     return (
         <Slide
             direction={yeetDirection}
-            in={!removing}
-            timeout={250}
-            onExited={handlers.remove}
+            in={!props.removing}
+            timeout={lineRemovalTime}
         >
             <AtomicSelectionBox>
                 <Box

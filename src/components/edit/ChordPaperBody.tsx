@@ -8,7 +8,7 @@ import { List } from "immutable";
 import React, { useMemo, useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { ChordSongAction } from "../reducer/reducer";
+import { ChordSongAction, RemovingLines } from "../reducer/reducer";
 import { handleBatchLineDelete } from "./BatchDelete";
 import { useLineCopyHandler } from "./CopyAndPaste";
 import { InteractionContext, InteractionSetter } from "./InteractionContext";
@@ -29,6 +29,7 @@ const Paper = withStyles({
 
 interface ChordPaperBodyProps {
     song: ChordSong;
+    removingLines: RemovingLines;
     songDispatch: React.Dispatch<ChordSongAction>;
 }
 
@@ -60,23 +61,23 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     const handleKeyDown = (
         event: React.KeyboardEvent<HTMLDivElement>
     ): void => {
-        const lineIDs = handleBatchLineDelete(event);
-        if (lineIDs === false) {
+        const handled = handleBatchLineDelete(event, songDispatch);
+        if (!handled) {
             return;
         }
 
-        songDispatch({
-            type: "batch-remove-lines",
-            lineIDs: lineIDs,
-        });
+        event.preventDefault();
     };
 
     const lines: List<JSX.Element> = (() => {
         let lines = props.song.chordLines.list.flatMap((line: ChordLine) => {
+            const removing = props.removingLines.get(line.id, false);
+
             return [
                 <Line
                     key={line.id}
                     chordLine={line}
+                    removing={removing}
                     songDispatch={songDispatch}
                     data-lineid={line.id}
                     data-testid="Line"

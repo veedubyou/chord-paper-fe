@@ -5,7 +5,7 @@ import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { PlainFn } from "../../common/PlainFn";
 import PlayerTimeProvider from "../PlayerTimeContext";
-import { ChordSongAction } from "../reducer/reducer";
+import { ChordSongAction, RemovingLines } from "../reducer/reducer";
 import JamStation from "../track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
@@ -32,6 +32,7 @@ const useWhiteStyle = makeStyles({
 
 interface ChordPaperProps {
     song: ChordSong;
+    removingLines: RemovingLines;
     songDispatch: React.Dispatch<ChordSongAction>;
     onPlay?: PlainFn;
 }
@@ -82,6 +83,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                 />
                 <ChordPaperBody
                     song={props.song}
+                    removingLines={props.removingLines}
                     songDispatch={props.songDispatch}
                 />
                 <ChordPaperMenu
