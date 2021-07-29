@@ -47,8 +47,7 @@ interface LineProps extends DataTestID {
 }
 
 const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
-    const [removed, setRemoved] = useState(false);
-    const removalTime = 250;
+    const [removing, setRemoving] = useState(false);
     const { chordLine, songDispatch } = props;
 
     const handlers = useMemo(
@@ -70,22 +69,18 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 });
             },
 
+            startRemove: () => {
+                setRemoving(true);
+            },
+
             remove: () => {
-                if (removed) {
-                    return;
-                }
-
-                setRemoved(true);
-
-                setTimeout(() => {
-                    songDispatch({
-                        type: "remove-line",
-                        lineID: chordLine,
-                    });
-                }, removalTime);
+                songDispatch({
+                    type: "remove-line",
+                    lineID: chordLine,
+                });
             },
         }),
-        [chordLine, songDispatch, removed]
+        [chordLine, songDispatch]
     );
 
     let chordBlocks: Collection<ChordBlock> = props.chordLine.chordBlocks;
@@ -139,7 +134,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                         "data-testid": "EditLabel",
                     },
                     {
-                        onClick: handlers.remove,
+                        onClick: handlers.startRemove,
                         icon: <BackspaceIcon />,
                         "data-testid": "RemoveButton",
                     },
@@ -151,10 +146,15 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     );
 
     const lineContent: React.ReactElement = withSection;
-    const yeetDirection = removed ? "up" : "down";
+    const yeetDirection = removing ? "up" : "down";
 
     return (
-        <Slide direction={yeetDirection} in={!removed} timeout={removalTime}>
+        <Slide
+            direction={yeetDirection}
+            in={!removing}
+            timeout={250}
+            onExited={handlers.remove}
+        >
             <AtomicSelectionBox>
                 <Box
                     borderBottom={1}
