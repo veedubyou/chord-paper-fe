@@ -4,7 +4,7 @@ import { ChordSongAction } from "../reducer/reducer";
 import { getSelectedLineIDs } from "./LineSelection";
 
 export const handleBatchLineDelete = (
-    event: React.KeyboardEvent<HTMLDivElement>,
+    event: KeyboardEvent,
     songDispatch: React.Dispatch<ChordSongAction>
 ): boolean => {
     if (event.key !== "Backspace") {
