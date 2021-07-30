@@ -1,7 +1,7 @@
 import { ChordSongAction } from "../reducer/reducer";
 
 export const handleUndoRedo = (
-    event: React.KeyboardEvent<HTMLDivElement>,
+    event: KeyboardEvent,
     songDispatch: React.Dispatch<ChordSongAction>
 ): boolean => {
     const isSpecialKey = event.metaKey || event.ctrlKey;

@@ -6,8 +6,10 @@ import {
 } from "@material-ui/core";
 import { List } from "immutable";
 import React, { useMemo, useState } from "react";
+import { useEffect } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
+import { useRegisterKeyListener } from "../GlobalKeyListener";
 import { ChordSongAction } from "../reducer/reducer";
 import { handleBatchLineDelete } from "./BatchDelete";
 import { useLineCopyHandler } from "./CopyAndPaste";
@@ -29,7 +31,7 @@ const Paper = withStyles({
 })(UnstyledPaper);
 
 type KeyDownHandler = (
-    event: React.KeyboardEvent<HTMLDivElement>,
+    event: KeyboardEvent,
     songDispatch: React.Dispatch<ChordSongAction>
 ) => boolean;
 
@@ -43,6 +45,8 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
 ): React.ReactElement => {
     const [interacting, setInteracting] = useState(false);
     const handleCopy = useLineCopyHandler(props.song);
+    const [addKeyListener, removeKeyListener] = useRegisterKeyListener();
+
     const songDispatch = props.songDispatch;
 
     const interactionContextValue: InteractionSetter = useMemo(
@@ -62,23 +66,33 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     );
 
     const uninteractiveStyle = useUninteractiveStyle();
+    // prevent other interactions if currently interacting
+    const allowInteraction: boolean = !interacting;
 
-    const handleKeyDown = (
-        event: React.KeyboardEvent<HTMLDivElement>
-    ): void => {
-        const handlers: KeyDownHandler[] = [
-            handleBatchLineDelete,
-            handleUndoRedo,
-        ];
-
-        for (const handler of handlers) {
-            const handled = handler(event, songDispatch);
-            if (handled) {
-                event.preventDefault();
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent): void => {
+            if (!allowInteraction) {
                 return;
             }
-        }
-    };
+
+            const handlers: KeyDownHandler[] = [
+                handleBatchLineDelete,
+                handleUndoRedo,
+            ];
+
+            for (const handler of handlers) {
+                const handled = handler(event, songDispatch);
+                if (handled) {
+                    event.preventDefault();
+                    return;
+                }
+            }
+        };
+
+        addKeyListener(handleKeyDown);
+
+        return () => removeKeyListener(handleKeyDown);
+    }, [allowInteraction, addKeyListener, removeKeyListener, songDispatch]);
 
     const lines: List<JSX.Element> = (() => {
         let lines = props.song.chordLines.list.flatMap((line: ChordLine) => {
@@ -113,8 +127,6 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         return lines;
     })();
 
-    // prevent other interactions if currently interacting
-    const allowInteraction: boolean = !interacting;
     const paperClassName = allowInteraction
         ? undefined
         : uninteractiveStyle.root;
@@ -122,7 +134,6 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     return (
         <InteractionContext.Provider value={interactionContextValue}>
             <Paper
-                onKeyDown={allowInteraction ? handleKeyDown : undefined}
                 onCopy={allowInteraction ? handleCopy : undefined}
                 className={paperClassName}
                 elevation={0}
