@@ -21,7 +21,7 @@ const InvisibleTypography = withStyles({
         position: "absolute",
         left: 0,
         top: 0,
-        transform: "translate(0%, -115%)",
+        transform: "translate(0%, -110%)",
     },
 })(LyricTypography);
 
