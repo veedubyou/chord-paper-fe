@@ -133,21 +133,26 @@ export type ChordSongAction =
     | SetSection
     | Transpose;
 
-export type ChordSongActionWithoutUndo = Exclude<ChordSongAction, Undo | Redo>;
+export type ChordSongActionWithoutUndo = Exclude<
+    ChordSongAction,
+    Undo | Redo | SetLastSavedAt
+>;
 
-type ChordSongStackType = {
+type ChordPaperStateType = {
     undoStack: List<ChordSong>;
     currentSongIndex: number;
+    lastSavedAt: Date | null;
 };
 
-const ChordSongStackConstructor = Record<ChordSongStackType>({
+const ChordPaperStateConstructor = Record<ChordPaperStateType>({
     undoStack: List(),
     currentSongIndex: -1,
+    lastSavedAt: null,
 });
 
-type ChordSongStack = ReturnType<typeof ChordSongStackConstructor>;
+type ChordPaperState = ReturnType<typeof ChordPaperStateConstructor>;
 
-const getCurrentSong = (state: ChordSongStack): ChordSong => {
+const getCurrentSong = (state: ChordPaperState): ChordSong => {
     const currentSong: ChordSong | undefined = state.undoStack.get(
         state.currentSongIndex
     );
@@ -158,7 +163,7 @@ const getCurrentSong = (state: ChordSongStack): ChordSong => {
         );
     }
 
-    return currentSong;
+    return currentSong.set("lastSavedAt", state.lastSavedAt);
 };
 
 // the separation between these two reducer functions is that
@@ -166,9 +171,9 @@ const getCurrentSong = (state: ChordSongStack): ChordSong => {
 // undo and redo operations require it, so splitting these keeps each
 // easier to manage
 const chordSongReducer = (
-    state: ChordSongStack,
+    state: ChordPaperState,
     action: ChordSongAction
-): ChordSongStack => {
+): ChordPaperState => {
     switch (action.type) {
         case "undo": {
             if (state.currentSongIndex === 0) {
@@ -188,6 +193,10 @@ const chordSongReducer = (
 
             state = state.update("currentSongIndex", (index) => index + 1);
             return state;
+        }
+
+        case "set-last-saved-at": {
+            return state.set("lastSavedAt", action.lastSavedAt);
         }
 
         default: {
@@ -249,10 +258,6 @@ const chordSongReducerWithoutUndo = (
             }
 
             return song;
-        }
-
-        case "set-last-saved-at": {
-            return song.set("lastSavedAt", action.lastSavedAt);
         }
 
         case "add-line": {
@@ -427,7 +432,7 @@ export const useChordSongReducer = (
     onChange?: (newSong: ChordSong, action: ChordSongAction) => void
 ): [ChordSong, React.Dispatch<ChordSongAction>] => {
     const reducerWithChangeCallback = useCallback(
-        (state: ChordSongStack, action: ChordSongAction): ChordSongStack => {
+        (state: ChordPaperState, action: ChordSongAction): ChordPaperState => {
             const newState = chordSongReducer(state, action);
             const newSong = getCurrentSong(state);
 
@@ -438,9 +443,10 @@ export const useChordSongReducer = (
         [onChange]
     );
 
-    const initialState = ChordSongStackConstructor({
+    const initialState = ChordPaperStateConstructor({
         undoStack: List([initialSong]),
         currentSongIndex: 0,
+        lastSavedAt: initialSong.lastSavedAt,
     });
 
     const [state, dispatch] = useReducer(
