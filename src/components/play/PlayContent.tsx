@@ -143,6 +143,9 @@ const PlayContent: React.FC<PlayContentProps> = (
         },
     })(Paper);
 
+    // removing scrollbars on Windows
+    // play mode causes scrollbars on Windows
+    // this is sort of a workaround until we can find a better CSS solution
     useEffect(() => {
         const getScrollBarWidth = (): unknown => {
             return (document.documentElement.style as any).scrollbarWidth;
