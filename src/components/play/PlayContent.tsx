@@ -143,6 +143,25 @@ const PlayContent: React.FC<PlayContentProps> = (
         },
     })(Paper);
 
+    // removing scrollbars on Windows
+    // play mode causes scrollbars on Windows
+    // this is sort of a workaround until we can find a better CSS solution
+    useEffect(() => {
+        const getScrollBarWidth = (): unknown => {
+            return (document.documentElement.style as any).scrollbarWidth;
+        };
+
+        const setScrollBarWidth = (scrollbarWidth: unknown) => {
+            (document.documentElement.style as any).scrollbarWidth =
+                scrollbarWidth;
+        };
+
+        const prevScrollbarWidthValue = getScrollBarWidth();
+        setScrollBarWidth("none");
+
+        return () => setScrollBarWidth(prevScrollbarWidthValue);
+    }, []);
+
     // using margins instead of column-gap, CSS columns force the rightmost column
     // up against the edge of the viewport and doesn't strictly respect column width
     //
