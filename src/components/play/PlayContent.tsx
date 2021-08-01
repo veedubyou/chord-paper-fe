@@ -143,6 +143,22 @@ const PlayContent: React.FC<PlayContentProps> = (
         },
     })(Paper);
 
+    useEffect(() => {
+        const getScrollBarWidth = (): unknown => {
+            return (document.documentElement.style as any).scrollbarWidth;
+        };
+
+        const setScrollBarWidth = (scrollbarWidth: unknown) => {
+            (document.documentElement.style as any).scrollbarWidth =
+                scrollbarWidth;
+        };
+
+        const prevScrollbarWidthValue = getScrollBarWidth();
+        setScrollBarWidth("none");
+
+        return () => setScrollBarWidth(prevScrollbarWidthValue);
+    }, []);
+
     // using margins instead of column-gap, CSS columns force the rightmost column
     // up against the edge of the viewport and doesn't strictly respect column width
     //
