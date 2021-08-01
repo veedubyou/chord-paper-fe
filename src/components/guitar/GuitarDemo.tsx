@@ -1,13 +1,14 @@
-import { Grid, Box, Theme } from "@material-ui/core";
-import { Paper as UnstyledPaper, TextField } from "@material-ui/core";
+import { Box, Grid, Paper as UnstyledPaper, Theme } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import React, { useRef, useState } from "react";
 import "swiper/components/navigation/navigation.min.css";
 import SwiperCore, { Navigation, Pagination } from "swiper/core";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper.min.css";
-import { AllScales } from "../../common/music/scale/Scale";
-import ScaleChart, { StartingFret } from "./ScaleChart";
+import { AllScales, ScaleUtility } from "../../common/music/scale/Scale";
+import FretSelector from "./FretSelector";
+import { StartingFret } from "./ScaleChart";
+import MenuSelectableScaleChart from "./MenuSelectableScaleChart";
 import ScaleSelection, { SelectableScale } from "./ScaleSelection";
 
 // install Swiper modules
@@ -36,30 +37,6 @@ const GuitarDemo: React.FC<GuitarDemoProps> = (
     const firstRowSwiperRef = useRef<SwiperCore | null>(null);
     const secondRowSwiperRef = useRef<SwiperCore | null>(null);
 
-    const fretSelector = (
-        <TextField
-            label="Starting Fret"
-            type="number"
-            InputLabelProps={{
-                shrink: true,
-            }}
-            variant="outlined"
-            value={startingFret}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                const val = parseInt(event.target.value);
-                if (val <= 0 || val > 21) {
-                    return;
-                }
-
-                if (val % 1 !== 0) {
-                    return;
-                }
-
-                setStartingFret(val as StartingFret);
-            }}
-        />
-    );
-
     const menu = (
         <Grid container>
             <Grid item xs={9}>
@@ -68,17 +45,25 @@ const GuitarDemo: React.FC<GuitarDemoProps> = (
                 </MarginBox>
             </Grid>
             <Grid item xs={3}>
-                <MarginBox>{fretSelector}</MarginBox>
+                <MarginBox>
+                    <FretSelector
+                        startingFret={startingFret}
+                        onStartingFretChanged={setStartingFret}
+                    />
+                </MarginBox>
             </Grid>
         </Grid>
     );
 
-    const makeSlide = (scale: SelectableScale): JSX.Element => {
+    const makeSlide = (selectableScale: SelectableScale): JSX.Element => {
+        const scale =
+            AllScales[selectableScale.scaleName][selectableScale.note];
         return (
             <SwiperSlide>
-                <ScaleChart
-                    scale={AllScales[scale.scaleName][scale.note]}
-                    startingFret={startingFret}
+                <MenuSelectableScaleChart
+                    key={new ScaleUtility(scale).name()}
+                    scale={scale}
+                    initialStartingFret={startingFret}
                 />
             </SwiperSlide>
         );

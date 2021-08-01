@@ -7,7 +7,7 @@ import {
     generateGuitarScaleView,
     GuitarFretLabel,
 } from "../../common/music/guitar/Scale";
-import { Scale, ScaleUtility } from "../../common/music/scale/Scale";
+import { Scale } from "../../common/music/scale/Scale";
 
 const ChartBox = withStyles({
     root: {
@@ -121,6 +121,7 @@ export type StartingFret =
 interface ScaleChartProps {
     scale: Scale;
     startingFret: StartingFret;
+    scaleLabel: string;
 }
 
 const ScaleChart: React.FC<ScaleChartProps> = (
@@ -161,13 +162,14 @@ const ScaleChart: React.FC<ScaleChartProps> = (
         );
 
         const svguitarChord = new SVGuitarChord(elemRef.current);
+
         svguitarChord.chord({
             barres: [],
             fingers: convertScaleViewToFingers(
                 guitarScaleView,
                 props.startingFret
             ),
-            title: new ScaleUtility(props.scale).name(),
+            title: props.scaleLabel,
         });
 
         svguitarChord.configure({
@@ -193,7 +195,7 @@ const ScaleChart: React.FC<ScaleChartProps> = (
                 elem.setAttribute("transform", `rotate(90,${pos[0]},${pos[1]})`)
             );
         });
-    }, [props.scale, props.startingFret]);
+    }, [props.scale, props.startingFret, props.scaleLabel]);
 
     // https://github.com/mui-org/material-ui/issues/17010
     const refProps = {
