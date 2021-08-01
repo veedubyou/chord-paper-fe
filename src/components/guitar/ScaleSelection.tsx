@@ -6,6 +6,7 @@ import Autocomplete, {
 import React from "react";
 import { AllNotes, Note } from "../../common/music/foundation/Note";
 import { ScaleName, ScaleTypes } from "../../common/music/scale/Scale";
+import lodash from "lodash";
 
 export type SelectableScale = {
     note: Note;
@@ -50,10 +51,18 @@ const ScaleSelection: React.FC<ScaleSelectionProps> = (
         props.onSelection(newValue);
     };
 
+    // another workaround
+    // the selection box needs to be able to provide duplicate options
+    // e.g. C ionian, D dorian, C ionian
+    // it can't do that right now, but this mechanism can emulate it
+    // by making the options a difference reference every time
+    // https://github.com/mui-org/material-ui/issues/18755#issuecomment-864118839
+    const copiedScaleOptions = lodash.cloneDeep(AllScaleValues);
+
     return (
         <Autocomplete
             multiple
-            options={AllScaleValues}
+            options={copiedScaleOptions}
             filterOptions={filterOptions}
             getOptionLabel={(scaleValue) => scaleValue.label}
             renderInput={(params: AutocompleteRenderInputParams) => (
