@@ -1,12 +1,4 @@
-import {
-    Box,
-    Collapse,
-    LinearProgress,
-    Theme,
-    Typography,
-} from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import { withStyles } from "@material-ui/styles";
+import { Collapse } from "@material-ui/core";
 import React from "react";
 import {
     FiveStemKeys,
@@ -19,13 +11,7 @@ import StemTrackPlayer, {
     StemButtonSpec,
 } from "./internal_player/stem/StemTrackPlayer";
 import { PlayerControls } from "./internal_player/usePlayerControls";
-
-const PaddedBox = withStyles((theme: Theme) => ({
-    root: {
-        padding: theme.spacing(2),
-        backgroundColor: grey[100],
-    },
-}))(Box);
+import LoadingTrackView from "./LoadingTrackView";
 
 interface TrackPlayerProps {
     focused: boolean;
@@ -142,14 +128,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             case "split_2stems":
             case "split_4stems":
             case "split_5stems": {
-                return (
-                    <PaddedBox>
-                        <Typography variant="body1">
-                            Processing track. Refresh to check progress.
-                        </Typography>
-                        <LinearProgress />
-                    </PaddedBox>
-                );
+                return <LoadingTrackView track={props.track} />;
             }
         }
     })();
