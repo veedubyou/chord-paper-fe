@@ -27,7 +27,7 @@ const LoadingTrackView: React.FC<LoadingTrackViewProps> = (
                 <Typography variant="body1">{message}</Typography>
                 <LinearProgress
                     variant="determinate"
-                    value={40} //TODO: placeholder until we get real progress values
+                    value={props.track.job_progress}
                     color="secondary"
                 />
             </PaddedBox>
@@ -39,7 +39,10 @@ const LoadingTrackView: React.FC<LoadingTrackViewProps> = (
             <Typography variant="body1">
                 {props.track.job_status_message}. Refresh to check progress.
             </Typography>
-            <LinearProgress />
+            <LinearProgress
+                variant="determinate"
+                value={props.track.job_progress}
+            />
         </PaddedBox>
     );
 };
