@@ -186,7 +186,7 @@ const LoadedTrackListEditDialog: React.FC<LoadedTrackListEditDialogProps> = (
     };
 
     const handleAddSplitStemTrack = (splitType: SplitStemTypes) => {
-        handleAddTrack(new SplitStemTrack("", "", splitType, ""));
+        handleAddTrack(SplitStemTrack.newTrackRequest(splitType));
     };
 
     const handleAddTrack = (newTrack: Track) => {

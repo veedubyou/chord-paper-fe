@@ -11,6 +11,13 @@ export const SplitStemTrackValidator = iots.intersection([
             iots.literal("split_5stems"),
         ]),
         original_url: iots.string,
+        job_status: iots.union([
+            iots.literal("requested"),
+            iots.literal("processing"),
+            iots.literal("error"),
+        ]),
+        job_status_message: iots.string,
+        job_status_debug_log: iots.string,
     }),
 ]);
 
@@ -19,12 +26,16 @@ type SplitStemTrackValidatedFields = iots.TypeOf<
 >;
 
 export type SplitStemTypes = "split_2stems" | "split_4stems" | "split_5stems";
+export type SplitStemJobStatus = "requested" | "processing" | "error";
 
 const DefaultSplitStemTrackRecord = {
     id: "",
     track_type: "split_2stems" as SplitStemTypes,
     label: "",
     original_url: "",
+    job_status: "requested" as SplitStemJobStatus,
+    job_status_message: "",
+    job_status_debug_log: "",
 };
 
 export class SplitStemTrack
@@ -35,14 +46,24 @@ export class SplitStemTrack
         id: string,
         label: string,
         splitType: SplitStemTypes,
-        originalURL: string
+        originalURL: string,
+        jobStatus: SplitStemJobStatus,
+        jobStatusMessage: string,
+        jobStatusDebugLog: string
     ) {
         super({
             id: id,
             track_type: splitType,
             label: label,
             original_url: originalURL,
+            job_status: jobStatus,
+            job_status_message: jobStatusMessage,
+            job_status_debug_log: jobStatusDebugLog,
         });
+    }
+
+    static newTrackRequest(splitType: SplitStemTypes): SplitStemTrack {
+        return new SplitStemTrack("", "", splitType, "", "requested", "", "");
     }
 
     static fromValidatedFields(
@@ -52,7 +73,10 @@ export class SplitStemTrack
             validatedFields.id,
             validatedFields.label,
             validatedFields.track_type,
-            validatedFields.original_url
+            validatedFields.original_url,
+            validatedFields.job_status,
+            validatedFields.job_status_message,
+            validatedFields.job_status_debug_log
         );
     }
 
