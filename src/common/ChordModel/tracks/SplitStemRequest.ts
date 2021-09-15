@@ -18,6 +18,7 @@ export const SplitStemTrackValidator = iots.intersection([
         ]),
         job_status_message: iots.string,
         job_status_debug_log: iots.string,
+        job_progress: iots.number,
     }),
 ]);
 
@@ -36,6 +37,7 @@ const DefaultSplitStemTrackRecord = {
     job_status: "requested" as SplitStemJobStatus,
     job_status_message: "",
     job_status_debug_log: "",
+    job_progress: 0,
 };
 
 export class SplitStemTrack
@@ -49,6 +51,7 @@ export class SplitStemTrack
         originalURL: string,
         jobStatus: SplitStemJobStatus,
         jobStatusMessage: string,
+        jobProgress: number,
         jobStatusDebugLog: string
     ) {
         super({
@@ -58,12 +61,22 @@ export class SplitStemTrack
             original_url: originalURL,
             job_status: jobStatus,
             job_status_message: jobStatusMessage,
+            job_progress: jobProgress,
             job_status_debug_log: jobStatusDebugLog,
         });
     }
 
     static newTrackRequest(splitType: SplitStemTypes): SplitStemTrack {
-        return new SplitStemTrack("", "", splitType, "", "requested", "", "");
+        return new SplitStemTrack(
+            "",
+            "",
+            splitType,
+            "",
+            "requested",
+            "",
+            0,
+            ""
+        );
     }
 
     static fromValidatedFields(
@@ -76,6 +89,7 @@ export class SplitStemTrack
             validatedFields.original_url,
             validatedFields.job_status,
             validatedFields.job_status_message,
+            validatedFields.job_progress,
             validatedFields.job_status_debug_log
         );
     }
