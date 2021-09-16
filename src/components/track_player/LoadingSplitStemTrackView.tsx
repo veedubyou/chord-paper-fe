@@ -1,8 +1,9 @@
 import { Box, LinearProgress, Theme, Typography } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
 import { withStyles } from "@material-ui/styles";
-import React from "react";
+import React, { useEffect } from "react";
 import { SplitStemTrack } from "../../common/ChordModel/tracks/SplitStemRequest";
+import { PlainFn } from "../../common/PlainFn";
 
 const PaddedBox = withStyles((theme: Theme) => ({
     root: {
@@ -11,13 +12,26 @@ const PaddedBox = withStyles((theme: Theme) => ({
     },
 }))(Box);
 
-interface LoadingTrackViewProps {
+const refreshInterval = 10000;
+
+interface LoadingSplitStemTrackViewProps {
     track: SplitStemTrack;
+    refreshTrackFn: PlainFn;
 }
 
-const LoadingTrackView: React.FC<LoadingTrackViewProps> = (
-    props: LoadingTrackViewProps
+const LoadingSplitStemTrackView: React.FC<LoadingSplitStemTrackViewProps> = (
+    props: LoadingSplitStemTrackViewProps
 ): JSX.Element => {
+    useEffect(() => {
+        if (props.track.job_status === "error") {
+            return;
+        }
+
+        console.log("refresh timeout invoked");
+
+        setTimeout(props.refreshTrackFn, refreshInterval);
+    }, [props]);
+
     if (props.track.job_status === "error") {
         console.error(props.track.job_status_debug_log);
 
@@ -37,7 +51,7 @@ const LoadingTrackView: React.FC<LoadingTrackViewProps> = (
     return (
         <PaddedBox>
             <Typography variant="body1">
-                {props.track.job_status_message}. Refresh to check progress.
+                {props.track.job_status_message}
             </Typography>
             <LinearProgress
                 variant="determinate"
@@ -47,4 +61,4 @@ const LoadingTrackView: React.FC<LoadingTrackViewProps> = (
     );
 };
 
-export default LoadingTrackView;
+export default LoadingSplitStemTrackView;

@@ -15,6 +15,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { StemTrack } from "../../../../common/ChordModel/tracks/StemTrack";
 import { DetailedLoadingFetchState } from "../../../../common/fetch";
 import { mapObject } from "../../../../common/mapObject";
+import { PlainFn } from "../../../../common/PlainFn";
 import { PlayerControls } from "../usePlayerControls";
 import { getAudioCtx } from "./audioCtx";
 import LoadedStemTrackPlayer, { StemInput } from "./LoadedStemTrackPlayer";
@@ -34,12 +35,13 @@ export interface StemButtonSpec<StemKey extends string> {
 
 interface StemTrackPlayerProps<StemKey extends string> {
     focused: boolean;
-    currentTrack: boolean;
+    isCurrentTrack: boolean;
 
     track: StemTrack<StemKey>;
     buttonSpecs: StemButtonSpec<StemKey>[];
 
     playerControls: PlayerControls;
+    refreshTrackFn: PlainFn;
 }
 
 interface SingleLoadingProgress {
@@ -303,9 +305,10 @@ const StemTrackPlayer = <StemKey extends string>(
     return (
         <LoadedStemTrackPlayer
             focused={props.focused}
-            currentTrack={props.currentTrack}
+            currentTrack={props.isCurrentTrack}
             stems={fetchState.item}
             playerControls={props.playerControls}
+            refreshTrackFn={props.refreshTrackFn}
         />
     );
 };

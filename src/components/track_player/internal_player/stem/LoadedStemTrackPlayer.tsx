@@ -12,6 +12,7 @@ import React, {
 } from "react";
 import FilePlayer from "react-player/file";
 import * as Tone from "tone";
+import { PlainFn } from "../../../../common/PlainFn";
 import ControlPane from "../ControlPane";
 import { makeFilePlayerProps } from "../reactPlayerProps";
 import { PlayerControls } from "../usePlayerControls";
@@ -53,6 +54,7 @@ interface LoadedStemTrackPlayerProps<StemKey extends string> {
     currentTrack: boolean;
     stems: StemInput<StemKey>[];
     playerControls: PlayerControls;
+    refreshTrackFn: PlainFn;
 }
 
 const createToneNodes = <StemKey extends string>(
@@ -148,6 +150,8 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         handleMasterVolumeChange
     );
 
+    const refreshTrackFn = props.refreshTrackFn;
+
     // check the integrity of the loaded tracks - they should all be the same length
     // otherwise there could be a loading error
     useEffect(() => {
@@ -170,12 +174,9 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         }
 
         if (maxDuration - minDuration > 1) {
-            enqueueSnackbar(
-                "Mismatch in length of tracks loaded, try refreshing",
-                { variant: "warning" }
-            );
+            refreshTrackFn();
         }
-    }, [enqueueSnackbar, props.stems]);
+    }, [enqueueSnackbar, props.stems, refreshTrackFn]);
 
     // synchronize the time control and tone transport
     useEffect(() => {

@@ -12,7 +12,6 @@ import {
 import { isLeft } from "fp-ts/lib/Either";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useErrorMessage } from "../common/backend/errors";
 import { getSongsForUser } from "../common/backend/requests";
 import { SongSummary } from "../common/ChordModel/ChordSong";
 import { FetchState } from "../common/fetch";
@@ -32,7 +31,6 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
     const [fetchState, setFetchState] = useState<FetchState<SongSummary[]>>({
         state: "not-started",
     });
-    const showError = useErrorMessage();
     const user = React.useContext(UserContext);
     const history = useHistory();
 
@@ -175,8 +173,7 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
             return <></>;
         }
         case "error": {
-            showError(fetchState.error);
-            return wrapInDialog(<ErrorImage />);
+            return wrapInDialog(<ErrorImage error={fetchState.error} />);
         }
         case "loading": {
             return wrapInDialog(<LinearProgress />);

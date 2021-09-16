@@ -8,7 +8,7 @@ import TrackListEditDialog from "./dialog/TrackListEditDialog";
 import { usePlayerControls } from "./internal_player/usePlayerControls";
 import MicroPlayer from "./MicroPlayer";
 import MultiTrackPlayer from "./MultiTrackPlayer";
-import { TrackListLoad } from "./TrackListProvider";
+import { TrackListLoad } from "./providers/TrackListProvider";
 
 type PlayerVisibilityState = "minimized" | "full";
 

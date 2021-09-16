@@ -1,6 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
-import React from "react";
+import React, { useEffect } from "react";
 import ErrorImg from "../../assets/img/error.jpeg";
+import { useErrorMessage } from "../../common/backend/errors";
 
 const useErrorStyles = makeStyles({
     root: {
@@ -8,8 +9,19 @@ const useErrorStyles = makeStyles({
     },
 });
 
-const ErrorImage: React.FC<{}> = (): JSX.Element => {
+interface ErrorImageProps {
+    error: unknown;
+}
+
+const ErrorImage: React.FC<ErrorImageProps> = (
+    props: ErrorImageProps
+): JSX.Element => {
     const errorStyles = useErrorStyles();
+    const showError = useErrorMessage();
+
+    useEffect(() => {
+        showError(props.error);
+    }, [props, showError]);
 
     return (
         <img

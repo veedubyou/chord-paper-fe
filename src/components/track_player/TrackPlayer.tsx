@@ -6,22 +6,66 @@ import {
     TwoStemKeys,
 } from "../../common/ChordModel/tracks/StemTrack";
 import { Track } from "../../common/ChordModel/tracks/Track";
+import { PlainFn } from "../../common/PlainFn";
+import ErrorImage from "../display/ErrorImage";
 import SingleTrackPlayer from "./internal_player/single/SingleTrackPlayer";
 import StemTrackPlayer, {
     StemButtonSpec,
 } from "./internal_player/stem/StemTrackPlayer";
 import { PlayerControls } from "./internal_player/usePlayerControls";
-import LoadingTrackView from "./LoadingTrackView";
+import LoadingSplitStemTrackView from "./LoadingSplitStemTrackView";
+import { useTrackFetch } from "./providers/useTrackFetch";
+import WaitingSpinner from "./WaitingSpinner";
 
 interface TrackPlayerProps {
     focused: boolean;
-    currentTrack: boolean;
-    track: Track;
+    isCurrentTrack: boolean;
+    tracklistID: string;
+    trackID: string;
     playerControls: PlayerControls;
 }
 
 const TrackPlayer: React.FC<TrackPlayerProps> = (
     props: TrackPlayerProps
+): JSX.Element => {
+    const [trackLoad, refreshTrackFn] = useTrackFetch(
+        props.tracklistID,
+        props.trackID
+    );
+
+    switch (trackLoad.state) {
+        case "loading": {
+            return <WaitingSpinner />;
+        }
+
+        case "error": {
+            return <ErrorImage error={trackLoad.error} />;
+        }
+
+        case "loaded": {
+            return (
+                <LoadedTrackPlayer
+                    track={trackLoad.track}
+                    focused={props.focused}
+                    isCurrentTrack={props.isCurrentTrack}
+                    playerControls={props.playerControls}
+                    refreshTrackFn={refreshTrackFn}
+                />
+            );
+        }
+    }
+};
+
+interface LoadedTrackPlayerProps {
+    focused: boolean;
+    isCurrentTrack: boolean;
+    track: Track;
+    playerControls: PlayerControls;
+    refreshTrackFn: PlainFn;
+}
+
+const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
+    props: LoadedTrackPlayerProps
 ): JSX.Element => {
     const innerPlayer: React.ReactElement = (() => {
         switch (props.track.track_type) {
@@ -29,7 +73,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
                 return (
                     <SingleTrackPlayer
                         focused={props.focused}
-                        currentTrack={props.currentTrack}
+                        isCurrentTrack={props.isCurrentTrack}
                         track={props.track}
                         playerControls={props.playerControls}
                     />
@@ -51,10 +95,11 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
                 return (
                     <StemTrackPlayer
                         focused={props.focused}
-                        currentTrack={props.currentTrack}
+                        isCurrentTrack={props.isCurrentTrack}
                         track={props.track}
                         buttonSpecs={buttonSpecs}
                         playerControls={props.playerControls}
+                        refreshTrackFn={props.refreshTrackFn}
                     />
                 );
             }
@@ -82,10 +127,11 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
                 return (
                     <StemTrackPlayer
                         focused={props.focused}
-                        currentTrack={props.currentTrack}
+                        isCurrentTrack={props.isCurrentTrack}
                         track={props.track}
                         buttonSpecs={buttonSpecs}
                         playerControls={props.playerControls}
+                        refreshTrackFn={props.refreshTrackFn}
                     />
                 );
             }
@@ -117,10 +163,11 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
                 return (
                     <StemTrackPlayer
                         focused={props.focused}
-                        currentTrack={props.currentTrack}
+                        isCurrentTrack={props.isCurrentTrack}
                         track={props.track}
                         buttonSpecs={buttonSpecs}
                         playerControls={props.playerControls}
+                        refreshTrackFn={props.refreshTrackFn}
                     />
                 );
             }
@@ -128,7 +175,13 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
             case "split_2stems":
             case "split_4stems":
             case "split_5stems": {
-                return <LoadingTrackView track={props.track} />;
+                console.log("rendering loading view");
+                return (
+                    <LoadingSplitStemTrackView
+                        track={props.track}
+                        refreshTrackFn={props.refreshTrackFn}
+                    />
+                );
             }
         }
     })();

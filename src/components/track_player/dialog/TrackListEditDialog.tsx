@@ -31,7 +31,7 @@ import {
 import { Track } from "../../../common/ChordModel/tracks/Track";
 import { TrackList } from "../../../common/ChordModel/tracks/TrackList";
 import { PlainFn } from "../../../common/PlainFn";
-import { TrackListLoad } from "../TrackListProvider";
+import { TrackListLoad } from "../providers/TrackListProvider";
 import SingleTrackRow from "./SingleTrackRow";
 import StemTrackRow, { URLFieldLabel } from "./StemTrackRow";
 import SplitStemTrackRow from "./SplitStemTrackRow";
