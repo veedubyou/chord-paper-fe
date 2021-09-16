@@ -33,7 +33,7 @@ export type TrackListUpdateFn = (
     userAuthToken: string | null
 ) => Promise<void>;
 
-const refreshDebounceThreshold = 2000;
+const refreshDebounceThreshold = 500;
 
 export const useTracklistFetch = (
     tracklistID: string
