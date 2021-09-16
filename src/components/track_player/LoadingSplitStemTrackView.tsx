@@ -27,8 +27,6 @@ const LoadingSplitStemTrackView: React.FC<LoadingSplitStemTrackViewProps> = (
             return;
         }
 
-        console.log("refresh timeout invoked");
-
         setTimeout(props.refreshTrackFn, refreshInterval);
     }, [props]);
 

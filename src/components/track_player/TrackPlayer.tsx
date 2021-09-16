@@ -175,7 +175,6 @@ const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
             case "split_2stems":
             case "split_4stems":
             case "split_5stems": {
-                console.log("rendering loading view");
                 return (
                     <LoadingSplitStemTrackView
                         track={props.track}
