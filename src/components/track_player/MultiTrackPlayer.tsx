@@ -1,7 +1,6 @@
 import {
     Box,
     Button,
-    CircularProgress,
     Divider,
     MenuItem,
     Select as UnstyledSelect,
@@ -26,21 +25,14 @@ import {
     PlayerControls,
     unfocusedControls,
 } from "./internal_player/usePlayerControls";
-import { TrackListLoad } from "./TrackListProvider";
+import { TrackListLoad } from "./providers/TrackListProvider";
 import TrackPlayer from "./TrackPlayer";
+import WaitingSpinner from "./WaitingSpinner";
 
 const FlexBox = withStyles((theme: Theme) => ({
     root: {
         display: "flex",
         alignItems: "center",
-        margin: theme.spacing(0.5),
-    },
-}))(Box);
-
-const CenteredBox = withStyles((theme: Theme) => ({
-    root: {
-        display: "flex",
-        justifyContent: "center",
         margin: theme.spacing(0.5),
     },
 }))(Box);
@@ -195,17 +187,15 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
 
     const internalContent: React.ReactNode = (() => {
         if (props.tracklistLoad.state === "loading") {
-            return (
-                <CenteredBox>
-                    <CircularProgress />
-                </CenteredBox>
-            );
+            return <WaitingSpinner />;
         }
 
+        const tracklistID = props.tracklistLoad.tracklist.song_id;
+
         const makePlayer = (track: Track, index: number) => {
-            const currentTrack = index === props.currentTrackIndex;
-            const focused = currentTrack && props.show;
-            const playerControls = currentTrack
+            const isCurrentTrack = index === props.currentTrackIndex;
+            const focused = isCurrentTrack && props.show;
+            const playerControls = isCurrentTrack
                 ? props.playerControls
                 : unfocusedControls;
 
@@ -213,8 +203,9 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
                 <TrackPlayer
                     key={`${index}-${track.id}`}
                     focused={focused}
-                    currentTrack={currentTrack}
-                    track={track}
+                    isCurrentTrack={isCurrentTrack}
+                    tracklistID={tracklistID}
+                    trackID={track.id}
                     playerControls={playerControls}
                 />
             );

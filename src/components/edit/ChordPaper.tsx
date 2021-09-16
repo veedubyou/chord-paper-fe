@@ -10,7 +10,7 @@ import JamStation from "../track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
     TrackListLoad,
-} from "../track_player/TrackListProvider";
+} from "../track_player/providers/TrackListProvider";
 import ChordPaperBody from "./ChordPaperBody";
 import Header from "./Header";
 import ChordPaperMenu from "./menu/ChordPaperMenu";
@@ -50,8 +50,8 @@ const ChordPaper: React.FC<ChordPaperProps> = (
             <TrackListProvider song={props.song}>
                 {(
                     tracklistLoad: TrackListLoad,
-                    changeHandler: TrackListChangeHandler,
-                    onRefresh: PlainFn
+                    onRefresh: PlainFn,
+                    changeHandler: TrackListChangeHandler
                 ) => (
                     <JamStation
                         collapsedButtonClassName={whiteStyle.root}

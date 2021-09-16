@@ -8,7 +8,7 @@ import JamStation from "../track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
     TrackListLoad,
-} from "../track_player/TrackListProvider";
+} from "../track_player/providers/TrackListProvider";
 import PlayContent, { DisplaySettings } from "./PlayContent";
 import PlayMenu from "./PlayMenu";
 
@@ -53,8 +53,8 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
             <TrackListProvider song={props.song}>
                 {(
                     tracklistLoad: TrackListLoad,
-                    onChange: TrackListChangeHandler,
-                    onRefresh: PlainFn
+                    onRefresh: PlainFn,
+                    onChange: TrackListChangeHandler
                 ) => (
                     <JamStation
                         collapsedButtonClassName={transparentStyle.root}

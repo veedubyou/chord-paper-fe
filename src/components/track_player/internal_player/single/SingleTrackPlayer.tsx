@@ -10,7 +10,7 @@ import { PlayerControls } from "../usePlayerControls";
 
 interface SingleTrackPlayerProps {
     focused: boolean;
-    currentTrack: boolean;
+    isCurrentTrack: boolean;
     playerControls: PlayerControls;
     track: SingleTrack;
 }
@@ -28,10 +28,10 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
     );
 
     useEffect(() => {
-        if (!props.currentTrack && props.playerControls.playing) {
+        if (!props.isCurrentTrack && props.playerControls.playing) {
             props.playerControls.onPause();
         }
-    }, [props.currentTrack, props.playerControls]);
+    }, [props.isCurrentTrack, props.playerControls]);
 
     return (
         <Box>
