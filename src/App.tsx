@@ -20,8 +20,6 @@ import Background from "./assets/img/symphony.png";
 import { ChordSong } from "./common/ChordModel/ChordSong";
 import {
     aboutPath,
-    DemoModePath,
-    demoPath,
     guitarDemoPath,
     newSongPath,
     rootPath,
@@ -29,7 +27,6 @@ import {
     songPath,
 } from "./common/paths";
 import About from "./components/about/About";
-import Demo from "./components/Demo";
 import DragAndDrop from "./components/edit/DragAndDrop";
 import GlobalKeyListenerProvider from "./components/GlobalKeyListener";
 import GuitarDemo from "./components/guitar/GuitarDemo";
@@ -103,7 +100,6 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
 
     const isFullScreen =
         SongIDModePath.isPlayMode(location.pathname) ||
-        DemoModePath.isPlayMode(location.pathname) ||
         location.pathname === guitarDemoPath.URL();
 
     const withRegularAppLayout = (
@@ -145,10 +141,6 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
                         )}
                     </SongFetcher>
                 )}
-            </Route>
-
-            <Route key={demoPath.URL()} path={demoPath.URL()}>
-                {withRegularAppLayout(<Demo />)}
             </Route>
 
             {TutorialSwitches(withRegularAppLayout)}

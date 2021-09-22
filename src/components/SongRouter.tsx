@@ -2,13 +2,13 @@ import React from "react";
 import { Redirect, Route, useHistory } from "react-router-dom";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { MultiFC, transformToFC } from "../common/FunctionalComponent";
+import { SongIDPath } from "../common/paths";
 import ChordPaper from "./edit/ChordPaper";
-import { DemoPath, SongIDPath } from "../common/paths";
 import Play from "./play/Play";
 import { ChordSongAction } from "./reducer/reducer";
 
 interface SongRouterProps {
-    path: SongIDPath | DemoPath;
+    path: SongIDPath;
     song: ChordSong;
     songDispatch: React.Dispatch<ChordSongAction>;
 }
