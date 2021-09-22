@@ -51,21 +51,9 @@ describe("paths", () => {
 
     describe("demo paths", () => {
         test("root song path", () => {
-            expect(new DemoPath().URL()).toEqual("/demo");
-        });
-
-        describe("with mode", () => {
-            test("edit mode", () => {
-                expect(new DemoPath().withMode("edit").URL()).toEqual(
-                    "/demo/edit"
-                );
-            });
-
-            test("play mode", () => {
-                expect(new DemoPath().withMode("play").URL()).toEqual(
-                    "/demo/play"
-                );
-            });
+            expect(new DemoPath().URL()).toEqual(
+                "/song/c531c0fe-6e8d-4cfe-9c5f-120e3402ccd9"
+            );
         });
     });
 });
