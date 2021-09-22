@@ -93,30 +93,10 @@ export class SongIDModePath {
 
 export class DemoPath {
     URL(): string {
-        return "/demo";
-    }
+        const neverGonnaGiveYouPlasticLoveUUID =
+            "c531c0fe-6e8d-4cfe-9c5f-120e3402ccd9";
 
-    withMode(mode: Mode): DemoModePath {
-        return new DemoModePath(mode);
+        return new SongIDPath(neverGonnaGiveYouPlasticLoveUUID).URL();
     }
 }
 export const demoPath = new DemoPath();
-
-export class DemoModePath {
-    private readonly mode: Mode;
-    constructor(mode: Mode) {
-        this.mode = mode;
-    }
-
-    URL(): string {
-        return `/demo/${this.mode}`;
-    }
-
-    parent(): DemoPath {
-        return demoPath;
-    }
-
-    static isPlayMode(path: string): boolean {
-        return path === new DemoModePath("play").URL();
-    }
-}
