@@ -81,12 +81,14 @@ const SnackbarProvider = withStyles((theme: Theme) => ({
     },
 }))(UnstyledSnackbarProvider);
 
-const AppLayout = withStyles({
+const withBackground = withStyles({
     root: {
         backgroundImage: `url(${Background})`,
         minHeight: "100vh",
     },
-})(Grid);
+});
+
+const AppLayout = withBackground(Grid);
 
 const MainSong = withCloudSaveSongContext(SongRouter);
 
@@ -98,18 +100,24 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
     const location = useLocation();
     const loadSongPath = songPath.withID(":id");
 
-    const isFullScreen =
-        SongIDModePath.isPlayMode(location.pathname) ||
-        location.pathname === guitarDemoPath.URL();
-
-    const withRegularAppLayout = (
+    const withLayout = (
         child: React.ReactElement | React.ReactElement[]
-    ) => {
+    ): React.ReactElement => {
+        if (SongIDModePath.isPlayMode(location.pathname)) {
+            // no background required on full screen play mode
+            // more importantly, don't set the min-height
+            return (
+                <Grid container>
+                    <Grid item container justify="center">
+                        {child}
+                    </Grid>
+                </Grid>
+            );
+        }
+
         return (
             <>
-                {!isFullScreen && (
-                    <SideMenu onUserChanged={handleUserChanged} />
-                )}
+                <SideMenu onUserChanged={handleUserChanged} />
                 <AppLayout container>
                     <Grid item container justify="center">
                         {child}
@@ -125,13 +133,13 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
             <Redirect from={rootPath.URL()} to={newSongPath.URL()} exact />
 
             <Route key={newSongPath.URL()} path={newSongPath.URL()}>
-                {withRegularAppLayout(
+                {withLayout(
                     <MainSong song={new ChordSong({})} path={newSongPath} />
                 )}
             </Route>
 
             <Route key={loadSongPath.URL()} path={loadSongPath.URL()}>
-                {withRegularAppLayout(
+                {withLayout(
                     <SongFetcher>
                         {(song: ChordSong) => (
                             <MainSong
@@ -143,9 +151,9 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
                 )}
             </Route>
 
-            {TutorialSwitches(withRegularAppLayout)}
+            {TutorialSwitches(withLayout)}
             <Route key={aboutPath.URL()} path={aboutPath.URL()} exact>
-                {withRegularAppLayout(<About />)}
+                {withLayout(<About />)}
             </Route>
             <Route key={guitarDemoPath.URL()} path={guitarDemoPath.URL()} exact>
                 <GuitarDemo />
