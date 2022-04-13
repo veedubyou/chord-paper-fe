@@ -2,6 +2,7 @@ import { Box, Paper, RootRef } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
 import { withStyles } from "@material-ui/styles";
 import { useWindowWidth } from "@react-hook/window-size";
+import useScrollbarSize from "react-scrollbar-size";
 import React, { useCallback, useEffect, useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
@@ -40,6 +41,7 @@ const PlayContent: React.FC<PlayContentProps> = (
     const windowWidth = useWindowWidth();
     const columnWidth = windowWidth / numberOfColumnsPerPage;
     const snapThreshold = columnWidth / 2;
+    const { height: scrollbarHeight } = useScrollbarSize();
 
     const scrollPage = useCallback(
         (forward: boolean) => {
@@ -131,6 +133,8 @@ const PlayContent: React.FC<PlayContentProps> = (
         event.preventDefault();
     };
 
+    const viewportHeightWithoutScrollbar = `calc(100vh - ${scrollbarHeight}px)`;
+
     const ColumnedPaper = withStyles({
         root: {
             columnGap: "0px",
@@ -138,29 +142,10 @@ const PlayContent: React.FC<PlayContentProps> = (
             columnRuleStyle: "solid",
             columnRuleColor: grey[300],
             columns: numberOfColumnsPerPage,
-            height: "100vh",
+            height: viewportHeightWithoutScrollbar,
             width: "100%",
         },
     })(Paper);
-
-    // removing scrollbars on Windows
-    // play mode causes scrollbars on Windows
-    // this is sort of a workaround until we can find a better CSS solution
-    useEffect(() => {
-        const getScrollBarWidth = (): unknown => {
-            return (document.documentElement.style as any).scrollbarWidth;
-        };
-
-        const setScrollBarWidth = (scrollbarWidth: unknown) => {
-            (document.documentElement.style as any).scrollbarWidth =
-                scrollbarWidth;
-        };
-
-        const prevScrollbarWidthValue = getScrollBarWidth();
-        setScrollBarWidth("none");
-
-        return () => setScrollBarWidth(prevScrollbarWidthValue);
-    }, []);
 
     // using margins instead of column-gap, CSS columns force the rightmost column
     // up against the edge of the viewport and doesn't strictly respect column width
@@ -179,7 +164,7 @@ const PlayContent: React.FC<PlayContentProps> = (
 
     const FullHeightBox = withStyles({
         root: {
-            height: "100vh",
+            height: viewportHeightWithoutScrollbar,
             pageBreakInside: "avoid",
         },
     })(Box);
