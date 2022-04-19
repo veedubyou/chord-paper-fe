@@ -10,7 +10,7 @@ import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useErrorMessage } from "../../../common/backend/errors";
+import { useErrorSnackbar } from "../../../common/backend/errors";
 import { createSong, deleteSong } from "../../../common/backend/requests";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { newSongPath, songPath } from "../../../common/paths";
@@ -19,7 +19,7 @@ import { User } from "../../user/userContext";
 
 export const useCloudCreateSong = () => {
     const { enqueueSnackbar } = useSnackbar();
-    const showError = useErrorMessage();
+    const showError = useErrorSnackbar();
     const history = useHistory();
 
     const createNewSong = async (song: ChordSong, user: User) => {
@@ -62,7 +62,7 @@ export const useCloudDeleteSongDialog = (
     user: User | null
 ): [PlainFn, React.ReactElement | null] => {
     const { enqueueSnackbar } = useSnackbar();
-    const showError = useErrorMessage();
+    const showError = useErrorSnackbar();
     const history = useHistory();
     const [shouldShowDialog, setShouldShowDialog] = useState(false);
 

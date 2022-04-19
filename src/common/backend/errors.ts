@@ -1,56 +1,71 @@
-import { useSnackbar } from "notistack";
+import { Either, isLeft, left } from "fp-ts/lib/Either";
+import * as iots from "io-ts";
 import ky from "ky";
+import { useSnackbar } from "notistack";
 
-interface BackendError {
-    code: string;
-    msg: string;
-}
+// list of all known error codes
+const BackendErrorCodeValidator = iots.union([
+    iots.literal("no_account"),
+    iots.literal("failed_google_verification"),
+    iots.literal("create_song_exists"),
+    iots.literal("update_song_overwrite"),
+    iots.literal("song_not_found"),
+    iots.literal("get_songs_for_user_not_allowed"),
+    iots.literal("update_song_owner_not_allowed"),
+    iots.literal("update_song_wrong_id"),
+    iots.literal("datastore_error"),
+]);
 
-const validateError = (json: unknown): json is BackendError => {
-    if (typeof json !== "object") {
-        return false;
+const BackendErrorValidator = iots.type({
+    msg: iots.string,
+    code: BackendErrorCodeValidator
+})
+
+export type BackendError = iots.TypeOf<typeof BackendErrorValidator>;
+
+export type UnknownError = unknown;
+export type RequestError = Either<UnknownError, BackendError>;
+
+export const parseRequestError = async (
+    unknownError: UnknownError
+): Promise<RequestError> => {
+    if (!(unknownError instanceof ky.HTTPError)) {
+        return left(unknownError);
     }
 
-    if (json === null || json === undefined) {
-        return false;
-    }
+    // cloning the response so that it can continue to be reused
+    const responseClone = unknownError.response.clone();
+    const jsonError: unknown = await responseClone.json();
 
-    return "code" in json && "msg" in json;
+    const decodeResult = BackendErrorValidator.decode(jsonError)
+    return decodeResult;
 };
 
-export const useErrorMessage = () => {
+export const useErrorSnackbar = () => {
     const { enqueueSnackbar } = useSnackbar();
 
     const showErrorMsg = (msg: string) => {
         enqueueSnackbar(msg, { variant: "error" });
     };
 
-    return async (unknownError: any) => {
-        const showGenericErrorMsg = () => {
+    return async (unknownError: unknown) => {
+        const jsonErrorResult = await parseRequestError(unknownError);
+
+        if (isLeft(jsonErrorResult)) {
+            console.error(jsonErrorResult.left);
             console.error(unknownError);
 
             showErrorMsg(
                 "An unknown error has occurred - please check the console for more details"
             );
-        };
-
-        if (!(unknownError instanceof ky.HTTPError)) {
-            showGenericErrorMsg();
             return;
         }
 
-        // cloning the response so that it can continue to be reused
-        const responseClone = unknownError.response.clone();
-        const error: unknown = await responseClone.json();
+        const jsonError = jsonErrorResult.right;
 
-        if (!validateError(error)) {
-            showGenericErrorMsg();
-            return;
-        }
+        console.error(jsonError.msg);
 
-        console.error(error.msg);
-
-        switch (error.code) {
+        switch (jsonError.code) {
             case "create_song_exists": {
                 showErrorMsg(
                     "Save failed: The song already exists and can't be created again!"
@@ -64,10 +79,12 @@ export const useErrorMessage = () => {
                 );
                 break;
             }
+
             case "song_not_found": {
                 showErrorMsg("Not found: A song of this ID cannot be found");
                 break;
             }
+
             case "failed_google_verification": {
                 showErrorMsg(
                     "Google verification failed: Please try to refresh and login again"
@@ -99,13 +116,6 @@ export const useErrorMessage = () => {
             case "datastore_error": {
                 showErrorMsg(
                     "The data operation was not successful - please check the console for more details"
-                );
-                break;
-            }
-
-            default: {
-                showErrorMsg(
-                    "An unknown error has occurred - please check the console for more details"
                 );
                 break;
             }

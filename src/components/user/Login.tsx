@@ -1,4 +1,6 @@
 import {
+    Box,
+    Dialog,
     Grid,
     Paper as UnstyledPaper,
     StyledComponentProps,
@@ -6,12 +8,14 @@ import {
     Typography as UnstyledTypography,
 } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
+import { Alert, AlertTitle } from "@material-ui/lab";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import SigninIcon from "../../assets/img/google_signin.svg";
-import { useErrorMessage } from "../../common/backend/errors";
+import { BackendError, RequestError } from "../../common/backend/errors";
 import { login } from "../../common/backend/requests";
 import { deserializeUser, User, UserContext } from "./userContext";
 
@@ -29,6 +33,13 @@ const Typography = withStyles((theme: Theme) => ({
     },
 }))(UnstyledTypography);
 
+const Paragraph = withStyles((theme: Theme) => ({
+    root: {
+        marginTop: theme.spacing(2),
+        marginBottom: theme.spacing(2),
+    },
+}))(Box);
+
 const googleSignInID = "google-sign-in";
 const googleClientID =
     "650853277550-ta69qbfcvdl6tb5ogtnh2d07ae9rcdlf.apps.googleusercontent.com";
@@ -41,18 +52,46 @@ const useSigninStyles = makeStyles({
 });
 
 interface LoginProps extends StyledComponentProps {
-    onUserChanged: (user: User) => void;
+    onUserChanged: (user: User | null) => void;
 }
 
 const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
-    const [gapiLoaded, setGapiLoaded] = useState<boolean>(false);
     const { enqueueSnackbar } = useSnackbar();
-    const showError = useErrorMessage();
     const signinStyles = useSigninStyles();
+
+    const [gapiLoaded, setGapiLoaded] = useState<boolean>(false);
+    const [dialogError, setDialogError] = useState<BackendError | null>(null);
+    const [snackbarError, setSnackbarError] = useState<RequestError | null>(
+        null
+    );
     const user: User | null = React.useContext(UserContext);
 
     const userNotSignedIn = (user: User | null): user is null => {
         return user === null;
+    };
+
+    const shouldDisplayDialog = (
+        reqError: RequestError
+    ): BackendError | null => {
+        if (reqError === null) {
+            return null;
+        }
+
+        if (isLeft(reqError)) {
+            return null;
+        }
+
+        const backendError = reqError.right;
+        if (
+            !(
+                backendError.code === "no_account" ||
+                backendError.code === "failed_google_verification"
+            )
+        ) {
+            return null;
+        }
+
+        return backendError;
     };
 
     useEffect(() => {
@@ -70,22 +109,57 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     }, [gapiLoaded, enqueueSnackbar]);
 
     useEffect(() => {
+        if (snackbarError === null) {
+            return;
+        }
+
+        if (isLeft(snackbarError)) {
+            console.error(snackbarError.left);
+        } else {
+            console.error(snackbarError.right);
+        }
+
+        enqueueSnackbar(
+            "Login failed for an unknown reason, please check console for more details",
+            { variant: "error" }
+        );
+
+        setSnackbarError(null);
+    }, [enqueueSnackbar, snackbarError, setSnackbarError]);
+
+    useEffect(() => {
         if (!gapiLoaded) {
             return;
         }
 
         gapi.load("auth2", () => {
+            const handleLoginError = (
+                loginError: RequestError,
+                authClient: gapi.auth2.GoogleAuth
+            ): void => {
+                const dialogError = shouldDisplayDialog(loginError);
+                if (dialogError !== null) {
+                    setDialogError(dialogError);
+                } else {
+                    setSnackbarError(loginError);
+                }
+
+                props.onUserChanged(null);
+                authClient.signOut();
+            };
+
             const handleGoogleLogin = async (
-                currentUser: gapi.auth2.CurrentUser
+                currentUser: gapi.auth2.CurrentUser,
+                authClient: gapi.auth2.GoogleAuth
             ) => {
-                const idToken: string = currentUser.get().getAuthResponse()
-                    .id_token;
+                const idToken: string = currentUser
+                    .get()
+                    .getAuthResponse().id_token;
 
                 let loginResult = await login(idToken);
 
                 if (isLeft(loginResult)) {
-                    await showError(loginResult.left);
-
+                    handleLoginError(loginResult.left, authClient);
                     return;
                 }
 
@@ -118,7 +192,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 authClient.attachClickHandler(
                     document.getElementById(googleSignInID),
                     {},
-                    () => handleGoogleLogin(authClient.currentUser),
+                    () => handleGoogleLogin(authClient.currentUser, authClient),
                     (failureReason: string) => {
                         console.error(
                             "Failed to login to Google",
@@ -128,7 +202,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 );
 
                 if (authClient.isSignedIn.get()) {
-                    handleGoogleLogin(authClient.currentUser);
+                    handleGoogleLogin(authClient.currentUser, authClient);
                 }
             };
 
@@ -139,13 +213,20 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 })
                 .then(handleAuthInit);
         });
-    }, [enqueueSnackbar, user, props, gapiLoaded, showError]);
+    }, [
+        enqueueSnackbar,
+        user,
+        props,
+        gapiLoaded,
+        setDialogError,
+        setSnackbarError,
+    ]);
 
     if (!gapiLoaded) {
         return <div></div>;
     }
 
-    const userDescription = (user: User | null): string => {
+    const userDescription: string = ((): string => {
         if (userNotSignedIn(user)) {
             return "Sign In";
         }
@@ -155,7 +236,60 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
         }
 
         return user.name;
-    };
+    })();
+
+    const errorDialog: React.ReactElement = (() => {
+        const content: React.ReactElement | null = (() => {
+            if (dialogError === null) {
+                return null;
+            }
+
+            switch (dialogError.code) {
+                case "no_account":
+                    return (
+                        <Alert severity="info">
+                            <AlertTitle>No account found</AlertTitle>
+                            <Paragraph>
+                                Looks like there is no Chord Paper account
+                                associated with your Google account.
+                            </Paragraph>
+                            <Paragraph>
+                                You can still use the offline functionalities
+                                for now. You won't be able to save any songs
+                                that you write right now. See more details{" "}
+                                <Link to="/learn/login">here</Link>.
+                            </Paragraph>
+                            <Paragraph>Invite requests coming soon.</Paragraph>
+                        </Alert>
+                    );
+                case "failed_google_verification":
+                    return (
+                        <Alert severity="error">
+                            <AlertTitle>
+                                Google account verification failed
+                            </AlertTitle>
+                            <Paragraph>
+                                Your Google account failed server verification.
+                            </Paragraph>
+                            <Paragraph>
+                                Please try to refresh and login to your Google
+                                account again.
+                            </Paragraph>
+                        </Alert>
+                    );
+                default:
+                    return null;
+            }
+        })();
+
+        const clearDialogError = () => setDialogError(null);
+
+        return (
+            <Dialog open={content !== null} onClose={clearDialogError}>
+                {content}
+            </Dialog>
+        );
+    })();
 
     return (
         <Paper id={googleSignInID} classes={props.classes}>
@@ -169,10 +303,11 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 </Grid>
                 <Grid item>
                     <Typography variant="h6" display="inline">
-                        {userDescription(user)}
+                        {userDescription}
                     </Typography>
                 </Grid>
             </Grid>
+            {errorDialog}
         </Paper>
     );
 };

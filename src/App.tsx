@@ -95,7 +95,7 @@ const MainSong = withCloudSaveSongContext(SongRouter);
 const AppContent: React.FC<{}> = (): JSX.Element => {
     const [user, setUser] = useState<User | null>(null);
 
-    const handleUserChanged = (newUser: User) => setUser(newUser);
+    const handleUserChanged = (newUser: User | null) => setUser(newUser);
 
     const location = useLocation();
     const loadSongPath = songPath.withID(":id");
