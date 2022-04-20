@@ -17,6 +17,8 @@ import { Link } from "react-router-dom";
 import SigninIcon from "../../assets/img/google_signin.svg";
 import { BackendError, RequestError } from "../../common/backend/errors";
 import { login } from "../../common/backend/requests";
+import { getRouteForTutorialComponent } from "../Tutorial";
+import LoginTutorial from "../tutorial/Login";
 import { deserializeUser, User, UserContext } from "./userContext";
 
 const Paper = withStyles({
@@ -246,6 +248,9 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
 
             switch (dialogError.code) {
                 case "no_account":
+                    const loginTutorialRoute =
+                        getRouteForTutorialComponent(LoginTutorial);
+
                     return (
                         <Alert severity="info">
                             <AlertTitle>No account found</AlertTitle>
@@ -257,7 +262,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                                 You can still use the offline functionalities
                                 for now. You won't be able to save any songs
                                 that you write right now. See more details{" "}
-                                <Link to="/learn/login">here</Link>.
+                                <Link to={loginTutorialRoute}>here</Link>.
                             </Paragraph>
                             <Paragraph>Invite requests coming soon.</Paragraph>
                         </Alert>

@@ -12,6 +12,9 @@ import StemTrackControlPane, {
 } from "../track_player/internal_player/stem/StemTrackControlPane";
 import TransposeControl from "../track_player/internal_player/TransposeControl";
 import { LineBreak } from "./Common";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Track Player";
 
 const SmallControlPaneBox = withStyles({
     root: {
@@ -45,7 +48,7 @@ const TrackPlayer: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Track Player</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 The track player is an integrated audio player which helps with
@@ -185,4 +188,4 @@ const TrackPlayer: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default TrackPlayer;
+export default convertToTutorialComponent(TrackPlayer, title);

@@ -1,9 +1,12 @@
 import { Typography } from "@material-ui/core";
 import React from "react";
 import { LineBreak } from "./Common";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Learn Chord Paper";
 
 const Header = () => {
-    return <Typography variant="h5">Learning Chord Paper</Typography>;
+    return <Typography variant="h5">{title}</Typography>;
 };
 
 const Preamble = () => {
@@ -34,4 +37,4 @@ const Starting: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default Starting;
+export default convertToTutorialComponent(Starting, title);

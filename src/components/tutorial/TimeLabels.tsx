@@ -9,6 +9,9 @@ import { sectionLabelStyle } from "../display/SectionLabel";
 import PlayerTimeProvider, { PlayerTimeContext } from "../PlayerTimeContext";
 import { LineBreak } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Labels with Timestamp";
 
 const LabelTypography = withStyles(sectionLabelStyle)(Typography);
 
@@ -88,7 +91,7 @@ const TimeLabels: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Labels with Timestamp</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 After creating a label, it's possible to annotate each section
@@ -126,4 +129,4 @@ const TimeLabels: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default TimeLabels;
+export default convertToTutorialComponent(TimeLabels, title);

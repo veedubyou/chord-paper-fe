@@ -6,6 +6,9 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { ChordTypography, LineBreak } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Remove Chords";
 
 const RemoveChord: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({
@@ -40,7 +43,7 @@ const RemoveChord: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Removing Chords</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 Simply remove all the chord text when editing to clear the
@@ -54,4 +57,4 @@ const RemoveChord: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default RemoveChord;
+export default convertToTutorialComponent(RemoveChord, title);

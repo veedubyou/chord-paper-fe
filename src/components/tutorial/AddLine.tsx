@@ -6,6 +6,9 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { LineBreak, LyricsTypography } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Add New Lines";
 
 const AddLine: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({
@@ -54,7 +57,7 @@ const AddLine: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Adding New Lines</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 You can add more lines by hovering below (or above) and existing
@@ -70,4 +73,4 @@ const AddLine: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default AddLine;
+export default convertToTutorialComponent(AddLine, title);

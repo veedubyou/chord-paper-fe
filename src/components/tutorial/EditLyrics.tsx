@@ -6,6 +6,9 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { LineBreak, LyricsTypography } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Edit Lyrics";
 
 const EditLyrics: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({
@@ -44,7 +47,7 @@ const EditLyrics: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Editing Lyrics</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 You can edit the lyrics by clicking anywhere along the lyrics.
@@ -62,4 +65,4 @@ const EditLyrics: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default EditLyrics;
+export default convertToTutorialComponent(EditLyrics, title);

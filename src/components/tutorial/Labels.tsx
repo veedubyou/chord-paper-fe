@@ -8,6 +8,9 @@ import { Lyric } from "../../common/ChordModel/Lyric";
 import { sectionLabelStyle } from "../display/SectionLabel";
 import { LineBreak } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Labels";
 
 const LabelTypography = withStyles(sectionLabelStyle)(Typography);
 
@@ -73,7 +76,7 @@ const Labels: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Labels</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 It's common to label sections to navigate easily within the
@@ -95,4 +98,4 @@ const Labels: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default Labels;
+export default convertToTutorialComponent(Labels, title);

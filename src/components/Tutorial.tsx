@@ -5,7 +5,7 @@ import React from "react";
 import { Link, Route } from "react-router-dom";
 import ErrorPage from "./display/ErrorPage";
 import AddChord from "./tutorial/AddChord";
-import AddLine from "./tutorial/AddLine";
+import AddLineFC from "./tutorial/AddLine";
 import ChordPositioning from "./tutorial/ChordPositioning";
 import CopyAndPaste from "./tutorial/CopyAndPaste";
 import DragAndDropChord from "./tutorial/DragAndDropChord";
@@ -24,11 +24,11 @@ import Login from "./tutorial/Login";
 import RemoveMultipleLines from "./tutorial/RemoveMultipleLines";
 import TrackPlayer from "./tutorial/TrackPlayer";
 import TimeLabels from "./tutorial/TimeLabels";
+import { TutorialComponent } from "./tutorial/TutorialComponent";
 
 type ExerciseEntry = {
-    title: string;
     route: string;
-    component: React.FC<{}>;
+    component: TutorialComponent;
 };
 
 export type ExerciseRoute = {
@@ -38,102 +38,82 @@ export type ExerciseRoute = {
 
 const allExercises: ExerciseEntry[] = [
     {
-        title: "Starting",
         route: "/learn/start",
         component: Starting,
     },
     {
-        title: "Edit a Chord",
         route: "/learn/edit-chord",
         component: EditChord,
     },
     {
-        title: "Remove a Chord",
         route: "/learn/remove-chord",
         component: RemoveChord,
     },
     {
-        title: "Add a Chord",
         route: "/learn/add-chord",
         component: AddChord,
     },
     {
-        title: "Drag and Drop Chords",
         route: "/learn/drag-and-drop-chord",
         component: DragAndDropChord,
     },
     {
-        title: "Edit Lyrics",
         route: "/learn/edit-lyrics",
         component: EditLyrics,
     },
     {
-        title: "Instrumentals",
         route: "/learn/instrumentals",
         component: Instrumental,
     },
     {
-        title: "Chord Positioning",
         route: "/learn/chord-positioning",
         component: ChordPositioning,
     },
     {
-        title: "Adding New Line",
         route: "/learn/add-line",
-        component: AddLine,
+        component: AddLineFC,
     },
     {
-        title: "Removing a Line",
         route: "/learn/remove-line",
         component: RemoveLine,
     },
     {
-        title: "Pasting Lyrics",
         route: "/learn/paste-lyrics",
         component: PasteLyrics,
     },
     {
-        title: "Removing Multiple Lines",
         route: "/learn/remove-multiple-lines",
         component: RemoveMultipleLines,
     },
     {
-        title: "Merging Lines",
         route: "/learn/merge-lines",
         component: MergeLine,
     },
     {
-        title: "Splitting Lines",
         route: "/learn/split-lines",
         component: SplitLine,
     },
     {
-        title: "Copying and Pasting Lines",
         route: "/learn/copy-and-paste",
         component: CopyAndPaste,
     },
     {
-        title: "Labels",
         route: "/learn/labels",
         component: Labels,
     },
     {
-        title: "Labels with Timestamp",
         route: "/learn/time-labels",
         component: TimeLabels,
     },
     {
-        title: "Play Mode",
         route: "/learn/play-mode",
         component: PlayMode,
     },
     {
-        title: "Logging In",
         route: "/learn/login",
         component: Login,
     },
     {
-        title: "Track Player",
         route: "/learn/track-player",
         component: TrackPlayer,
     },
@@ -141,9 +121,26 @@ const allExercises: ExerciseEntry[] = [
 
 export const allExerciseRoutes = (): ExerciseRoute[] => {
     return allExercises.map((entry: ExerciseEntry) => ({
-        title: entry.title,
+        title: entry.component.title,
         route: entry.route,
     }));
+};
+
+export const getRouteForTutorialComponent = (
+    tutorialComponent: TutorialComponent
+): string => {
+    const matchingExercise: ExerciseEntry | undefined = allExercises.find(
+        (exercise: ExerciseEntry) =>
+            exercise.component.title === tutorialComponent.title
+    );
+
+    if (matchingExercise === undefined) {
+        throw new Error(
+            "Input tutorial component not found in list - is the list up to date?"
+        );
+    }
+
+    return matchingExercise.route;
 };
 
 const PlayArrowIcon = withStyles({

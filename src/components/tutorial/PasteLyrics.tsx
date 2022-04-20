@@ -6,6 +6,9 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { LineBreak, LyricsTypography } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Paste Lyrics";
 
 const PasteLyrics: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({
@@ -71,7 +74,7 @@ const PasteLyrics: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Pasting Lyrics</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 It would be annoying to have to type out the lyrics. But we can
@@ -95,4 +98,4 @@ const PasteLyrics: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default PasteLyrics;
+export default convertToTutorialComponent(PasteLyrics, title);

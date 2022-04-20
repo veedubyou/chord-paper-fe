@@ -6,6 +6,9 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { LineBreak, LyricsTypography } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Split Lines";
 
 const SplitLine: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({
@@ -62,7 +65,7 @@ const SplitLine: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Splitting Lines</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 Similarly, we can split lines that may be too long for our chart
@@ -90,4 +93,4 @@ const SplitLine: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default SplitLine;
+export default convertToTutorialComponent(SplitLine, title);
