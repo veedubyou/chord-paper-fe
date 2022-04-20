@@ -75,12 +75,6 @@ const SplitLine: React.FC<{}> = (): JSX.Element => {
             <Typography>(CTRL+Enter : Windows | CMD+Enter : Mac)</Typography>
             <LineBreak />
             <Typography>
-                Right now, chords won't move to the subsequent line - only
-                lyrics will. This can be worked around by dragging and dropping
-                chords after until the feature is cleaned up.
-            </Typography>
-            <LineBreak />
-            <Typography>
                 Let's break the one long line of lyrics up, so that it looks
                 like:
             </Typography>
