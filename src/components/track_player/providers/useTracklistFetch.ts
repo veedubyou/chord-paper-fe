@@ -1,9 +1,10 @@
-import { Either, isLeft } from "fp-ts/lib/Either";
+import { isLeft } from "fp-ts/lib/Either";
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import {
+    BackendResult,
     getTrackList,
-    updateTrackList,
+    updateTrackList
 } from "../../../common/backend/requests";
 import { TrackList } from "../../../common/ChordModel/tracks/TrackList";
 import { FetchState } from "../../../common/fetch";
@@ -47,7 +48,7 @@ export const useTracklistFetch = (
         refreshDebounceThreshold
     );
 
-    const handleFetchedTracklist = (fetchResult: Either<Error, unknown>) => {
+    const handleFetchedTracklist = (fetchResult: BackendResult) => {
         if (isLeft(fetchResult)) {
             setFetchState({ state: "error", error: fetchResult.left });
             return;

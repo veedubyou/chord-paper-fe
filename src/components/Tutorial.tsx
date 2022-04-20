@@ -20,7 +20,7 @@ import Starting from "./tutorial/Start";
 import Labels from "./tutorial/Labels";
 import PlayMode from "./tutorial/PlayMode";
 import SplitLine from "./tutorial/SplitLine";
-import Saving from "./tutorial/Saving";
+import Login from "./tutorial/Login";
 import RemoveMultipleLines from "./tutorial/RemoveMultipleLines";
 import TrackPlayer from "./tutorial/TrackPlayer";
 import TimeLabels from "./tutorial/TimeLabels";
@@ -128,9 +128,9 @@ const allExercises: ExerciseEntry[] = [
         component: PlayMode,
     },
     {
-        title: "Saving and Loading",
-        route: "/learn/saving",
-        component: Saving,
+        title: "Logging In",
+        route: "/learn/login",
+        component: Login,
     },
     {
         title: "Track Player",

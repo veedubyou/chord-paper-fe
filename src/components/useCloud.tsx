@@ -3,7 +3,7 @@ import isOnline from "is-online";
 import { useSnackbar } from "notistack";
 import React, { useCallback, useEffect, useRef } from "react";
 import { Prompt, useHistory } from "react-router";
-import { useErrorMessage } from "../common/backend/errors";
+import { RequestError, useErrorSnackbar } from "../common/backend/errors";
 import { updateSong } from "../common/backend/requests";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { SongIDModePath } from "../common/paths";
@@ -37,7 +37,7 @@ export const useCloud = (): [
         songDispatch: React.Dispatch<ChordSongAction>
     ): JSX.Element => {
         const user: User | null = React.useContext(UserContext);
-        const showError = useErrorMessage();
+        const showError = useErrorSnackbar();
         const { enqueueSnackbar } = useSnackbar();
         const history = useHistory();
 
@@ -53,7 +53,7 @@ export const useCloud = (): [
         );
 
         useEffect(() => {
-            const handleError = async (error: Error | string) => {
+            const handleError = async (error: RequestError | string) => {
                 if (typeof error === "string") {
                     enqueueSnackbar(error, { variant: "error" });
                 } else {

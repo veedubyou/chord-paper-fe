@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/styles";
 import React, { useEffect } from "react";
 import ErrorImg from "../../assets/img/error.jpeg";
-import { useErrorMessage } from "../../common/backend/errors";
+import { useErrorSnackbar } from "../../common/backend/errors";
 
 const useErrorStyles = makeStyles({
     root: {
@@ -17,7 +17,7 @@ const ErrorImage: React.FC<ErrorImageProps> = (
     props: ErrorImageProps
 ): JSX.Element => {
     const errorStyles = useErrorStyles();
-    const showError = useErrorMessage();
+    const showError = useErrorSnackbar();
 
     useEffect(() => {
         showError(props.error);

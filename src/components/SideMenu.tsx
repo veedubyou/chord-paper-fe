@@ -85,7 +85,7 @@ const useFillerStyle = makeStyles({
 });
 
 interface SideMenuProps {
-    onUserChanged: (user: User) => void;
+    onUserChanged: (user: User | null) => void;
 }
 
 const SideMenu: React.FC<SideMenuProps> = (

@@ -2,6 +2,10 @@ import { Either, left, right } from "fp-ts/lib/Either";
 import ky from "ky";
 import { ChordSong } from "../ChordModel/ChordSong";
 import { TrackList } from "../ChordModel/tracks/TrackList";
+import { parseRequestError, RequestError } from "./errors";
+
+export type ResponseJSON = unknown;
+export type BackendResult = Either<RequestError, ResponseJSON>;
 
 const backendHost = ((): string => {
     const localURL = "http://localhost:5000";
@@ -22,35 +26,35 @@ const backendHost = ((): string => {
     return backendURL;
 })();
 
-export const login = async (
-    authToken: string
-): Promise<Either<Error, unknown>> => {
-    let parsed: unknown;
+const authHeader = (authToken: string) => {
+    return {
+        headers: { Authorization: "Bearer " + authToken },
+    };
+};
+
+export const login = async (authToken: string): Promise<BackendResult> => {
+    let parsed: ResponseJSON;
 
     try {
         parsed = await ky
-            .post(`${backendHost}/login`, {
-                headers: {
-                    Authorization: "Bearer " + authToken,
-                },
-            })
+            .post(`${backendHost}/login`, authHeader(authToken))
             .json();
     } catch (e) {
-        return left(e);
+        const parsedError: RequestError = await parseRequestError(e);
+        return left(parsedError);
     }
 
     return right(parsed);
 };
 
-export const getSong = async (
-    songID: string
-): Promise<Either<Error, unknown>> => {
-    let parsed: unknown;
+export const getSong = async (songID: string): Promise<BackendResult> => {
+    let parsed: ResponseJSON;
 
     try {
         parsed = await ky.get(`${backendHost}/songs/${songID}`).json();
     } catch (e) {
-        return left(e);
+        const parsedError: RequestError = await parseRequestError(e);
+        return left(parsedError);
     }
 
     return right(parsed);
@@ -58,15 +62,16 @@ export const getSong = async (
 
 export const getTrackList = async (
     songID: string
-): Promise<Either<Error, unknown>> => {
-    let parsed: unknown;
+): Promise<BackendResult> => {
+    let parsed: ResponseJSON;
 
     try {
         parsed = await ky
             .get(`${backendHost}/songs/${songID}/tracklist`, { timeout: false })
             .json();
     } catch (e) {
-        return left(e);
+        const parsedError: RequestError = await parseRequestError(e);
+        return left(parsedError);
     }
 
     return right(parsed);
@@ -75,19 +80,16 @@ export const getTrackList = async (
 export const getSongsForUser = async (
     userID: string,
     authToken: string
-): Promise<Either<Error, unknown>> => {
-    let parsed: unknown;
+): Promise<BackendResult> => {
+    let parsed: ResponseJSON;
 
     try {
         parsed = await ky
-            .get(`${backendHost}/users/${userID}/songs`, {
-                headers: {
-                    Authorization: "Bearer " + authToken,
-                },
-            })
+            .get(`${backendHost}/users/${userID}/songs`, authHeader(authToken))
             .json();
     } catch (e) {
-        return left(e);
+        const parsedError: RequestError = await parseRequestError(e);
+        return left(parsedError);
     }
 
     return right(parsed);
@@ -96,20 +98,19 @@ export const getSongsForUser = async (
 export const createSong = async (
     song: ChordSong,
     authToken: string
-): Promise<Either<Error, unknown>> => {
-    let parsed: unknown;
+): Promise<BackendResult> => {
+    let parsed: ResponseJSON;
 
     try {
         parsed = await ky
             .post(`${backendHost}/songs`, {
                 json: song,
-                headers: {
-                    Authorization: "Bearer " + authToken,
-                },
+                ...authHeader(authToken),
             })
             .json();
     } catch (e) {
-        return left(e);
+        const parsedError: RequestError = await parseRequestError(e);
+        return left(parsedError);
     }
 
     return right(parsed);
@@ -118,26 +119,25 @@ export const createSong = async (
 export const updateSong = async (
     song: ChordSong,
     authToken: string
-): Promise<Either<Error, unknown>> => {
+): Promise<BackendResult> => {
     if (song.isUnsaved()) {
         return left(
-            new Error("A song that hasn't been created can't be updated")
+            left(new Error("A song that hasn't been created can't be updated"))
         );
     }
 
-    let parsed: unknown;
+    let parsed: ResponseJSON;
 
     try {
         parsed = await ky
             .put(`${backendHost}/songs/${song.id}`, {
                 json: song,
-                headers: {
-                    Authorization: "Bearer " + authToken,
-                },
+                ...authHeader(authToken),
             })
             .json();
     } catch (e) {
-        return left(e);
+        const parsedError: RequestError = await parseRequestError(e);
+        return left(parsedError);
     }
 
     return right(parsed);
@@ -146,21 +146,21 @@ export const updateSong = async (
 export const deleteSong = async (
     song: ChordSong,
     authToken: string
-): Promise<Either<Error, true>> => {
+): Promise<Either<RequestError, true>> => {
     if (song.isUnsaved()) {
         return left(
-            new Error("A song that hasn't been created can't be deleted")
+            left(new Error("A song that hasn't been created can't be deleted"))
         );
     }
 
     try {
-        await ky.delete(`${backendHost}/songs/${song.id}`, {
-            headers: {
-                Authorization: "Bearer " + authToken,
-            },
-        });
+        await ky.delete(
+            `${backendHost}/songs/${song.id}`,
+            authHeader(authToken)
+        );
     } catch (e) {
-        return left(e);
+        const parsedError: RequestError = await parseRequestError(e);
+        return left(parsedError);
     }
 
     return right(true);
@@ -169,24 +169,23 @@ export const deleteSong = async (
 export const updateTrackList = async (
     tracklist: TrackList,
     authToken: string
-): Promise<Either<Error, unknown>> => {
+): Promise<BackendResult> => {
     if (tracklist.song_id === "") {
-        return left(new Error("No song ID on the tracklist"));
+        return left(left(new Error("No song ID on the tracklist")));
     }
 
-    let parsed: unknown;
+    let parsed: ResponseJSON;
 
     try {
         parsed = await ky
             .put(`${backendHost}/songs/${tracklist.song_id}/tracklist`, {
                 json: tracklist,
-                headers: {
-                    Authorization: "Bearer " + authToken,
-                },
+                ...authHeader(authToken),
             })
             .json();
     } catch (e) {
-        return left(e);
+        const parsedError: RequestError = await parseRequestError(e);
+        return left(parsedError);
     }
 
     return right(parsed);

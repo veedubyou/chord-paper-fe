@@ -6,23 +6,24 @@ interface LoginResponse {
 }
 
 export class User {
-    private googleUser: gapi.auth2.CurrentUser;
-    name: string | null;
+    private currentGoogleUser: gapi.auth2.CurrentUser;
+    name: string;
     userID: string;
     authToken: string;
 
     constructor(
-        googleUser: gapi.auth2.CurrentUser,
+        currentGoogleUser: gapi.auth2.CurrentUser,
         userID: string,
-        name: string | null
     ) {
-        this.googleUser = googleUser;
+        this.currentGoogleUser = currentGoogleUser;
         this.userID = userID;
-        this.name = name;
 
-        this.authToken = googleUser.get().getAuthResponse().id_token;
+        const googleUser: gapi.auth2.GoogleUser = currentGoogleUser.get();
 
-        this.googleUser.listen(() => {
+        this.authToken = googleUser.getAuthResponse().id_token;
+        this.name = googleUser.getBasicProfile().getName();
+
+        this.currentGoogleUser.listen(() => {
             this.refreshAuthToken.call(this);
         });
     }
@@ -32,7 +33,7 @@ export class User {
     }
 
     private getNewAuthToken(): string {
-        const user = this.googleUser.get();
+        const user = this.currentGoogleUser.get();
         return user.getAuthResponse().id_token;
     }
 }
@@ -47,7 +48,7 @@ export const deserializeUser = (
         return null;
     }
 
-    return new User(googleUser, response.id, response.name);
+    return new User(googleUser, response.id);
 };
 
 const validateResponse = (response: unknown): response is LoginResponse => {
