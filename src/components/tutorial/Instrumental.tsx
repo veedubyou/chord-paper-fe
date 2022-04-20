@@ -6,6 +6,9 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { ChordTypography, LineBreak, LyricsTypography } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Instrumental Sections";
 
 const Instrumental: React.FC<{}> = (): JSX.Element => {
     const tabExample = new ChordSong({
@@ -36,7 +39,7 @@ const Instrumental: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Instrumental Sections</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 In addition to putting chords over lyrics, you can also put them
@@ -82,4 +85,4 @@ const Instrumental: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default Instrumental;
+export default convertToTutorialComponent(Instrumental, title);

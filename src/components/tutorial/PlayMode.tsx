@@ -2,11 +2,14 @@ import { Typography } from "@material-ui/core";
 import PlayIcon from "@material-ui/icons/PlayArrow";
 import React from "react";
 import { LineBreak } from "./Common";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Play Mode";
 
 const PlayMode: React.FC<{}> = (): JSX.Element => {
     return (
         <>
-            <Typography variant="h5">Play Mode</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 Play mode is where you focus on playing the song rather than
@@ -33,4 +36,4 @@ const PlayMode: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default PlayMode;
+export default convertToTutorialComponent(PlayMode, title);

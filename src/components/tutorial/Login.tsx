@@ -2,12 +2,19 @@ import { Typography } from "@material-ui/core";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import React from "react";
 import { Link } from "react-router-dom";
+import { getRouteForTutorialComponent } from "../Tutorial";
 import { LineBreak } from "./Common";
+import TrackPlayer from "./TrackPlayer";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Logging In";
 
 const Login: React.FC<{}> = (): JSX.Element => {
+    const trackPlayerRoute = getRouteForTutorialComponent(TrackPlayer);
+
     return (
         <>
-            <Typography variant="h5">Logging In</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 You can save and load your songs if you have logged in. When you
@@ -17,10 +24,9 @@ const Login: React.FC<{}> = (): JSX.Element => {
                 automatically.
             </Typography>
             <LineBreak />
-            {/*TODO: replace hard link with a reference*/}
             <Typography>
                 Having an account also means you can add music tracks to the{" "}
-                <Link to="/learn/track-player">Track Player</Link>.
+                <Link to={trackPlayerRoute}>Track Player</Link>.
             </Typography>
             <LineBreak />
             <Typography>
@@ -41,4 +47,4 @@ const Login: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default Login;
+export default convertToTutorialComponent(Login, title);

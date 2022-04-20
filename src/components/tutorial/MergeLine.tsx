@@ -6,6 +6,9 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { LineBreak } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Merge Lines";
 
 const MergeLine: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({
@@ -52,7 +55,7 @@ const MergeLine: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Merging Lines</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 Sometimes the lyrics that we paste in is not the division we
@@ -69,4 +72,4 @@ const MergeLine: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default MergeLine;
+export default convertToTutorialComponent(MergeLine, title);

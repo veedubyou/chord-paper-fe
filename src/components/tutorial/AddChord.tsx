@@ -6,8 +6,11 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { ChordTypography, LineBreak, LyricsTypography } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
 
-const AddChord: React.FC<{}> = (): JSX.Element => {
+const title = "Add Chords";
+
+const AddChord = (): JSX.Element => {
     const initialSong = new ChordSong({
         lines: [
             new ChordLine({
@@ -40,7 +43,7 @@ const AddChord: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Adding Chords</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 Add a chord by hovering above a word, and clicking the outlined
@@ -56,4 +59,4 @@ const AddChord: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default AddChord;
+export default convertToTutorialComponent(AddChord, title);

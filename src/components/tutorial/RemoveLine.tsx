@@ -8,6 +8,9 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { LineBreak } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Remove Lines";
 
 const BackspaceIcon = withStyles({
     root: {
@@ -62,7 +65,7 @@ const RemoveLine: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Removing Lines</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 Similarly, you can remove a line by hovering over the line, and
@@ -76,4 +79,4 @@ const RemoveLine: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default RemoveLine;
+export default convertToTutorialComponent(RemoveLine, title);

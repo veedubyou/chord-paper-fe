@@ -9,6 +9,12 @@ import { sectionLabelStyle } from "../display/SectionLabel";
 import PlayerTimeProvider, { PlayerTimeContext } from "../PlayerTimeContext";
 import { LineBreak } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+import { getRouteForTutorialComponent } from "../Tutorial";
+import TrackPlayer from "./TrackPlayer";
+import { Link } from "react-router-dom";
+
+const title = "Labels with Timestamp";
 
 const LabelTypography = withStyles(sectionLabelStyle)(Typography);
 
@@ -86,9 +92,11 @@ const TimeLabels: React.FC<{}> = (): JSX.Element => {
         ],
     });
 
+    const trackPlayerRoute = getRouteForTutorialComponent(TrackPlayer);
+
     return (
         <>
-            <Typography variant="h5">Labels with Timestamp</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 After creating a label, it's possible to annotate each section
@@ -103,15 +111,16 @@ const TimeLabels: React.FC<{}> = (): JSX.Element => {
             </Typography>
             <LineBreak />
             <Typography>
-                Alternatively, you can set the time to the current time in the
-                track player (see the Track Player tutorial) by clicking the{" "}
+                Alternatively, you can set the time to the current time in the{" "}
+                <Link to={trackPlayerRoute}>track player</Link> by clicking the{" "}
                 <SlowMotionVideoIcon /> button.
             </Typography>
             <LineBreak />
             <Typography>
                 In this example, pretend that the current verse starts at time
                 1:23 and that is the current time in the track player. Let's set
-                the time of the label to 1:23.
+                the time of the label to 1:23 by clicking the{" "}
+                <SlowMotionVideoIcon /> button.
             </Typography>
             <LineBreak />
             <Typography>Try it!</Typography>
@@ -126,4 +135,4 @@ const TimeLabels: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default TimeLabels;
+export default convertToTutorialComponent(TimeLabels, title);

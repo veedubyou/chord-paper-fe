@@ -6,6 +6,9 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { LineBreak } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Remove Multiple Lines";
 
 const RemoveMultipleLines: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({
@@ -82,7 +85,7 @@ const RemoveMultipleLines: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Removing Multiple Lines</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 You can remove multiple lines at once by dragging and selecting
@@ -96,4 +99,4 @@ const RemoveMultipleLines: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default RemoveMultipleLines;
+export default convertToTutorialComponent(RemoveMultipleLines, title);

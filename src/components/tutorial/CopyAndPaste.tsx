@@ -6,6 +6,9 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { LineBreak, LyricsTypography } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Copy and Paste Lines";
 
 const CopyAndPaste: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({
@@ -232,7 +235,7 @@ const CopyAndPaste: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Copying and Pasting Lines</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 Sometimes you want to just repeat what's on the page without
@@ -284,4 +287,4 @@ const CopyAndPaste: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default CopyAndPaste;
+export default convertToTutorialComponent(CopyAndPaste, title);

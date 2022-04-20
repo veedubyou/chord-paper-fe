@@ -6,6 +6,9 @@ import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { LineBreak, LyricsTypography, ChordTypography } from "./Common";
 import { Lyric } from "../../common/ChordModel/Lyric";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Chord Positioning"
 
 const ChordPositioning: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({
@@ -71,7 +74,7 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Chord Positioning</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 Sometimes you want to emphasize a chord landing on a specific
@@ -112,4 +115,4 @@ const ChordPositioning: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default ChordPositioning;
+export default convertToTutorialComponent(ChordPositioning, title);

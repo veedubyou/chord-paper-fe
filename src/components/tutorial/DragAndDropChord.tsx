@@ -6,6 +6,9 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { ChordTypography, LineBreak, LyricsTypography } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Drag and Drop Chords";
 
 const DragAndDropChord: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({
@@ -44,7 +47,7 @@ const DragAndDropChord: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Dragging and Dropping Chords</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 It's also possible to drag and drop chords onto different parts
@@ -72,4 +75,4 @@ const DragAndDropChord: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default DragAndDropChord;
+export default convertToTutorialComponent(DragAndDropChord, title);

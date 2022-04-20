@@ -6,6 +6,9 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { ChordTypography, LineBreak, LyricsTypography } from "./Common";
 import Playground from "./Playground";
+import { convertToTutorialComponent } from "./TutorialComponent";
+
+const title = "Edit Chords";
 
 const EditChord: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({
@@ -44,7 +47,7 @@ const EditChord: React.FC<{}> = (): JSX.Element => {
 
     return (
         <>
-            <Typography variant="h5">Editing Chords</Typography>
+            <Typography variant="h5">{title}</Typography>
             <LineBreak />
             <Typography>
                 Click on a chord to change it, then press enter to commit your
@@ -60,4 +63,4 @@ const EditChord: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default EditChord;
+export default convertToTutorialComponent(EditChord, title);
