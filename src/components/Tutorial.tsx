@@ -5,7 +5,7 @@ import React from "react";
 import { Link, Route } from "react-router-dom";
 import ErrorPage from "./display/ErrorPage";
 import AddChord from "./tutorial/AddChord";
-import AddLineFC from "./tutorial/AddLine";
+import AddLine from "./tutorial/AddLine";
 import ChordPositioning from "./tutorial/ChordPositioning";
 import CopyAndPaste from "./tutorial/CopyAndPaste";
 import DragAndDropChord from "./tutorial/DragAndDropChord";
@@ -71,7 +71,7 @@ const allExercises: ExerciseEntry[] = [
     },
     {
         route: "/learn/add-line",
-        component: AddLineFC,
+        component: AddLine,
     },
     {
         route: "/learn/remove-line",
