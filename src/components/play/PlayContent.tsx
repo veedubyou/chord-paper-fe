@@ -9,6 +9,7 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { useRegisterKeyListener } from "../GlobalKeyListener";
 import { isScrollBackwardsKey, isScrollForwardsKey } from "./keyMap";
 import PlayLine from "./PlayLine";
+import { useThrottledCallback } from "use-debounce/lib";
 
 export interface DisplaySettings {
     numberOfColumnsPerPage: number;
@@ -79,8 +80,25 @@ const PlayContent: React.FC<PlayContentProps> = (
         ]
     );
 
-    const scrollForward = useCallback(() => scrollPage(true), [scrollPage]);
-    const scrollBackward = useCallback(() => scrollPage(false), [scrollPage]);
+    const throttleTimeInterval = 400;
+
+    const throttledScrollPage = useThrottledCallback(
+        scrollPage,
+        throttleTimeInterval,
+        {
+            leading: true,
+            trailing: false,
+        }
+    );
+
+    const scrollForward = useCallback(
+        () => throttledScrollPage(true),
+        [throttledScrollPage]
+    );
+    const scrollBackward = useCallback(
+        () => throttledScrollPage(false),
+        [throttledScrollPage]
+    );
 
     const handleClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -207,7 +225,6 @@ const PlayContent: React.FC<PlayContentProps> = (
         };
 
         addKeyListener(handleKey);
-
         return () => removeKeyListener(handleKey);
     }, [scrollBackward, scrollForward, addKeyListener, removeKeyListener]);
 
