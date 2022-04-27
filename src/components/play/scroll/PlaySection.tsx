@@ -7,9 +7,11 @@ import PlayLine from "../common/PlayLine";
 
 export type SectionedChordLines = ChordLine[];
 
+export type Visibility = "in-view" | "not-in-view" | "at-top";
+
 export interface ScrollableElement {
     scrollIntoView: PlainFn;
-    getInView: () => "in-view" | "not-in-view";
+    getInView: () => Visibility;
 }
 
 interface PlaySectionProps {
@@ -25,7 +27,7 @@ const PlaySection: React.FC<PlaySectionProps> = (
     const scrollIntoView = () =>
         ref.current?.scrollIntoView({ behavior: "smooth" });
 
-    const getInView = (): "in-view" | "not-in-view" => {
+    const getInView = (): Visibility => {
         const currentElement = ref.current;
         if (currentElement === undefined) {
             return "not-in-view";
@@ -39,6 +41,10 @@ const PlaySection: React.FC<PlaySectionProps> = (
         const windowHeight = document.documentElement.clientHeight;
         if (clientRect.top > windowHeight) {
             return "not-in-view";
+        }
+
+        if (clientRect.top <= 10 && clientRect.top >= -10) {
+            return "at-top";
         }
 
         return "in-view";
