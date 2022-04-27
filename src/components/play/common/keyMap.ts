@@ -1,13 +1,22 @@
-const scrollBackwardsKeys: string[] = [
+const isControlCommand = (event: KeyboardEvent): boolean => {
+    return event.ctrlKey || event.metaKey;
+};
+
+const navigateBackwardsKeys: string[] = [
     "ArrowUp",
     "ArrowLeft",
     "Backspace",
     "ShiftLeft",
+    "PageUp",
 ];
 
-export const isScrollBackwardsKey = (code: string): boolean => {
-    for (let backwardsKey of scrollBackwardsKeys) {
-        if (backwardsKey === code) {
+export const isNavigateBackwardsKey = (event: KeyboardEvent): boolean => {
+    if (isControlCommand(event)) {
+        return false;
+    }
+
+    for (let backwardsKey of navigateBackwardsKeys) {
+        if (backwardsKey === event.code) {
             return true;
         }
     }
@@ -15,7 +24,7 @@ export const isScrollBackwardsKey = (code: string): boolean => {
     return false;
 };
 
-export const scrollForwardKeys: string[] = [
+const navigateForwardKeys: string[] = [
     "KeyA",
     "KeyB",
     "KeyC",
@@ -56,6 +65,7 @@ export const scrollForwardKeys: string[] = [
     "Enter",
     "ArrowDown",
     "ArrowRight",
+    "PageDown",
     "Comma",
     "Period",
     "Slash",
@@ -70,9 +80,13 @@ export const scrollForwardKeys: string[] = [
     "BracketRight",
 ];
 
-export const isScrollForwardsKey = (code: string): boolean => {
-    for (let forwardsKey of scrollForwardKeys) {
-        if (forwardsKey === code) {
+export const isNavigateForwardsKey = (event: KeyboardEvent): boolean => {
+    if (isControlCommand(event)) {
+        return false;
+    }
+
+    for (let forwardsKey of navigateForwardKeys) {
+        if (forwardsKey === event.code) {
             return true;
         }
     }

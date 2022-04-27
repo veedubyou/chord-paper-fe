@@ -1,13 +1,13 @@
 import { Box, Typography, Theme } from "@material-ui/core";
 import React from "react";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
-import { ChordLine } from "../../common/ChordModel/ChordLine";
+import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
+import { ChordLine } from "../../../common/ChordModel/ChordLine";
 import PlayBlock from "./PlayBlock";
 import { withStyles } from "@material-ui/styles";
 import {
     sectionLabelStyle,
     sectionTypographyVariant,
-} from "../display/SectionLabel";
+} from "../../display/SectionLabel";
 
 const LabelTypography = withStyles(sectionLabelStyle)(Typography);
 const TopMarginBox = withStyles((theme: Theme) => ({

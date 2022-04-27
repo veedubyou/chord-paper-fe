@@ -41,7 +41,7 @@ const SongRouter: MultiFC<SongRouterProps> = (
             />
         </Route>,
         <Route key={playPath.URL()} path={playPath.URL()}>
-            <Play song={props.song} onEdit={switchToEdit} />
+            <Play song={props.song} onEditMode={switchToEdit} />
         </Route>,
     ];
 };

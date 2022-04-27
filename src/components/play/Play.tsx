@@ -1,4 +1,3 @@
-import { createMuiTheme, Theme, ThemeProvider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -9,8 +8,8 @@ import TrackListProvider, {
     TrackListChangeHandler,
     TrackListLoad,
 } from "../track_player/providers/TrackListProvider";
-import PlayContent, { DisplaySettings } from "./PlayContent";
-import PlayMenu from "./PlayMenu";
+import PagePlayView from "./page/PagePlayView";
+import ScrollPlayView from "./scroll/ScrollPlayView";
 
 const useTransparentStyle = makeStyles({
     root: {
@@ -20,29 +19,41 @@ const useTransparentStyle = makeStyles({
 
 interface PlayProps {
     song: ChordSong;
-    onEdit?: PlainFn;
+    onEditMode?: PlainFn;
 }
 
-const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
-    const [displaySettings, setDisplaySettings] = useState<DisplaySettings>({
-        numberOfColumnsPerPage: 2,
-        fontSize: 14,
-        columnMargin: 20,
-        scrollType: "column",
-    });
+type ViewTypes = "page" | "scroll";
 
+const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
+    const [view, setView] = useState<ViewTypes>("page");
     const transparentStyle = useTransparentStyle();
 
-    const playTheme = (theme: Theme): Theme => {
-        return createMuiTheme({
-            ...theme,
-            typography: {
-                fontFamily: theme.typography.fontFamily,
-                fontWeightRegular: theme.typography.fontWeightRegular,
-                fontSize: displaySettings.fontSize,
-            },
-        });
-    };
+    const switchToScrollView = () => setView("scroll");
+    const switchToPageView = () => setView("page");
+
+    const playView: React.ReactElement = (() => {
+        switch (view) {
+            case "page": {
+                return (
+                    <PagePlayView
+                        song={props.song}
+                        onScrollView={switchToScrollView}
+                        onEditMode={props.onEditMode}
+                    />
+                );
+            }
+
+            case "scroll": {
+                return (
+                    <ScrollPlayView
+                        song={props.song}
+                        onPageView={switchToPageView}
+                        onEditMode={props.onEditMode}
+                    />
+                );
+            }
+        }
+    })();
 
     const trackPlayer: React.ReactNode = (() => {
         if (props.song.isUnsaved()) {
@@ -77,17 +88,7 @@ const Play: React.FC<PlayProps> = (props: PlayProps): JSX.Element => {
                         : "New Song"}
                 </title>
             </Helmet>
-            <PlayMenu
-                displaySettings={displaySettings}
-                onDisplaySettingsChange={setDisplaySettings}
-                onExit={props.onEdit}
-            />
-            <ThemeProvider theme={playTheme}>
-                <PlayContent
-                    song={props.song}
-                    displaySettings={displaySettings}
-                />
-            </ThemeProvider>
+            {playView}
             {trackPlayer}
         </>
     );
