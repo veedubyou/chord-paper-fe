@@ -19,9 +19,9 @@ import {
 import { withStyles } from "@material-ui/styles";
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import React, { ChangeEvent, useState } from "react";
-import { PlainFn } from "../../common/PlainFn";
-import { isWhitespace } from "../../common/Whitespace";
-import { DisplaySettings } from "./PlayContent";
+import { PlainFn } from "../../../common/PlainFn";
+import { isWhitespace } from "../../../common/Whitespace";
+import { PageDisplaySettings } from "./PagePlayContent";
 
 const Box = withStyles((theme: Theme) => ({
     root: {
@@ -47,10 +47,10 @@ interface DialogInput {
     numberOfColumns: string;
     fontSize: string;
     columnMargin: string;
-    scrollType: DisplaySettings["scrollType"];
+    flipType: PageDisplaySettings["flipType"];
 }
 
-type TextInputFieldKeys = keyof Omit<DialogInput, "scrollType">;
+type TextInputFieldKeys = keyof Omit<DialogInput, "flipType">;
 
 interface InputFieldSpecification {
     label: string;
@@ -62,8 +62,8 @@ interface InputFieldSpecification {
 interface DisplaySettingsDialogProps {
     open: boolean;
     onClose?: PlainFn;
-    defaultSettings: DisplaySettings;
-    onSubmit?: (displaySettings: DisplaySettings) => void;
+    defaultSettings: PageDisplaySettings;
+    onSubmit?: (displaySettings: PageDisplaySettings) => void;
 }
 
 const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
@@ -73,7 +73,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
         numberOfColumns: props.defaultSettings.numberOfColumnsPerPage.toString(),
         fontSize: props.defaultSettings.fontSize.toString(),
         columnMargin: props.defaultSettings.columnMargin.toString(),
-        scrollType: props.defaultSettings.scrollType,
+        flipType: props.defaultSettings.flipType,
     });
 
     const validateNumber = (strValue: string): Either<Error, number> => {
@@ -110,7 +110,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
         return right(convertedInteger);
     };
 
-    const validatedSettings = (): Either<Error, DisplaySettings> => {
+    const validatedSettings = (): Either<Error, PageDisplaySettings> => {
         const numberOfColumnsResults = validateInt(settings.numberOfColumns);
         const fontSizeResults = validateNumber(settings.fontSize);
         const columnMarginResults = validateNumber(settings.columnMargin);
@@ -127,11 +127,11 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
             return columnMarginResults;
         }
 
-        const displaySettings: DisplaySettings = {
+        const displaySettings: PageDisplaySettings = {
             numberOfColumnsPerPage: numberOfColumnsResults.right,
             fontSize: fontSizeResults.right,
             columnMargin: columnMarginResults.right,
-            scrollType: settings.scrollType,
+            flipType: settings.flipType,
         };
 
         return right(displaySettings);
@@ -152,7 +152,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
             numberOfColumnsPerPage: settings.right.numberOfColumnsPerPage,
             fontSize: settings.right.fontSize,
             columnMargin: settings.right.columnMargin,
-            scrollType: settings.right.scrollType,
+            flipType: settings.right.flipType,
         });
     };
 
@@ -222,38 +222,38 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
         );
     };
 
-    const scrollTypeToggle = (() => {
-        const handleScrollTypeChange = (
+    const flipTypeToggle = (() => {
+        const handleFlipTypeChange = (
             _event: React.ChangeEvent<HTMLInputElement>,
             value: string
         ) => {
             if (value !== "page" && value !== "column") {
                 console.error(
-                    "Display dialog - scroll type: Received an invalid radio value"
+                    "Display dialog - flip type: Received an invalid radio value"
                 );
                 return;
             }
 
             setSettings({
                 ...settings,
-                scrollType: value,
+                flipType: value,
             });
         };
 
         return (
             <Box>
                 <FormControl component="fieldset">
-                    <FormLabel>scroll type</FormLabel>
+                    <FormLabel>flip type</FormLabel>
                     <RadioGroup
-                        value={settings.scrollType}
-                        onChange={handleScrollTypeChange}
+                        value={settings.flipType}
+                        onChange={handleFlipTypeChange}
                     >
                         <FormControlLabel
                             value="column"
                             control={<Radio size="small" />}
                             label={
                                 <RadioLabelTypography>
-                                    scroll by column
+                                    flip column
                                 </RadioLabelTypography>
                             }
                         />
@@ -262,7 +262,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
                             control={<Radio size="small" />}
                             label={
                                 <RadioLabelTypography>
-                                    scroll by page
+                                    flip page
                                 </RadioLabelTypography>
                             }
                         />
@@ -276,7 +276,7 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
         <Dialog open={props.open} onClose={props.onClose}>
             <DialogTitle>Display Settings</DialogTitle>
             <DialogContent>
-                {scrollTypeToggle}
+                {flipTypeToggle}
 
                 {inputSpecs.map((spec: InputFieldSpecification) =>
                     makeInput(spec)

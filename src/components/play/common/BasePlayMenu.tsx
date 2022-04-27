@@ -2,21 +2,16 @@ import { Theme } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import UnstyledMoreVertIcon from "@material-ui/icons/MoreVert";
-import TuneIcon from "@material-ui/icons/Tune";
 import {
     SpeedDial as UnstyledSpeedDial,
-    SpeedDialAction,
+    SpeedDialAction
 } from "@material-ui/lab";
 import { withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
-import { PlainFn } from "../../common/PlainFn";
-import DisplaySettingsDialog from "./DisplaySettingsDialog";
-import { DisplaySettings } from "./PlayContent";
+import { PlainFn } from "../../../common/PlainFn";
 
-interface PlayMenuProps {
-    displaySettings: DisplaySettings;
-    onDisplaySettingsChange?: (displaySettings: DisplaySettings) => void;
-
+interface BasePlayMenuProps {
+    children: React.ReactElement | React.ReactElement[];
     onExit?: PlainFn;
 }
 
@@ -38,11 +33,10 @@ const SpeedDial = withStyles((theme: Theme) => ({
     },
 }))(UnstyledSpeedDial);
 
-const PlayMenu: React.FC<PlayMenuProps> = (
-    props: PlayMenuProps
+const BasePlayMenu: React.FC<BasePlayMenuProps> = (
+    props: BasePlayMenuProps
 ): JSX.Element => {
     const [open, setOpen] = useState(false);
-    const [displaySettingsOpen, setDisplaySettingsOpen] = useState(false);
 
     const openMenu = () => {
         setOpen(true);
@@ -59,23 +53,6 @@ const PlayMenu: React.FC<PlayMenuProps> = (
         event.stopPropagation();
     };
 
-    // returning this instead of shoving it in the same fragment because
-    // returning speed dial in a fragment somehow causes some layout changes
-    if (displaySettingsOpen) {
-        const handleDisplaySettingsChange = (settings: DisplaySettings) => {
-            props.onDisplaySettingsChange?.(settings);
-            setDisplaySettingsOpen(false);
-        };
-
-        return (
-            <DisplaySettingsDialog
-                open
-                onClose={() => setDisplaySettingsOpen(false)}
-                defaultSettings={props.displaySettings}
-                onSubmit={handleDisplaySettingsChange}
-            />
-        );
-    }
 
     return (
         <SpeedDial
@@ -89,11 +66,7 @@ const PlayMenu: React.FC<PlayMenuProps> = (
                 color: "inherit",
             }}
         >
-            <SpeedDialAction
-                icon={<TuneIcon />}
-                tooltipTitle="Display Settings"
-                onMouseDownCapture={() => setDisplaySettingsOpen(true)}
-            />
+            {props.children}
             <SpeedDialAction
                 icon={<ExitToAppIcon />}
                 tooltipTitle="Exit Play Mode"
@@ -103,4 +76,4 @@ const PlayMenu: React.FC<PlayMenuProps> = (
     );
 };
 
-export default PlayMenu;
+export default BasePlayMenu;
