@@ -14,7 +14,7 @@ import ErrorImage from "./display/ErrorImage";
 
 const GreyishBackdrop = withStyles({
     root: {
-        backgroundColor: fade(grey[200], 0.7),
+        backgroundColor: fade(grey[400], 0.5),
     },
 })(Backdrop);
 
