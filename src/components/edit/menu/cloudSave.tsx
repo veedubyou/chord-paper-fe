@@ -46,7 +46,7 @@ export const useCloudCreateSong = () => {
 
         const deserializedSong = deserializeResult.right;
         history.push(
-            songPath.withID(deserializedSong.id).withMode("edit").URL()
+            songPath.withID(deserializedSong.id).withEditMode().URL()
         );
     };
 

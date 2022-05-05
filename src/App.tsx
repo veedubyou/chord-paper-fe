@@ -22,8 +22,8 @@ import {
     aboutPath,
     guitarDemoPath,
     newSongPath,
+    PlaySongPath,
     rootPath,
-    SongIDModePath,
     songPath,
 } from "./common/paths";
 import About from "./components/about/About";
@@ -103,7 +103,7 @@ const AppContent: React.FC<{}> = (): JSX.Element => {
     const withLayout = (
         child: React.ReactElement | React.ReactElement[]
     ): React.ReactElement => {
-        if (SongIDModePath.isPlayMode(location.pathname)) {
+        if (PlaySongPath.isPlayMode(location.pathname)) {
             // no background required on full screen play mode
             // more importantly, don't set the min-height
             return (

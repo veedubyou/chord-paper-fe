@@ -18,8 +18,8 @@ const SongRouter: MultiFC<SongRouterProps> = (
 ): JSX.Element[] => {
     const history = useHistory();
 
-    const editPath = props.path.withMode("edit");
-    const playPath = props.path.withMode("play");
+    const editPath = props.path.withEditMode();
+    const playPath = props.path.withPlayMode();
 
     const switchToEdit = () => {
         history.push(editPath.URL());
@@ -41,7 +41,7 @@ const SongRouter: MultiFC<SongRouterProps> = (
             />
         </Route>,
         <Route key={playPath.URL()} path={playPath.URL()}>
-            <Play song={props.song} onEditMode={switchToEdit} />
+            <Play song={props.song} onEditMode={switchToEdit} path={playPath} />
         </Route>,
     ];
 };

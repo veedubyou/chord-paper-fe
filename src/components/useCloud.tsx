@@ -6,7 +6,7 @@ import { Prompt, useHistory } from "react-router";
 import { RequestError, useErrorSnackbar } from "../common/backend/errors";
 import { updateSong } from "../common/backend/requests";
 import { ChordSong } from "../common/ChordModel/ChordSong";
-import { SongIDModePath } from "../common/paths";
+import { EditSongPath } from "../common/paths";
 import { ChordSongAction } from "./reducer/reducer";
 import { User, UserContext } from "./user/userContext";
 
@@ -128,7 +128,7 @@ export const useCloud = (): [
         const showLeavingPrompt = () => {
             if (
                 shouldSave(song) &&
-                SongIDModePath.isEditMode(history.location.pathname)
+                EditSongPath.isEditMode(history.location.pathname)
             ) {
                 return "This page is asking you to confirm that you want to leave - data you have entered may not be saved.";
             }
