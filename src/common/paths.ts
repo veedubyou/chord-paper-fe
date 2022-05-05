@@ -1,7 +1,6 @@
 // P A T H S
 // by Isayama
 
-type Mode = "edit" | "play";
 const newSongID = "new";
 
 export class RootPath {
@@ -55,8 +54,12 @@ export class SongIDPath {
         return this.id === newSongID;
     }
 
-    withMode(mode: Mode): SongIDModePath {
-        return new SongIDModePath(this.id, mode);
+    withEditMode(): EditSongPath {
+        return new EditSongPath(this.id);
+    }
+
+    withPlayMode(): PlaySongPath {
+        return new PlaySongPath(this.id, "root");
     }
 
     parent(): SongPath {
@@ -65,15 +68,51 @@ export class SongIDPath {
 }
 export const newSongPath = songPath.withNew();
 
-export class SongIDModePath {
+export class EditSongPath {
     private readonly id: string;
-    private readonly mode: Mode;
-    constructor(id: string, mode: Mode) {
+    constructor(id: string) {
+        this.id = id;
+    }
+
+    URL(): string {
+        return `/song/${this.id}/edit`;
+    }
+
+    parent(): SongIDPath {
+        return new SongIDPath(this.id);
+    }
+
+    static isEditMode(path: string): boolean {
+        const result = path.match(/\/song\/.+\/edit/i);
+        return result !== null;
+    }
+}
+
+export class PlaySongPath {
+    private readonly id: string;
+    private readonly mode: "page" | "scroll" | "root";
+
+    constructor(id: string, mode: "page" | "scroll" | "root") {
         this.id = id;
         this.mode = mode;
     }
+
     URL(): string {
-        return `/song/${this.id}/${this.mode}`;
+        const baseURL = `/song/${this.id}/play`;
+
+        if (this.mode === "root") {
+            return baseURL;
+        }
+
+        return `${baseURL}/${this.mode}`;
+    }
+
+    withPageView(): PlaySongPath {
+        return new PlaySongPath(this.id, "page");
+    }
+
+    withScrollView(): PlaySongPath {
+        return new PlaySongPath(this.id, "scroll");
     }
 
     parent(): SongIDPath {
@@ -82,11 +121,6 @@ export class SongIDModePath {
 
     static isPlayMode(path: string): boolean {
         const result = path.match(/\/song\/.+\/play/i);
-        return result !== null;
-    }
-
-    static isEditMode(path: string): boolean {
-        const result = path.match(/\/song\/.+\/edit/i);
         return result !== null;
     }
 }
