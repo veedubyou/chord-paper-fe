@@ -16,14 +16,28 @@ describe("paths", () => {
             describe("with mode", () => {
                 test("edit mode", () => {
                     expect(
-                        new SongPath().withID("id-desu").withMode("edit").URL()
+                        new SongPath().withID("id-desu").withEditMode().URL()
                     ).toEqual("/song/id-desu/edit");
                 });
 
-                test("play mode", () => {
-                    expect(
-                        new SongPath().withID("id-desu").withMode("play").URL()
-                    ).toEqual("/song/id-desu/play");
+                describe("play mode", () => {
+                    test("root of play mode", () => {
+                        expect(
+                            new SongPath().withID("id-desu").withPlayMode().URL()
+                        ).toEqual("/song/id-desu/play");    
+                    })
+
+                    test("page view", () => {
+                        expect(
+                            new SongPath().withID("id-desu").withPlayMode().withPageView().URL()
+                        ).toEqual("/song/id-desu/play/page");
+                    })
+
+                    test("scroll view", () => {
+                        expect(
+                            new SongPath().withID("id-desu").withPlayMode().withScrollView().URL()
+                        ).toEqual("/song/id-desu/play/scroll");
+                    })
                 });
             });
         });
@@ -36,14 +50,28 @@ describe("paths", () => {
             describe("with mode", () => {
                 test("edit mode", () => {
                     expect(
-                        new SongPath().withNew().withMode("edit").URL()
+                        new SongPath().withNew().withEditMode().URL()
                     ).toEqual("/song/new/edit");
                 });
 
-                test("play mode", () => {
-                    expect(
-                        new SongPath().withNew().withMode("play").URL()
-                    ).toEqual("/song/new/play");
+                describe("play mode", () => {
+                    test("root of play mode", () => {
+                        expect(
+                            new SongPath().withNew().withPlayMode().URL()
+                        ).toEqual("/song/new/play");    
+                    })
+
+                    test("page view", () => {
+                        expect(
+                            new SongPath().withNew().withPlayMode().withPageView().URL()
+                        ).toEqual("/song/new/play/page");
+                    })
+
+                    test("scroll view", () => {
+                        expect(
+                            new SongPath().withNew().withPlayMode().withScrollView().URL()
+                        ).toEqual("/song/new/play/scroll");
+                    })
                 });
             });
         });
