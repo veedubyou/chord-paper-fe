@@ -7,10 +7,11 @@ import { MultiFC, transformToFC } from "../../common/FunctionalComponent";
 import { PlaySongPath } from "../../common/paths";
 import { PlainFn } from "../../common/PlainFn";
 import CenteredLayout from "../display/CenteredLayout";
+import LoadingRender from "../loading/LoadingRender";
 import JamStation from "../track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
-    TrackListLoad
+    TrackListLoad,
 } from "../track_player/providers/TrackListProvider";
 import PagePlayView from "./page/PagePlayView";
 import ScrollPlayView from "./scroll/ScrollPlayView";
@@ -62,17 +63,19 @@ const PlayScreen: React.FC<PlayScreenProps> = (
     })();
 
     return (
-        <CenteredLayout>
-            <Helmet>
-                <title>
-                    {props.song.metadata.title !== ""
-                        ? props.song.metadata.title
-                        : "New Song"}
-                </title>
-            </Helmet>
-            {props.children}
-            {trackPlayer}
-        </CenteredLayout>
+        <LoadingRender>
+            <CenteredLayout>
+                <Helmet>
+                    <title>
+                        {props.song.metadata.title !== ""
+                            ? props.song.metadata.title
+                            : "New Song"}
+                    </title>
+                </Helmet>
+                {props.children}
+                {trackPlayer}
+            </CenteredLayout>
+        </LoadingRender>
     );
 };
 

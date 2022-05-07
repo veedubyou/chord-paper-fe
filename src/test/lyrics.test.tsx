@@ -3,7 +3,7 @@ import {
     fireEvent,
     Matcher,
     render,
-    waitForElementToBeRemoved,
+    waitForElementToBeRemoved
 } from "@testing-library/react";
 import { ChordBlock } from "../common/ChordModel/ChordBlock";
 import { ChordLine } from "../common/ChordModel/ChordLine";
@@ -16,7 +16,7 @@ import {
     getExpectChordAndLyric,
     getFindByTestIdChain,
     lyricsInElement,
-    matchLyric,
+    matchLyric
 } from "./matcher";
 import { changeContentEditableText, Keys, pressKey } from "./userEvent";
 
@@ -42,13 +42,13 @@ const getFindAllByTestId = (chordSong: ChordSong) => {
 };
 
 describe("Rendering initial lyrics", () => {
-    test("renders all initial lyric lines", () => {
-        const { getByText } = render(basicChordPaper());
+    test("renders all initial lyric lines", async () => {
+        const { findByText } = render(basicChordPaper());
 
-        lyrics.forEach((lyric: string) => {
-            const lineElement: HTMLElement = getByText(matchLyric(lyric));
+        for (const lyric of lyrics) {
+            const lineElement: HTMLElement = await findByText(matchLyric(lyric));
             expect(lineElement).toBeInTheDocument();
-        });
+        }
     });
 
     test("doesn't render an unspecified lyric line", () => {
