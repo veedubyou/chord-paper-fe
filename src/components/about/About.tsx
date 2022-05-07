@@ -2,6 +2,7 @@ import { Grid, Paper, Theme, Typography } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
 import { inflatingWhitespace } from "../../common/Whitespace";
+import CenteredLayoutWithMenu from "../display/CenteredLayoutWithMenu";
 
 const RootPaper = withStyles((theme: Theme) => ({
     root: {
@@ -62,4 +63,12 @@ const About: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default About;
+const AboutScreen: React.FC<{}> = (): JSX.Element => {
+    return (
+        <CenteredLayoutWithMenu>
+            <About />
+        </CenteredLayoutWithMenu>
+    );
+};
+
+export default AboutScreen;

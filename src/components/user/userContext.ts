@@ -1,4 +1,5 @@
 import React from "react";
+import { noopFn } from "../../common/PlainFn";
 
 interface LoginResponse {
     id: string;
@@ -38,7 +39,9 @@ export class User {
     }
 }
 
+export type SetUserFn = (user: User | null) => void;
 export const UserContext = React.createContext<User | null>(null);
+export const SetUserContext = React.createContext<SetUserFn>(noopFn);
 
 export const deserializeUser = (
     response: unknown,

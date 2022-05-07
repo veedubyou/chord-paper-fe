@@ -13,7 +13,7 @@ import { useHistory } from "react-router-dom";
 import { useErrorSnackbar } from "../../../common/backend/errors";
 import { createSong, deleteSong } from "../../../common/backend/requests";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { newSongPath, songPath } from "../../../common/paths";
+import { SongPath } from "../../../common/paths";
 import { noopFn, PlainFn } from "../../../common/PlainFn";
 import { User } from "../../user/userContext";
 
@@ -45,9 +45,10 @@ export const useCloudCreateSong = () => {
         }
 
         const deserializedSong = deserializeResult.right;
-        history.push(
-            songPath.withID(deserializedSong.id).withEditMode().URL()
-        );
+        const pathWithID = SongPath.root.withID(deserializedSong.id);
+        const editPath = pathWithID.withEditMode();
+
+        history.push(editPath.URL());
     };
 
     return async (song: ChordSong, user: User) => {
@@ -97,7 +98,7 @@ export const useCloudDeleteSongDialog = (
         enqueueSnackbar("Song has been successfully deleted", {
             variant: "success",
         });
-        history.push(newSongPath.URL());
+        history.push(SongPath.newURL());
     };
 
     const deleteDialog = (

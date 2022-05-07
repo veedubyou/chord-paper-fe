@@ -3,8 +3,8 @@ import { Redirect, Route, useHistory } from "react-router-dom";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { MultiFC, transformToFC } from "../common/FunctionalComponent";
 import { SongIDPath } from "../common/paths";
-import ChordPaper from "./edit/ChordPaper";
-import Play from "./play/Play";
+import ChordPaperScreen from "./edit/ChordPaper";
+import PlayRoutes from "./play/Play";
 import { ChordSongAction } from "./reducer/reducer";
 
 interface SongRouterProps {
@@ -34,14 +34,18 @@ const SongRouter: MultiFC<SongRouterProps> = (
             <Redirect to={editPath.URL()} />,
         </Route>,
         <Route key={editPath.URL()} path={editPath.URL()}>
-            <ChordPaper
+            <ChordPaperScreen
                 song={props.song}
                 songDispatch={props.songDispatch}
                 onPlay={switchToPlay}
             />
         </Route>,
         <Route key={playPath.URL()} path={playPath.URL()}>
-            <Play song={props.song} onEditMode={switchToEdit} path={playPath} />
+            <PlayRoutes
+                song={props.song}
+                onEditMode={switchToEdit}
+                path={playPath}
+            />
         </Route>,
     ];
 };

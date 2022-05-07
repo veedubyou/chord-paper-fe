@@ -2,11 +2,13 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 import { SnackbarProvider } from "notistack";
 import React from "react";
 import { HelmetProvider } from "react-helmet-async";
+import { HashRouter } from "react-router-dom";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { Lyric } from "../common/ChordModel/Lyric";
+import { noopFn } from "../common/PlainFn";
 import ChordPaper from "../components/edit/ChordPaper";
 import DragAndDrop from "../components/edit/DragAndDrop";
-import { UserContext } from "../components/user/userContext";
+import { SetUserContext, UserContext } from "../components/user/userContext";
 import { withSongContext } from "../components/WithSongContext";
 
 const Song = withSongContext(ChordPaper);
@@ -14,13 +16,17 @@ const Song = withSongContext(ChordPaper);
 export const withProviders = (children: React.ReactNode) => {
     return (
         <UserContext.Provider value={null}>
-            <HelmetProvider>
-                <ThemeProvider theme={createMuiTheme()}>
-                    <DragAndDrop>
-                        <SnackbarProvider>{children}</SnackbarProvider>
-                    </DragAndDrop>
-                </ThemeProvider>
-            </HelmetProvider>
+            <SetUserContext.Provider value={noopFn}>
+                <HelmetProvider>
+                    <ThemeProvider theme={createMuiTheme()}>
+                        <HashRouter>
+                            <DragAndDrop>
+                                <SnackbarProvider>{children}</SnackbarProvider>
+                            </DragAndDrop>
+                        </HashRouter>
+                    </ThemeProvider>
+                </HelmetProvider>
+            </SetUserContext.Provider>
         </UserContext.Provider>
     );
 };

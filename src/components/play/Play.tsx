@@ -6,10 +6,11 @@ import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { MultiFC, transformToFC } from "../../common/FunctionalComponent";
 import { PlaySongPath } from "../../common/paths";
 import { PlainFn } from "../../common/PlainFn";
+import CenteredLayout from "../display/CenteredLayout";
 import JamStation from "../track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
-    TrackListLoad,
+    TrackListLoad
 } from "../track_player/providers/TrackListProvider";
 import PagePlayView from "./page/PagePlayView";
 import ScrollPlayView from "./scroll/ScrollPlayView";
@@ -26,16 +27,15 @@ interface PlayProps {
     path: PlaySongPath;
 }
 
-const Play: MultiFC<PlayProps> = (props: PlayProps): JSX.Element[] => {
-    const history = useHistory();
+interface PlayScreenProps {
+    children: React.ReactElement;
+    song: ChordSong;
+}
 
-    const pageViewPath = props.path.withPageView();
-    const scrollViewPath = props.path.withScrollView();
-
+const PlayScreen: React.FC<PlayScreenProps> = (
+    props: PlayScreenProps
+): JSX.Element => {
     const transparentStyle = useTransparentStyle();
-
-    const switchToPageView = () => history.push(pageViewPath.URL());
-    const switchToScrollView = () => history.push(scrollViewPath.URL());
 
     const trackPlayer: React.ReactNode = (() => {
         if (props.song.isUnsaved()) {
@@ -61,47 +61,53 @@ const Play: MultiFC<PlayProps> = (props: PlayProps): JSX.Element[] => {
         );
     })();
 
-    const contentsWithView = (
-        playView: React.ReactElement
-    ): React.ReactElement => {
-        return (
-            <>
-                <Helmet>
-                    <title>
-                        {props.song.metadata.title !== ""
-                            ? props.song.metadata.title
-                            : "New Song"}
-                    </title>
-                </Helmet>
-                {playView}
-                {trackPlayer}
-            </>
-        );
-    };
+    return (
+        <CenteredLayout>
+            <Helmet>
+                <title>
+                    {props.song.metadata.title !== ""
+                        ? props.song.metadata.title
+                        : "New Song"}
+                </title>
+            </Helmet>
+            {props.children}
+            {trackPlayer}
+        </CenteredLayout>
+    );
+};
+
+const PlayRoutes: MultiFC<PlayProps> = (props: PlayProps): JSX.Element[] => {
+    const history = useHistory();
+
+    const pageViewPath = props.path.withPageView();
+    const scrollViewPath = props.path.withScrollView();
+
+    const switchToPageView = () => history.push(pageViewPath.URL());
+    const switchToScrollView = () => history.push(scrollViewPath.URL());
 
     return [
         <Route key={props.path.URL()} path={props.path.URL()} exact>
             <Redirect to={pageViewPath.URL()} />,
         </Route>,
         <Route key={pageViewPath.URL()} path={pageViewPath.URL()}>
-            {contentsWithView(
+            <PlayScreen song={props.song}>
                 <PagePlayView
                     song={props.song}
                     onScrollView={switchToScrollView}
                     onEditMode={props.onEditMode}
                 />
-            )}
+            </PlayScreen>
         </Route>,
         <Route key={scrollViewPath.URL()} path={scrollViewPath.URL()}>
-            {contentsWithView(
+            <PlayScreen song={props.song}>
                 <ScrollPlayView
                     song={props.song}
                     onPageView={switchToPageView}
                     onEditMode={props.onEditMode}
                 />
-            )}
+            </PlayScreen>
         </Route>,
     ];
 };
 
-export default transformToFC(Play);
+export default transformToFC(PlayRoutes);

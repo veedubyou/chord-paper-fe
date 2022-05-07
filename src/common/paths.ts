@@ -7,23 +7,34 @@ export class RootPath {
     URL(): string {
         return "/";
     }
+
+    static readonly root: RootPath = new RootPath();
+    static rootURL(): string {
+        return this.root.URL();
+    }
 }
-export const rootPath = new RootPath();
 
 export class AboutPath {
     URL(): string {
         return "/about";
     }
+
+    static readonly root: AboutPath = new AboutPath();
+    static rootURL(): string {
+        return this.root.URL();
+    }
 }
-export const aboutPath = new AboutPath();
 
 export class GuitarDemoPath {
     URL(): string {
         return "/guitar-demo";
     }
-}
 
-export const guitarDemoPath = new GuitarDemoPath();
+    static readonly root: GuitarDemoPath = new GuitarDemoPath();
+    static rootURL(): string {
+        return this.root.URL();
+    }
+}
 
 export class SongPath {
     URL(): string {
@@ -37,8 +48,16 @@ export class SongPath {
     withNew(): SongIDPath {
         return new SongIDPath(newSongID);
     }
+
+    static readonly root: SongPath = new SongPath();
+    static rootURL(): string {
+        return this.root.URL();
+    }
+
+    static newURL(): string {
+        return this.root.withNew().URL();
+    }
 }
-export const songPath = new SongPath();
 
 export class SongIDPath {
     private readonly id: string;
@@ -46,6 +65,7 @@ export class SongIDPath {
     constructor(id: string) {
         this.id = id;
     }
+
     URL(): string {
         return `/song/${this.id}`;
     }
@@ -63,10 +83,9 @@ export class SongIDPath {
     }
 
     parent(): SongPath {
-        return songPath;
+        return SongPath.root;
     }
 }
-export const newSongPath = songPath.withNew();
 
 export class EditSongPath {
     private readonly id: string;
@@ -132,5 +151,30 @@ export class DemoPath {
 
         return new SongIDPath(neverGonnaGiveYouPlasticLoveUUID).URL();
     }
+
+    static readonly root: DemoPath = new DemoPath();
+    static rootURL(): string {
+        return this.root.URL();
+    }
 }
-export const demoPath = new DemoPath();
+
+export class TutorialPath {
+    private readonly lesson: string;
+
+    URL(): string {
+        if (this.lesson === "root") {
+            return "/learn";
+        }
+
+        return `/learn/${this.lesson}`;
+    }
+
+    constructor(lesson: string) {
+        this.lesson = lesson;
+    }
+
+    static readonly root: TutorialPath = new TutorialPath("root");
+    static rootURL(): string {
+        return this.root.URL();
+    }
+}
