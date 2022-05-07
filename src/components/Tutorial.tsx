@@ -3,6 +3,9 @@ import UnstyledPlayArrowIcon from "@material-ui/icons/PlayArrow";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
 import { Link, Route } from "react-router-dom";
+import { MultiFC, transformToFC } from "../common/FunctionalComponent";
+import { TutorialPath } from "../common/paths";
+import CenteredLayoutWithMenu from "./display/CenteredLayoutWithMenu";
 import ErrorPage from "./display/ErrorPage";
 import AddChord from "./tutorial/AddChord";
 import AddLine from "./tutorial/AddLine";
@@ -12,18 +15,18 @@ import DragAndDropChord from "./tutorial/DragAndDropChord";
 import EditChord from "./tutorial/EditChord";
 import EditLyrics from "./tutorial/EditLyrics";
 import Instrumental from "./tutorial/Instrumental";
+import Labels from "./tutorial/Labels";
+import Login from "./tutorial/Login";
 import MergeLine from "./tutorial/MergeLine";
 import PasteLyrics from "./tutorial/PasteLyrics";
+import PlayMode from "./tutorial/PlayMode";
 import RemoveChord from "./tutorial/RemoveChord";
 import RemoveLine from "./tutorial/RemoveLine";
-import Starting from "./tutorial/Start";
-import Labels from "./tutorial/Labels";
-import PlayMode from "./tutorial/PlayMode";
-import SplitLine from "./tutorial/SplitLine";
-import Login from "./tutorial/Login";
 import RemoveMultipleLines from "./tutorial/RemoveMultipleLines";
-import TrackPlayer from "./tutorial/TrackPlayer";
+import SplitLine from "./tutorial/SplitLine";
+import Starting from "./tutorial/Start";
 import TimeLabels from "./tutorial/TimeLabels";
+import TrackPlayer from "./tutorial/TrackPlayer";
 import { TutorialComponent } from "./tutorial/TutorialComponent";
 
 type ExerciseEntry = {
@@ -38,83 +41,85 @@ export type ExerciseRoute = {
 
 const allExercises: ExerciseEntry[] = [
     {
-        route: "/learn/start",
+        route: new TutorialPath("start").URL(),
         component: Starting,
     },
     {
-        route: "/learn/edit-chord",
+        route: new TutorialPath("edit-chord").URL(),
         component: EditChord,
     },
     {
-        route: "/learn/remove-chord",
+        route: new TutorialPath("remove-chord").URL(),
         component: RemoveChord,
     },
     {
-        route: "/learn/add-chord",
+        route: new TutorialPath("add-chord").URL(),
         component: AddChord,
     },
     {
-        route: "/learn/drag-and-drop-chord",
+        route: new TutorialPath("drag-and-drop-chord").URL(),
         component: DragAndDropChord,
     },
     {
-        route: "/learn/edit-lyrics",
+        route: new TutorialPath("edit-lyrics").URL(),
         component: EditLyrics,
     },
     {
-        route: "/learn/instrumentals",
+        route: new TutorialPath("instrumentals").URL(),
         component: Instrumental,
     },
     {
-        route: "/learn/chord-positioning",
+        route: new TutorialPath("chord-positioning").URL(),
         component: ChordPositioning,
     },
     {
-        route: "/learn/add-line",
+        route: new TutorialPath("add-line").URL(),
         component: AddLine,
     },
     {
-        route: "/learn/remove-line",
+        route: new TutorialPath("remove-line").URL(),
         component: RemoveLine,
     },
     {
-        route: "/learn/paste-lyrics",
+        route: new TutorialPath("paste-lyrics").URL(),
         component: PasteLyrics,
     },
     {
-        route: "/learn/remove-multiple-lines",
+        route: new TutorialPath("remove-multiple-lines").URL(),
         component: RemoveMultipleLines,
     },
     {
-        route: "/learn/merge-lines",
+        route: new TutorialPath("merge-lines").URL(),
         component: MergeLine,
     },
     {
-        route: "/learn/split-lines",
+        route: new TutorialPath("split-lines").URL(),
         component: SplitLine,
     },
     {
-        route: "/learn/copy-and-paste",
+        route: new TutorialPath("copy-and-paste").URL(),
         component: CopyAndPaste,
     },
     {
-        route: "/learn/labels",
+        route: new TutorialPath("labels").URL(),
         component: Labels,
     },
     {
-        route: "/learn/time-labels",
+        route: new TutorialPath("time-labels").URL(),
         component: TimeLabels,
     },
     {
-        route: "/learn/play-mode",
+        route: new TutorialPath("play-mode").URL(),
+
         component: PlayMode,
     },
     {
-        route: "/learn/login",
+        route: new TutorialPath("login").URL(),
+
         component: Login,
     },
     {
-        route: "/learn/track-player",
+        route: new TutorialPath("track-player").URL(),
         component: TrackPlayer,
     },
 ];
@@ -168,24 +173,22 @@ const Fab = withStyles((theme: Theme) => ({
     },
 }))(UnstyledFab);
 
-interface TutorialProps {
+interface SingleTutorialProps {
     route: string;
 }
 
-type WrapperFn = (child: React.ReactElement) => React.ReactElement;
-
-export const TutorialSwitches = (
-    wrapperFn: WrapperFn
-): React.ReactElement[] => {
-    return allExercises.map((exerciseEntry: ExerciseEntry) => (
-        <Route key={exerciseEntry.route} exact path={exerciseEntry.route}>
-            {wrapperFn(<Tutorial route={exerciseEntry.route} />)}
-        </Route>
-    ));
+const SingleTutorialScreen: React.FC<SingleTutorialProps> = (
+    props: SingleTutorialProps
+): JSX.Element => {
+    return (
+        <CenteredLayoutWithMenu>
+            <SingleTutorial route={props.route} />
+        </CenteredLayoutWithMenu>
+    );
 };
 
-const Tutorial: React.FC<TutorialProps> = (
-    props: TutorialProps
+const SingleTutorial: React.FC<SingleTutorialProps> = (
+    props: SingleTutorialProps
 ): JSX.Element => {
     const matchEntry = (entry: ExerciseEntry): boolean => {
         return entry.route === props.route;
@@ -220,3 +223,13 @@ const Tutorial: React.FC<TutorialProps> = (
         </RootPaper>
     );
 };
+
+const TutorialRoutes: MultiFC<{}> = (): React.ReactElement[] => {
+    return allExercises.map((exerciseEntry: ExerciseEntry) => (
+        <Route key={exerciseEntry.route} path={exerciseEntry.route} exact>
+            <SingleTutorialScreen route={exerciseEntry.route} />
+        </Route>
+    ));
+};
+
+export default transformToFC(TutorialRoutes);

@@ -24,11 +24,11 @@ import StoreIcon from "@material-ui/icons/Store";
 import { makeStyles, withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { demoPath, songPath } from "../common/paths";
+import { DemoPath, SongPath } from "../common/paths";
 import LoadSongDialog from "./LoadSongDialog";
 import { allExerciseRoutes, ExerciseRoute } from "./Tutorial";
 import Login from "./user/Login";
-import { User, UserContext } from "./user/userContext";
+import { SetUserContext, UserContext } from "./user/userContext";
 
 const withPointerStyle = withStyles({
     root: {
@@ -84,14 +84,10 @@ const useFillerStyle = makeStyles({
     },
 });
 
-interface SideMenuProps {
-    onUserChanged: (user: User | null) => void;
-}
-
-const SideMenu: React.FC<SideMenuProps> = (
-    props: SideMenuProps
-): JSX.Element => {
+const SideMenu: React.FC<{}> = (): JSX.Element => {
     const user = React.useContext(UserContext);
+    const onUserChanged = React.useContext(SetUserContext);
+
     const [expanded, setExpanded] = useState(false);
     const [showLoadSongsDialog, setShowLoadSongsDialog] = useState(false);
 
@@ -187,8 +183,8 @@ const SideMenu: React.FC<SideMenuProps> = (
             <Divider />
             <List>
                 <Link
-                    key={songPath.URL()}
-                    to={songPath.URL()}
+                    key={SongPath.rootURL()}
+                    to={SongPath.rootURL()}
                     style={linkStyle}
                     data-testid="Menu-HomeButton"
                 >
@@ -220,8 +216,8 @@ const SideMenu: React.FC<SideMenuProps> = (
                     </ListItem>
                 )}
                 <Link
-                    key={demoPath.URL()}
-                    to={demoPath.URL()}
+                    key={DemoPath.rootURL()}
+                    to={DemoPath.rootURL()}
                     style={linkStyle}
                     data-testid="Menu-DemoButton"
                 >
@@ -254,7 +250,7 @@ const SideMenu: React.FC<SideMenuProps> = (
                 </Link>
             </List>
             <div className={fillerStyle.root} />
-            <Login onUserChanged={props.onUserChanged} />
+            <Login onUserChanged={onUserChanged} />
         </Drawer>
     );
 

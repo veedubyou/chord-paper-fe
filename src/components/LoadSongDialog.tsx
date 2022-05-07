@@ -15,7 +15,7 @@ import { useHistory } from "react-router-dom";
 import { getSongsForUser } from "../common/backend/requests";
 import { SongSummary } from "../common/ChordModel/ChordSong";
 import { FetchState } from "../common/fetch";
-import { songPath } from "../common/paths";
+import { SongPath } from "../common/paths";
 import { PlainFn } from "../common/PlainFn";
 import ErrorImage from "./display/ErrorImage";
 import { UserContext } from "./user/userContext";
@@ -88,7 +88,7 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
     };
 
     const summaryListItem = (summary: SongSummary): React.ReactElement => {
-        const songLink = songPath.withID(summary.id);
+        const songLink = SongPath.root.withID(summary.id);
 
         const navigateToSong = () => {
             history.push(songLink.URL());

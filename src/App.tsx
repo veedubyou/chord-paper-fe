@@ -1,6 +1,5 @@
 import {
     createMuiTheme,
-    Grid,
     PaletteColorOptions,
     Theme,
     ThemeProvider,
@@ -9,33 +8,27 @@ import { withStyles } from "@material-ui/styles";
 import { SnackbarProvider as UnstyledSnackbarProvider } from "notistack";
 import React, { useState } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import {
-    HashRouter,
-    Redirect,
-    Route,
-    Switch,
-    useLocation,
-} from "react-router-dom";
-import Background from "./assets/img/symphony.png";
+import { HashRouter, Redirect, Route, Switch } from "react-router-dom";
 import { ChordSong } from "./common/ChordModel/ChordSong";
 import {
-    aboutPath,
-    guitarDemoPath,
-    newSongPath,
-    PlaySongPath,
-    rootPath,
-    songPath,
+    AboutPath,
+    GuitarDemoPath,
+    RootPath,
+    SongPath,
+    TutorialPath,
 } from "./common/paths";
-import About from "./components/about/About";
+import AboutScreen from "./components/about/About";
 import DragAndDrop from "./components/edit/DragAndDrop";
 import GlobalKeyListenerProvider from "./components/GlobalKeyListener";
 import GuitarDemo from "./components/guitar/GuitarDemo";
-import SideMenu from "./components/SideMenu";
 import SongFetcher from "./components/SongFetcher";
 import SongRouter from "./components/SongRouter";
-import { TutorialSwitches } from "./components/Tutorial";
-import { User, UserContext } from "./components/user/userContext";
-import Version from "./components/Version";
+import TutorialRoutes from "./components/Tutorial";
+import {
+    SetUserContext,
+    User,
+    UserContext,
+} from "./components/user/userContext";
 import { withCloudSaveSongContext } from "./components/WithSongContext";
 
 const createTheme = (): Theme => {
@@ -81,91 +74,66 @@ const SnackbarProvider = withStyles((theme: Theme) => ({
     },
 }))(UnstyledSnackbarProvider);
 
-const withBackground = withStyles({
-    root: {
-        backgroundImage: `url(${Background})`,
-        minHeight: "100vh",
-    },
-});
-
-const AppLayout = withBackground(Grid);
-
 const MainSong = withCloudSaveSongContext(SongRouter);
 
 const AppContent: React.FC<{}> = (): JSX.Element => {
     const [user, setUser] = useState<User | null>(null);
-
     const handleUserChanged = (newUser: User | null) => setUser(newUser);
 
-    const location = useLocation();
-    const loadSongPath = songPath.withID(":id");
-
-    const withLayout = (
-        child: React.ReactElement | React.ReactElement[]
-    ): React.ReactElement => {
-        if (PlaySongPath.isPlayMode(location.pathname)) {
-            // no background required on full screen play mode
-            // more importantly, don't set the min-height
-            return (
-                <Grid container>
-                    <Grid item container justify="center">
-                        {child}
-                    </Grid>
-                </Grid>
-            );
-        }
-
-        return (
-            <>
-                <SideMenu onUserChanged={handleUserChanged} />
-                <AppLayout container>
-                    <Grid item container justify="center">
-                        {child}
-                    </Grid>
-                </AppLayout>
-                <Version />
-            </>
-        );
-    };
+    const loadSongPath = SongPath.root.withID(":id");
 
     const routes = (
         <Switch>
-            <Redirect from={rootPath.URL()} to={newSongPath.URL()} exact />
+            <Redirect from={RootPath.rootURL()} to={SongPath.newURL()} exact />
 
-            <Route key={newSongPath.URL()} path={newSongPath.URL()}>
-                {withLayout(
-                    <MainSong song={new ChordSong({})} path={newSongPath} />
-                )}
+            <Route key={SongPath.newURL()} path={SongPath.newURL()}>
+                <MainSong
+                    song={new ChordSong({})}
+                    path={SongPath.root.withNew()}
+                />
             </Route>
 
             <Route key={loadSongPath.URL()} path={loadSongPath.URL()}>
-                {withLayout(
-                    <SongFetcher>
-                        {(song: ChordSong) => (
-                            <MainSong
-                                song={song}
-                                path={loadSongPath.parent().withID(song.id)}
-                            />
-                        )}
-                    </SongFetcher>
-                )}
+                <SongFetcher>
+                    {(song: ChordSong) => (
+                        <MainSong
+                            song={song}
+                            path={loadSongPath.parent().withID(song.id)}
+                        />
+                    )}
+                </SongFetcher>
             </Route>
 
-            {TutorialSwitches(withLayout)}
-            <Route key={aboutPath.URL()} path={aboutPath.URL()} exact>
-                {withLayout(<About />)}
+            <Route key={TutorialPath.rootURL()} path={TutorialPath.rootURL()}>
+                <TutorialRoutes />
             </Route>
-            <Route key={guitarDemoPath.URL()} path={guitarDemoPath.URL()} exact>
+
+            <Route key={AboutPath.rootURL()} path={AboutPath.rootURL()} exact>
+                <AboutScreen />
+            </Route>
+
+            <Route
+                key={GuitarDemoPath.rootURL()}
+                path={GuitarDemoPath.rootURL()}
+                exact
+            >
                 <GuitarDemo />
             </Route>
-            <Redirect to={rootPath.URL()} />
+
+            <Redirect to={RootPath.rootURL()} />
         </Switch>
     );
 
-    return <UserContext.Provider value={user}>{routes}</UserContext.Provider>;
+    return (
+        <UserContext.Provider value={user}>
+            <SetUserContext.Provider value={handleUserChanged}>
+                {routes}
+            </SetUserContext.Provider>
+        </UserContext.Provider>
+    );
 };
 
-function App() {
+const App: React.FC<{}> = (): JSX.Element => {
     return (
         <HelmetProvider>
             <ThemeProvider theme={theme}>
@@ -185,6 +153,6 @@ function App() {
             </ThemeProvider>
         </HelmetProvider>
     );
-}
+};
 
 export default App;

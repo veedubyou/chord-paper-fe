@@ -11,6 +11,7 @@ import { getSong } from "../common/backend/requests";
 import { ChordSong } from "../common/ChordModel/ChordSong";
 import { FetchState } from "../common/fetch";
 import ErrorImage from "./display/ErrorImage";
+import CenteredLayoutWithMenu from "./display/CenteredLayoutWithMenu";
 
 const GreyishBackdrop = withStyles({
     root: {
@@ -36,6 +37,18 @@ interface InternalFetcherProps {
     id: string;
     children: (song: ChordSong) => JSX.Element;
 }
+
+export const FullScreenLoading: React.FC<{}> = (): JSX.Element => {
+    return (
+        <CenteredLayoutWithMenu>
+            <Modal open BackdropComponent={GreyishBackdrop}>
+                <FullScreenCenterBox>
+                    <CircularProgress size={200} thickness={2} />
+                </FullScreenCenterBox>
+            </Modal>
+        </CenteredLayoutWithMenu>
+    );
+};
 
 const InternalFetcher: React.FC<InternalFetcherProps> = (
     props: InternalFetcherProps
@@ -75,13 +88,7 @@ const InternalFetcher: React.FC<InternalFetcherProps> = (
         }
 
         case "loading": {
-            return (
-                <Modal open BackdropComponent={GreyishBackdrop}>
-                    <FullScreenCenterBox>
-                        <CircularProgress size={200} thickness={2} />
-                    </FullScreenCenterBox>
-                </Modal>
-            );
+            return <FullScreenLoading />;
         }
 
         case "loaded": {

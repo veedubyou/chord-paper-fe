@@ -4,6 +4,7 @@ import React from "react";
 import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { PlainFn } from "../../common/PlainFn";
+import CenteredLayoutWithMenu from "../display/CenteredLayoutWithMenu";
 import PlayerTimeProvider from "../PlayerTimeContext";
 import { ChordSongAction } from "../reducer/reducer";
 import JamStation from "../track_player/JamStation";
@@ -95,4 +96,14 @@ const ChordPaper: React.FC<ChordPaperProps> = (
     );
 };
 
-export default ChordPaper;
+const ChordPaperScreen: React.FC<ChordPaperProps> = (
+    props: ChordPaperProps
+): JSX.Element => {
+    return (
+        <CenteredLayoutWithMenu>
+            <ChordPaper {...props} />
+        </CenteredLayoutWithMenu>
+    );
+};
+
+export default ChordPaperScreen;
