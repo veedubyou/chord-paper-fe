@@ -2,6 +2,7 @@ import { Modal } from "@material-ui/core";
 import { withStyles } from "@material-ui/styles";
 import React from "react";
 import CenteredLayoutWithMenu from "../display/CenteredLayoutWithMenu";
+import { CollapsedSideMenu } from "../SideMenu";
 import LoadingSpinner from "./LoadingSpinner";
 
 const FullScreenSpinner = withStyles({
@@ -12,10 +13,16 @@ const FullScreenSpinner = withStyles({
 })(LoadingSpinner);
 
 const FullScreenLoading: React.FC<{}> = (): JSX.Element => {
+    const collapsedMenu = <CollapsedSideMenu open />;
+
+    // div is inserted after Modal so that a ref can be taken
+    // otherwise some invariant warning is tripped
     return (
-        <CenteredLayoutWithMenu>
+        <CenteredLayoutWithMenu menuElement={collapsedMenu}>
             <Modal open>
-                <FullScreenSpinner size={200} thickness={2} />
+                <div>
+                    <FullScreenSpinner size={200} thickness={2} />
+                </div>
             </Modal>
         </CenteredLayoutWithMenu>
     );

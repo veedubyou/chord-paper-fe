@@ -14,14 +14,20 @@ const AppLayout = withStyles({
 
 interface CenteredLayoutWithMenuProps {
     children: React.ReactNode | React.ReactNode[];
+    menuElement?: React.ReactElement;
 }
 
 const CenteredLayoutWithMenu: React.FC<CenteredLayoutWithMenuProps> = (
     props: CenteredLayoutWithMenuProps
 ): JSX.Element => {
+    let menu: React.ReactElement = <SideMenu />
+    if (props.menuElement !== undefined) {
+        menu = props.menuElement;
+    }
+
     return (
         <>
-            <SideMenu />
+            {menu}
             <AppLayout container>
                 <Grid item container justify="center">
                     {props.children}

@@ -25,6 +25,7 @@ import { makeStyles, withStyles } from "@material-ui/styles";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { DemoPath, SongPath } from "../common/paths";
+import { PlainFn } from "../common/PlainFn";
 import LoadSongDialog from "./LoadSongDialog";
 import { allExerciseRoutes, ExerciseRoute } from "./Tutorial";
 import Login from "./user/Login";
@@ -83,6 +84,33 @@ const useFillerStyle = makeStyles({
         flexGrow: 1,
     },
 });
+
+interface CollapsedSideMenuProps {
+    open: boolean;
+    onClick?: PlainFn;
+}
+
+export const CollapsedSideMenu: React.FC<CollapsedSideMenuProps> = (
+    props: CollapsedSideMenuProps
+): JSX.Element => {
+    return (
+        <Drawer variant="persistent" open={props.open} anchor="left">
+            <CollapsedMenuSurface>
+                <FullHeightGrid
+                    container
+                    direction="column"
+                    alignContent="center"
+                >
+                    <VerticalGridItem item xs={1}></VerticalGridItem>
+                    <VerticalGridItem item xs={1}>
+                        <MenuIcon onClick={props.onClick} />
+                    </VerticalGridItem>
+                    <VerticalGridItem item xs={10}></VerticalGridItem>
+                </FullHeightGrid>
+            </CollapsedMenuSurface>
+        </Drawer>
+    );
+};
 
 const SideMenu: React.FC<{}> = (): JSX.Element => {
     const user = React.useContext(UserContext);
@@ -144,21 +172,7 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
     };
 
     const collapsedMenu = (
-        <Drawer variant="persistent" open={!expanded} anchor="left">
-            <CollapsedMenuSurface>
-                <FullHeightGrid
-                    container
-                    direction="column"
-                    alignContent="center"
-                >
-                    <VerticalGridItem item xs={1}></VerticalGridItem>
-                    <VerticalGridItem item xs={1}>
-                        <MenuIcon onClick={() => setExpanded(true)} />
-                    </VerticalGridItem>
-                    <VerticalGridItem item xs={10}></VerticalGridItem>
-                </FullHeightGrid>
-            </CollapsedMenuSurface>
-        </Drawer>
+        <CollapsedSideMenu open={!expanded} onClick={() => setExpanded(true)} />
     );
 
     const expandedMenu = (
