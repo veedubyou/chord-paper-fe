@@ -15,7 +15,7 @@ import StemTrackPlayer, {
 import { PlayerControls } from "./internal_player/usePlayerControls";
 import LoadingSplitStemTrackView from "./LoadingSplitStemTrackView";
 import { useTrackFetch } from "./providers/useTrackFetch";
-import WaitingSpinner from "./WaitingSpinner";
+import LoadingSpinner from "../loading/LoadingSpinner";
 
 interface TrackPlayerProps {
     focused: boolean;
@@ -35,7 +35,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
 
     switch (trackLoad.state) {
         case "loading": {
-            return <WaitingSpinner />;
+            return <LoadingSpinner />;
         }
 
         case "error": {

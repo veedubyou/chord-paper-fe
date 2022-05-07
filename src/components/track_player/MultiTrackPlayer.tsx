@@ -27,7 +27,7 @@ import {
 } from "./internal_player/usePlayerControls";
 import { TrackListLoad } from "./providers/TrackListProvider";
 import TrackPlayer from "./TrackPlayer";
-import WaitingSpinner from "./WaitingSpinner";
+import LoadingSpinner from "../loading/LoadingSpinner";
 
 const FlexBox = withStyles((theme: Theme) => ({
     root: {
@@ -187,7 +187,7 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
 
     const internalContent: React.ReactNode = (() => {
         if (props.tracklistLoad.state === "loading") {
-            return <WaitingSpinner />;
+            return <LoadingSpinner />;
         }
 
         const tracklistID = props.tracklistLoad.tracklist.song_id;
