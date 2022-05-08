@@ -2,7 +2,7 @@ import { Box, Slide, withStyles } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
 import red from "@material-ui/core/colors/red";
 import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
-import ChatBubbleIcon from "@material-ui/icons/ChatBubbleOutline";
+import BookmarkBorderOutlinedIcon from '@material-ui/icons/BookmarkBorderOutlined';
 import { List } from "immutable";
 import React, { useMemo, useState } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
@@ -130,7 +130,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 const menuItems: MenuItem[] = [
                     {
                         onClick: editLabel,
-                        icon: <ChatBubbleIcon />,
+                        icon: <BookmarkBorderOutlinedIcon />,
                         "data-testid": "EditLabel",
                     },
                     {
