@@ -4,6 +4,7 @@ import { ChordLine } from "../../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { PlainFn } from "../../../common/PlainFn";
 import PlayLine from "../common/PlayLine";
+import IntersectingElement from "./IntersectingElement";
 
 export type SectionedChordLines = ChordLine[];
 
@@ -16,7 +17,9 @@ export interface ScrollableElement {
 
 interface PlaySectionProps {
     chordLines: SectionedChordLines;
-    scrollableElementRefCallback: (scrollableElement: ScrollableElement) => void;
+    scrollableElementRefCallback: (
+        scrollableElement: ScrollableElement
+    ) => void;
 }
 
 const PlaySection: React.FC<PlaySectionProps> = (
