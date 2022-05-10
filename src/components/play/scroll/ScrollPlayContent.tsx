@@ -1,15 +1,36 @@
 import { Box } from "@material-ui/core";
-import React, { useCallback, useRef } from "react";
+import { List } from "immutable";
+import React, { useCallback, useRef, useState } from "react";
+import { useDebouncedCallback } from "use-debounce/lib";
+import { ChordLine } from "../../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { noopFn } from "../../../common/PlainFn";
+import { Collection } from "../../../common/ChordModel/Collection";
+import { PlainFn } from "../../../common/PlainFn";
 import FocusedElement from "../common/FocusedElement";
+import PlayLine from "../common/PlayLine";
 import { useNavigationKeys } from "../common/useNavigateKeys";
-import PlaySection, {
-    ScrollableElement,
-    sectionChordLines,
-    SectionedChordLines,
-    Visibility,
-} from "./PlaySection";
+import HighlightBorderBox from "./HighlightBorderBox";
+import InViewElement from "./InViewElement";
+import ScrollingElement from "./ScrollingElement";
+
+// these values determine the portion of the viewport that is used to consider
+// the next line that the user can scroll to
+// e.g. top: -15, bottom: -25 is equivalent to the area 15% vh to 75% vh from the top
+
+// the top margin prevents scrolls that end up only scrolling 1-2 lines because
+// the upcoming section is very near the top
+const topViewportMarginPercent = -15;
+// the bottom margin prevents a super big jump, so the user has some lookahead
+// and isn't scrolled to an entirely new section without continuity
+const bottomViewportMarginPercent = -25;
+
+interface ViewportLine {
+    id: string;
+    type: "ViewportLine";
+    chordLine: ChordLine;
+    isInCurrentView: () => boolean;
+    scrollInView: PlainFn;
+}
 
 interface ScrollPlayContentProps {
     song: ChordSong;
@@ -18,166 +39,120 @@ interface ScrollPlayContentProps {
 const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
     props: ScrollPlayContentProps
 ): JSX.Element => {
-    const sections = sectionChordLines(props.song);
+    const lines = props.song.chordLines;
 
-    const createEmptyRefs = useCallback(
-        (sectionLength: number): ScrollableElement[] => {
-            const newRefs: ScrollableElement[] = [];
-
-            for (let i = 0; i < sectionLength; i++) {
-                newRefs.push({
-                    getInView: () => "not-in-view",
-                    scrollIntoView: noopFn,
-                });
-            }
-
-            return newRefs;
+    const makeViewportLine = (chordLine: ChordLine): ViewportLine => ({
+        id: chordLine.id,
+        type: "ViewportLine",
+        chordLine: chordLine,
+        isInCurrentView: () => {
+            console.error(
+                "isInCurrentView method not initialized",
+                chordLine.id
+            );
+            return false;
         },
-        []
+        scrollInView: () =>
+            console.error("scrollInView method not initialized", chordLine.id),
+    });
+
+    const makeViewportLines = (
+        chordLines: List<ChordLine>
+    ): Collection<ViewportLine> => {
+        const viewportLines: List<ViewportLine> =
+            chordLines.map(makeViewportLine);
+        return new Collection(viewportLines);
+    };
+
+    const lineRefs = useRef<Collection<ViewportLine>>(
+        makeViewportLines(lines.list)
     );
 
-    const sectionRefs = useRef<ScrollableElement[]>(
-        createEmptyRefs(sections.length)
+    const [nextScrollLine, setNextScrollLine] = useState<ViewportLine | null>(
+        null
     );
 
-    const getTopVisibleSection = (): {
-        index: number;
-        visibility: Visibility;
-    } | null => {
-        let firstInViewSection: {
-            index: number;
-            visibility: Visibility;
-        } | null = null;
-        for (let i = 0; i < sectionRefs.current.length; i++) {
-            const sectionVisibility = sectionRefs.current[i];
-            if (sectionVisibility === null) {
+    const findNextScrollLine = useCallback((): ViewportLine | null => {
+        let latestInViewLine: ViewportLine | null = null;
+
+        for (let i = 0; i < lineRefs.current.length; i++) {
+            const lineRef = lineRefs.current.getAtIndex(i);
+
+            if (!lineRef.isInCurrentView()) {
                 continue;
             }
 
-            const visibility = sectionVisibility.getInView();
-
-            // return the section whose box top is near the top of the viewport if available
-            // this would best approximate what the user is seeing in terms of which
-            // section is at the top of the screen
-            if (visibility === "at-top") {
-                return {
-                    index: i,
-                    visibility: "at-top",
-                };
+            if (lineRef.chordLine.hasSection()) {
+                return lineRef;
             }
 
-            // otherwise, capture the first section that is in view
-            // we don't return this right away because the next section could be
-            // near the top of the viewport
-            // e.g. section A shows 5 px of height at the top of the screen
-            // and section B has their box top at 5 px from the top, then we
-            // want to classify section B as the "first section"
-            if (visibility === "in-view" && firstInViewSection === null) {
-                firstInViewSection = {
-                    index: i,
-                    visibility: "in-view",
-                };
-            }
+            latestInViewLine = lineRef;
         }
 
-        return firstInViewSection;
+        return latestInViewLine;
+    }, []);
+
+    const setNextSection = useCallback(() => {
+        const maybeNextScrollLine = findNextScrollLine();
+        if (maybeNextScrollLine !== nextScrollLine) {
+            setNextScrollLine(maybeNextScrollLine);
+        }
+    }, [findNextScrollLine, nextScrollLine, setNextScrollLine]);
+
+    const handleViewportChange = useDebouncedCallback(setNextSection, 300, {
+        leading: false,
+        trailing: true,
+    });
+
+    const makePlayLine = (chordLine: ChordLine): React.ReactElement => {
+        const lineRef = lineRefs.current.get({
+            id: chordLine.id,
+            type: "ViewportLine",
+        });
+
+        const setInViewFn = (inViewFn: () => boolean) => {
+            lineRef.isInCurrentView = inViewFn;
+        };
+
+        const setScrollFn = (scrollFn: PlainFn) => {
+            lineRef.scrollInView = scrollFn;
+        };
+
+        const highlight = chordLine.id === nextScrollLine?.id;
+
+        return (
+            <InViewElement
+                key={chordLine.id}
+                topMarginPercentage={topViewportMarginPercent}
+                bottomMarginPercentage={bottomViewportMarginPercent}
+                isInViewFnCallback={setInViewFn}
+                inViewChanged={handleViewportChange}
+            >
+                <ScrollingElement scrollFnCallback={setScrollFn}>
+                    <HighlightBorderBox highlight={highlight}>
+                        <PlayLine key={chordLine.id} chordLine={chordLine} />
+                    </HighlightBorderBox>
+                </ScrollingElement>
+            </InViewElement>
+        );
     };
 
-    // scrollDown and scrollUp are unexpectedly not symmetrical functions
-    // explanation attached with each function
-    
-    // scrolls down to the next section head if it's in view
-    // otherwise scrolls down a bit (like page down)
-    // the idea is that the user can thoroughly navigate the entire song
-    // using just scrollDown without missing any lyrics/chords
-    const scrollDown = (): boolean => {
-        const currentSection = getTopVisibleSection();
-        if (currentSection === null) {
-            console.error(
-                "Can't find the section that's at the top of the viewport"
-            );
+    const playLines = lines.list.map(makePlayLine);
+
+    const scrollDown = () => {
+        if (nextScrollLine === null) {
             return false;
         }
 
-        const hasNextSection =
-            currentSection.index < sectionRefs.current.length - 1;
-        const shouldScrollToNextSection: boolean = (() => {
-            if (!hasNextSection) {
-                return false;
-            }
-
-            const nextSectionRef =
-                sectionRefs.current[currentSection.index + 1];
-            return nextSectionRef.getInView() === "in-view";
-        })();
-
-        if (shouldScrollToNextSection) {
-            const nextSectionRef =
-                sectionRefs.current[currentSection.index + 1];
-            nextSectionRef.scrollIntoView();
-        } else {
-            const windowHeight = document.documentElement.clientHeight;
-            const scrollDistance = windowHeight * 0.75;
-            window.scrollBy({
-                behavior: "smooth",
-                left: 0,
-                top: scrollDistance,
-            });
-        }
-
+        nextScrollLine.scrollInView();
         return true;
     };
 
-    // scrolls up to the section head above the viewport,
-    // which could correspond to the current or previous section
-    // unlike scrollDown, this may skip some lyrics/chords
-    // but the idea is that the user is "rewinding" through sections
-    // and not going through the song in reverse
-    // so therefore it's ok to skip some content
-    const scrollUp = (): boolean => {
-        const currentSection = getTopVisibleSection();
-        if (currentSection === null) {
-            console.error(
-                "Can't find the section that's at the top of the viewport"
-            );
-            return false;
-        }
-
-        const hasPreviousSection = currentSection.index > 0;
-
-        if (hasPreviousSection && currentSection.visibility === "at-top") {
-            const previousSectionRef =
-                sectionRefs.current[currentSection.index - 1];
-            previousSectionRef.scrollIntoView();
-        } else {
-            const currentSectionRef = sectionRefs.current[currentSection.index];
-            currentSectionRef.scrollIntoView();
-        }
-
-        return true;
-    };
-
-    useNavigationKeys(scrollDown, scrollUp);
-
-    const playSections = sections.map(
-        (sectionedChordLines: SectionedChordLines, sectionIndex: number) => {
-            const assignRef = (ref: ScrollableElement) => {
-                sectionRefs.current[sectionIndex] = ref;
-            };
-
-            return (
-                <PlaySection
-                    key={sectionIndex}
-                    chordLines={sectionedChordLines}
-                    scrollableElementRefCallback={assignRef}
-                />
-            );
-        }
-    );
+    useNavigationKeys(scrollDown, () => false);
 
     return (
         <FocusedElement>
-            <Box>{playSections}</Box>
+            <Box>{playLines}</Box>
         </FocusedElement>
     );
 };
