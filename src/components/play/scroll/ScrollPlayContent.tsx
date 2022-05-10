@@ -1,20 +1,36 @@
-import { Box, Divider } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Box } from "@material-ui/core";
+import { List } from "immutable";
+import React, { useCallback, useRef, useState } from "react";
+import { useDebouncedCallback } from "use-debounce/lib";
 import { ChordLine } from "../../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { noopFn } from "../../../common/PlainFn";
-import { inflatingWhitespace } from "../../../common/Whitespace";
+import { Collection } from "../../../common/ChordModel/Collection";
+import { PlainFn } from "../../../common/PlainFn";
 import FocusedElement from "../common/FocusedElement";
 import PlayLine from "../common/PlayLine";
 import { useNavigationKeys } from "../common/useNavigateKeys";
-import IntersectingElement, { ViewportElement } from "./IntersectingElement";
-import PlaySection, {
-    ScrollableElement,
-    sectionChordLines,
-    SectionedChordLines,
-    Visibility,
-} from "./PlaySection";
+import HighlightBorderBox from "./HighlightBorderBox";
+import InViewElement from "./InViewElement";
+import ScrollingElement from "./ScrollingElement";
+
+// these values determine the portion of the viewport that is used to consider
+// the next line that the user can scroll to
+// e.g. top: -15, bottom: -25 is equivalent to the area 15% vh to 75% vh from the top
+
+// the top margin prevents scrolls that end up only scrolling 1-2 lines because
+// the upcoming section is very near the top
+const topViewportMarginPercent = -15;
+// the bottom margin prevents a super big jump, so the user has some lookahead
+// and isn't scrolled to an entirely new section without continuity
+const bottomViewportMarginPercent = -25;
+
+interface ViewportLine {
+    id: string;
+    type: "ViewportLine";
+    chordLine: ChordLine;
+    isInCurrentView: () => boolean;
+    scrollInView: PlainFn;
+}
 
 interface ScrollPlayContentProps {
     song: ChordSong;
@@ -25,89 +41,114 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
 ): JSX.Element => {
     const lines = props.song.chordLines;
 
-    const createEmptyRefs = (linesLength: number): ViewportElement[] => {
-        const newRefs: ViewportElement[] = [];
+    const makeViewportLine = (chordLine: ChordLine): ViewportLine => ({
+        id: chordLine.id,
+        type: "ViewportLine",
+        chordLine: chordLine,
+        isInCurrentView: () => {
+            console.error(
+                "isInCurrentView method not initialized",
+                chordLine.id
+            );
+            return false;
+        },
+        scrollInView: () =>
+            console.error("scrollInView method not initialized", chordLine.id),
+    });
 
-        for (let i = 0; i < linesLength; i++) {
-            newRefs.push({
-                isInView: () => false,
-                scrollIntoView: noopFn,
-            });
-        }
-
-        return newRefs;
+    const makeViewportLines = (
+        chordLines: List<ChordLine>
+    ): Collection<ViewportLine> => {
+        const viewportLines: List<ViewportLine> =
+            chordLines.map(makeViewportLine);
+        return new Collection(viewportLines);
     };
 
-    const lineRefs = useRef<ViewportElement[]>(createEmptyRefs(lines.length));
-    const [nextScrollToLineID, setNextScrollToLineID] = useState<string | null>(
+    const lineRefs = useRef<Collection<ViewportLine>>(
+        makeViewportLines(lines.list)
+    );
+
+    const [nextScrollLine, setNextScrollLine] = useState<ViewportLine | null>(
         null
     );
 
-    const findNextScrollLineID = useCallback((): string | null => {
-        let encounteredFirstLineInView = false;
-        let latestInViewLineID: string | null = null;
+    const findNextScrollLine = useCallback((): ViewportLine | null => {
+        let latestInViewLine: ViewportLine | null = null;
+
         for (let i = 0; i < lineRefs.current.length; i++) {
-            const lineRef = lineRefs.current[i];
+            const lineRef = lineRefs.current.getAtIndex(i);
 
-            if (!lineRef.isInView()) {
+            if (!lineRef.isInCurrentView()) {
                 continue;
             }
 
-            if (!encounteredFirstLineInView) {
-                encounteredFirstLineInView = true;
-                continue;
+            if (lineRef.chordLine.hasSection()) {
+                return lineRef;
             }
 
-            const chordLine = lines.getAtIndex(i);
-            if (chordLine.hasSection()) {
-                return chordLine.id;
-            }
-
-            latestInViewLineID = chordLine.id;
+            latestInViewLine = lineRef;
         }
 
-        return latestInViewLineID;
-    }, [lines]);
+        return latestInViewLine;
+    }, []);
 
-    useEffect(() => {
-        const setAThing = () => {
-            const nextID = findNextScrollLineID();
-            console.log("next id", nextID);
-            if (nextID !== nextScrollToLineID) {
-                setNextScrollToLineID(nextID);
-            }
+    const setNextSection = useCallback(() => {
+        const maybeNextScrollLine = findNextScrollLine();
+        if (maybeNextScrollLine !== nextScrollLine) {
+            setNextScrollLine(maybeNextScrollLine);
+        }
+    }, [findNextScrollLine, nextScrollLine, setNextScrollLine]);
+
+    const handleViewportChange = useDebouncedCallback(setNextSection, 300, {
+        leading: false,
+        trailing: true,
+    });
+
+    const makePlayLine = (chordLine: ChordLine): React.ReactElement => {
+        const lineRef = lineRefs.current.get({
+            id: chordLine.id,
+            type: "ViewportLine",
+        });
+
+        const setInViewFn = (inViewFn: () => boolean) => {
+            lineRef.isInCurrentView = inViewFn;
         };
 
-        const intervalID = setInterval(setAThing, 5000);
-
-        return () => clearInterval(intervalID);
-    }, [nextScrollToLineID, setNextScrollToLineID, findNextScrollLineID, lines]);
-
-    const makePlayLine = (
-        chordLine: ChordLine,
-        index: number
-    ): React.ReactElement => {
-        const refCallback = (viewportElement: ViewportElement) => {
-            lineRefs.current[index] = viewportElement;
+        const setScrollFn = (scrollFn: PlainFn) => {
+            lineRef.scrollInView = scrollFn;
         };
 
-        const highlight = chordLine.id === nextScrollToLineID;
+        const highlight = chordLine.id === nextScrollLine?.id;
 
         return (
-            <IntersectingElement
+            <InViewElement
                 key={chordLine.id}
-                highlight={highlight}
-                viewportElementRefCallback={refCallback}
-                inViewChanged={noopFn}
+                topMarginPercentage={topViewportMarginPercent}
+                bottomMarginPercentage={bottomViewportMarginPercent}
+                isInViewFnCallback={setInViewFn}
+                inViewChanged={handleViewportChange}
             >
-                <PlayLine key={chordLine.id} chordLine={chordLine} />
-            </IntersectingElement>
+                <ScrollingElement scrollFnCallback={setScrollFn}>
+                    <HighlightBorderBox highlight={highlight}>
+                        <PlayLine key={chordLine.id} chordLine={chordLine} />
+                    </HighlightBorderBox>
+                </ScrollingElement>
+            </InViewElement>
         );
     };
 
     const playLines = lines.list.map(makePlayLine);
 
-    // useNavigationKeys(scrollDown, scrollUp);
+    const scrollDown = () => {
+        if (nextScrollLine === null) {
+            return false;
+        }
+
+        nextScrollLine.scrollInView();
+        return true;
+    };
+
+    useNavigationKeys(scrollDown, () => false);
 
     return (
         <FocusedElement>
