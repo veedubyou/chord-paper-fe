@@ -7,28 +7,15 @@ import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { Collection } from "../../../common/ChordModel/Collection";
 import { PlainFn } from "../../../common/PlainFn";
 import FocusedElement from "../common/FocusedElement";
-import PlayLine from "../common/PlayLine";
 import { useNavigationKeys } from "../common/useNavigateKeys";
-import HighlightBorderBox from "./HighlightBorderBox";
-import InViewElement from "./InViewElement";
-import ScrollingElement from "./ScrollingElement";
-
-// these values determine the portion of the viewport that is used to consider
-// the next line that the user can scroll to
-// e.g. top: -15, bottom: -25 is equivalent to the area 15% vh to 75% vh from the top
-
-// the top margin prevents scrolls that end up only scrolling 1-2 lines because
-// the upcoming section is very near the top
-const topViewportMarginPercent = -15;
-// the bottom margin prevents a super big jump, so the user has some lookahead
-// and isn't scrolled to an entirely new section without continuity
-const bottomViewportMarginPercent = -25;
+import ScrollablePlayLine from "./ScrollablePlayLine";
 
 interface ViewportLine {
     id: string;
     type: "ViewportLine";
     chordLine: ChordLine;
     isInCurrentView: () => boolean;
+    isInPreviousView: () => boolean;
     scrollInView: PlainFn;
 }
 
@@ -48,6 +35,13 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
         isInCurrentView: () => {
             console.error(
                 "isInCurrentView method not initialized",
+                chordLine.id
+            );
+            return false;
+        },
+        isInPreviousView: () => {
+            console.error(
+                "isInPreviousView method not initialized",
                 chordLine.id
             );
             return false;
@@ -72,6 +66,9 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
         null
     );
 
+    const [previousScrollLine, setPreviousScrollLine] =
+        useState<ViewportLine | null>(null);
+
     const findNextScrollLine = useCallback((): ViewportLine | null => {
         let latestInViewLine: ViewportLine | null = null;
 
@@ -92,14 +89,46 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
         return latestInViewLine;
     }, []);
 
-    const setNextSection = useCallback(() => {
+    const findPreviousScrollLine = useCallback((): ViewportLine | null => {
+        let latestInViewLine: ViewportLine | null = null;
+
+        for (let i = lineRefs.current.length - 1; i >= 0; i--) {
+            const lineRef = lineRefs.current.getAtIndex(i);
+
+            if (!lineRef.isInPreviousView()) {
+                continue;
+            }
+
+            if (lineRef.chordLine.hasSection()) {
+                return lineRef;
+            }
+
+            latestInViewLine = lineRef;
+        }
+
+        return latestInViewLine;
+    }, []);
+
+    const setCachedSections = useCallback(() => {
         const maybeNextScrollLine = findNextScrollLine();
         if (maybeNextScrollLine !== nextScrollLine) {
             setNextScrollLine(maybeNextScrollLine);
         }
-    }, [findNextScrollLine, nextScrollLine, setNextScrollLine]);
 
-    const handleViewportChange = useDebouncedCallback(setNextSection, 300, {
+        const maybePreviousScrollLine = findPreviousScrollLine();
+        if (maybePreviousScrollLine !== previousScrollLine) {
+            setPreviousScrollLine(maybePreviousScrollLine);
+        }
+    }, [
+        findNextScrollLine,
+        findPreviousScrollLine,
+        nextScrollLine,
+        setNextScrollLine,
+        previousScrollLine,
+        setPreviousScrollLine,
+    ]);
+
+    const handleViewportChange = useDebouncedCallback(setCachedSections, 300, {
         leading: false,
         trailing: true,
     });
@@ -110,36 +139,38 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
             type: "ViewportLine",
         });
 
-        const setInViewFn = (inViewFn: () => boolean) => {
+        const setInCurrentViewFn = (inViewFn: () => boolean) => {
             lineRef.isInCurrentView = inViewFn;
+        };
+
+        const setInPreviousViewFn = (inViewFn: () => boolean) => {
+            lineRef.isInPreviousView = inViewFn;
         };
 
         const setScrollFn = (scrollFn: PlainFn) => {
             lineRef.scrollInView = scrollFn;
         };
 
-        const highlight = chordLine.id === nextScrollLine?.id;
+        const highlight =
+            chordLine.id === nextScrollLine?.id ||
+            chordLine.id === previousScrollLine?.id;
 
         return (
-            <InViewElement
+            <ScrollablePlayLine
                 key={chordLine.id}
-                topMarginPercentage={topViewportMarginPercent}
-                bottomMarginPercentage={bottomViewportMarginPercent}
-                isInViewFnCallback={setInViewFn}
+                chordLine={chordLine}
+                highlight={highlight}
+                isInCurrentViewFnCallback={setInCurrentViewFn}
+                isInPreviousViewFnCallback={setInPreviousViewFn}
+                scrollFnCallback={setScrollFn}
                 inViewChanged={handleViewportChange}
-            >
-                <ScrollingElement scrollFnCallback={setScrollFn}>
-                    <HighlightBorderBox highlight={highlight}>
-                        <PlayLine key={chordLine.id} chordLine={chordLine} />
-                    </HighlightBorderBox>
-                </ScrollingElement>
-            </InViewElement>
+            />
         );
     };
 
     const playLines = lines.list.map(makePlayLine);
 
-    const scrollDown = () => {
+    const scrollDown = (): boolean => {
         if (nextScrollLine === null) {
             return false;
         }
@@ -148,7 +179,16 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
         return true;
     };
 
-    useNavigationKeys(scrollDown, () => false);
+    const scrollUp = (): boolean => {
+        if (previousScrollLine === null) {
+            return false;
+        }
+
+        previousScrollLine.scrollInView();
+        return true;
+    };
+
+    useNavigationKeys(scrollDown, scrollUp);
 
     return (
         <FocusedElement>
