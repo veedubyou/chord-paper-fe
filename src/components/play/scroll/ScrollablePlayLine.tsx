@@ -8,11 +8,11 @@ import ScrollingElement from "./ScrollingElement";
 
 // these values determine the portion of the viewport that is used to consider
 // the next line that the user can scroll to
-// e.g. top: -15, bottom: -25 is equivalent to the area 15% vh to 75% vh from the top
+// e.g. top: -25, bottom: -25 is equivalent to the area 25% vh to 75% vh from the top
 
 // the top margin prevents scrolls that end up only scrolling 1-2 lines because
 // the upcoming section is very near the top
-const topCurrentViewportMarginPercent = -15;
+const topCurrentViewportMarginPercent = -25;
 // the bottom margin prevents a super big jump, so the user has some lookahead
 // and isn't scrolled to an entirely new section without continuity
 const bottomCurrentViewportMarginPercent = -25;
