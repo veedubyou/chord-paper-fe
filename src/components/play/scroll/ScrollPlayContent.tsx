@@ -1,4 +1,5 @@
 import { Box } from "@material-ui/core";
+import { withStyles } from "@material-ui/styles";
 import { List } from "immutable";
 import React, { useCallback, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce/lib";
@@ -9,6 +10,12 @@ import { PlainFn } from "../../../common/PlainFn";
 import FocusedElement from "../common/FocusedElement";
 import { useNavigationKeys } from "../common/useNavigateKeys";
 import ScrollablePlayLine from "./ScrollablePlayLine";
+
+const FullHeightBox = withStyles({
+    root: {
+        height: "100vh",
+    },
+})(Box);
 
 interface ViewportLine {
     id: string;
@@ -192,7 +199,10 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
 
     return (
         <FocusedElement>
-            <Box>{playLines}</Box>
+            <Box>
+                {playLines}
+                <FullHeightBox />
+            </Box>
         </FocusedElement>
     );
 };
