@@ -10,6 +10,7 @@ export const chordSymbolClassName = "ChordSymbol";
 
 const highlightedSpaceStyle = (theme: Theme): CSSProperties => ({
     backgroundColor: theme.palette.primary.main,
+    borderRadius: "0.3em",
 });
 
 const highlightedWordStyle = (theme: Theme): CSSProperties => ({
