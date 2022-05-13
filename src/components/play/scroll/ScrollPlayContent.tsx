@@ -9,6 +9,7 @@ import { Collection } from "../../../common/ChordModel/Collection";
 import { PlainFn } from "../../../common/PlainFn";
 import FocusedElement from "../common/FocusedElement";
 import { useNavigationKeys } from "../common/useNavigateKeys";
+import { HighlightColourProvider } from "./highlightColourContext";
 import ScrollablePlayLine from "./ScrollablePlayLine";
 
 const FullHeightBox = withStyles({
@@ -199,10 +200,12 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
 
     return (
         <FocusedElement>
-            <Box>
-                {playLines}
-                <FullHeightBox />
-            </Box>
+            <HighlightColourProvider>
+                <Box>
+                    {playLines}
+                    <FullHeightBox />
+                </Box>
+            </HighlightColourProvider>
         </FocusedElement>
     );
 };

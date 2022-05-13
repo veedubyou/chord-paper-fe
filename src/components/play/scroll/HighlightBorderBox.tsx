@@ -1,6 +1,7 @@
 import { Box, Theme } from "@material-ui/core";
-import { makeStyles, withStyles } from "@material-ui/styles";
+import { withStyles } from "@material-ui/styles";
 import React from "react";
+import { makeHighlightColours } from "./highlightColourContext";
 
 const transitionFunction = "cubic-bezier(.19,1,.22,1)";
 
@@ -14,11 +15,7 @@ const BorderedBox = withStyles((theme: Theme) => ({
     },
 }))(Box);
 
-const useHighlightedBorder = makeStyles((theme: Theme) => ({
-    root: {
-        borderColor: theme.palette.primary.main,
-    },
-}));
+const useHighlightBorder = makeHighlightColours();
 
 interface HighlightBorderBoxProps {
     highlight?: boolean;
@@ -28,7 +25,8 @@ interface HighlightBorderBoxProps {
 const HighlightBorderBox: React.FC<HighlightBorderBoxProps> = (
     props: HighlightBorderBoxProps
 ): JSX.Element => {
-    const highlightBorderStyle = useHighlightedBorder();
+    const highlightBorderStyle = useHighlightBorder();
+
     const highlightClassName: string | undefined = (() => {
         if (props.highlight === true) {
             return highlightBorderStyle.root;
