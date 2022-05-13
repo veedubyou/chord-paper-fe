@@ -16,7 +16,7 @@ const rotateColourDebounceTime = 300;
 // that still contrasts with blue and purple
 const redColor = "#ff9679";
 
-const HighlightColourContext = React.createContext<() => HighlightColour>(
+const HighlightBorderContext = React.createContext<() => HighlightColour>(
     () => "red"
 );
 
@@ -30,10 +30,10 @@ type MakeHighlightColoursMapType = {
     red: ReturnType<typeof makeStyles>;
 };
 
-const useHighlightColours = (
+const useHighlightBorders = (
     colourMap: MakeHighlightColoursMapType
 ): ClassNameMap<"root"> => {
-    const getAndRotateCurrentColour = React.useContext(HighlightColourContext);
+    const getAndRotateCurrentColour = React.useContext(HighlightBorderContext);
     const currentColour = getAndRotateCurrentColour();
 
     const highlightColourStyles = {
@@ -47,7 +47,7 @@ const useHighlightColours = (
 
 type useRootStyleType = () => ClassNameMap<"root">;
 
-export const makeHighlightColours = (): useRootStyleType => {
+export const makeHighlightBorders = (): useRootStyleType => {
     const useHighlightColoursMap: MakeHighlightColoursMapType = {
         blue: makeStyles((theme: Theme) => ({
             root: {
@@ -66,7 +66,7 @@ export const makeHighlightColours = (): useRootStyleType => {
         })),
     };
 
-    return () => useHighlightColours(useHighlightColoursMap);
+    return () => useHighlightBorders(useHighlightColoursMap);
 };
 
 export const HighlightColourProvider: React.FC<HighlightColourProviderProps> = (
@@ -104,8 +104,8 @@ export const HighlightColourProvider: React.FC<HighlightColourProviderProps> = (
     }, [rotateColour]);
 
     return (
-        <HighlightColourContext.Provider value={getAndRotateColour}>
+        <HighlightBorderContext.Provider value={getAndRotateColour}>
             {props.children}
-        </HighlightColourContext.Provider>
+        </HighlightBorderContext.Provider>
     );
 };

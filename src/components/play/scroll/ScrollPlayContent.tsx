@@ -9,7 +9,7 @@ import { Collection } from "../../../common/ChordModel/Collection";
 import { PlainFn } from "../../../common/PlainFn";
 import FocusedElement from "../common/FocusedElement";
 import { useNavigationKeys } from "../common/useNavigateKeys";
-import { HighlightColourProvider } from "./highlightColourContext";
+import { HighlightColourProvider } from "./highlightBorderContext";
 import ScrollablePlayLine from "./ScrollablePlayLine";
 
 const FullHeightBox = withStyles({
