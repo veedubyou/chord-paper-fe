@@ -1,3 +1,5 @@
+import { createMuiTheme, Theme } from "@material-ui/core";
+import { ThemeProvider } from "@material-ui/styles";
 import { List } from "immutable";
 import React, { useCallback, useState } from "react";
 import shortid from "shortid";
@@ -24,6 +26,24 @@ interface TrackEditDialogState {
     open: boolean;
     randomID: string;
 }
+
+const onTopTheme = (theme: Theme): Theme => {
+    const highestZIndex = theme.zIndex.tooltip;
+    const zIndexBoost = highestZIndex + 1;
+
+    return createMuiTheme({
+        ...theme,
+        zIndex: {
+            mobileStepper: zIndexBoost + theme.zIndex.mobileStepper,
+            speedDial: zIndexBoost + theme.zIndex.speedDial,
+            appBar: zIndexBoost + theme.zIndex.appBar,
+            drawer: zIndexBoost + theme.zIndex.drawer,
+            modal: zIndexBoost + theme.zIndex.modal,
+            snackbar: zIndexBoost + theme.zIndex.snackbar,
+            tooltip: zIndexBoost + theme.zIndex.tooltip,
+        },
+    });
+};
 
 const JamStation: React.FC<JamStationProps> = (
     props: JamStationProps
@@ -126,11 +146,11 @@ const JamStation: React.FC<JamStationProps> = (
     );
 
     return (
-        <>
+        <ThemeProvider theme={onTopTheme}>
             {collapsedButtonFn(false, showPlayer, "Show Player")}
             {fullPlayer}
             {trackEditDialog}
-        </>
+        </ThemeProvider>
     );
 };
 
