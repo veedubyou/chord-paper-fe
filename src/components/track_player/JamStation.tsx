@@ -1,10 +1,12 @@
 import { createMuiTheme, Theme } from "@material-ui/core";
+import { ZIndex } from "@material-ui/core/styles/zIndex";
 import { ThemeProvider } from "@material-ui/styles";
 import { List } from "immutable";
 import React, { useCallback, useState } from "react";
 import shortid from "shortid";
 import { TimeSection } from "../../common/ChordModel/ChordLine";
 import { TrackList } from "../../common/ChordModel/tracks/TrackList";
+import { mapObject } from "../../common/mapObject";
 import { PlainFn } from "../../common/PlainFn";
 import TrackListEditDialog from "./dialog/TrackListEditDialog";
 import { usePlayerControls } from "./internal_player/usePlayerControls";
@@ -31,17 +33,14 @@ const onTopTheme = (theme: Theme): Theme => {
     const highestZIndex = theme.zIndex.tooltip;
     const zIndexBoost = highestZIndex + 1;
 
+    const newZIndex: ZIndex = mapObject(
+        theme.zIndex,
+        (oldZIndex: number) => oldZIndex + zIndexBoost
+    );
+
     return createMuiTheme({
         ...theme,
-        zIndex: {
-            mobileStepper: zIndexBoost + theme.zIndex.mobileStepper,
-            speedDial: zIndexBoost + theme.zIndex.speedDial,
-            appBar: zIndexBoost + theme.zIndex.appBar,
-            drawer: zIndexBoost + theme.zIndex.drawer,
-            modal: zIndexBoost + theme.zIndex.modal,
-            snackbar: zIndexBoost + theme.zIndex.snackbar,
-            tooltip: zIndexBoost + theme.zIndex.tooltip,
-        },
+        zIndex: newZIndex,
     });
 };
 
