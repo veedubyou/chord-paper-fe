@@ -68,18 +68,14 @@ export const widthOfString = (
 export const greyTextColour = grey[700];
 
 const BottomRightBox = withStyles((theme: Theme) => {
-    // a bit arbitrary, but the player components should come on top of the
-    // line hover menu which is powered by tooltip
-    // this could also be 9999, it's just not well understood yet
-    // if this should always be on top or if it should just be above tooltips
-    const zIndex = theme.zIndex.tooltip + 100;
+    const lowestPlayerZIndex = theme.zIndex.mobileStepper;
 
     return {
         root: {
             position: "fixed",
             bottom: 0,
             right: theme.spacing(2),
-            zIndex: zIndex,
+            zIndex: lowestPlayerZIndex,
             ...roundedTopCornersStyle(theme),
         },
     };
