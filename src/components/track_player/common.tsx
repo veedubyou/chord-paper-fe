@@ -67,14 +67,23 @@ export const widthOfString = (
 
 export const greyTextColour = grey[700];
 
-const BottomRightBox = withStyles((theme: Theme) => ({
-    root: {
-        position: "fixed",
-        bottom: 0,
-        right: theme.spacing(2),
-        ...roundedTopCornersStyle(theme),
-    },
-}))(Box);
+const BottomRightBox = withStyles((theme: Theme) => {
+    // a bit arbitrary, but the player components should come on top of the
+    // line hover menu which is powered by tooltip
+    // this could also be 9999, it's just not well understood yet
+    // if this should always be on top or if it should just be above tooltips
+    const zIndex = theme.zIndex.tooltip + 100;
+
+    return {
+        root: {
+            position: "fixed",
+            bottom: 0,
+            right: theme.spacing(2),
+            zIndex: zIndex,
+            ...roundedTopCornersStyle(theme),
+        },
+    };
+})(Box);
 
 export const withBottomRightBox = (children: React.ReactElement) => (
     <BottomRightBox boxShadow={4}>{children}</BottomRightBox>
