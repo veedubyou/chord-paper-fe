@@ -1,10 +1,12 @@
 import { List } from "immutable";
 import { Duration } from "luxon";
+import { useSnackbar } from "notistack";
 import { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import FilePlayer from "react-player/file";
 import { TimeSection } from "../../../common/ChordModel/ChordLine";
-import { PlainFn, noopFn } from "../../../common/PlainFn";
+import { noopFn, PlainFn } from "../../../common/PlainFn";
+import { useRegisterTopKeyListener } from "../../GlobalKeyListener";
 import { PlayerTimeContext } from "../../PlayerTimeContext";
 
 export interface ButtonActionAndState {
@@ -52,6 +54,12 @@ class NoopMutableRef {
     }
 }
 
+interface ABLoop {
+    pointA: number | null;
+}
+
+const ABLoopLength = 5;
+
 export const unfocusedControls: PlayerControls = {
     playerRef: new NoopMutableRef(),
     playing: false,
@@ -96,8 +104,13 @@ export const usePlayerControls = (
 ): PlayerControls => {
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
+    const [abLoop, setABLoop] = useState<ABLoop>({
+        pointA: null,
+    });
     const playerRef = useRef<ReactPlayer | FilePlayer>();
     const [playratePercentage, setPlayratePercentage] = useState(100);
+    const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
+    const { enqueueSnackbar } = useSnackbar();
 
     // a ref version so that a past render can access a future state
     // see outOfSyncWorkaround for the reason
@@ -120,6 +133,59 @@ export const usePlayerControls = (
             getPlayerTimeRef.current = getCurrentTime;
         }, [getPlayerTimeRef, getCurrentTime]);
     }
+
+    useEffect(() => {
+        const setABLoopToNow = () => {
+            const timeFormatted = Duration.fromMillis(
+                currentTimeRef.current * 1000
+            ).toFormat("m:ss");
+
+            setABLoop({
+                ...abLoop,
+                pointA: currentTimeRef.current,
+            });
+            enqueueSnackbar(
+                `Point A in A/B loop has been set to ${timeFormatted}`,
+                { variant: "info" }
+            );
+        };
+
+        const clearABLoop = () => {
+            setABLoop({
+                pointA: null,
+            });
+
+            enqueueSnackbar(`A/B loop has been cleared`, {
+                variant: "info",
+            });
+        };
+
+        const handleKey = (event: KeyboardEvent) => {
+            const isCtrl = event.ctrlKey || event.metaKey;
+
+            if (isCtrl && event.code === "KeyA") {
+                if (abLoop.pointA !== null) {
+                    clearABLoop();
+                } else {
+                    setABLoopToNow();
+                }
+
+                event.preventDefault();
+                return true;
+            }
+
+            return false;
+        };
+
+        addTopKeyListener(handleKey);
+        return () => removeKeyListener(handleKey);
+    }, [
+        addTopKeyListener,
+        removeKeyListener,
+        enqueueSnackbar,
+        setABLoop,
+        abLoop,
+    ]);
 
     const seekTo = (time: number) => {
         if (time < 0) {
@@ -297,6 +363,17 @@ export const usePlayerControls = (
         };
     })();
 
+    const handleABLoop = (playedSeconds: number) => {
+        if (abLoop.pointA === null) {
+            return;
+        }
+
+        const pointB: number = abLoop.pointA + ABLoopLength;
+        if (playedSeconds < abLoop.pointA || playedSeconds >= pointB) {
+            seekTo(abLoop.pointA);
+        }
+    };
+
     const handleProgress = (state: {
         played: number;
         playedSeconds: number;
@@ -304,6 +381,7 @@ export const usePlayerControls = (
         loadedSeconds: number;
     }) => {
         setCurrentTime(state.playedSeconds);
+        handleABLoop(state.playedSeconds);
     };
 
     const currentTimeFormatted: string = (() => {
