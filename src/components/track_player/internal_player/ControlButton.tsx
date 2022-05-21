@@ -11,6 +11,7 @@ import React from "react";
 import { roundedCornersStyle } from "../common";
 import BeginningIcon from "./BeginningIcon";
 import JumpForwardIcon from "./ForwardIcon";
+import SharpFlatIcon from "./SharpFlatIcon";
 
 const Button = styled(UnstyledButton)(({ theme }) => ({
     minWidth: 0,
@@ -42,17 +43,13 @@ const makeControlButton = (
     };
 
     return (props: ButtonProps) => (
-        <Tooltip key={key} title={tooltipMsg}>
-            <span>
-                <ColoredButton
-                    {...props}
-                    onKeyUp={preventKeyInvocation}
-                    size="large"
-                >
-                    {child}
-                </ColoredButton>
-            </span>
-        </Tooltip>
+        // <Tooltip key={key} title={tooltipMsg}>
+        //     <span>
+        <ColoredButton {...props} onKeyUp={preventKeyInvocation} size="large">
+            {child}
+        </ColoredButton>
+        //     </span>
+        // </Tooltip>
     );
 };
 
@@ -111,6 +108,12 @@ export const ControlButton = {
         "Play faster",
         "primary"
     ),
+    TogglePlayrateMenu: makeControlButton(
+        <SharpFlatIcon />,
+        "toggle-playrate-menu",
+        "Open tempo",
+        "primary"
+    ),
     TransposeDown: makeControlButton(
         <DecreaseIcon />,
         "transpose-down-button",
@@ -123,4 +126,5 @@ export const ControlButton = {
         "Transpose up half step",
         "primary"
     ),
+    CloseMenu: makeControlButton(<CloseIcon />, "", "Close Menu", "primary"),
 };

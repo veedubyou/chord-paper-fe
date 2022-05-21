@@ -91,3 +91,5 @@ export const TitleBar = styled(Box)<BoxProps>(({ theme }) => ({
     alignItems: "center",
     ...roundedTopCornersStyle(theme),
 }));
+
+export type CollapsibleMenuVisibility = "collapsed" | "expanded" | "hidden";

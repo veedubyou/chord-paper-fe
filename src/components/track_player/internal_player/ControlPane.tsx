@@ -2,7 +2,8 @@ import { Box, styled } from "@mui/material";
 import React, { useEffect } from "react";
 import { PlainFn } from "../../../common/PlainFn";
 import { useRegisterTopKeyListener } from "../../GlobalKeyListener";
-import { controlPaneStyle } from "../common";
+import { CollapsibleMenuVisibility, controlPaneStyle } from "../common";
+import PlayrateMenu from "../PlayrateMenu";
 import { ControlButton } from "./ControlButton";
 import ControlGroup from "./ControlGroup";
 import PlayrateControl from "./PlayrateControl";
@@ -118,6 +119,14 @@ const ControlPane: React.FC<ControlPaneProps> = (
         );
     })();
 
+    const [currentlyOpenedMenu, setCurrentlyOpenedMenu] = useState<null | "tempo">(null);
+    const tempoMenuVisibility: CollapsibleMenuVisibility = (() => {
+        switch (currentlyOpenedMenu) {
+            case null: return "collapsed";
+            case "tempo": return "expanded";
+        }
+    })();
+
     return (
         <ControlPaneBox>
             <ControlGroup dividers="right">
@@ -137,11 +146,18 @@ const ControlPane: React.FC<ControlPaneProps> = (
             <SectionLabel value={props.sectionLabel} />
             <RightJustifiedControlGroup dividers="left">
                 {[
-                    <PlayrateControl
-                        key="playrate-control"
+                    <PlayrateMenu
                         playratePercentage={props.playrate.percentage}
-                        onChange={props.playrate.onChange}
-                    />,
+                        onPlayrateChange={props.playrate.onChange}
+                        onOpen={() => setCurrentlyOpenedMenu("tempo")}
+                        onClose={() => setCurrentlyOpenedMenu(null)}
+                        visibility={tempoMenuVisibility}
+                    />
+                    // <PlayrateControl
+                    //     key="playrate-control"
+                    //     playratePercentage={props.playrate.percentage}
+                    //     onChange={props.playrate.onChange}
+                    // />,
                 ]}
             </RightJustifiedControlGroup>
             {transposeControl}
