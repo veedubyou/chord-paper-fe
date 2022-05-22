@@ -1,6 +1,7 @@
-import { Box, Theme, TypographyVariant } from "@material-ui/core";
-import { blueGrey, grey } from "@material-ui/core/colors";
-import { withStyles } from "@material-ui/styles";
+import { Box, BoxProps, Theme, TypographyVariant } from "@mui/material";
+import { blueGrey, grey } from "@mui/material/colors";
+import { styled } from "@mui/material/styles";
+import { SystemStyleObject } from "@mui/system";
 import React from "react";
 
 export const roundedTopCornersStyle = (theme: Theme) => ({
@@ -67,43 +68,31 @@ export const widthOfString = (
 
 export const greyTextColour = grey[700];
 
-const BottomRightBox = withStyles((theme: Theme) => {
+const bottomRightStyle = (theme: Theme): SystemStyleObject<Theme> => {
     const lowestPlayerZIndex = theme.zIndex.mobileStepper;
 
     return {
-        root: {
-            position: "fixed",
-            bottom: 0,
-            right: theme.spacing(2),
-            zIndex: lowestPlayerZIndex,
-            ...roundedTopCornersStyle(theme),
-        },
-    };
-})(Box);
-
-export const withBottomRightBox = (children: React.ReactElement) => (
-    <BottomRightBox boxShadow={4}>{children}</BottomRightBox>
-);
-
-const BottomLeftBox = withStyles((theme: Theme) => ({
-    root: {
         position: "fixed",
         bottom: 0,
-        left: theme.spacing(2),
+        right: theme.spacing(2),
+        zIndex: lowestPlayerZIndex,
         ...roundedTopCornersStyle(theme),
-    },
-}))(Box);
+    };
+};
 
-export const withBottomLeftBox = (children: React.ReactElement) => (
-    <BottomLeftBox boxShadow={4}>{children}</BottomLeftBox>
-);
+export const withBottomRightBox = (children: React.ReactElement) => {
+    return (
+        <Box boxShadow={4} sx={bottomRightStyle}>
+            {children}
+        </Box>
+    );
+};
 
-export const TitleBar = withStyles((theme: Theme) => ({
-    root: {
-        width: "100%",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        ...roundedTopCornersStyle(theme),
-    },
-}))(Box);
+
+export const TitleBar = styled(Box)<BoxProps>(({theme}) => ({
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    ...roundedTopCornersStyle(theme),
+}));
