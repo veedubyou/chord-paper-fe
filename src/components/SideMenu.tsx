@@ -12,15 +12,13 @@ import {
     Collapse,
     Divider,
     Drawer as UnstyledDrawer,
-    Grid,
-    GridProps,
-    List,
+    Grid, List,
     ListItem,
     ListItemIcon,
     ListItemText,
     Paper,
     styled,
-    Typography,
+    Typography
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import React, { useState } from "react";
