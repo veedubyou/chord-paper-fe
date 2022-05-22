@@ -23,7 +23,6 @@ import {
     Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { makeStyles, withStyles } from "@mui/styles";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { DemoPath, SongPath } from "../common/paths";
@@ -33,14 +32,12 @@ import { allExerciseRoutes, ExerciseRoute } from "./Tutorial";
 import Login from "./user/Login";
 import { SetUserContext, UserContext } from "./user/userContext";
 
-const withPointerStyle = withStyles({
-    root: {
-        cursor: "pointer",
-    },
-});
+const pointerStyle = {
+    cursor: "pointer",
+};
 
-const MenuIcon = withPointerStyle(UnstyledMenuIcon);
-const CloseIcon = withPointerStyle(UnstyledCloseIcon);
+const MenuIcon = styled(UnstyledMenuIcon)(pointerStyle);
+const CloseIcon = styled(UnstyledCloseIcon)(pointerStyle);
 
 const Drawer = styled(UnstyledDrawer)({
     display: "flex",
@@ -49,30 +46,6 @@ const Drawer = styled(UnstyledDrawer)({
 
 const VerticalGridItem = styled(Grid)({
     maxWidth: "none",
-});
-
-const TitleGrid = styled(Grid)<GridProps>(({ theme }) => ({
-    padding: theme.spacing(3),
-}));
-
-const TitleName = styled(Typography)({
-    color: grey[600],
-});
-
-const CollapsedMenuSurface = styled(Paper)({
-    minWidth: "24px",
-    height: "100vh",
-});
-
-const FullHeightGrid = styled(Grid)({
-    height: "100%",
-    width: "100%",
-});
-
-const useFillerStyle = makeStyles({
-    root: {
-        flexGrow: 1,
-    },
 });
 
 interface CollapsedSideMenuProps {
@@ -85,19 +58,28 @@ export const CollapsedSideMenu: React.FC<CollapsedSideMenuProps> = (
 ): JSX.Element => {
     return (
         <Drawer variant="persistent" open={props.open} anchor="left">
-            <CollapsedMenuSurface>
-                <FullHeightGrid
+            <Paper
+                sx={{
+                    minWidth: "24px",
+                    height: "100vh",
+                }}
+            >
+                <Grid
                     container
                     direction="column"
                     alignContent="center"
+                    sx={{
+                        height: "100%",
+                        width: "100%",
+                    }}
                 >
                     <VerticalGridItem item xs={1}></VerticalGridItem>
                     <VerticalGridItem item xs={1}>
                         <MenuIcon onClick={props.onClick} />
                     </VerticalGridItem>
                     <VerticalGridItem item xs={10}></VerticalGridItem>
-                </FullHeightGrid>
-            </CollapsedMenuSurface>
+                </Grid>
+            </Paper>
         </Drawer>
     );
 };
@@ -110,7 +92,6 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
     const [showLoadSongsDialog, setShowLoadSongsDialog] = useState(false);
 
     const [learnSubmenuOpen, setLearnSubMenuOpen] = useState(false);
-    const fillerStyle = useFillerStyle();
 
     const typographyProps = {
         variant: "h6" as "h6",
@@ -169,10 +150,11 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
 
     const expandedMenu = (
         <Drawer variant="persistent" open={expanded} anchor="left">
-            <TitleGrid
+            <Grid
                 container
                 alignItems="center"
                 justifyContent="space-between"
+                sx={{ padding: 3 }}
             >
                 <Grid item>
                     <Link
@@ -180,15 +162,19 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
                         style={linkStyle}
                         data-testid="Menu-TitleButton"
                     >
-                        <TitleName variant="h5" display="inline">
+                        <Typography
+                            variant="h5"
+                            display="inline"
+                            sx={{ color: grey[600] }}
+                        >
                             Chord Paper
-                        </TitleName>
+                        </Typography>
                     </Link>
                 </Grid>
                 <Grid item>
                     <CloseIcon onClick={() => setExpanded(false)} />
                 </Grid>
-            </TitleGrid>
+            </Grid>
 
             <Divider />
             <List>
