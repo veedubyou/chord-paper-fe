@@ -1,29 +1,27 @@
 {
   "files": {
-    "main.css": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css",
-    "main.js": "/chord-paper-fe/static/js/main.6794f041.chunk.js",
-    "main.js.map": "/chord-paper-fe/static/js/main.6794f041.chunk.js.map",
-    "runtime-main.js": "/chord-paper-fe/static/js/runtime-main.826827a9.js",
-    "runtime-main.js.map": "/chord-paper-fe/static/js/runtime-main.826827a9.js.map",
-    "static/css/2.da16f061.chunk.css": "/chord-paper-fe/static/css/2.da16f061.chunk.css",
-    "static/js/2.4d4e504a.chunk.js": "/chord-paper-fe/static/js/2.4d4e504a.chunk.js",
-    "static/js/2.4d4e504a.chunk.js.map": "/chord-paper-fe/static/js/2.4d4e504a.chunk.js.map",
+    "main.css": "/chord-paper-fe/static/css/main.78c714c7.chunk.css",
+    "main.js": "/chord-paper-fe/static/js/main.4df01e6a.chunk.js",
+    "main.js.map": "/chord-paper-fe/static/js/main.4df01e6a.chunk.js.map",
+    "runtime-main.js": "/chord-paper-fe/static/js/runtime-main.822757b0.js",
+    "runtime-main.js.map": "/chord-paper-fe/static/js/runtime-main.822757b0.js.map",
+    "static/css/2.0088e07d.chunk.css": "/chord-paper-fe/static/css/2.0088e07d.chunk.css",
+    "static/js/2.e2a3ca66.chunk.js": "/chord-paper-fe/static/js/2.e2a3ca66.chunk.js",
+    "static/js/2.e2a3ca66.chunk.js.map": "/chord-paper-fe/static/js/2.e2a3ca66.chunk.js.map",
     "index.html": "/chord-paper-fe/index.html",
-    "precache-manifest.9b940a2ff31d03c6f856487e7af6568c.js": "/chord-paper-fe/precache-manifest.9b940a2ff31d03c6f856487e7af6568c.js",
-    "service-worker.js": "/chord-paper-fe/service-worker.js",
-    "static/css/2.da16f061.chunk.css.map": "/chord-paper-fe/static/css/2.da16f061.chunk.css.map",
-    "static/css/main.bea93a8b.chunk.css.map": "/chord-paper-fe/static/css/main.bea93a8b.chunk.css.map",
-    "static/js/2.4d4e504a.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.4d4e504a.chunk.js.LICENSE.txt",
-    "static/media/index.css": "/chord-paper-fe/static/media/PoriChord.3caa9627.woff2",
-    "static/media/error.jpeg": "/chord-paper-fe/static/media/error.c3a3f87e.jpeg",
-    "static/media/google_signin.svg": "/chord-paper-fe/static/media/google_signin.c386978e.svg",
-    "static/media/symphony.png": "/chord-paper-fe/static/media/symphony.4ca23f9c.png"
+    "static/css/2.0088e07d.chunk.css.map": "/chord-paper-fe/static/css/2.0088e07d.chunk.css.map",
+    "static/css/main.78c714c7.chunk.css.map": "/chord-paper-fe/static/css/main.78c714c7.chunk.css.map",
+    "static/js/2.e2a3ca66.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.e2a3ca66.chunk.js.LICENSE.txt",
+    "static/media/index.css": "/chord-paper-fe/static/media/PoriChord.a44d4113.woff2",
+    "static/media/error.91c3c13e.jpeg": "/chord-paper-fe/static/media/error.91c3c13e.jpeg",
+    "static/media/google_signin.1875863c.svg": "/chord-paper-fe/static/media/google_signin.1875863c.svg",
+    "static/media/symphony.d46887dc.png": "/chord-paper-fe/static/media/symphony.d46887dc.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.826827a9.js",
-    "static/css/2.da16f061.chunk.css",
-    "static/js/2.4d4e504a.chunk.js",
-    "static/css/main.bea93a8b.chunk.css",
-    "static/js/main.6794f041.chunk.js"
+    "static/js/runtime-main.822757b0.js",
+    "static/css/2.0088e07d.chunk.css",
+    "static/js/2.e2a3ca66.chunk.js",
+    "static/css/main.78c714c7.chunk.css",
+    "static/js/main.4df01e6a.chunk.js"
   ]
 }
