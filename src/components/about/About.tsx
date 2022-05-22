@@ -1,5 +1,5 @@
-import { Grid, Paper, Theme, Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Grid, Paper, Theme, Typography } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import React from "react";
 import { inflatingWhitespace } from "../../common/Whitespace";
 import CenteredLayoutWithMenu from "../display/CenteredLayoutWithMenu";

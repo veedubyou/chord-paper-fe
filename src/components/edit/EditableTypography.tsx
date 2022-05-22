@@ -1,11 +1,11 @@
-import { Box, Typography, TypographyProps } from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import { withStyles } from "@material-ui/styles";
+import { Box, Typography, TypographyProps } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import React, { useState } from "react";
 import { DataTestID } from "../../common/DataTestID";
 import { inflateIfEmpty } from "../../common/Whitespace";
 import TextInput from "./TextInput";
 import { PlainFn } from "../../common/PlainFn";
+import { grey } from '@mui/material/colors';
 
 export interface EditControl {
     editing: boolean;
@@ -85,7 +85,7 @@ const EditableTypography: React.FC<EditableTypographyProps> = (
     };
 
     const editableLine = (): React.ReactElement => {
-        if (props.variant === "inherit" || props.variant === "srOnly") {
+        if (props.variant === "inherit") {
             throw new Error("can't have these variant types");
         }
 

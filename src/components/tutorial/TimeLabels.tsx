@@ -1,5 +1,6 @@
-import { Typography, withStyles } from "@material-ui/core";
-import SlowMotionVideoIcon from "@material-ui/icons/SlowMotionVideo";
+import { Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import SlowMotionVideoIcon from "@mui/icons-material/SlowMotionVideo";
 import React, { useContext } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";

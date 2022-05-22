@@ -1,5 +1,5 @@
-import { Box } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Box } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import React, { useEffect, useRef } from "react";
 import { Finger, FretLabelPosition, Shape, SVGuitarChord } from "svguitar";
 import { StringName } from "../../common/music/guitar/Fretboard";

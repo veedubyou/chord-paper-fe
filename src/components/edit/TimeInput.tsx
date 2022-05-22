@@ -1,6 +1,6 @@
-import { IconButton, InputAdornment, Theme } from "@material-ui/core";
-import SlowMotionVideoIcon from "@material-ui/icons/SlowMotionVideo";
-import { StyledComponentProps, withStyles } from "@material-ui/styles";
+import { IconButton, InputAdornment, Theme } from "@mui/material";
+import SlowMotionVideoIcon from "@mui/icons-material/SlowMotionVideo";
+import { StyledComponentProps, withStyles } from "@mui/styles";
 import { Duration } from "luxon";
 import React, { useContext, useRef, useState } from "react";
 import { PlayerTimeContext } from "../PlayerTimeContext";
@@ -120,7 +120,7 @@ const TimeInput: React.FC<TimeInputProps> = (
 
     const buttonAdornment = (
         <InputAdornment position="start">
-            <IconButton edge="start" onClick={handleCurrentTimeButton}>
+            <IconButton edge="start" onClick={handleCurrentTimeButton} size="large">
                 <SlowMotionVideoIcon />
             </IconButton>
         </InputAdornment>

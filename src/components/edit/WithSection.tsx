@@ -1,5 +1,5 @@
-import { Box, Theme, Tooltip as UnstyledTooltip } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Box, Theme, Tooltip as UnstyledTooltip } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import React, { useCallback } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { DataTestID } from "../../common/DataTestID";
@@ -95,7 +95,6 @@ const WithSection: React.FC<WithSectionProps> = (
                 <Tooltip
                     arrow
                     placement="left"
-                    interactive
                     title={timeInput}
                     disableFocusListener={disableTooltipFocus}
                 >

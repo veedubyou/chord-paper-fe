@@ -1,4 +1,6 @@
-import { createStyles, Typography, withStyles } from "@material-ui/core";
+import { Typography } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import withStyles from '@mui/styles/withStyles';
 import clsx from "clsx";
 import React from "react";
 import { Lyric } from "../../common/ChordModel/Lyric";

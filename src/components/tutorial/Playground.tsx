@@ -1,10 +1,6 @@
-import {
-    Badge as UnstyledBadge,
-    Paper,
-    Theme,
-    withStyles,
-} from "@material-ui/core";
-import UnstyledCheckCircleIcon from "@material-ui/icons/CheckCircle";
+import { Badge as UnstyledBadge, Paper, Theme } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import UnstyledCheckCircleIcon from "@mui/icons-material/CheckCircle";
 import React, { useEffect, useState } from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import ChordPaperBody from "../edit/ChordPaperBody";

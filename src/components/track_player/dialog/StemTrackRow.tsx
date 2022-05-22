@@ -1,6 +1,6 @@
-import { Button, Divider, Grid, Theme } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { withStyles } from "@material-ui/styles";
+import { Button, Divider, Grid, Theme } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { withStyles } from "@mui/styles";
 import lodash from "lodash";
 import React from "react";
 import { StemTrack } from "../../../common/ChordModel/tracks/StemTrack";

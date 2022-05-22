@@ -5,7 +5,7 @@ import {
     Slider,
     Theme,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import {
     blueGrey,
     grey,
@@ -14,8 +14,8 @@ import {
     pink,
     purple,
     yellow,
-} from "@material-ui/core/colors";
-import { withStyles } from "@material-ui/styles";
+} from "@mui/material/colors";
+import { withStyles } from "@mui/styles";
 import React from "react";
 
 const FullSizedBox = withStyles((theme: Theme) => ({
@@ -97,7 +97,7 @@ const StemTrackControlPane = <StemKey extends string>(
         };
 
         const handleVolumeChange = (
-            _event: React.ChangeEvent<{}>,
+            _event: Event,
             value: number | number[]
         ) => {
             if (typeof value !== "number") {

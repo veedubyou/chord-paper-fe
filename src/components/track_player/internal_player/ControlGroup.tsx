@@ -1,5 +1,5 @@
-import { Box, Divider, Theme } from "@material-ui/core";
-import { StyledComponentProps, withStyles } from "@material-ui/styles";
+import { Box, Divider, Theme } from "@mui/material";
+import { StyledComponentProps, withStyles } from "@mui/styles";
 import React from "react";
 
 export const ControlGroupBox = withStyles({

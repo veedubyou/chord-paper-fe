@@ -1,11 +1,8 @@
-import {
-    StyledComponentProps,
-    Typography as UnstyledTypography,
-} from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import { withStyles } from "@material-ui/styles";
+import { Typography as UnstyledTypography } from "@mui/material";
+import { withStyles, StyledComponentProps } from "@mui/styles";
 import { DateTime, Duration } from "luxon";
 import React, { useEffect, useState } from "react";
+import { grey } from '@mui/material/colors';
 
 const Typography = withStyles({
     root: {

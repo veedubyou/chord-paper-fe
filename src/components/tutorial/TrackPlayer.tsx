@@ -1,6 +1,6 @@
-import { Typography } from "@material-ui/core";
-import RadioIcon from "@material-ui/icons/Radio";
-import { withStyles } from "@material-ui/styles";
+import { Typography } from "@mui/material";
+import RadioIcon from "@mui/icons-material/Radio";
+import { withStyles } from "@mui/styles";
 import React from "react";
 import { noopFn } from "../../common/PlainFn";
 import { ControlButton } from "../track_player/internal_player/ControlButton";

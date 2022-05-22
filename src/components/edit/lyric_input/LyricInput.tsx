@@ -1,6 +1,6 @@
-import { makeStyles, Typography, TypographyVariant } from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import { StyledComponentProps, withStyles } from "@material-ui/styles";
+import { Typography, TypographyVariant } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { StyledComponentProps, withStyles } from "@mui/styles";
 import React from "react";
 import { Lyric } from "../../../common/ChordModel/Lyric";
 import { PlainFn } from "../../../common/PlainFn";
@@ -12,6 +12,7 @@ import {
     useFocusAndPlaceCaretEffect,
     useSelectionChangeEffect,
 } from "./useSelectionHandler";
+import { grey } from '@mui/material/colors';
 
 const InputTypography = withStyles({
     root: {

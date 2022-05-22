@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@mui/styles";
 import React, { useEffect } from "react";
 import ErrorImg from "../../assets/img/error.jpeg";
 import { useErrorSnackbar } from "../../common/backend/errors";

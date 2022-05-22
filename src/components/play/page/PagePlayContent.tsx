@@ -1,6 +1,5 @@
-import { Box, Paper } from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import { withStyles } from "@material-ui/styles";
+import { Box, Paper } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import { useWindowWidth } from "@react-hook/window-size";
 import React, { useEffect, useState } from "react";
 import useScrollbarSize from "react-scrollbar-size";
@@ -9,6 +8,7 @@ import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import FocusedElement from "../common/FocusedElement";
 import { useNavigationKeys } from "../common/useNavigateKeys";
 import PlayLine from "../common/PlayLine";
+import { grey } from '@mui/material/colors';
 
 export interface PageDisplaySettings {
     numberOfColumnsPerPage: number;

@@ -1,5 +1,5 @@
-import { TextFieldProps, TypographyVariant } from "@material-ui/core";
-import { StyledComponentProps } from "@material-ui/styles";
+import { TextFieldProps, TypographyVariant } from "@mui/material";
+import { StyledComponentProps } from "@mui/styles";
 import React, { useState } from "react";
 import ControlledTextInput from "./ControlledTextInput";
 

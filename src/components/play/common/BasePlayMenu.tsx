@@ -1,14 +1,11 @@
-import { Theme } from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import UnstyledMoreVertIcon from "@material-ui/icons/MoreVert";
-import {
-    SpeedDial as UnstyledSpeedDial,
-    SpeedDialAction
-} from "@material-ui/lab";
-import { withStyles } from "@material-ui/styles";
+import { Theme } from "@mui/material";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import UnstyledMoreVertIcon from "@mui/icons-material/MoreVert";
+import { SpeedDial as UnstyledSpeedDial, SpeedDialAction } from '@mui/material';
+import { withStyles } from "@mui/styles";
 import React, { useState } from "react";
 import { PlainFn } from "../../../common/PlainFn";
+import { grey } from '@mui/material/colors';
 
 interface BasePlayMenuProps {
     children: React.ReactElement | React.ReactElement[];

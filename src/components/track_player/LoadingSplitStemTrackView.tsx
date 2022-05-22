@@ -1,9 +1,9 @@
-import { Box, LinearProgress, Theme, Typography } from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import { withStyles } from "@material-ui/styles";
+import { Box, LinearProgress, Theme, Typography } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import React, { useEffect } from "react";
 import { SplitStemTrack } from "../../common/ChordModel/tracks/SplitStemRequest";
 import { PlainFn } from "../../common/PlainFn";
+import { grey } from '@mui/material/colors';
 
 const PaddedBox = withStyles((theme: Theme) => ({
     root: {

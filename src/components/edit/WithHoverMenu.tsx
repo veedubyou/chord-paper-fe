@@ -1,10 +1,5 @@
-import {
-    Button as UnstyledButton,
-    ButtonGroup,
-    Theme,
-    Tooltip as UnstyledTooltip,
-    withStyles,
-} from "@material-ui/core";
+import { Button as UnstyledButton, ButtonGroup, Theme, Tooltip as UnstyledTooltip } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import React from "react";
 import { DataTestID } from "../../common/DataTestID";
 
@@ -55,7 +50,7 @@ const WithHoverMenu: React.FC<WithHoverMenuProps> = (
     );
 
     return (
-        <Tooltip placement="right" title={hoverMenu} interactive>
+        <Tooltip placement="right" title={hoverMenu}>
             {props.children}
         </Tooltip>
     );

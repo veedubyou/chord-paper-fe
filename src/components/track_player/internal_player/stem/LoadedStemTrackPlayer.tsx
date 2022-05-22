@@ -1,4 +1,4 @@
-import { Box } from "@material-ui/core";
+import { Box } from "@mui/material";
 import audioBufferToWav from "audiobuffer-to-wav";
 import lodash from "lodash";
 import { useSnackbar } from "notistack";

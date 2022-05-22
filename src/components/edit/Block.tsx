@@ -1,6 +1,6 @@
-import { Box, Grid, makeStyles, Theme } from "@material-ui/core";
-import red from "@material-ui/core/colors/red";
-import { withStyles } from "@material-ui/styles";
+import { Box, Grid, Theme } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { withStyles } from "@mui/styles";
 import clsx from "clsx";
 import { List } from "immutable";
 import React from "react";
@@ -25,6 +25,7 @@ import {
 import { useEditingState } from "./InteractionContext";
 import TextInput from "./TextInput";
 import Token from "./Token";
+import { red } from '@mui/material/colors';
 
 const chordSymbolClassName = "ChordSymbol";
 

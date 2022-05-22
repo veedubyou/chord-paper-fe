@@ -1,7 +1,7 @@
 import React from "react";
-import { Typography, Theme } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
-import grey from "@material-ui/core/colors/grey";
+import { Typography, Theme } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import { grey } from '@mui/material/colors';
 
 const PaddedTypography = withStyles((theme: Theme) => ({
     root: {

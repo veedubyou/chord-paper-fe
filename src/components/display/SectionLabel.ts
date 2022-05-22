@@ -1,5 +1,5 @@
-import { createStyles } from "@material-ui/core";
-import blueGrey from "@material-ui/core/colors/blueGrey";
+import createStyles from '@mui/styles/createStyles';
+import { blueGrey } from '@mui/material/colors';
 
 export const sectionLabelStyle = createStyles({
     root: {

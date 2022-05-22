@@ -1,5 +1,6 @@
-import { Typography, withStyles } from "@material-ui/core";
-import ChatBubbleIcon from "@material-ui/icons/ChatBubbleOutline";
+import { Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import ChatBubbleIcon from "@mui/icons-material/ChatBubbleOutline";
 import React from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";

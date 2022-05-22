@@ -3,13 +3,11 @@ import {
     Dialog,
     Grid,
     Paper as UnstyledPaper,
-    StyledComponentProps,
     Theme,
     Typography as UnstyledTypography,
-} from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import { Alert, AlertTitle } from "@material-ui/lab";
-import { makeStyles, withStyles } from "@material-ui/styles";
+} from "@mui/material";
+import { Alert, AlertTitle } from '@mui/material';
+import { makeStyles, withStyles, StyledComponentProps } from "@mui/styles";
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
@@ -20,6 +18,7 @@ import { login } from "../../common/backend/requests";
 import { getRouteForTutorialComponent } from "../Tutorial";
 import LoginTutorial from "../tutorial/Login";
 import { deserializeUser, User, UserContext } from "./userContext";
+import { grey } from '@mui/material/colors';
 
 const Paper = withStyles({
     root: {
@@ -298,7 +297,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
 
     return (
         <Paper id={googleSignInID} classes={props.classes}>
-            <Grid container alignItems="center" justify="center">
+            <Grid container alignItems="center" justifyContent="center">
                 <Grid item>
                     <img
                         src={SigninIcon}

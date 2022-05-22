@@ -4,8 +4,8 @@ import {
     TextField,
     Theme,
     Tooltip as UnstyledTooltip,
-} from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+} from "@mui/material";
+import { withStyles } from "@mui/styles";
 import React, { useState } from "react";
 import { Scale, ScaleUtility } from "../../common/music/scale/Scale";
 import FretSelector from "./FretSelector";
@@ -66,7 +66,7 @@ const MenuSelectableScaleChart: React.FC<MenuSelectableScaleChartProps> = (
     );
 
     return (
-        <Tooltip placement="top" interactive title={menu}>
+        <Tooltip placement="top" title={menu}>
             <span>
                 <ScaleChart
                     scale={props.scale}

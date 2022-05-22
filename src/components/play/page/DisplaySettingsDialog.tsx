@@ -15,8 +15,8 @@ import {
     TextFieldProps as TextFieldPropsWithVariant,
     Theme,
     Typography,
-} from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+} from "@mui/material";
+import { withStyles } from "@mui/styles";
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import React, { ChangeEvent, useState } from "react";
 import { PlainFn } from "../../../common/PlainFn";

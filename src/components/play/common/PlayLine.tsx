@@ -1,9 +1,9 @@
-import { Box, Typography, Theme } from "@material-ui/core";
+import { Box, Typography, Theme } from "@mui/material";
 import React from "react";
 import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../../common/ChordModel/ChordLine";
 import PlayBlock from "./PlayBlock";
-import { withStyles } from "@material-ui/styles";
+import { withStyles } from "@mui/styles";
 import {
     sectionLabelStyle,
     sectionTypographyVariant,

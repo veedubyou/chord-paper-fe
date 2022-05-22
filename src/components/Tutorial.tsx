@@ -1,6 +1,6 @@
-import { Fab as UnstyledFab, Paper, Theme } from "@material-ui/core";
-import UnstyledPlayArrowIcon from "@material-ui/icons/PlayArrow";
-import { withStyles } from "@material-ui/styles";
+import { Fab as UnstyledFab, Paper, Theme } from "@mui/material";
+import UnstyledPlayArrowIcon from "@mui/icons-material/PlayArrow";
+import { withStyles } from "@mui/styles";
 import React from "react";
 import { Link, Route } from "react-router-dom";
 import { MultiFC, transformToFC } from "../common/FunctionalComponent";

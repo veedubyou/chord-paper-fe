@@ -5,7 +5,7 @@ import {
     DialogContent,
     DialogTitle,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";

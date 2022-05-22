@@ -12,12 +12,12 @@ import {
     MenuItem,
     Theme,
     Typography as UnstyledTypography,
-} from "@material-ui/core";
-import AddIcon from "@material-ui/icons/Add";
-import { withStyles } from "@material-ui/styles";
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { withStyles } from "@mui/styles";
 import lodash from "lodash";
 import React, { useState } from "react";
-import RefreshIcon from "@material-ui/icons/Refresh";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 import { SingleTrack } from "../../../common/ChordModel/tracks/SingleTrack";
 import {

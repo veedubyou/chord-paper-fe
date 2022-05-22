@@ -1,8 +1,6 @@
-import ReceiptIcon from "@material-ui/icons/Receipt";
-import TuneIcon from "@material-ui/icons/Tune";
-import {
-    SpeedDialAction
-} from "@material-ui/lab";
+import ReceiptIcon from "@mui/icons-material/Receipt";
+import TuneIcon from "@mui/icons-material/Tune";
+import { SpeedDialAction } from '@mui/material';
 import React, { useState } from "react";
 import { PlainFn } from "../../../common/PlainFn";
 import BasePlayMenu from "../common/BasePlayMenu";

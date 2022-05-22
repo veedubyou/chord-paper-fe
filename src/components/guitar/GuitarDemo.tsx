@@ -1,5 +1,5 @@
-import { Box, Grid, Paper as UnstyledPaper, Theme } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Box, Grid, Paper as UnstyledPaper, Theme } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import React, { useRef, useState } from "react";
 import "swiper/components/navigation/navigation.min.css";
 import SwiperCore, { Navigation, Pagination } from "swiper/core";

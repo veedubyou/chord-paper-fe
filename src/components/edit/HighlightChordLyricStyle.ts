@@ -1,5 +1,5 @@
-import { Theme } from "@material-ui/core";
-import { CSSProperties } from "@material-ui/styles";
+import { Theme } from "@mui/material";
+import { CSSProperties } from "@mui/styles";
 
 export const spaceClassName = "LyricTokenSpace";
 export const wordClassName = "LyricTokenWord";

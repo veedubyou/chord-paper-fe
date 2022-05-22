@@ -1,4 +1,4 @@
-import { Box } from "@material-ui/core";
+import { Box } from "@mui/material";
 import React, { useEffect, useMemo } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
 import shortid from "shortid";

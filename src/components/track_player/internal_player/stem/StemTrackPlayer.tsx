@@ -4,10 +4,10 @@ import {
     LinearProgress,
     Theme,
     Typography,
-} from "@material-ui/core";
-import { grey } from "@material-ui/core/colors";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import { withStyles } from "@material-ui/styles";
+} from "@mui/material";
+import { grey } from "@mui/material/colors";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import { withStyles } from "@mui/styles";
 import ky, { DownloadProgress } from "ky";
 import lodash from "lodash";
 import prettyBytes from "pretty-bytes";

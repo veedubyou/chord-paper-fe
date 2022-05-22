@@ -1,5 +1,5 @@
-import { Typography } from "@material-ui/core";
-import PlayIcon from "@material-ui/icons/PlayArrow";
+import { Typography } from "@mui/material";
+import PlayIcon from "@mui/icons-material/PlayArrow";
 import React from "react";
 import { LineBreak } from "./Common";
 import { convertToTutorialComponent } from "./TutorialComponent";

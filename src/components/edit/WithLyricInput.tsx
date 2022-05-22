@@ -1,4 +1,5 @@
-import { Box, Theme, withStyles } from "@material-ui/core";
+import { Box, Theme } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import { isLeft } from "fp-ts/lib/Either";
 import { useSnackbar } from "notistack";
 import React, { useMemo } from "react";

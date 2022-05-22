@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import Playground from "./Playground";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { ChordLine } from "../../common/ChordModel/ChordLine";

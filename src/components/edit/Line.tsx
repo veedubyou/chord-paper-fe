@@ -1,8 +1,7 @@
-import { Box, Slide, withStyles } from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import red from "@material-ui/core/colors/red";
-import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
-import BookmarkBorderOutlinedIcon from '@material-ui/icons/BookmarkBorderOutlined';
+import { Box, Slide } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import UnstyledBackspaceIcon from "@mui/icons-material/Backspace";
+import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import { List } from "immutable";
 import React, { useMemo, useState } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
@@ -16,6 +15,8 @@ import Block from "./Block";
 import WithHoverMenu, { MenuItem } from "./WithHoverMenu";
 import WithLyricInput from "./WithLyricInput";
 import WithSection from "./WithSection";
+
+import { grey, red } from '@mui/material/colors';
 
 const AtomicSelectionBox = withStyles({
     root: {

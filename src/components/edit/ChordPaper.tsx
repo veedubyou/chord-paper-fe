@@ -1,5 +1,6 @@
-import { Paper, Theme, withStyles } from "@material-ui/core";
-import { makeStyles } from "@material-ui/styles";
+import { Paper, Theme } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import { makeStyles } from "@mui/styles";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";

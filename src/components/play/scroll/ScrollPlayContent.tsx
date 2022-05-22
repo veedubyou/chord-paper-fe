@@ -1,5 +1,5 @@
-import { Box } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Box } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import { List } from "immutable";
 import React, { useCallback, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce/lib";

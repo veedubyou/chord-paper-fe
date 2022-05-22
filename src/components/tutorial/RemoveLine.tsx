@@ -1,6 +1,6 @@
-import { Typography, withStyles } from "@material-ui/core";
-import red from "@material-ui/core/colors/red";
-import UnstyledBackspaceIcon from "@material-ui/icons/Backspace";
+import { Typography } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import UnstyledBackspaceIcon from "@mui/icons-material/Backspace";
 import React from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
@@ -9,6 +9,7 @@ import { Lyric } from "../../common/ChordModel/Lyric";
 import { LineBreak } from "./Common";
 import Playground from "./Playground";
 import { convertToTutorialComponent } from "./TutorialComponent";
+import { red } from '@mui/material/colors';
 
 const title = "Remove Lines";
 

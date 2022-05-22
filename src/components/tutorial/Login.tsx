@@ -1,5 +1,5 @@
-import { Typography } from "@material-ui/core";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import { Typography } from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import React from "react";
 import { Link } from "react-router-dom";
 import { getRouteForTutorialComponent } from "../Tutorial";

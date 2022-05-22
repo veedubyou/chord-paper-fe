@@ -1,4 +1,5 @@
-import { Box, withStyles } from "@material-ui/core";
+import { Box } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
 import clsx from "clsx";
 import React from "react";
 import LyricDisplay, {

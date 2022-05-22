@@ -1,5 +1,5 @@
-import { Box, Theme } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Box, Theme } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import React, { useEffect } from "react";
 import { PlainFn } from "../../../common/PlainFn";
 import { useRegisterTopKeyListener } from "../../GlobalKeyListener";

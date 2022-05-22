@@ -1,5 +1,5 @@
-import { Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Typography } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import React from "react";
 import { inflateIfEmpty } from "../../common/Whitespace";
 import { lyricTypographyVariant } from "./Lyric";

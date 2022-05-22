@@ -1,5 +1,5 @@
-import { Theme } from "@material-ui/core";
-import { ClassNameMap, makeStyles } from "@material-ui/styles";
+import { Theme } from "@mui/material";
+import { ClassNameMap, makeStyles } from "@mui/styles";
 import React, { useCallback, useRef } from "react";
 import { useDebouncedCallback } from "use-debounce/lib";
 

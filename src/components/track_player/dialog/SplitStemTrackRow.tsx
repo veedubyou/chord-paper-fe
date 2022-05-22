@@ -1,6 +1,6 @@
-import { Button, Divider, Grid, Theme } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { withStyles } from "@material-ui/styles";
+import { Button, Divider, Grid, Theme } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { withStyles } from "@mui/styles";
 import React from "react";
 import { SplitStemTrack } from "../../../common/ChordModel/tracks/SplitStemRequest";
 import LabelField from "./LabelField";
