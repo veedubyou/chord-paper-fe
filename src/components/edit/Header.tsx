@@ -1,5 +1,5 @@
-import { Box, Grid, Theme, Typography } from "@material-ui/core";
-import { useTheme, withStyles } from "@material-ui/styles";
+import { Box, Grid, Theme, Typography } from "@mui/material";
+import { useTheme, withStyles } from "@mui/styles";
 import React from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import UnstyledLastSavedAt from "../display/LastSavedAt";
@@ -53,8 +53,8 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
         );
 
     const details = (
-        <Grid container justify="center">
-            <Grid container item xs={6} justify="center">
+        <Grid container justifyContent="center">
+            <Grid container item xs={6} justifyContent="center">
                 <Grid item>
                     <Typography display="block" variant="caption">
                         Composed by:{" "}
@@ -70,7 +70,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
                     />
                 </Grid>
             </Grid>
-            <Grid container item xs={6} justify="center">
+            <Grid container item xs={6} justifyContent="center">
                 <Grid item>
                     <Typography display="inline" variant="caption">
                         Performed by:{" "}
@@ -90,9 +90,9 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
 
     return (
         <Box
-            paddingTop={theme.spacing(1)}
-            paddingLeft={theme.spacing(0.5)}
-            paddingRight={theme.spacing(0.5)}
+            paddingTop={theme.spacing(8)}
+            paddingLeft={theme.spacing(4)}
+            paddingRight={theme.spacing(4)}
             data-testid="Header"
         >
             {lastSavedAt}
