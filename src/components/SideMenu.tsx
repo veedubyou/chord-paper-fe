@@ -1,27 +1,29 @@
+import UnstyledCloseIcon from "@mui/icons-material/Close";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import FreeBreakfastIcon from "@mui/icons-material/FreeBreakfast";
+import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
+import UnstyledMenuIcon from "@mui/icons-material/Menu";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import PetsIcon from "@mui/icons-material/Pets";
+import StoreIcon from "@mui/icons-material/Store";
 import {
+    Box,
     Collapse,
     Divider,
     Drawer as UnstyledDrawer,
     Grid,
+    GridProps,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
     Paper,
-    Theme,
+    styled,
     Typography,
-} from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import UnstyledCloseIcon from "@material-ui/icons/Close";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import FreeBreakfastIcon from "@material-ui/icons/FreeBreakfast";
-import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
-import UnstyledMenuIcon from "@material-ui/icons/Menu";
-import MusicNoteIcon from "@material-ui/icons/MusicNote";
-import PetsIcon from "@material-ui/icons/Pets";
-import StoreIcon from "@material-ui/icons/Store";
-import { makeStyles, withStyles } from "@material-ui/styles";
+} from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { makeStyles, withStyles } from "@mui/styles";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { DemoPath, SongPath } from "../common/paths";
@@ -40,44 +42,32 @@ const withPointerStyle = withStyles({
 const MenuIcon = withPointerStyle(UnstyledMenuIcon);
 const CloseIcon = withPointerStyle(UnstyledCloseIcon);
 
-const Drawer = withStyles({
-    root: {
-        display: "flex",
-        flexDirection: "column",
-    },
-})(UnstyledDrawer);
+const Drawer = styled(UnstyledDrawer)({
+    display: "flex",
+    flexDirection: "column",
+});
 
-const VerticalGridItem = withStyles({
-    root: {
-        maxWidth: "none",
-    },
-})(Grid);
+const VerticalGridItem = styled(Grid)({
+    maxWidth: "none",
+});
 
-const TitleGrid = withStyles((theme: Theme) => ({
-    root: {
-        padding: theme.spacing(3),
-    },
-}))(Grid);
+const TitleGrid = styled(Grid)<GridProps>(({ theme }) => ({
+    padding: theme.spacing(3),
+}));
 
-const TitleName = withStyles({
-    root: {
-        color: grey[600],
-    },
-})(Typography);
+const TitleName = styled(Typography)({
+    color: grey[600],
+});
 
-const CollapsedMenuSurface = withStyles({
-    root: {
-        minWidth: "24px",
-        height: "100vh",
-    },
-})(Paper);
+const CollapsedMenuSurface = styled(Paper)({
+    minWidth: "24px",
+    height: "100vh",
+});
 
-const FullHeightGrid = withStyles({
-    root: {
-        height: "100%",
-        width: "100%",
-    },
-})(Grid);
+const FullHeightGrid = styled(Grid)({
+    height: "100%",
+    width: "100%",
+});
 
 const useFillerStyle = makeStyles({
     root: {
@@ -171,13 +161,19 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
         color: "inherit",
     };
 
+    const fillerBox = <Box sx={{ flexGrow: 1 }} />;
+
     const collapsedMenu = (
         <CollapsedSideMenu open={!expanded} onClick={() => setExpanded(true)} />
     );
 
     const expandedMenu = (
         <Drawer variant="persistent" open={expanded} anchor="left">
-            <TitleGrid container alignItems="center" justify="space-between">
+            <TitleGrid
+                container
+                alignItems="center"
+                justifyContent="space-between"
+            >
                 <Grid item>
                     <Link
                         to="/"
@@ -263,7 +259,7 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
                     </ListItem>
                 </Link>
             </List>
-            <div className={fillerStyle.root} />
+            {fillerBox}
             <Login onUserChanged={onUserChanged} />
         </Drawer>
     );
