@@ -5,12 +5,13 @@ import {
     Theme,
     TypographyVariant,
     useTheme,
-} from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import { CSSProperties, StyledComponentProps } from "@material-ui/styles";
+} from "@mui/material";
+import { CSSProperties, StyledComponentProps } from "@mui/styles";
 import React from "react";
+import { grey } from '@mui/material/colors';
+import { MUIStyledCommonProps } from "@mui/system";
 
-interface ControlledTextInputProps extends StyledComponentProps {
+interface ControlledTextInputProps extends MUIStyledCommonProps<Theme> {
     value: string;
     onValueChange: (newValue: string) => void;
     onFinish?: (newValue: string) => void;
@@ -22,6 +23,7 @@ interface ControlledTextInputProps extends StyledComponentProps {
     typographyVariant?: TypographyVariant;
     placeholder?: string;
     paddingSpacing?: number;
+    className?: string;
 }
 
 const ControlledTextInput: React.FC<ControlledTextInputProps> = (
@@ -55,9 +57,9 @@ const ControlledTextInput: React.FC<ControlledTextInputProps> = (
             variant = theme?.typography?.[props.typographyVariant];
         }
 
-        const padding: number = (() => {
+        const padding: string = (() => {
             if (props.paddingSpacing === undefined) {
-                return 0;
+                return "0px";
             }
 
             return theme.spacing(props.paddingSpacing);
@@ -72,7 +74,6 @@ const ControlledTextInput: React.FC<ControlledTextInputProps> = (
                 opacity: 1,
                 background: grey[100],
             },
-            className: props.classes?.root,
         };
 
         if (props.width !== undefined && inputProps.style) {
@@ -85,6 +86,7 @@ const ControlledTextInput: React.FC<ControlledTextInputProps> = (
     return (
         <TextField
             autoFocus
+            className={props.className}
             variant={props.variant}
             inputProps={{
                 "data-testid": "InnerInput",

@@ -1,4 +1,4 @@
-import { RootRef } from "@material-ui/core";
+
 import React from "react";
 import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
 import { IDable } from "../../../common/ChordModel/Collection";
@@ -26,7 +26,11 @@ const ChordlessTokenDroppable: React.FC<ChordlessTokenDroppableProps> = (
         className: childClassName,
     });
 
-    return <RootRef rootRef={dropRef}>{childrenWithClassName}</RootRef>;
+    return (
+        <>
+            {childrenWithClassName}
+        </>
+    );
 };
 
 export default ChordlessTokenDroppable;

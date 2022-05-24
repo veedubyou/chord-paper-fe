@@ -1,16 +1,8 @@
-import { Modal } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Modal } from "@mui/material";
 import React from "react";
 import CenteredLayoutWithMenu from "../display/CenteredLayoutWithMenu";
 import { CollapsedSideMenu } from "../SideMenu";
 import LoadingSpinner from "./LoadingSpinner";
-
-const FullScreenSpinner = withStyles({
-    root: {
-        width: "100vw",
-        height: "100vh",
-    },
-})(LoadingSpinner);
 
 const FullScreenLoading: React.FC<{}> = (): JSX.Element => {
     const collapsedMenu = <CollapsedSideMenu open />;
@@ -21,7 +13,11 @@ const FullScreenLoading: React.FC<{}> = (): JSX.Element => {
         <CenteredLayoutWithMenu menuElement={collapsedMenu}>
             <Modal open>
                 <div>
-                    <FullScreenSpinner size={200} thickness={2} />
+                    <LoadingSpinner
+                        size={200}
+                        thickness={2}
+                        sx={{ width: "100vw", height: "100vh" }}
+                    />
                 </div>
             </Modal>
         </CenteredLayoutWithMenu>

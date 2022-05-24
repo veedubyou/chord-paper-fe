@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { ChordLine } from "../../../common/ChordModel/ChordLine";
 import { PlainFn } from "../../../common/PlainFn";
 import PlayLine from "../common/PlayLine";
 import HighlightBorderBox from "./HighlightBorderBox";
-import InViewElement from "./InViewElement";
-import ScrollingElement from "./ScrollingElement";
+import { useInViewElement } from "./InViewElement";
+import { useScrollable } from "./ScrollingElement";
 
 // these values determine the portion of the viewport that is used to consider
 // the next line that the user can scroll to
@@ -36,25 +36,40 @@ interface ScrollablePlayLineProps {
 const ScrollablePlayLine: React.FC<ScrollablePlayLineProps> = (
     props: ScrollablePlayLineProps
 ): JSX.Element => {
+    const currentPageInViewRef = useInViewElement({
+        topMarginPercentage: topCurrentViewportMarginPercent,
+        bottomMarginPercentage: bottomCurrentViewportMarginPercent,
+        isInViewFnCallback: props.isInCurrentViewFnCallback,
+        inViewChanged: props.inViewChanged,
+    });
+
+    const previousPageInViewRef = useInViewElement({
+        topMarginPercentage: topPreviousViewportMarginPercent,
+        bottomMarginPercentage: bottomPreviousViewportMarginPercent,
+        isInViewFnCallback: props.isInPreviousViewFnCallback,
+    });
+
+    const scrollRef = useScrollable(props.scrollFnCallback);
+
+    const captureRef = useCallback(
+        (elem: Element | null) => {
+            if (elem !== null) {
+                scrollRef.current = elem;
+                currentPageInViewRef(elem);
+                previousPageInViewRef(elem);
+            } else {
+                scrollRef.current = undefined;
+                currentPageInViewRef(null);
+                previousPageInViewRef(null);
+            }
+        },
+        [currentPageInViewRef, previousPageInViewRef, scrollRef]
+    );
+
     return (
-        <InViewElement
-            topMarginPercentage={topCurrentViewportMarginPercent}
-            bottomMarginPercentage={bottomCurrentViewportMarginPercent}
-            isInViewFnCallback={props.isInCurrentViewFnCallback}
-            inViewChanged={props.inViewChanged}
-        >
-            <InViewElement
-                topMarginPercentage={topPreviousViewportMarginPercent}
-                bottomMarginPercentage={bottomPreviousViewportMarginPercent}
-                isInViewFnCallback={props.isInPreviousViewFnCallback}
-            >
-                <ScrollingElement scrollFnCallback={props.scrollFnCallback}>
-                    <HighlightBorderBox highlight={props.highlight}>
-                        <PlayLine chordLine={props.chordLine} />
-                    </HighlightBorderBox>
-                </ScrollingElement>
-            </InViewElement>
-        </InViewElement>
+        <HighlightBorderBox ref={captureRef} highlight={props.highlight}>
+            <PlayLine chordLine={props.chordLine} />
+        </HighlightBorderBox>
     );
 };
 

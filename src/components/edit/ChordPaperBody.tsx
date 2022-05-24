@@ -1,12 +1,7 @@
-import {
-    Grid,
-    makeStyles,
-    Paper as UnstyledPaper,
-    withStyles,
-} from "@material-ui/core";
+import { Grid, Paper as UnstyledPaper, styled } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { List } from "immutable";
-import React, { useMemo, useState } from "react";
-import { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { useRegisterKeyListener } from "../GlobalKeyListener";
@@ -24,11 +19,9 @@ const useUninteractiveStyle = makeStyles({
     },
 });
 
-const Paper = withStyles({
-    root: {
-        width: "auto",
-    },
-})(UnstyledPaper);
+const Paper = styled(UnstyledPaper)({
+    width: "auto",
+});
 
 type KeyDownHandler = (
     event: KeyboardEvent,
@@ -139,7 +132,7 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
                 elevation={0}
                 tabIndex={0}
             >
-                <Grid container justify="center">
+                <Grid container justifyContent="center">
                     <Grid item xs={10}>
                         {lines}
                     </Grid>

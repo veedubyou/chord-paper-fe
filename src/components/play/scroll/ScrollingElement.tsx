@@ -1,4 +1,3 @@
-import { RootRef } from "@material-ui/core";
 import React, { useRef } from "react";
 import { PlainFn } from "../../../common/PlainFn";
 
@@ -12,6 +11,19 @@ interface ScrollingElementProps {
     scrollFnCallback: (scrollFn: PlainFn) => void;
 }
 
+export const useScrollable = (
+    scrollFnCallback: (scrollFn: PlainFn) => void
+): React.MutableRefObject<Element | undefined> => {
+    console.log("useScrollable");
+    const scrollRef = useRef<Element>();
+
+    scrollFnCallback(() =>
+        scrollRef.current?.scrollIntoView({ behavior: "smooth" })
+    );
+
+    return scrollRef;
+};
+
 const ScrollingElement: React.FC<ScrollingElementProps> = (
     props: ScrollingElementProps
 ): JSX.Element => {
@@ -21,7 +33,7 @@ const ScrollingElement: React.FC<ScrollingElementProps> = (
         scrollRef.current?.scrollIntoView({ behavior: "smooth" })
     );
 
-    return <RootRef rootRef={scrollRef}>{props.children}</RootRef>;
+    return <>{props.children}</>;
 };
 
 export default ScrollingElement;

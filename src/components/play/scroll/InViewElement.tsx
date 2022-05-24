@@ -1,5 +1,4 @@
-import { RootRef } from "@material-ui/core";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import { PlainFn } from "../../../common/PlainFn";
 
@@ -11,16 +10,16 @@ export interface ViewportElement {
 type IsInViewFn = () => boolean;
 
 interface InViewElementProps {
-    children: React.ReactElement;
-    isInViewFnCallback?: (isInView: IsInViewFn) => void;
-    inViewChanged?: PlainFn;
     topMarginPercentage: number;
     bottomMarginPercentage: number;
+    isInViewFnCallback?: (isInView: IsInViewFn) => void;
+    inViewChanged?: PlainFn;
 }
 
-const InViewElement: React.FC<InViewElementProps> = (
-    props: InViewElementProps
-): JSX.Element => {
+type InViewRef = (node: Element | null | undefined) => void;
+
+export const useInViewElement = (props: InViewElementProps): InViewRef => {
+    console.log("useInViewElement");
     const { ref: inViewRef, inView } = useInView({
         threshold: 0.9,
         rootMargin: `${props.topMarginPercentage}% 0px ${props.bottomMarginPercentage}% 0px`,
@@ -36,7 +35,5 @@ const InViewElement: React.FC<InViewElementProps> = (
         inViewChanged?.();
     }, [inView, inViewChanged]);
 
-    return <RootRef rootRef={inViewRef}>{props.children}</RootRef>;
+    return inViewRef;
 };
-
-export default InViewElement;

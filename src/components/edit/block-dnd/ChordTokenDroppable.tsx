@@ -1,4 +1,4 @@
-import { RootRef } from "@material-ui/core";
+
 import React, { useEffect } from "react";
 import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
 import { IDable } from "../../../common/ChordModel/Collection";
@@ -21,7 +21,11 @@ const ChordTokenDroppable: React.FC<ChordTokenDroppableProps> = (
         onDragOver(isOver);
     }, [onDragOver, isOver]);
 
-    return <RootRef rootRef={dropRef}>{props.children}</RootRef>;
+    return (
+        <>
+            {props.children}
+        </>
+    );
 };
 
 export default ChordTokenDroppable;

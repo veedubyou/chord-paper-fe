@@ -1,26 +1,28 @@
-import { Box, CircularProgress, Theme } from "@material-ui/core";
-import { StyledComponentProps, withStyles } from "@material-ui/styles";
+import { Box, CircularProgress, Theme } from "@mui/material";
+import { SystemStyleObject } from "@mui/system";
 import React from "react";
 
-const CenteredBox = withStyles((theme: Theme) => ({
-    root: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        margin: theme.spacing(0.5),
-    },
-}))(Box);
-
-interface LoadingSpinnerProps extends StyledComponentProps {
+interface LoadingSpinnerProps {
     size?: number;
     thickness?: number;
+    sx?: SystemStyleObject<Theme>;
 }
 
-const LoadingSpinner: React.FC<LoadingSpinnerProps> = (props: LoadingSpinnerProps): JSX.Element => {
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = (
+    props: LoadingSpinnerProps
+): JSX.Element => {
     return (
-        <CenteredBox classes={props.classes}>
+        <Box
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                margin: 0.5,
+                ...props.sx,
+            }}
+        >
             <CircularProgress size={props.size} thickness={props.thickness} />
-        </CenteredBox>
+        </Box>
     );
 };
 

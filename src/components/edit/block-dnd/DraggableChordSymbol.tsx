@@ -1,4 +1,4 @@
-import { RootRef } from "@material-ui/core";
+
 import React from "react";
 import { DragSourceMonitor, useDrag } from "react-dnd";
 import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
@@ -45,11 +45,11 @@ const DraggableChordSymbol: React.FC<DraggableChordSymbolProps> = (
     });
 
     return (
-        <RootRef rootRef={dragRef}>
+        <>
             <ChordSymbol className={props.className}>
                 {props.children}
             </ChordSymbol>
-        </RootRef>
+        </>
     );
 };
 

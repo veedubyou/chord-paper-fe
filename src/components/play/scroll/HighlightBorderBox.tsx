@@ -1,19 +1,8 @@
-import { Box, Theme } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Box, Theme } from "@mui/material";
 import React from "react";
 import { makeHighlightBorders } from "./highlightBorderContext";
 
 const transitionFunction = "cubic-bezier(.19,1,.22,1)";
-
-const BorderedBox = withStyles((theme: Theme) => ({
-    root: {
-        borderColor: "transparent",
-        borderStyle: "dashed",
-        borderRadius: theme.spacing(1.5),
-        borderWidth: theme.spacing(0.3),
-        transition: `border-color ${transitionFunction} 2s`,
-    },
-}))(Box);
 
 const useHighlightBorder = makeHighlightBorders();
 
@@ -22,24 +11,37 @@ interface HighlightBorderBoxProps {
     children: React.ReactElement;
 }
 
-const HighlightBorderBox: React.FC<HighlightBorderBoxProps> = (
-    props: HighlightBorderBoxProps
-): JSX.Element => {
-    const highlightBorderStyle = useHighlightBorder();
+const HighlightBorderBox = React.forwardRef(
+    (
+        props: HighlightBorderBoxProps,
+        ref: React.ForwardedRef<Element>
+    ): JSX.Element => {
+        const highlightBorderStyle = useHighlightBorder();
 
-    const highlightClassName: string | undefined = (() => {
-        if (props.highlight === true) {
-            return highlightBorderStyle.root;
-        }
+        const highlightClassName: string | undefined = (() => {
+            if (props.highlight === true) {
+                return highlightBorderStyle.root;
+            }
 
-        return undefined;
-    })();
+            return undefined;
+        })();
 
-    return (
-        <BorderedBox className={highlightClassName}>
-            {props.children}
-        </BorderedBox>
-    );
-};
+        return (
+            <Box
+                ref={ref}
+                className={highlightClassName}
+                sx={(theme: Theme) => ({
+                    borderColor: "transparent",
+                    borderStyle: "dashed",
+                    borderRadius: theme.spacing(1.5),
+                    borderWidth: theme.spacing(0.3),
+                    transition: `border-color ${transitionFunction} 2s`,
+                })}
+            >
+                {props.children}
+            </Box>
+        );
+    }
+);
 
 export default HighlightBorderBox;

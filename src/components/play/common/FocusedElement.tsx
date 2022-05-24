@@ -1,4 +1,4 @@
-import { RootRef } from "@material-ui/core";
+
 import React, { useEffect } from "react";
 
 interface FocusedElementProps {
@@ -15,9 +15,9 @@ const FocusedElement: React.FC<FocusedElementProps> = (
     });
 
     return (
-        <RootRef rootRef={ref}>
+        <>
             {props.children}
-        </RootRef>
+        </>
     );
 };
 
