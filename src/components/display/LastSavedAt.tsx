@@ -1,17 +1,16 @@
-import { Typography as UnstyledTypography } from "@mui/material";
-import { withStyles, StyledComponentProps } from "@mui/styles";
+import { styled, StyledComponentProps, Theme, Typography as UnstyledTypography } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { MUIStyledCommonProps } from "@mui/system";
 import { DateTime, Duration } from "luxon";
 import React, { useEffect, useState } from "react";
-import { grey } from '@mui/material/colors';
 
-const Typography = withStyles({
-    root: {
-        color: grey[600],
-    },
-})(UnstyledTypography);
+const Typography = styled(UnstyledTypography)({
+    color: grey[600],
+});
 
-interface LastSavedAtProps extends StyledComponentProps {
+interface LastSavedAtProps extends MUIStyledCommonProps<Theme> {
     lastSaved: Date;
+    className?: string;
 }
 
 const LastSavedAt: React.FC<LastSavedAtProps> = (
@@ -46,10 +45,12 @@ const LastSavedAt: React.FC<LastSavedAtProps> = (
         return () => clearInterval(interval);
     }, [setLastRefreshed]);
 
+    console.log("props.sx", props.sx);
+
     return (
         <Typography
-            classes={props.classes}
             variant="caption"
+            className={props.className}
         >{`Last Saved: ${timeDescription()}`}</Typography>
     );
 };

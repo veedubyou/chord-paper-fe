@@ -1,17 +1,14 @@
-import { Typography } from "@mui/material";
-import { withStyles } from "@mui/styles";
+import { styled, Typography } from "@mui/material";
 import React from "react";
 import { inflateIfEmpty } from "../../common/Whitespace";
 import { lyricTypographyVariant } from "./Lyric";
 
-const ChordTypography = withStyles({
-    root: {
-        whiteSpace: "pre",
-        cursor: "pointer",
-        fontFamily: "PoriChord",
-        userSelect: "all",
-    },
-})(Typography);
+const ChordTypography = styled(Typography)({
+    whiteSpace: "pre",
+    cursor: "pointer",
+    fontFamily: "PoriChord",
+    userSelect: "all",
+});
 
 export interface ChordSymbolProps {
     children: string;

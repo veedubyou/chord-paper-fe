@@ -1,18 +1,16 @@
-import { Box, Grid, Theme, Typography } from "@mui/material";
-import { useTheme, withStyles } from "@mui/styles";
+import { Box, Grid, styled, Theme, Typography } from "@mui/material";
+import { useTheme } from "@mui/styles";
 import React from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import UnstyledLastSavedAt from "../display/LastSavedAt";
 import { ChordSongAction } from "../reducer/reducer";
 import EditableTypography from "./EditableTypography";
 
-const LastSavedAt = withStyles((theme: Theme) => ({
-    root: {
-        position: "absolute",
-        top: theme.spacing(2),
-        right: theme.spacing(2),
-    },
-}))(UnstyledLastSavedAt);
+const LastSavedAt = styled(UnstyledLastSavedAt)(({ theme }) => ({
+    position: "absolute",
+    top: theme.spacing(2),
+    right: theme.spacing(2),
+}));
 
 interface HeaderProps {
     song: ChordSong;

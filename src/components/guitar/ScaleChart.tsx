@@ -1,5 +1,4 @@
-import { Box } from "@mui/material";
-import { withStyles } from "@mui/styles";
+import { Box, styled } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { Finger, FretLabelPosition, Shape, SVGuitarChord } from "svguitar";
 import { StringName } from "../../common/music/guitar/Fretboard";
@@ -9,19 +8,17 @@ import {
 } from "../../common/music/guitar/Scale";
 import { Scale } from "../../common/music/scale/Scale";
 
-const ChartBox = withStyles({
-    root: {
-        transform: "rotate(270deg)",
+const ChartBox = styled(Box)({
+    transform: "rotate(270deg)",
 
-        "& svg": {
-            // magic number, but it makes charts not overlap
-            transform: "scale(0.85)",
-        },
-        "& .title": {
-            fontFamily: "PoriChord",
-        },
+    "& svg": {
+        // magic number, but it makes charts not overlap
+        transform: "scale(0.85)",
     },
-})(Box);
+    "& .title": {
+        fontFamily: "PoriChord",
+    },
+});
 
 const fretWindow = 4;
 

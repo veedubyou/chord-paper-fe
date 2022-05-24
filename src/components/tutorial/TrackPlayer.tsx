@@ -1,6 +1,5 @@
-import { Typography } from "@mui/material";
 import RadioIcon from "@mui/icons-material/Radio";
-import { withStyles } from "@mui/styles";
+import { styled, Typography } from "@mui/material";
 import React from "react";
 import { noopFn } from "../../common/PlainFn";
 import { ControlButton } from "../track_player/internal_player/ControlButton";
@@ -8,7 +7,7 @@ import { ControlPaneBox } from "../track_player/internal_player/ControlPane";
 import PlayrateControl from "../track_player/internal_player/PlayrateControl";
 import StemTrackControlPane, {
     ControlPaneButtonColour,
-    StemControl,
+    StemControl
 } from "../track_player/internal_player/stem/StemTrackControlPane";
 import TransposeControl from "../track_player/internal_player/TransposeControl";
 import { LineBreak } from "./Common";
@@ -16,11 +15,9 @@ import { convertToTutorialComponent } from "./TutorialComponent";
 
 const title = "Track Player";
 
-const SmallControlPaneBox = withStyles({
-    root: {
-        width: "min-content",
-    },
-})(ControlPaneBox);
+const SmallControlPaneBox = styled(ControlPaneBox)({
+    width: "min-content",
+});
 
 const TrackPlayer: React.FC<{}> = (): JSX.Element => {
     const makeStemControl = <

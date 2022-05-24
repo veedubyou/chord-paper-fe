@@ -1,28 +1,22 @@
 import {
     Box,
     Grid,
-    TextField,
-    Theme,
-    Tooltip as UnstyledTooltip,
+    styled,
+    TextField, Tooltip as UnstyledTooltip
 } from "@mui/material";
-import { withStyles } from "@mui/styles";
 import React, { useState } from "react";
 import { Scale, ScaleUtility } from "../../common/music/scale/Scale";
 import FretSelector from "./FretSelector";
 import ScaleChart, { StartingFret } from "./ScaleChart";
 
-const Tooltip = withStyles((theme: Theme) => ({
-    tooltip: {
-        background: "white",
-        boxShadow: theme.shadows[2],
-    },
-}))(UnstyledTooltip);
+const Tooltip = styled(UnstyledTooltip)(({ theme }) => ({
+    background: "white",
+    boxShadow: theme.shadows[2],
+}));
 
-const MarginBox = withStyles((theme: Theme) => ({
-    root: {
-        margin: theme.spacing(2),
-    },
-}))(Box);
+const MarginBox = styled(Box)(({ theme }) => ({
+    margin: theme.spacing(2),
+}));
 
 interface MenuSelectableScaleChartProps {
     scale: Scale;

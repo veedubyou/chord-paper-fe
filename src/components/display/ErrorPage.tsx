@@ -1,16 +1,13 @@
-import { Grid, Paper, Theme, Typography } from "@mui/material";
-import { withStyles } from "@mui/styles";
+import { Grid, Paper, styled, Typography } from "@mui/material";
 import React from "react";
 
-const RootPaper = withStyles((theme: Theme) => ({
-    root: {
-        margin: theme.spacing(5),
-        padding: theme.spacing(5),
-        minHeight: theme.spacing(46),
-        minWidth: theme.spacing(92),
-        position: "relative",
-    },
-}))(Paper);
+const RootPaper = styled(Paper)(({ theme }) => ({
+    margin: theme.spacing(5),
+    padding: theme.spacing(5),
+    minHeight: theme.spacing(46),
+    minWidth: theme.spacing(92),
+    position: "relative",
+}));
 
 const ErrorPage: React.FC<{}> = (): JSX.Element => {
     return (

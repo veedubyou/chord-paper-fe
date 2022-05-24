@@ -1,16 +1,13 @@
-import { Box, LinearProgress, Theme, Typography } from "@mui/material";
-import { withStyles } from "@mui/styles";
+import { Box, LinearProgress, styled, Typography } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import React, { useEffect } from "react";
 import { SplitStemTrack } from "../../common/ChordModel/tracks/SplitStemRequest";
 import { PlainFn } from "../../common/PlainFn";
-import { grey } from '@mui/material/colors';
 
-const PaddedBox = withStyles((theme: Theme) => ({
-    root: {
-        padding: theme.spacing(2),
-        backgroundColor: grey[100],
-    },
-}))(Box);
+const PaddedBox = styled(Box)(({ theme }) => ({
+    padding: theme.spacing(2),
+    backgroundColor: grey[100],
+}));
 
 const refreshInterval = 10000;
 

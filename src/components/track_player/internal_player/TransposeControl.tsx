@@ -1,25 +1,18 @@
-import { Box, Theme, Tooltip, Typography } from "@mui/material";
-import { withStyles } from "@mui/styles";
+import { Box, styled, Tooltip, Typography } from "@mui/material";
 import React from "react";
 import { greyTextColour } from "../common";
 import { ControlButton } from "./ControlButton";
 import { ControlGroupBox } from "./ControlGroup";
 
-const TransposeBox = withStyles({
-    root: {
-        justifyContent: "space-between",
-    },
-})(ControlGroupBox);
+const TransposeBox = styled(ControlGroupBox)({
+    justifyContent: "space-between",
+});
 
-const TransposeDisplay = withStyles((theme: Theme) => {
-    return {
-        root: {
-            color: greyTextColour,
-            display: "flex",
-            justifyContent: "center",
-        },
-    };
-})(Typography);
+const TransposeDisplay = styled(Typography)(({ theme }) => ({
+    color: greyTextColour,
+    display: "flex",
+    justifyContent: "center",
+}));
 
 interface TransposeControlProps {
     transposeLevel: number;

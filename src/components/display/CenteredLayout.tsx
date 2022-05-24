@@ -1,4 +1,4 @@
-import { Grid } from "@material-ui/core";
+import { Grid } from "@mui/material";
 import React from "react";
 
 interface CenteredLayoutProps {
@@ -10,7 +10,7 @@ const CenteredLayout: React.FC<CenteredLayoutProps> = (
 ): JSX.Element => {
     return (
         <Grid container>
-            <Grid item container justify="center">
+            <Grid item container justifyContent="center">
                 {props.children}
             </Grid>
         </Grid>

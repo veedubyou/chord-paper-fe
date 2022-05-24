@@ -1,5 +1,4 @@
-import { Paper, Theme } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { Paper, styled } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import React from "react";
 import { Helmet } from "react-helmet-async";
@@ -12,20 +11,18 @@ import { ChordSongAction } from "../reducer/reducer";
 import JamStation from "../track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
-    TrackListLoad,
+    TrackListLoad
 } from "../track_player/providers/TrackListProvider";
 import ChordPaperBody from "./ChordPaperBody";
 import Header from "./Header";
 import ChordPaperMenu from "./menu/ChordPaperMenu";
 
-const RootPaper = withStyles((theme: Theme) => ({
-    root: {
-        position: "relative",
-        margin: theme.spacing(5),
-        minHeight: theme.spacing(92),
-        minWidth: theme.spacing(92),
-    },
-}))(Paper);
+const RootPaper = styled(Paper)(({ theme }) => ({
+    position: "relative",
+    margin: theme.spacing(5),
+    minHeight: theme.spacing(92),
+    minWidth: theme.spacing(92),
+}));
 
 const useWhiteStyle = makeStyles({
     root: {

@@ -1,22 +1,17 @@
-import { Badge as UnstyledBadge, Paper, Theme } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
 import UnstyledCheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { Badge as UnstyledBadge, Paper, styled } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import ChordPaperBody from "../edit/ChordPaperBody";
 import { useChordSongReducer } from "../reducer/reducer";
 
-const CheckCircleIcon = withStyles((theme: Theme) => ({
-    root: {
-        color: theme.palette.success.main,
-    },
-}))(UnstyledCheckCircleIcon);
+const CheckCircleIcon = styled(UnstyledCheckCircleIcon)(({ theme }) => ({
+    color: theme.palette.success.main,
+}));
 
-const Badge = withStyles({
-    root: {
-        display: "inherit",
-    },
-})(UnstyledBadge);
+const Badge = styled(UnstyledBadge)({
+    display: "inherit",
+});
 
 interface PlaygroundProps {
     initialSong: ChordSong;

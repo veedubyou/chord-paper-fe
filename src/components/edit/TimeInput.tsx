@@ -1,6 +1,6 @@
-import { IconButton, InputAdornment, Theme } from "@mui/material";
 import SlowMotionVideoIcon from "@mui/icons-material/SlowMotionVideo";
-import { StyledComponentProps, withStyles } from "@mui/styles";
+import { IconButton, InputAdornment, styled } from "@mui/material";
+import { StyledComponentProps } from "@mui/styles";
 import { Duration } from "luxon";
 import React, { useContext, useRef, useState } from "react";
 import { PlayerTimeContext } from "../PlayerTimeContext";
@@ -12,12 +12,12 @@ interface TimeInputProps extends StyledComponentProps {
     onFinish?: (newSeconds: number | null) => void;
 }
 
-const ControlledTextInput = withStyles((theme: Theme) => ({
-    root: {
+const ControlledTextInput = styled(UnstyledControlledTextInput)(
+    ({ theme }) => ({
         textAlign: "right",
         width: widthOfString(theme, "body1", "00:00"),
-    },
-}))(UnstyledControlledTextInput);
+    })
+);
 
 const TimeInput: React.FC<TimeInputProps> = (
     props: TimeInputProps
@@ -120,7 +120,11 @@ const TimeInput: React.FC<TimeInputProps> = (
 
     const buttonAdornment = (
         <InputAdornment position="start">
-            <IconButton edge="start" onClick={handleCurrentTimeButton} size="large">
+            <IconButton
+                edge="start"
+                onClick={handleCurrentTimeButton}
+                size="large"
+            >
                 <SlowMotionVideoIcon />
             </IconButton>
         </InputAdornment>

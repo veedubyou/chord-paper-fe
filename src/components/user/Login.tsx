@@ -1,13 +1,11 @@
 import {
-    Box,
+    Alert, AlertTitle, Box,
     Dialog,
     Grid,
-    Paper as UnstyledPaper,
-    Theme,
-    Typography as UnstyledTypography,
+    Paper as UnstyledPaper, styled, Typography as UnstyledTypography
 } from "@mui/material";
-import { Alert, AlertTitle } from '@mui/material';
-import { makeStyles, withStyles, StyledComponentProps } from "@mui/styles";
+import { grey } from "@mui/material/colors";
+import { makeStyles, StyledComponentProps } from "@mui/styles";
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
@@ -18,28 +16,21 @@ import { login } from "../../common/backend/requests";
 import { getRouteForTutorialComponent } from "../Tutorial";
 import LoginTutorial from "../tutorial/Login";
 import { deserializeUser, User, UserContext } from "./userContext";
-import { grey } from '@mui/material/colors';
 
-const Paper = withStyles({
-    root: {
+const Paper = styled(UnstyledPaper)({
         width: "100%",
         cursor: "pointer",
-    },
-})(UnstyledPaper);
+    });
 
-const Typography = withStyles((theme: Theme) => ({
-    root: {
-        margin: theme.spacing(2),
-        color: grey[600],
-    },
-}))(UnstyledTypography);
+const Typography = styled(UnstyledTypography)(({ theme }) => ({
+    margin: theme.spacing(2),
+    color: grey[600],
+}));
 
-const Paragraph = withStyles((theme: Theme) => ({
-    root: {
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
-    },
-}))(Box);
+const Paragraph = styled(Box)(({ theme }) => ({
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+}));
 
 const googleSignInID = "google-sign-in";
 const googleClientID =

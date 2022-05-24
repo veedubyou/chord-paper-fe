@@ -1,30 +1,27 @@
-import { Box } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import { Box, styled } from "@mui/material";
 import clsx from "clsx";
 import React from "react";
+import { Lyric } from "../../common/ChordModel/Lyric";
 import LyricDisplay, {
     LyricTypography,
-    lyricTypographyProps,
+    lyricTypographyProps
 } from "../display/Lyric";
+import { deserializeLyrics } from "../lyrics/Serialization";
 import {
     chordSymbolClassName,
     chordTargetClassName,
-    firstTokenClassName,
+    firstTokenClassName
 } from "./HighlightChordLyricStyle";
-import { Lyric } from "../../common/ChordModel/Lyric";
-import { deserializeLyrics } from "../lyrics/Serialization";
 
-const InvisibleTypography = withStyles({
-    root: {
-        color: "transparent",
-        cursor: "pointer",
-        userSelect: "none",
-        position: "absolute",
-        left: 0,
-        top: 0,
-        transform: "translate(0%, -110%)",
-    },
-})(LyricTypography);
+const InvisibleTypography = styled(LyricTypography)({
+    color: "transparent",
+    cursor: "pointer",
+    userSelect: "none",
+    position: "absolute",
+    left: 0,
+    top: 0,
+    transform: "translate(0%, -110%)",
+});
 
 interface ChordTargetBoxProps {
     children: React.ReactNode;

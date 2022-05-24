@@ -1,24 +1,32 @@
-import { Button as UnstyledButton, ButtonGroup, Theme, Tooltip as UnstyledTooltip } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
+import {
+    Button,
+    ButtonGroup,
+    styled,
+    Tooltip,
+    tooltipClasses,
+    TooltipProps
+} from "@mui/material";
 import React from "react";
 import { DataTestID } from "../../common/DataTestID";
 
-const Button = withStyles((theme: Theme) => ({
-    contained: {
-        backgroundColor: "transparent",
-        "&:hover": {
-            backgroundColor: theme.palette.primary.dark,
-        },
+const HoverMenuButton = styled(Button)(({ theme }) => ({
+    backgroundColor: "transparent",
+    "&:hover": {
+        backgroundColor: theme.palette.primary.dark,
     },
-}))(UnstyledButton);
+}));
 
-const Tooltip = withStyles({
-    tooltip: {
-        padding: 0,
-        background: "transparent",
-        margin: 0,
+const TransparentTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))({
+    [`& .${tooltipClasses.tooltip}`]: {
+        padding: "0px",
+        backgroundColor: "transparent",
     },
-})(UnstyledTooltip);
+    [`& .${tooltipClasses.tooltipPlacementRight}`]: {
+        marginLeft: "0px",
+    },
+});
 
 export interface MenuItem extends DataTestID {
     icon: React.ReactElement;
@@ -33,26 +41,42 @@ export interface WithHoverMenuProps {
 const WithHoverMenu: React.FC<WithHoverMenuProps> = (
     props: WithHoverMenuProps
 ): JSX.Element => {
-    const hoverMenu = (
+    const buttons = props.menuItems.map((item: MenuItem, index: number) => (
+        <HoverMenuButton
+            key={index}
+            onClick={item.onClick}
+            data-testid={item["data-testid"]}
+        >
+            {item.icon}
+        </HoverMenuButton>
+    ));
+
+    const menuContents = (
         <ButtonGroup orientation="vertical" variant="text">
-            {props.menuItems.map((menuItem: MenuItem, index: number) => {
-                return (
-                    <Button
-                        key={index}
-                        onClick={menuItem.onClick}
-                        data-testid={menuItem["data-testid"]}
-                    >
-                        {menuItem.icon}
-                    </Button>
-                );
-            })}
+            {buttons}
         </ButtonGroup>
     );
 
     return (
-        <Tooltip placement="right" title={hoverMenu}>
+        <TransparentTooltip
+            placement="right"
+            title={menuContents}
+            open
+            componentsProps={{
+                popper: {
+                    modifiers: [
+                        {
+                            name: "offset",
+                            options: {
+                                offset: [0, 0],
+                            },
+                        },
+                    ],
+                },
+            }}
+        >
             {props.children}
-        </Tooltip>
+        </TransparentTooltip>
     );
 };
 

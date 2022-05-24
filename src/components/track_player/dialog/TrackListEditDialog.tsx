@@ -1,3 +1,5 @@
+import AddIcon from "@mui/icons-material/Add";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import {
     Box,
     Box as UnstyledBox,
@@ -10,35 +12,31 @@ import {
     Divider,
     Menu,
     MenuItem,
-    Theme,
-    Typography as UnstyledTypography,
+    styled,
+    Typography as UnstyledTypography
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import { withStyles } from "@mui/styles";
 import lodash from "lodash";
 import React, { useState } from "react";
-import RefreshIcon from "@mui/icons-material/Refresh";
-
 import { SingleTrack } from "../../../common/ChordModel/tracks/SingleTrack";
+import {
+    SplitStemTrack,
+    SplitStemTypes
+} from "../../../common/ChordModel/tracks/SplitStemRequest";
 import {
     FiveStemKeys,
     FiveStemTrack,
     FourStemKeys,
     FourStemTrack,
     TwoStemKeys,
-    TwoStemTrack,
+    TwoStemTrack
 } from "../../../common/ChordModel/tracks/StemTrack";
 import { Track } from "../../../common/ChordModel/tracks/Track";
 import { TrackList } from "../../../common/ChordModel/tracks/TrackList";
 import { PlainFn } from "../../../common/PlainFn";
 import { TrackListLoad } from "../providers/TrackListProvider";
 import SingleTrackRow from "./SingleTrackRow";
-import StemTrackRow, { URLFieldLabel } from "./StemTrackRow";
 import SplitStemTrackRow from "./SplitStemTrackRow";
-import {
-    SplitStemTrack,
-    SplitStemTypes,
-} from "../../../common/ChordModel/tracks/SplitStemRequest";
+import StemTrackRow, { URLFieldLabel } from "./StemTrackRow";
 
 interface TrackListEditDialogProps {
     open: boolean;
@@ -48,37 +46,29 @@ interface TrackListEditDialogProps {
     onRefresh?: PlainFn;
 }
 
-const FlexBox = withStyles((theme: Theme) => ({
-    root: {
-        display: "flex",
-        padding: theme.spacing(5),
-        alignItems: "center",
-        justifyItems: "center",
-    },
-}))(Box);
+const FlexBox = styled(Box)(({ theme }) => ({
+    display: "flex",
+    padding: theme.spacing(5),
+    alignItems: "center",
+    justifyItems: "center",
+}));
 
-const InlineBlockBox = withStyles({
-    root: {
+const InlineBlockBox = styled(UnstyledBox)({
         display: "inline-block",
-    },
-})(UnstyledBox);
+    });
 
-const AddNewRowBox = withStyles((theme: Theme) => ({
-    root: {
-        cursor: "pointer",
-        display: "flex",
-        alignItems: "center",
-        marginTop: theme.spacing(1),
-        marginBottom: theme.spacing(1),
-    },
-}))(UnstyledBox);
+const AddNewRowBox = styled(UnstyledBox)(({ theme }) => ({
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+}));
 
-const Typography = withStyles((theme: Theme) => ({
-    root: {
-        marginLeft: theme.spacing(2),
-        marginBottom: theme.spacing(1),
-    },
-}))(UnstyledTypography);
+const Typography = styled(UnstyledTypography)(({ theme }) => ({
+    marginLeft: theme.spacing(2),
+    marginBottom: theme.spacing(1),
+}));
 
 const TrackListEditDialog: React.FC<TrackListEditDialogProps> = (
     props: TrackListEditDialogProps

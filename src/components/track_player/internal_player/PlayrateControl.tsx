@@ -1,26 +1,19 @@
-import { Box, Theme, Tooltip, Typography } from "@mui/material";
-import { withStyles } from "@mui/styles";
+import { Box, styled, Tooltip, Typography } from "@mui/material";
 import React from "react";
 import { greyTextColour, widthOfString } from "../common";
 import { ControlButton } from "./ControlButton";
 import { ControlGroupBox } from "./ControlGroup";
 
-const PlayrateBox = withStyles({
-    root: {
-        justifyContent: "space-between",
-    },
-})(ControlGroupBox);
+const PlayrateBox = styled(ControlGroupBox)({
+    justifyContent: "space-between",
+});
 
-const PercentageDisplay = withStyles((theme: Theme) => {
-    return {
-        root: {
-            color: greyTextColour,
-            minWidth: widthOfString(theme, "h6", "200%"),
-            display: "flex",
-            justifyContent: "center",
-        },
-    };
-})(Typography);
+const PercentageDisplay = styled(Typography)(({ theme }) => ({
+    color: greyTextColour,
+    minWidth: widthOfString(theme, "h6", "200%"),
+    display: "flex",
+    justifyContent: "center",
+}));
 
 interface PlayrateControlProps {
     playratePercentage: number;

@@ -1,7 +1,7 @@
-import { Box, Slide } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
 import UnstyledBackspaceIcon from "@mui/icons-material/Backspace";
-import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
+import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
+import { Box, Slide, styled } from "@mui/material";
+import { grey, red } from "@mui/material/colors";
 import { List } from "immutable";
 import React, { useMemo, useState } from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
@@ -16,30 +16,22 @@ import WithHoverMenu, { MenuItem } from "./WithHoverMenu";
 import WithLyricInput from "./WithLyricInput";
 import WithSection from "./WithSection";
 
-import { grey, red } from '@mui/material/colors';
+const AtomicSelectionBox = styled(Box)({
+    userSelect: "all",
+});
 
-const AtomicSelectionBox = withStyles({
-    root: {
-        userSelect: "all",
-    },
-})(Box);
+const BackspaceIcon = styled(UnstyledBackspaceIcon)({
+    color: red[300],
+});
 
-const BackspaceIcon = withStyles({
-    root: {
-        color: red[300],
+const HighlightableBox = styled(Box)({
+    "&:hover": {
+        backgroundColor: grey[100],
     },
-})(UnstyledBackspaceIcon);
-
-const HighlightableBox = withStyles({
-    root: {
-        "&:hover": {
-            backgroundColor: grey[100],
-        },
-        whiteSpace: "nowrap",
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-    },
-})(Box);
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+});
 
 interface LineProps extends DataTestID {
     chordLine: ChordLine;
@@ -103,7 +95,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
                 onChordChange={handlers.chordChange}
                 onBlockSplit={handlers.blockSplit}
                 data-testid="Block"
-            ></Block>
+            />
         )
     );
 

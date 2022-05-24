@@ -1,6 +1,6 @@
-import { Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
 import UnstyledBackspaceIcon from "@mui/icons-material/Backspace";
+import { styled, Typography } from "@mui/material";
+import { red } from "@mui/material/colors";
 import React from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
@@ -9,15 +9,12 @@ import { Lyric } from "../../common/ChordModel/Lyric";
 import { LineBreak } from "./Common";
 import Playground from "./Playground";
 import { convertToTutorialComponent } from "./TutorialComponent";
-import { red } from '@mui/material/colors';
 
 const title = "Remove Lines";
 
-const BackspaceIcon = withStyles({
-    root: {
-        color: red[300],
-    },
-})(UnstyledBackspaceIcon);
+const BackspaceIcon = styled(UnstyledBackspaceIcon)({
+    color: red[300],
+});
 
 const RemoveLine: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({

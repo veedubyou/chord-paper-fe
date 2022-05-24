@@ -1,6 +1,5 @@
-import { Button, Divider, Grid, Theme } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { withStyles } from "@mui/styles";
+import { Button, Divider, Grid, styled } from "@mui/material";
 import React from "react";
 import { SingleTrack } from "../../../common/ChordModel/tracks/SingleTrack";
 import LabelField from "./LabelField";
@@ -12,11 +11,9 @@ interface SingleTrackRowProps {
     onRemove: () => void;
 }
 
-const RowContainer = withStyles((theme: Theme) => ({
-    root: {
-        margin: theme.spacing(2),
-    },
-}))(Grid);
+const RowContainer = styled(Grid)(({ theme }) => ({
+    margin: theme.spacing(2),
+}));
 
 const SingleTrackRow: React.FC<SingleTrackRowProps> = (
     props: SingleTrackRowProps

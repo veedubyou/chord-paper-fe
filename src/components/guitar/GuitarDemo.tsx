@@ -1,5 +1,4 @@
-import { Box, Grid, Paper as UnstyledPaper, Theme } from "@mui/material";
-import { withStyles } from "@mui/styles";
+import { Box, Grid, Paper as UnstyledPaper, styled } from "@mui/material";
 import React, { useRef, useState } from "react";
 import "swiper/components/navigation/navigation.min.css";
 import SwiperCore, { Navigation, Pagination } from "swiper/core";
@@ -7,24 +6,20 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper.min.css";
 import { AllScales, ScaleUtility } from "../../common/music/scale/Scale";
 import FretSelector from "./FretSelector";
-import { StartingFret } from "./ScaleChart";
 import MenuSelectableScaleChart from "./MenuSelectableScaleChart";
+import { StartingFret } from "./ScaleChart";
 import ScaleSelection, { SelectableScale } from "./ScaleSelection";
 
 // install Swiper modules
 SwiperCore.use([Navigation, Pagination]);
 
-const MarginBox = withStyles((theme: Theme) => ({
-    root: {
-        margin: theme.spacing(2),
-    },
-}))(Box);
+const MarginBox = styled(Box)(({ theme }) => ({
+    margin: theme.spacing(2),
+}));
 
-const Paper = withStyles({
-    root: {
-        display: "block",
-    },
-})(UnstyledPaper);
+const Paper = styled(UnstyledPaper)({
+    display: "block",
+});
 
 interface GuitarDemoProps {}
 

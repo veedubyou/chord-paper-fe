@@ -1,6 +1,7 @@
-import { Typography, TypographyVariant } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import { StyledComponentProps, withStyles } from "@mui/styles";
+import { styled, Theme, Typography, TypographyVariant } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import makeStyles from "@mui/styles/makeStyles";
+import { MUIStyledCommonProps } from "@mui/system";
 import React from "react";
 import { Lyric } from "../../../common/ChordModel/Lyric";
 import { PlainFn } from "../../../common/PlainFn";
@@ -12,16 +13,13 @@ import {
     useFocusAndPlaceCaretEffect,
     useSelectionChangeEffect,
 } from "./useSelectionHandler";
-import { grey } from '@mui/material/colors';
 
-const InputTypography = withStyles({
-    root: {
-        width: "100%",
-        backgroundColor: grey[200],
-        whiteSpace: "pre",
-        display: "inline-block",
-    },
-})(Typography);
+const InputTypography = styled(Typography)({
+    width: "100%",
+    backgroundColor: grey[200],
+    whiteSpace: "pre",
+    display: "inline-block",
+});
 
 const useContentEditableStyle = makeStyles({
     root: {
@@ -38,7 +36,7 @@ const useContentEditableStyle = makeStyles({
     },
 });
 
-interface LyricInputProps extends StyledComponentProps {
+export interface LyricInputProps extends MUIStyledCommonProps<Theme> {
     children: Lyric;
     onFinish: (newValue: Lyric) => void;
     onSpecialBackspace: PlainFn;
@@ -114,7 +112,7 @@ const LyricInput: React.FC<LyricInputProps> = (
 
     return (
         <InputTypography
-            classes={props.classes}
+            sx={props.sx}
             variant={props.variant}
             display="inline"
             data-testid="LyricInput"

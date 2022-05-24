@@ -1,6 +1,5 @@
-import { Button, Divider, Grid, Theme } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { withStyles } from "@mui/styles";
+import { Button, Divider, Grid, styled } from "@mui/material";
 import lodash from "lodash";
 import React from "react";
 import { StemTrack } from "../../../common/ChordModel/tracks/StemTrack";
@@ -23,11 +22,9 @@ interface StemTrackRowProps<
     onRemove: () => void;
 }
 
-const RowContainer = withStyles((theme: Theme) => ({
-    root: {
-        margin: theme.spacing(2),
-    },
-}))(Grid);
+const RowContainer = styled(Grid)(({ theme }) => ({
+    margin: theme.spacing(2),
+}));
 
 const StemTrackRow = <StemKey extends string, T extends StemTrack<StemKey>>(
     props: StemTrackRowProps<StemKey, T>

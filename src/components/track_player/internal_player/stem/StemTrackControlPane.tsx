@@ -3,8 +3,7 @@ import {
     Button as UnstyledButton,
     Grid,
     Slider,
-    Theme,
-    Typography,
+    styled, Typography
 } from "@mui/material";
 import {
     blueGrey,
@@ -13,51 +12,44 @@ import {
     lightGreen,
     pink,
     purple,
-    yellow,
+    yellow
 } from "@mui/material/colors";
-import { withStyles } from "@mui/styles";
 import React from "react";
 
-const FullSizedBox = withStyles((theme: Theme) => ({
-    root: {
+const FullSizedBox = styled(Box)(({ theme }) => ({
+    width: "100%",
+    paddingLeft: theme.spacing(1.5),
+    paddingRight: theme.spacing(1.5),
+}));
+
+const VolumeSlider = styled(Slider)({
+    color: blueGrey[400],
+});
+
+const coloredButton = (color: string) => {
+    return styled(UnstyledButton)(({ theme }) => ({
+        backgroundColor: color,
         width: "100%",
-        paddingLeft: theme.spacing(1.5),
-        paddingRight: theme.spacing(1.5),
-    },
-}))(Box);
-
-const VolumeSlider = withStyles({
-    root: {
-        color: blueGrey[400],
-    },
-})(Slider);
-
-const withColoredButtonStyle = (color: string) => {
-    return withStyles((theme: Theme) => ({
-        root: {
+        height: "100%",
+        color: grey[700],
+        padding: theme.spacing(0.5),
+        textTransform: "none",
+        "&:hover": {
+            opacity: 0.6,
             backgroundColor: color,
-            width: "100%",
-            height: "100%",
-            color: grey[700],
-            padding: theme.spacing(0.5),
-            textTransform: "none",
-            "&:hover": {
-                opacity: 0.6,
-                backgroundColor: color,
-            },
         },
     }));
 };
 
-const DisabledButton = withColoredButtonStyle(grey[300])(UnstyledButton);
+const DisabledButton = coloredButton(grey[300]);
 
 const ColouredButtons = {
-    white: withColoredButtonStyle("white")(UnstyledButton),
-    pink: withColoredButtonStyle(pink[200])(UnstyledButton),
-    yellow: withColoredButtonStyle(yellow[200])(UnstyledButton),
-    purple: withColoredButtonStyle(purple[100])(UnstyledButton),
-    lightBlue: withColoredButtonStyle(lightBlue[200])(UnstyledButton),
-    lightGreen: withColoredButtonStyle(lightGreen[100])(UnstyledButton),
+    white: coloredButton("white"),
+    pink: coloredButton(pink[200]),
+    yellow: coloredButton(yellow[200]),
+    purple: coloredButton(purple[100]),
+    lightBlue: coloredButton(lightBlue[200]),
+    lightGreen: coloredButton(lightGreen[100]),
 };
 
 export type ControlPaneButtonColour = keyof typeof ColouredButtons;

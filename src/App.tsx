@@ -1,10 +1,11 @@
 import {
-    createMuiTheme,
+    createTheme as createMuiTheme,
     PaletteColorOptions,
+    StyledEngineProvider,
     Theme,
     ThemeProvider,
-} from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+} from "@mui/material";
+import { withStyles } from "@mui/styles";
 import { SnackbarProvider as UnstyledSnackbarProvider } from "notistack";
 import React, { useState } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
@@ -30,6 +31,11 @@ import {
     UserContext,
 } from "./components/user/userContext";
 import { withCloudSaveSongContext } from "./components/WithSongContext";
+
+declare module "@mui/styles/defaultTheme" {
+    // eslint-disable-next-line @typescript-eslint/no-empty-interface
+    interface DefaultTheme extends Theme {}
+}
 
 const createTheme = (): Theme => {
     const lightBlue: PaletteColorOptions = {
@@ -137,19 +143,21 @@ const App: React.FC<{}> = (): JSX.Element => {
     return (
         <HelmetProvider>
             <ThemeProvider theme={theme}>
-                <Helmet
-                    titleTemplate="%s - Chord Paper"
-                    defaultTitle="Chord Paper"
-                />
-                <SnackbarProvider>
-                    <HashRouter>
-                        <DragAndDrop>
-                            <GlobalKeyListenerProvider>
-                                <AppContent />
-                            </GlobalKeyListenerProvider>
-                        </DragAndDrop>
-                    </HashRouter>
-                </SnackbarProvider>
+                <StyledEngineProvider injectFirst>
+                    <Helmet
+                        titleTemplate="%s - Chord Paper"
+                        defaultTitle="Chord Paper"
+                    />
+                    <SnackbarProvider>
+                        <HashRouter>
+                            <DragAndDrop>
+                                <GlobalKeyListenerProvider>
+                                    <AppContent />
+                                </GlobalKeyListenerProvider>
+                            </DragAndDrop>
+                        </HashRouter>
+                    </SnackbarProvider>
+                </StyledEngineProvider>
             </ThemeProvider>
         </HelmetProvider>
     );

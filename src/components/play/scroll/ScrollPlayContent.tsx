@@ -1,5 +1,4 @@
-import { Box } from "@mui/material";
-import { withStyles } from "@mui/styles";
+import { Box, styled } from "@mui/material";
 import { List } from "immutable";
 import React, { useCallback, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce/lib";
@@ -12,11 +11,9 @@ import { useNavigationKeys } from "../common/useNavigateKeys";
 import { HighlightColourProvider } from "./highlightBorderContext";
 import ScrollablePlayLine from "./ScrollablePlayLine";
 
-const FullHeightBox = withStyles({
-    root: {
-        height: "100vh",
-    },
-})(Box);
+const FullHeightBox = styled(Box)({
+    height: "100vh",
+});
 
 interface ViewportLine {
     id: string;

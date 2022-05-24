@@ -1,6 +1,5 @@
-import { Typography } from "@mui/material";
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import { styled, Typography, TypographyProps } from "@mui/material";
+import { CSSProperties } from "@mui/styled-engine";
 import clsx from "clsx";
 import React from "react";
 import { Lyric } from "../../common/ChordModel/Lyric";
@@ -18,15 +17,15 @@ export const lyricTypographyProps = {
     display: "inline" as "inline",
 };
 
-export const lyricStyle = createStyles({
-    root: {
-        whiteSpace: "pre",
-        wordSpacing: ".15em",
-        display: "inline-block",
-    },
-});
+export const lyricStyle: CSSProperties = {
+    whiteSpace: "pre",
+    wordSpacing: ".15em",
+    display: "inline-block",
+};
 
-export const LyricTypography = withStyles(lyricStyle)(Typography);
+export const LyricTypography = styled(Typography)<TypographyProps>({
+    ...lyricStyle
+});
 
 interface LyricTypographyProps extends DataTestID {
     children: Lyric;

@@ -1,14 +1,13 @@
-import { Box, Paper } from "@mui/material";
-import { withStyles } from "@mui/styles";
+import { Box, Paper, styled } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import { useWindowWidth } from "@react-hook/window-size";
 import React, { useEffect, useState } from "react";
 import useScrollbarSize from "react-scrollbar-size";
 import { ChordLine } from "../../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import FocusedElement from "../common/FocusedElement";
-import { useNavigationKeys } from "../common/useNavigateKeys";
 import PlayLine from "../common/PlayLine";
-import { grey } from '@mui/material/colors';
+import { useNavigationKeys } from "../common/useNavigateKeys";
 
 export interface PageDisplaySettings {
     numberOfColumnsPerPage: number;
@@ -82,39 +81,33 @@ const PagePlayContent: React.FC<PagePlayContentProps> = (
 
     const viewportHeightWithoutScrollbar = `calc(100vh - ${scrollbarHeight}px)`;
 
-    const ColumnedPaper = withStyles({
-        root: {
-            columnGap: "0px",
-            columnRuleWidth: "2px",
-            columnRuleStyle: "solid",
-            columnRuleColor: grey[300],
-            columns: numberOfColumnsPerPage,
-            height: viewportHeightWithoutScrollbar,
-            width: "100%",
-        },
-    })(Paper);
+    const ColumnedPaper = styled(Paper)({
+        columnGap: "0px",
+        columnRuleWidth: "2px",
+        columnRuleStyle: "solid",
+        columnRuleColor: grey[300],
+        columns: numberOfColumnsPerPage,
+        height: viewportHeightWithoutScrollbar,
+        width: "100%",
+    });
 
     // using margins instead of column-gap, CSS columns force the rightmost column
     // up against the edge of the viewport and doesn't strictly respect column width
     //
     // making 0 gap columns with margins makes the math a lot simpler for each column
-    const MarginBox = withStyles({
-        root: {
-            marginLeft: `${columnMargin}px`,
-            marginRight: `${columnMargin}px`,
-        },
-    })(Box);
+    const MarginBox = styled(Box)({
+        marginLeft: `${columnMargin}px`,
+        marginRight: `${columnMargin}px`,
+    });
 
     const lines = props.song.chordLines.list.map((chordLine: ChordLine) => {
         return <PlayLine chordLine={chordLine} key={chordLine.id} />;
     });
 
-    const FullHeightBox = withStyles({
-        root: {
-            height: viewportHeightWithoutScrollbar,
-            pageBreakInside: "avoid",
-        },
-    })(Box);
+    const FullHeightBox = styled(Box)({
+        height: viewportHeightWithoutScrollbar,
+        pageBreakInside: "avoid",
+    });
 
     const emptyColumns: React.ReactElement[] = (() => {
         if (numberOfEmptyColumns === null) {

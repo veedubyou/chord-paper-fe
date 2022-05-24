@@ -1,23 +1,22 @@
-import { Typography } from "@mui/material";
-import withStyles from '@mui/styles/withStyles';
 import SlowMotionVideoIcon from "@mui/icons-material/SlowMotionVideo";
+import { styled, Typography } from "@mui/material";
 import React, { useContext } from "react";
+import { Link } from "react-router-dom";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { sectionLabelStyle } from "../display/SectionLabel";
 import PlayerTimeProvider, { PlayerTimeContext } from "../PlayerTimeContext";
+import { getRouteForTutorialComponent } from "../Tutorial";
 import { LineBreak } from "./Common";
 import Playground from "./Playground";
-import { convertToTutorialComponent } from "./TutorialComponent";
-import { getRouteForTutorialComponent } from "../Tutorial";
 import TrackPlayer from "./TrackPlayer";
-import { Link } from "react-router-dom";
+import { convertToTutorialComponent } from "./TutorialComponent";
 
 const title = "Labels with Timestamp";
 
-const LabelTypography = withStyles(sectionLabelStyle)(Typography);
+const LabelTypography = styled(Typography)(sectionLabelStyle);
 
 const TimeSetter: React.FC<{}> = (): null => {
     const getPlayerTimeRef = useContext(PlayerTimeContext);

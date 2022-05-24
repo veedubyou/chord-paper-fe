@@ -1,6 +1,13 @@
-import { Box, Grid, Theme } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import { withStyles } from "@mui/styles";
+import {
+    Box,
+    Grid,
+    inputBaseClasses,
+    styled,
+    textFieldClasses,
+    Theme,
+} from "@mui/material";
+import { red } from "@mui/material/colors";
+import makeStyles from "@mui/styles/makeStyles";
 import clsx from "clsx";
 import { List } from "immutable";
 import React from "react";
@@ -25,22 +32,23 @@ import {
 import { useEditingState } from "./InteractionContext";
 import TextInput from "./TextInput";
 import Token from "./Token";
-import { red } from '@mui/material/colors';
 
 const chordSymbolClassName = "ChordSymbol";
 
 const blockChordSymbolClassName = "BlockChordSymbol";
 const blockChordTargetClassName = "BlockChordTarget";
 
-const ChordInput = withStyles((theme: Theme) => ({
-    root: {
+// this height keeps the chords, the chord input, and lyrics the same height
+// so that everything lines up
+const rowHeight = "2em";
+
+const ChordInput = styled(TextInput)(({ theme }) => ({
+    width: "4em",
+    height: rowHeight,
+    [`& .${inputBaseClasses.input}`]: {
         fontFamily: "PoriChord",
-        borderBottom: "solid",
-        borderBottomColor: theme.palette.primary.main,
-        borderBottomWidth: "2px",
-        width: "4em",
     },
-}))(TextInput);
+}));
 
 const useFirstTokenStyle = {
     dragOver: makeStyles(
@@ -233,7 +241,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     })();
 
     return (
-        <Box display="inline-block">
+        <Box display="inline-block" sx={{ verticalAlign: "top" }}>
             <Grid
                 container
                 direction="column"
@@ -246,6 +254,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                         blockChordTargetClassName
                     )}
                     onClick={clickHandler(0)}
+                    height={rowHeight}
                     item
                 >
                     <ChordTokenDroppable
@@ -255,7 +264,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                         {chordRow}
                     </ChordTokenDroppable>
                 </Grid>
-                <Grid item data-testid="Lyric">
+                <Grid item height={rowHeight} data-testid="Lyric">
                     {lyricBlocks}
                 </Grid>
             </Grid>

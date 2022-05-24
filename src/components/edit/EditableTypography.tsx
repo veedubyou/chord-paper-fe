@@ -1,11 +1,10 @@
-import { Box, Typography, TypographyProps } from "@mui/material";
-import { withStyles } from "@mui/styles";
+import { Box, styled, Typography, TypographyProps } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import React, { useState } from "react";
 import { DataTestID } from "../../common/DataTestID";
+import { PlainFn } from "../../common/PlainFn";
 import { inflateIfEmpty } from "../../common/Whitespace";
 import TextInput from "./TextInput";
-import { PlainFn } from "../../common/PlainFn";
-import { grey } from '@mui/material/colors';
 
 export interface EditControl {
     editing: boolean;
@@ -24,11 +23,9 @@ interface EditableTypographyProps extends DataTestID, TypographyProps {
     placeholder?: string;
 }
 
-const PlaceholderTypography = withStyles({
-    root: {
-        color: grey[400],
-    },
-})(Typography);
+const PlaceholderTypography = styled(Typography)({
+    color: grey[400],
+});
 
 const EditableTypography: React.FC<EditableTypographyProps> = (
     props: EditableTypographyProps
