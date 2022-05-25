@@ -1,21 +1,28 @@
 import SlowMotionVideoIcon from "@mui/icons-material/SlowMotionVideo";
-import { IconButton, InputAdornment, styled } from "@mui/material";
-import { StyledComponentProps } from "@mui/styles";
+import {
+    IconButton,
+    InputAdornment,
+    inputBaseClasses,
+    styled,
+} from "@mui/material";
 import { Duration } from "luxon";
 import React, { useContext, useRef, useState } from "react";
+import { MUIStyledProps } from "../../common/styledProps";
 import { PlayerTimeContext } from "../PlayerTimeContext";
 import { widthOfString } from "../track_player/common";
 import UnstyledControlledTextInput from "./ControlledTextInput";
 
-interface TimeInputProps extends StyledComponentProps {
+interface TimeInputProps extends MUIStyledProps {
     seconds: number | null;
     onFinish?: (newSeconds: number | null) => void;
 }
 
 const ControlledTextInput = styled(UnstyledControlledTextInput)(
     ({ theme }) => ({
-        textAlign: "right",
-        width: widthOfString(theme, "body1", "00:00"),
+        [`& .${inputBaseClasses.input}`]: {
+            textAlign: "right",
+            width: widthOfString(theme, "body1", "00:00"),
+        },
     })
 );
 
@@ -154,6 +161,7 @@ const TimeInput: React.FC<TimeInputProps> = (
 
     return (
         <ControlledTextInput
+            className={props.className}
             placeholder="0:00"
             value={formattedValue}
             onValueChange={handleValueChange}

@@ -1,4 +1,4 @@
-import { styled, StyledComponentProps, Theme, Typography as UnstyledTypography } from "@mui/material";
+import { styled, Theme, Typography as UnstyledTypography } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { MUIStyledCommonProps } from "@mui/system";
 import { DateTime, Duration } from "luxon";

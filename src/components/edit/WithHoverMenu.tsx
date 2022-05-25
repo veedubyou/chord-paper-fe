@@ -1,32 +1,36 @@
 import {
     Button,
     ButtonGroup,
-    styled,
-    Tooltip,
-    tooltipClasses,
-    TooltipProps
+    styled
 } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import React from "react";
 import { DataTestID } from "../../common/DataTestID";
+import { makeStyledTooltip } from "./StyledTooltip";
 
-const HoverMenuButton = styled(Button)(({ theme }) => ({
+const HoverMenuButton = styled(Button)({
     backgroundColor: "transparent",
     "&:hover": {
-        backgroundColor: theme.palette.primary.dark,
-    },
-}));
-
-const TransparentTooltip = styled(({ className, ...props }: TooltipProps) => (
-    <Tooltip {...props} classes={{ popper: className }} />
-))({
-    [`& .${tooltipClasses.tooltip}`]: {
-        padding: "0px",
-        backgroundColor: "transparent",
-    },
-    [`& .${tooltipClasses.tooltipPlacementRight}`]: {
-        marginLeft: "0px",
+        backgroundColor: grey[200],
     },
 });
+
+const TransparentTooltip = makeStyledTooltip(() => ({
+    padding: "0px",
+    // !important is awful. however MUI keeps overriding the specified style
+    // and there isn't a good guide on how to compose this properly
+    // so that the customized style is observed. be great to fix this in the future
+    margin: "0px !important",
+    backgroundColor: "transparent",
+}))
+
+// const TransparentTooltip = styled(({ className, ...props }: TooltipProps) => (
+//     <Tooltip {...props} classes={{ popper: className }} />
+// ))({
+//     [`& .${tooltipClasses.tooltip}`]: {
+
+//     },
+// });
 
 export interface MenuItem extends DataTestID {
     icon: React.ReactElement;
@@ -58,23 +62,7 @@ const WithHoverMenu: React.FC<WithHoverMenuProps> = (
     );
 
     return (
-        <TransparentTooltip
-            placement="right"
-            title={menuContents}
-            open
-            componentsProps={{
-                popper: {
-                    modifiers: [
-                        {
-                            name: "offset",
-                            options: {
-                                offset: [0, 0],
-                            },
-                        },
-                    ],
-                },
-            }}
-        >
+        <TransparentTooltip placement="right" title={menuContents}>
             {props.children}
         </TransparentTooltip>
     );

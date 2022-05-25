@@ -1,5 +1,4 @@
-import { Box, Grid, styled, Theme, Typography } from "@mui/material";
-import { useTheme } from "@mui/styles";
+import { Box, Grid, styled, Typography } from "@mui/material";
 import React from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import UnstyledLastSavedAt from "../display/LastSavedAt";
@@ -12,14 +11,22 @@ const LastSavedAt = styled(UnstyledLastSavedAt)(({ theme }) => ({
     right: theme.spacing(2),
 }));
 
+const TitleBox = styled(Box)(({ theme }) => ({
+    paddingBottom: theme.spacing(4),
+}));
+
+const HeaderBox = styled(Box)(({ theme }) => ({
+    paddingTop: theme.spacing(8),
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+}));
+
 interface HeaderProps {
     song: ChordSong;
     songDispatch: React.Dispatch<ChordSongAction>;
 }
 
 const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
-    const theme: Theme = useTheme();
-
     const updateTitleHandler = (newTitle: string) => {
         props.songDispatch({ type: "set-header", title: newTitle });
     };
@@ -33,7 +40,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
     };
 
     const title = (
-        <Box paddingBottom={theme.spacing(0.5)}>
+        <TitleBox>
             <EditableTypography
                 value={props.song.title}
                 variant="h4"
@@ -42,7 +49,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
                 placeholder="Song Title"
                 onValueChange={updateTitleHandler}
             />
-        </Box>
+        </TitleBox>
     );
 
     const lastSavedAt: React.ReactNode =
@@ -87,16 +94,11 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
     );
 
     return (
-        <Box
-            paddingTop={theme.spacing(8)}
-            paddingLeft={theme.spacing(4)}
-            paddingRight={theme.spacing(4)}
-            data-testid="Header"
-        >
+        <HeaderBox data-testid="Header">
             {lastSavedAt}
             {title}
             {details}
-        </Box>
+        </HeaderBox>
     );
 };
 

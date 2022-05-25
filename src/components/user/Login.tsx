@@ -1,11 +1,14 @@
 import {
-    Alert, AlertTitle, Box,
+    Alert,
+    AlertTitle,
+    Box,
     Dialog,
     Grid,
-    Paper as UnstyledPaper, styled, Typography as UnstyledTypography
+    Paper as UnstyledPaper,
+    styled,
+    Typography as UnstyledTypography
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { makeStyles, StyledComponentProps } from "@mui/styles";
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
@@ -13,14 +16,15 @@ import { Link } from "react-router-dom";
 import SigninIcon from "../../assets/img/google_signin.svg";
 import { BackendError, RequestError } from "../../common/backend/errors";
 import { login } from "../../common/backend/requests";
+import { MUIStyledProps } from "../../common/styledProps";
 import { getRouteForTutorialComponent } from "../Tutorial";
 import LoginTutorial from "../tutorial/Login";
 import { deserializeUser, User, UserContext } from "./userContext";
 
 const Paper = styled(UnstyledPaper)({
-        width: "100%",
-        cursor: "pointer",
-    });
+    width: "100%",
+    cursor: "pointer",
+});
 
 const Typography = styled(UnstyledTypography)(({ theme }) => ({
     margin: theme.spacing(2),
@@ -36,20 +40,12 @@ const googleSignInID = "google-sign-in";
 const googleClientID =
     "650853277550-ta69qbfcvdl6tb5ogtnh2d07ae9rcdlf.apps.googleusercontent.com";
 
-const useSigninStyles = makeStyles({
-    root: {
-        display: "inline-block",
-        objectFit: "contain",
-    },
-});
-
-interface LoginProps extends StyledComponentProps {
+interface LoginProps extends MUIStyledProps {
     onUserChanged: (user: User | null) => void;
 }
 
 const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     const { enqueueSnackbar } = useSnackbar();
-    const signinStyles = useSigninStyles();
 
     const [gapiLoaded, setGapiLoaded] = useState<boolean>(false);
     const [dialogError, setDialogError] = useState<BackendError | null>(null);
@@ -287,13 +283,16 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     })();
 
     return (
-        <Paper id={googleSignInID} classes={props.classes}>
+        <Paper id={googleSignInID} classes={props.className}>
             <Grid container alignItems="center" justifyContent="center">
                 <Grid item>
                     <img
                         src={SigninIcon}
                         alt="Google Signin"
-                        className={signinStyles.root}
+                        style={{
+                            display: "inline-block",
+                            objectFit: "contain",
+                        }}
                     />
                 </Grid>
                 <Grid item>

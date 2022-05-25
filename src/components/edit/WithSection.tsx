@@ -1,22 +1,23 @@
-import { Box, styled, Tooltip as UnstyledTooltip } from "@mui/material";
+import { Box, styled, Theme } from "@mui/material";
 import React, { useCallback } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { DataTestID } from "../../common/DataTestID";
 import { PlainFn } from "../../common/PlainFn";
 import {
     sectionLabelStyle,
-    sectionTypographyVariant
+    sectionTypographyVariant,
 } from "../display/SectionLabel";
 import { ChordSongAction } from "../reducer/reducer";
 import UnstyledEditableTypography, { EditControl } from "./EditableTypography";
 import { useEditingState } from "./InteractionContext";
+import { makeStyledTooltip } from "./StyledTooltip";
 import TimeInput from "./TimeInput";
 
 const EditableTypography = styled(UnstyledEditableTypography)({
     ...sectionLabelStyle,
 });
 
-const Tooltip = styled(UnstyledTooltip)(({ theme }) => ({
+const Tooltip = makeStyledTooltip((theme: Theme) => ({
     background: "white",
     boxShadow: theme.shadows[2],
 }));

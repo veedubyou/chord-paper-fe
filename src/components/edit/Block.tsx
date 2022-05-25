@@ -1,11 +1,4 @@
-import {
-    Box,
-    Grid,
-    inputBaseClasses,
-    styled,
-    textFieldClasses,
-    Theme,
-} from "@mui/material";
+import { Box, Grid, inputBaseClasses, styled, Theme } from "@mui/material";
 import { red } from "@mui/material/colors";
 import makeStyles from "@mui/styles/makeStyles";
 import clsx from "clsx";
@@ -42,13 +35,13 @@ const blockChordTargetClassName = "BlockChordTarget";
 // so that everything lines up
 const rowHeight = "2em";
 
-const ChordInput = styled(TextInput)(({ theme }) => ({
+const ChordInput = styled(TextInput)({
     width: "4em",
     height: rowHeight,
     [`& .${inputBaseClasses.input}`]: {
         fontFamily: "PoriChord",
     },
-}));
+});
 
 const useFirstTokenStyle = {
     dragOver: makeStyles(
@@ -241,7 +234,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
     })();
 
     return (
-        <Box display="inline-block" sx={{ verticalAlign: "top" }}>
+        <Box display="inline-block" sx={{ verticalAlign: "bottom" }}>
             <Grid
                 container
                 direction="column"

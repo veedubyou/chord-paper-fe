@@ -4,14 +4,14 @@ import {
     TextFieldProps,
     Theme,
     TypographyVariant,
-    useTheme,
+    useTheme
 } from "@mui/material";
-import { CSSProperties, StyledComponentProps } from "@mui/styles";
-import React from "react";
 import { grey } from '@mui/material/colors';
-import { MUIStyledCommonProps } from "@mui/system";
+import { CSSProperties } from "@mui/styles";
+import React from "react";
+import { MUIStyledProps } from "../../common/styledProps";
 
-interface ControlledTextInputProps extends MUIStyledCommonProps<Theme> {
+interface ControlledTextInputProps extends MUIStyledProps {
     value: string;
     onValueChange: (newValue: string) => void;
     onFinish?: (newValue: string) => void;
@@ -23,7 +23,6 @@ interface ControlledTextInputProps extends MUIStyledCommonProps<Theme> {
     typographyVariant?: TypographyVariant;
     placeholder?: string;
     paddingSpacing?: number;
-    className?: string;
 }
 
 const ControlledTextInput: React.FC<ControlledTextInputProps> = (
