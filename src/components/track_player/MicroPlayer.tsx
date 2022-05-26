@@ -3,20 +3,22 @@ import JumpBackIcon from "@mui/icons-material/FastRewind";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayIcon from "@mui/icons-material/PlayArrow";
 import RadioIcon from "@mui/icons-material/Radio";
-import { Button, Slide, Tooltip } from "@mui/material";
+import { Button, Slide, Theme, Tooltip } from "@mui/material";
+import { SystemStyleObject } from "@mui/system";
 import React, { useEffect, useState } from "react";
+import { MUIStyledProps } from "../../common/styledProps";
 import { useRegisterTopKeyListener } from "../GlobalKeyListener";
 import { roundedTopCornersStyle, withBottomRightBox } from "./common";
 import { PlayerControls } from "./internal_player/usePlayerControls";
 
-interface MicroPlayerProps {
+interface MicroPlayerProps extends MUIStyledProps {
     show: boolean;
     playersLoaded: boolean;
     disabled?: boolean;
     tooltipMessage: string;
     playerControls: PlayerControls;
     onClick: () => void;
-    className?: string;
+    sx?: SystemStyleObject<Theme>;
 }
 
 const MicroPlayer: React.FC<MicroPlayerProps> = (
@@ -130,7 +132,7 @@ const MicroPlayer: React.FC<MicroPlayerProps> = (
                             className={props.className}
                             onClick={props.onClick}
                             disabled={props.disabled}
-                            sx={roundedTopCornersStyle}
+                            sx={{ roundedTopCornersStyle, ...props.sx }}
                         >
                             {icon}
                         </Button>

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import { PlainFn } from "../../../common/PlainFn";
 
 export interface ViewportElement {
@@ -14,12 +14,14 @@ interface ScrollingElementProps {
 export const useScrollable = (
     scrollFnCallback: (scrollFn: PlainFn) => void
 ): React.MutableRefObject<Element | undefined> => {
-    console.log("useScrollable");
     const scrollRef = useRef<Element>();
 
-    scrollFnCallback(() =>
-        scrollRef.current?.scrollIntoView({ behavior: "smooth" })
+    const scrollFn = useCallback(
+        () => scrollRef.current?.scrollIntoView({ behavior: "smooth" }),
+        []
     );
+
+    scrollFnCallback(scrollFn);
 
     return scrollRef;
 };

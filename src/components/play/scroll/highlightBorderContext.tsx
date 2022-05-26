@@ -1,6 +1,6 @@
-import { Theme } from "@mui/material";
-import { ClassNameMap, makeStyles } from "@mui/styles";
-import React, { useCallback, useRef } from "react";
+import { css, cx } from "@emotion/css";
+import { useTheme } from "@mui/material";
+import React, { useCallback, useMemo, useRef } from "react";
 import { useDebouncedCallback } from "use-debounce/lib";
 
 export type HighlightColour = "blue" | "purple" | "red";
@@ -24,49 +24,21 @@ interface HighlightColourProviderProps {
     children: React.ReactNode | React.ReactNode[];
 }
 
-type MakeHighlightColoursMapType = {
-    blue: ReturnType<typeof makeStyles>;
-    purple: ReturnType<typeof makeStyles>;
-    red: ReturnType<typeof makeStyles>;
-};
-
-const useHighlightBorders = (
-    colourMap: MakeHighlightColoursMapType
-): ClassNameMap<"root"> => {
+export const useHighlightBorders = () => {
+    const theme = useTheme();
     const getAndRotateCurrentColour = React.useContext(HighlightBorderContext);
+
+    const coloursClassNames = useMemo(
+        () => ({
+            blue: cx(css({ borderColor: theme.palette.primary.main })),
+            purple: cx(css({ borderColor: theme.palette.secondary.main })),
+            red: cx(css({ borderColor: redColor })),
+        }),
+        [theme]
+    );
+
     const currentColour = getAndRotateCurrentColour();
-
-    const highlightColourStyles = {
-        blue: colourMap["blue"]({}),
-        purple: colourMap["purple"]({}),
-        red: colourMap["red"]({}),
-    };
-
-    return highlightColourStyles[currentColour];
-};
-
-type useRootStyleType = () => ClassNameMap<"root">;
-
-export const makeHighlightBorders = (): useRootStyleType => {
-    const useHighlightColoursMap: MakeHighlightColoursMapType = {
-        blue: makeStyles((theme: Theme) => ({
-            root: {
-                borderColor: theme.palette.primary.main,
-            },
-        })),
-        purple: makeStyles((theme: Theme) => ({
-            root: {
-                borderColor: theme.palette.secondary.main,
-            },
-        })),
-        red: makeStyles((theme: Theme) => ({
-            root: {
-                borderColor: redColor,
-            },
-        })),
-    };
-
-    return () => useHighlightBorders(useHighlightColoursMap);
+    return coloursClassNames[currentColour];
 };
 
 export const HighlightColourProvider: React.FC<HighlightColourProviderProps> = (

@@ -3,7 +3,7 @@ import {
     Button as UnstyledButton,
     Grid,
     Slider,
-    styled, Typography
+    styled, Typography,
 } from "@mui/material";
 import {
     blueGrey,

@@ -4,13 +4,13 @@ import React from "react";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import LyricDisplay, {
     LyricTypography,
-    lyricTypographyProps
+    lyricTypographyProps,
 } from "../display/Lyric";
 import { deserializeLyrics } from "../lyrics/Serialization";
 import {
     chordSymbolClassName,
     chordTargetClassName,
-    firstTokenClassName
+    firstTokenClassName,
 } from "./HighlightChordLyricStyle";
 
 const InvisibleTypography = styled(LyricTypography)({
@@ -51,51 +51,54 @@ interface TokenProps {
     invisibleTarget?: { onClick: ChordTargetBoxProps["onClick"] };
 }
 
-const Token: React.FC<TokenProps> = (props: TokenProps): JSX.Element => {
-    const invisibleTarget = (): JSX.Element | null => {
-        if (props.invisibleTarget === undefined) {
-            return null;
-        }
+const Token = React.forwardRef(
+    (props: TokenProps, ref: React.ForwardedRef<Element>): JSX.Element => {
+        const invisibleTarget = (): JSX.Element | null => {
+            if (props.invisibleTarget === undefined) {
+                return null;
+            }
 
-        const content: React.ReactNode[] = deserializeLyrics(
-            props.children,
-            false
+            const content: React.ReactNode[] = deserializeLyrics(
+                props.children,
+                false
+            );
+
+            return (
+                <ChordTargetBox
+                    className={clsx(chordTargetClassName, chordSymbolClassName)}
+                    onClick={props.invisibleTarget.onClick}
+                >
+                    {content}
+                </ChordTargetBox>
+            );
+        };
+
+        const lyricClassName: string | undefined =
+            props.index === 0 ? firstTokenClassName : undefined;
+
+        const lyricBlock = (
+            <LyricDisplay
+                className={lyricClassName}
+                data-testid={`Token-${props.index}`}
+            >
+                {props.children}
+            </LyricDisplay>
         );
 
         return (
-            <ChordTargetBox
-                className={clsx(chordTargetClassName, chordSymbolClassName)}
-                onClick={props.invisibleTarget.onClick}
+            <Box
+                className={props.className}
+                key={props.index}
+                position="relative"
+                display="inline"
+                data-testid={`TokenBox-${props.index}`}
+                ref={ref}
             >
-                {content}
-            </ChordTargetBox>
+                {invisibleTarget()}
+                {lyricBlock}
+            </Box>
         );
-    };
-
-    const lyricClassName: string | undefined =
-        props.index === 0 ? firstTokenClassName : undefined;
-
-    const lyricBlock = (
-        <LyricDisplay
-            className={lyricClassName}
-            data-testid={`Token-${props.index}`}
-        >
-            {props.children}
-        </LyricDisplay>
-    );
-
-    return (
-        <Box
-            className={props.className}
-            key={props.index}
-            position="relative"
-            display="inline"
-            data-testid={`TokenBox-${props.index}`}
-        >
-            {invisibleTarget()}
-            {lyricBlock}
-        </Box>
-    );
-};
+    }
+);
 
 export default Token;

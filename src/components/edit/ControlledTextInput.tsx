@@ -89,6 +89,7 @@ const ControlledTextInput: React.FC<ControlledTextInputProps> = (
             variant={props.variant}
             inputProps={{
                 "data-testid": "InnerInput",
+                spellCheck: false,
                 ...browserInputProps,
             }}
             InputProps={props.InputProps}

@@ -4,6 +4,7 @@ import makeStyles from "@mui/styles/makeStyles";
 import clsx from "clsx";
 import { List } from "immutable";
 import React from "react";
+import { ConnectDropTarget } from "react-dnd";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
@@ -158,7 +159,11 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                 blockID={props.chordBlock}
                 onDragOver={onLyricDragOver}
             >
-                <Token index={0}>{lyric}</Token>
+                {(dropRef: ConnectDropTarget) => (
+                    <Token index={0} ref={dropRef}>
+                        {lyric}
+                    </Token>
+                )}
             </ChordTokenDroppable>
         );
     };
@@ -179,9 +184,15 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                 hoverableClassName={chordlessTokenStyle.hoverable.root}
                 dragOverClassName={chordlessTokenStyle.dragOver.root}
             >
-                <Token index={index} invisibleTarget={invisibleTargetOption}>
-                    {lyric}
-                </Token>
+                {(dropRef: ConnectDropTarget) => (
+                    <Token
+                        index={index}
+                        invisibleTarget={invisibleTargetOption}
+                        ref={dropRef}
+                    >
+                        {lyric}
+                    </Token>
+                )}
             </ChordlessTokenDroppable>
         );
     };
@@ -201,7 +212,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
 
     const lyricBlocks = subsequentLyricBlocks.unshift(firstLyricBlock);
 
-    const chordRow: React.ReactElement = (() => {
+    const chordRow = (dropRef: ConnectDropTarget) => {
         if (editing) {
             return (
                 <Box data-testid="ChordEdit">
@@ -216,7 +227,11 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         }
 
         if (props.chordBlock.chord === "") {
-            return <ChordSymbol>{props.chordBlock.chord}</ChordSymbol>;
+            return (
+                <ChordSymbol ref={dropRef}>
+                    {props.chordBlock.chord}
+                </ChordSymbol>
+            );
         }
 
         return (
@@ -227,11 +242,12 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                     chordSymbolClassName,
                     blockChordSymbolClassName
                 )}
+                ref={dropRef}
             >
                 {props.chordBlock.chord}
             </DraggableChordSymbol>
         );
-    })();
+    };
 
     return (
         <Box display="inline-block" sx={{ verticalAlign: "bottom" }}>

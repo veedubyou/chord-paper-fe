@@ -1,3 +1,5 @@
+import { Theme } from "@mui/material";
+import { SystemStyleObject } from "@mui/system";
 import { List } from "immutable";
 import React, { useCallback, useState } from "react";
 import shortid from "shortid";
@@ -17,7 +19,7 @@ interface JamStationProps {
     timeSections: List<TimeSection>;
     onTrackListChanged: (trackList: TrackList) => void;
     onRefresh: PlainFn;
-    collapsedButtonClassName?: string;
+    collapsedButtonSx?: SystemStyleObject<Theme>;
 }
 
 interface TrackEditDialogState {
@@ -52,7 +54,7 @@ const JamStation: React.FC<JamStationProps> = (
         tooltipMessage: string
     ) => (
         <MicroPlayer
-            className={props.collapsedButtonClassName}
+            sx={props.collapsedButtonSx}
             show={playerVisibilityState === "minimized"}
             playersLoaded={loadPlayers}
             playerControls={playerControls}

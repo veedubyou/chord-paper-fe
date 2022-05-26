@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useCallback } from "react";
 import { DragSourceMonitor, useDrag } from "react-dnd";
 import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
 import { IDable } from "../../../common/ChordModel/Collection";
@@ -18,39 +17,54 @@ interface DraggableChordSymbolProps extends ChordSymbolProps {
     }) => void;
 }
 
-const DraggableChordSymbol: React.FC<DraggableChordSymbolProps> = (
-    props: DraggableChordSymbolProps
-): JSX.Element => {
-    const [, dragRef] = useDrag({
-        item: NewDNDChord(props.chordBlockID, props.children),
-        end: (chord: DNDChord | undefined, monitor: DragSourceMonitor) => {
-            if (chord === undefined) {
-                return;
-            }
+const DraggableChordSymbol = React.forwardRef(
+    (
+        props: DraggableChordSymbolProps,
+        ref: React.ForwardedRef<Element>
+    ): JSX.Element => {
+        const [, dragRef] = useDrag({
+            item: NewDNDChord(props.chordBlockID, props.children),
+            end: (chord: DNDChord | undefined, monitor: DragSourceMonitor) => {
+                if (chord === undefined) {
+                    return;
+                }
 
-            const dropResult = monitor.getDropResult();
+                const dropResult = monitor.getDropResult();
 
-            if (!isDropResult(dropResult)) {
-                return;
-            }
+                if (!isDropResult(dropResult)) {
+                    return;
+                }
 
-            props.onDrop({
-                chord: chord.chord,
-                sourceBlockID: chord.sourceBlockID,
-                destinationBlockID: dropResult.blockID,
-                splitIndex: dropResult.tokenIndex,
-                dropType: dropResult.dropEffect,
-            });
-        },
-    });
+                props.onDrop({
+                    chord: chord.chord,
+                    sourceBlockID: chord.sourceBlockID,
+                    destinationBlockID: dropResult.blockID,
+                    splitIndex: dropResult.tokenIndex,
+                    dropType: dropResult.dropEffect,
+                });
+            },
+        });
 
-    return (
-        <>
-            <ChordSymbol className={props.className}>
+        const combinedRefCallback = useCallback(
+            (chordSymbolRef: HTMLSpanElement | null) => {
+                dragRef(chordSymbolRef);
+                if (ref !== null) {
+                    if (typeof ref === "function") {
+                        ref(chordSymbolRef);
+                    } else {
+                        ref.current = chordSymbolRef;
+                    }
+                }
+            },
+            [dragRef, ref]
+        );
+
+        return (
+            <ChordSymbol className={props.className} ref={combinedRefCallback}>
                 {props.children}
             </ChordSymbol>
-        </>
-    );
-};
+        );
+    }
+);
 
 export default DraggableChordSymbol;

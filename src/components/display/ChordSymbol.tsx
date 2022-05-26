@@ -15,30 +15,34 @@ export interface ChordSymbolProps {
     className?: string;
 }
 
-const ChordSymbol: React.FC<ChordSymbolProps> = (
-    props: ChordSymbolProps
-): JSX.Element => {
-    const formattedChord = (): string => {
-        let chord = props.children;
-        if (chord.endsWith(" ")) {
-            return chord;
-        }
+const ChordSymbol = React.forwardRef(
+    (
+        props: ChordSymbolProps,
+        ref: React.ForwardedRef<HTMLSpanElement>
+    ): JSX.Element => {
+        const formattedChord = (): string => {
+            let chord = props.children;
+            if (chord.endsWith(" ")) {
+                return chord;
+            }
 
-        chord = chord + " ";
+            chord = chord + " ";
 
-        return inflateIfEmpty(chord);
-    };
+            return inflateIfEmpty(chord);
+        };
 
-    return (
-        <ChordTypography
-            variant={lyricTypographyVariant} // keep chords and lyrics the same size
-            display="inline"
-            data-testid="ChordSymbol"
-            className={props.className}
-        >
-            {formattedChord()}
-        </ChordTypography>
-    );
-};
+        return (
+            <ChordTypography
+                variant={lyricTypographyVariant} // keep chords and lyrics the same size
+                display="inline"
+                data-testid="ChordSymbol"
+                className={props.className}
+                ref={ref}
+            >
+                {formattedChord()}
+            </ChordTypography>
+        );
+    }
+);
 
 export default ChordSymbol;

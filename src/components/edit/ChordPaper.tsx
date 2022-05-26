@@ -1,5 +1,4 @@
 import { Paper, styled } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
@@ -11,7 +10,7 @@ import { ChordSongAction } from "../reducer/reducer";
 import JamStation from "../track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
-    TrackListLoad
+    TrackListLoad,
 } from "../track_player/providers/TrackListProvider";
 import ChordPaperBody from "./ChordPaperBody";
 import Header from "./Header";
@@ -24,12 +23,6 @@ const RootPaper = styled(Paper)(({ theme }) => ({
     minWidth: theme.spacing(92),
 }));
 
-const useWhiteStyle = makeStyles({
-    root: {
-        backgroundColor: "white",
-    },
-});
-
 interface ChordPaperProps {
     song: ChordSong;
     songDispatch: React.Dispatch<ChordSongAction>;
@@ -39,8 +32,6 @@ interface ChordPaperProps {
 const ChordPaper: React.FC<ChordPaperProps> = (
     props: ChordPaperProps
 ): JSX.Element => {
-    const whiteStyle = useWhiteStyle();
-
     const trackPlayer: React.ReactNode = (() => {
         if (props.song.isUnsaved()) {
             return null;
@@ -54,7 +45,9 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                     changeHandler: TrackListChangeHandler
                 ) => (
                     <JamStation
-                        collapsedButtonClassName={whiteStyle.root}
+                        collapsedButtonSx={{
+                            backgroundColor: "white",
+                        }}
                         timeSections={props.song.timeSections}
                         tracklistLoad={tracklistLoad}
                         onTrackListChanged={changeHandler}

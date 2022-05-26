@@ -1,4 +1,3 @@
-import { makeStyles } from "@mui/styles";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Redirect, Route, useHistory } from "react-router-dom";
@@ -11,16 +10,10 @@ import LoadingRender from "../loading/LoadingRender";
 import JamStation from "../track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
-    TrackListLoad,
+    TrackListLoad
 } from "../track_player/providers/TrackListProvider";
 import PagePlayView from "./page/PagePlayView";
 import ScrollPlayView from "./scroll/ScrollPlayView";
-
-const useTransparentStyle = makeStyles({
-    root: {
-        backgroundColor: "transparent",
-    },
-});
 
 interface PlayProps {
     song: ChordSong;
@@ -36,8 +29,6 @@ interface PlayScreenProps {
 const PlayScreen: React.FC<PlayScreenProps> = (
     props: PlayScreenProps
 ): JSX.Element => {
-    const transparentStyle = useTransparentStyle();
-
     const trackPlayer: React.ReactNode = (() => {
         if (props.song.isUnsaved()) {
             return null;
@@ -51,7 +42,9 @@ const PlayScreen: React.FC<PlayScreenProps> = (
                     onChange: TrackListChangeHandler
                 ) => (
                     <JamStation
-                        collapsedButtonClassName={transparentStyle.root}
+                        collapsedButtonSx={{
+                            backgroundColor: "transparent",
+                        }}
                         timeSections={props.song.timeSections}
                         tracklistLoad={tracklistLoad}
                         onTrackListChanged={onChange}

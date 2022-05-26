@@ -1,5 +1,5 @@
-import { Grid, Paper as UnstyledPaper, styled } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { Grid, Paper as UnstyledPaper, styled, Theme } from "@mui/material";
+import { SystemStyleObject } from "@mui/system";
 import { List } from "immutable";
 import React, { useEffect, useMemo, useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
@@ -13,11 +13,9 @@ import Line from "./Line";
 import NewLine from "./NewLine";
 import { handleUndoRedo } from "./Undo";
 
-const useUninteractiveStyle = makeStyles({
-    root: {
-        pointerEvents: "none",
-    },
-});
+const uninteractiveSx: SystemStyleObject<Theme> = {
+    pointerEvents: "none",
+};
 
 const Paper = styled(UnstyledPaper)({
     width: "auto",
@@ -58,7 +56,6 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         []
     );
 
-    const uninteractiveStyle = useUninteractiveStyle();
     // prevent other interactions if currently interacting
     const allowInteraction: boolean = !interacting;
 
@@ -120,15 +117,13 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         return lines;
     })();
 
-    const paperClassName = allowInteraction
-        ? undefined
-        : uninteractiveStyle.root;
+    const paperSx = allowInteraction ? undefined : uninteractiveSx;
 
     return (
         <InteractionContext.Provider value={interactionContextValue}>
             <Paper
                 onCopy={allowInteraction ? handleCopy : undefined}
-                className={paperClassName}
+                sx={paperSx}
                 elevation={0}
                 tabIndex={0}
             >

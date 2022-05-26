@@ -8,12 +8,11 @@ import {
     FormControl,
     MenuItem,
     Select as UnstyledSelect,
-    SelectChangeEvent,
-    Slide,
+    SelectChangeEvent, Slide,
     styled,
-    Theme,
+    Theme
 } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import { SystemStyleObject } from "@mui/system";
 import React, { useEffect } from "react";
 import { Track } from "../../common/ChordModel/tracks/Track";
 import { PlainFn } from "../../common/PlainFn";
@@ -23,11 +22,11 @@ import {
     roundedCornersStyle,
     roundedTopCornersStyle,
     TitleBar,
-    withBottomRightBox,
+    withBottomRightBox
 } from "./common";
 import {
     PlayerControls,
-    unfocusedControls,
+    unfocusedControls
 } from "./internal_player/usePlayerControls";
 import { TrackListLoad } from "./providers/TrackListProvider";
 import TrackPlayer from "./TrackPlayer";
@@ -43,13 +42,12 @@ const TitleBarButton = styled(Button)(({ theme }) => ({
     ...roundedCornersStyle(theme),
 }));
 
-const usePaddingLeftStyle = makeStyles((theme: Theme) => ({
-    root: {
-        "& .MuiSelect-select": {
-            paddingLeft: theme.spacing(2),
-        },
+const paddingLeftStyle: SystemStyleObject<Theme> = {
+    [`& .{selectClasses.select}`]: {
+        // theme.spacing(2)
+        paddingLeft: 2,
     },
-}));
+};
 
 const Select = styled(UnstyledSelect)(({ theme }) => ({
     minWidth: theme.spacing(30),
@@ -83,7 +81,6 @@ interface MultiTrackPlayerProps {
 const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
     props: MultiTrackPlayerProps
 ): JSX.Element => {
-    const paddingLeftStyle = usePaddingLeftStyle();
     const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
 
     {
@@ -150,7 +147,7 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
         return (
             <FormControl size="small">
                 <Select
-                    className={paddingLeftStyle.root}
+                    sx={paddingLeftStyle}
                     disableUnderline
                     value={props.currentTrackIndex}
                     onChange={trackChangeHandler}
