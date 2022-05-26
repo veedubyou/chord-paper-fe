@@ -5,7 +5,7 @@ https://veedubyou.github.io/chord-paper-fe
 
 or
 
-https://chord.philipwong.pw/
+https://chord.thatmight.work/
 
 # Related Repos
 Front end: https://github.com/veedubyou/chord-paper-fe
