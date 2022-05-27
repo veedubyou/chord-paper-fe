@@ -148,23 +148,23 @@ export const getRouteForTutorialComponent = (
 };
 
 const PlayArrowIcon = styled(UnstyledPlayArrowIcon)({
-        color: "white",
-    });
+    color: "white",
+});
 
-const RootPaper = styled(Paper)(({theme}) => ({
-        marginTop: theme.spacing(5),
-        marginBottom: theme.spacing(5),
-        padding: theme.spacing(5),
-        minHeight: theme.spacing(46),
-        width: theme.spacing(92),
-        position: "relative",
-    }));
+const RootPaper = styled(Paper)(({ theme }) => ({
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(5),
+    padding: theme.spacing(5),
+    minHeight: theme.spacing(46),
+    width: theme.spacing(92),
+    position: "relative",
+}));
 
-const Fab = styled(UnstyledFab)(({theme}) => ({
-        position: "absolute",
-        bottom: theme.spacing(2),
-        right: theme.spacing(2),
-    }));
+const Fab = styled(UnstyledFab)(({ theme }) => ({
+    position: "absolute",
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+}));
 
 interface SingleTutorialProps {
     route: string;
