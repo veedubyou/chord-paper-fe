@@ -1,9 +1,7 @@
 import { css, cx } from "@emotion/css";
 import {
     createTheme as createMuiTheme,
-    PaletteColorOptions,
-    StyledEngineProvider,
-    Theme,
+    PaletteColorOptions, Theme,
     ThemeProvider
 } from "@mui/material";
 import { SnackbarProvider } from "notistack";
@@ -134,23 +132,21 @@ const App: React.FC<{}> = (): JSX.Element => {
     return (
         <HelmetProvider>
             <ThemeProvider theme={theme}>
-                <StyledEngineProvider injectFirst>
-                    <Helmet
-                        titleTemplate="%s - Chord Paper"
-                        defaultTitle="Chord Paper"
-                    />
-                    <SnackbarProvider
-                        classes={{ variantSuccess: snackbarSuccessClassName }}
-                    >
-                        <HashRouter>
-                            <DragAndDrop>
-                                <GlobalKeyListenerProvider>
-                                    <AppContent />
-                                </GlobalKeyListenerProvider>
-                            </DragAndDrop>
-                        </HashRouter>
-                    </SnackbarProvider>
-                </StyledEngineProvider>
+                <Helmet
+                    titleTemplate="%s - Chord Paper"
+                    defaultTitle="Chord Paper"
+                />
+                <SnackbarProvider
+                    classes={{ variantSuccess: snackbarSuccessClassName }}
+                >
+                    <HashRouter>
+                        <DragAndDrop>
+                            <GlobalKeyListenerProvider>
+                                <AppContent />
+                            </GlobalKeyListenerProvider>
+                        </DragAndDrop>
+                    </HashRouter>
+                </SnackbarProvider>
             </ThemeProvider>
         </HelmetProvider>
     );

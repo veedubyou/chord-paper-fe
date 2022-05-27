@@ -1,9 +1,4 @@
-import {
-    createTheme,
-    StyledEngineProvider,
-    Theme,
-    ThemeProvider
-} from "@mui/material";
+import { createTheme, Theme, ThemeProvider } from "@mui/material";
 import React, { useState } from "react";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { PlainFn } from "../../../common/PlainFn";
@@ -47,14 +42,12 @@ const PagePlayView: React.FC<PagePlayViewProps> = (
                 onScrollView={props.onScrollView}
                 onExit={props.onEditMode}
             />
-            <StyledEngineProvider injectFirst>
-                <ThemeProvider theme={playTheme}>
-                    <PagePlayContent
-                        song={props.song}
-                        displaySettings={displaySettings}
-                    />
-                </ThemeProvider>
-            </StyledEngineProvider>
+            <ThemeProvider theme={playTheme}>
+                <PagePlayContent
+                    song={props.song}
+                    displaySettings={displaySettings}
+                />
+            </ThemeProvider>
         </>
     );
 };
