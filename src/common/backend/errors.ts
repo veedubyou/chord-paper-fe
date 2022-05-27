@@ -18,8 +18,8 @@ const BackendErrorCodeValidator = iots.union([
 
 const BackendErrorValidator = iots.type({
     msg: iots.string,
-    code: BackendErrorCodeValidator
-})
+    code: BackendErrorCodeValidator,
+});
 
 export type BackendError = iots.TypeOf<typeof BackendErrorValidator>;
 
@@ -37,7 +37,7 @@ export const parseRequestError = async (
     const responseClone = unknownError.response.clone();
     const jsonError: unknown = await responseClone.json();
 
-    const decodeResult = BackendErrorValidator.decode(jsonError)
+    const decodeResult = BackendErrorValidator.decode(jsonError);
     return decodeResult;
 };
 

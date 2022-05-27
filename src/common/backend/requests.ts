@@ -60,9 +60,7 @@ export const getSong = async (songID: string): Promise<BackendResult> => {
     return right(parsed);
 };
 
-export const getTrackList = async (
-    songID: string
-): Promise<BackendResult> => {
+export const getTrackList = async (songID: string): Promise<BackendResult> => {
     let parsed: ResponseJSON;
 
     try {

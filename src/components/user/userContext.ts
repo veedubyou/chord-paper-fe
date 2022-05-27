@@ -12,10 +12,7 @@ export class User {
     userID: string;
     authToken: string;
 
-    constructor(
-        currentGoogleUser: gapi.auth2.CurrentUser,
-        userID: string,
-    ) {
+    constructor(currentGoogleUser: gapi.auth2.CurrentUser, userID: string) {
         this.currentGoogleUser = currentGoogleUser;
         this.userID = userID;
 
