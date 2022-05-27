@@ -1,13 +1,13 @@
 import { styled, Typography, TypographyProps } from "@mui/material";
 import { CSSProperties } from "@mui/styled-engine";
-import clsx from "clsx";
+import {cx} from "@emotion/css"
 import React from "react";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { DataTestID } from "../../common/DataTestID";
 import {
     spaceClassName,
     wordClassName,
-} from "../edit/HighlightChordLyricStyle";
+} from "../edit/HighlightableBlockStyle";
 import { deserializeLyrics } from "../lyrics/Serialization";
 
 export const lyricTypographyVariant: "h6" = "h6";
@@ -37,7 +37,7 @@ const LyricDisplay: React.FC<LyricTypographyProps> = (
 ): JSX.Element => {
     const customClassName = props.className ?? "";
 
-    const className = clsx({
+    const className = cx({
         [spaceClassName]: props.children.isEntirelySpace(),
         [wordClassName]: !props.children.isEntirelySpace(),
         [customClassName]: props.className !== undefined,

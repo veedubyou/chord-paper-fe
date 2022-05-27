@@ -1,5 +1,5 @@
-import { Theme } from "@mui/material";
-import { CSSProperties } from "@mui/styles";
+import { css, cx } from "@emotion/css";
+import { Theme, useTheme } from "@mui/material";
 
 export const spaceClassName = "LyricTokenSpace";
 export const wordClassName = "LyricTokenWord";
@@ -8,16 +8,16 @@ export const firstTokenClassName = "FirstLyricToken";
 export const chordTargetClassName = "ChordTarget";
 export const chordSymbolClassName = "ChordSymbol";
 
-const highlightedSpaceStyle = (theme: Theme): CSSProperties => ({
+const highlightedSpaceStyle = (theme: Theme) => ({
     backgroundColor: theme.palette.primary.main,
     borderRadius: "0.3em",
 });
 
-const highlightedWordStyle = (theme: Theme): CSSProperties => ({
+const highlightedWordStyle = (theme: Theme) => ({
     color: theme.palette.primary.main,
 });
 
-const outlineStyle = (theme: Theme): CSSProperties => ({
+const outlineStyle = (theme: Theme) => ({
     borderStyle: "solid",
     borderColor: theme.palette.primary.main,
     borderRadius: "0.3em",
@@ -25,11 +25,38 @@ const outlineStyle = (theme: Theme): CSSProperties => ({
 });
 
 export interface HighlightChordLyricStyleOptions {
-    outline?: (theme: Theme) => CSSProperties;
+    dragOverOutline?: (theme: Theme) => {
+        color?: string;
+        borderColor?: string;
+    };
+    hoverOutline?: (theme: Theme) => { color?: string; borderColor?: string };
     customLyricClassSelector?: string;
     customChordTargetClassSelector?: string;
     customChordSymbolClassSelector?: string;
 }
+
+export interface HighlightableBlockStyles {
+    dragOver: string;
+    hoverable: string;
+}
+
+export const makeHighlightableBlockStyles = (
+    options?: HighlightChordLyricStyleOptions
+) => {
+    const dragOverStyleForTheme = dragOverChordLyricStyle(options);
+    const hoverStyleForTheme = hoverChordLyricStyle(options);
+
+    return (): HighlightableBlockStyles => {
+        const theme = useTheme();
+        const dragOverStyle = dragOverStyleForTheme(theme);
+        const hoverStyle = hoverStyleForTheme(theme);
+
+        return {
+            dragOver: cx(css(dragOverStyle)),
+            hoverable: cx(css(hoverStyle)),
+        };
+    };
+};
 
 const withCustomLyricSelector = (
     selector: string,
@@ -64,15 +91,15 @@ const withCustomChordSymbolSelector = (
     return `${selector}.${options.customChordSymbolClassSelector}`;
 };
 
-export const dragOverChordLyricStyle = (
-    options?: HighlightChordLyricStyleOptions
-) => {
+const dragOverChordLyricStyle = (options?: HighlightChordLyricStyleOptions) => {
     return (theme: Theme) => {
         const highlightedSpace = highlightedSpaceStyle(theme);
         const highlightedWord = highlightedWordStyle(theme);
 
-        const customOutlineStyles: CSSProperties | undefined =
-            options?.outline !== undefined ? options.outline(theme) : undefined;
+        const customOutlineStyles =
+            options?.dragOverOutline !== undefined
+                ? options.dragOverOutline(theme)
+                : undefined;
 
         const outline = {
             ...outlineStyle(theme),
@@ -94,11 +121,9 @@ export const dragOverChordLyricStyle = (
         );
 
         return {
-            root: {
-                [`& ${spaceClassSelector}`]: highlightedSpace,
-                [`& ${wordClassSelector}`]: highlightedWord,
-                [`& ${chordSymbolSelector}`]: outline,
-            },
+            [`& ${spaceClassSelector}`]: highlightedSpace,
+            [`& ${wordClassSelector}`]: highlightedWord,
+            [`& ${chordSymbolSelector}`]: outline,
         };
     };
 };
@@ -110,8 +135,10 @@ export const hoverChordLyricStyle = (
         const highlightedSpace = highlightedSpaceStyle(theme);
         const highlightedWord = highlightedWordStyle(theme);
 
-        const customOutlineStyles: CSSProperties | undefined =
-            options?.outline !== undefined ? options.outline(theme) : undefined;
+        const customOutlineStyles =
+            options?.hoverOutline !== undefined
+                ? options.hoverOutline(theme)
+                : undefined;
 
         const outline = {
             ...outlineStyle(theme),
@@ -136,22 +163,18 @@ export const hoverChordLyricStyle = (
         );
 
         return {
-            root: {
-                [`& ${chordTargetSelector}:hover ~ ${spaceClassSelector}`]:
-                    highlightedSpace,
-                [`& ${chordTargetSelector}:hover ~ * ${spaceClassSelector}`]:
-                    highlightedSpace,
+            [`& ${chordTargetSelector}:hover ~ ${spaceClassSelector}`]:
+                highlightedSpace,
+            [`& ${chordTargetSelector}:hover ~ * ${spaceClassSelector}`]:
+                highlightedSpace,
 
-                [`& ${chordTargetSelector}:hover ~ ${wordClassSelector}`]:
-                    highlightedWord,
-                [`& ${chordTargetSelector}:hover ~ * ${wordClassSelector}`]:
-                    highlightedWord,
+            [`& ${chordTargetSelector}:hover ~ ${wordClassSelector}`]:
+                highlightedWord,
+            [`& ${chordTargetSelector}:hover ~ * ${wordClassSelector}`]:
+                highlightedWord,
 
-                [`& ${chordTargetSelector}${chordSymbolSelector}:hover`]:
-                    outline,
-                [`& ${chordTargetSelector}:hover ${chordSymbolSelector}`]:
-                    outline,
-            },
+            [`& ${chordTargetSelector}${chordSymbolSelector}:hover`]: outline,
+            [`& ${chordTargetSelector}:hover ${chordSymbolSelector}`]: outline,
         };
     };
 };

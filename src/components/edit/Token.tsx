@@ -1,5 +1,5 @@
+import { cx } from "@emotion/css";
 import { Box, styled } from "@mui/material";
-import clsx from "clsx";
 import React from "react";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import LyricDisplay, {
@@ -11,7 +11,7 @@ import {
     chordSymbolClassName,
     chordTargetClassName,
     firstTokenClassName,
-} from "./HighlightChordLyricStyle";
+} from "./HighlightableBlockStyle";
 
 const InvisibleTypography = styled(LyricTypography)({
     color: "transparent",
@@ -65,7 +65,7 @@ const Token = React.forwardRef(
 
             return (
                 <ChordTargetBox
-                    className={clsx(chordTargetClassName, chordSymbolClassName)}
+                    className={cx(chordTargetClassName, chordSymbolClassName)}
                     onClick={props.invisibleTarget.onClick}
                 >
                     {content}

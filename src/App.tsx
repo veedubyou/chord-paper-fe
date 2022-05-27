@@ -1,12 +1,12 @@
+import { css, cx } from "@emotion/css";
 import {
     createTheme as createMuiTheme,
     PaletteColorOptions,
     StyledEngineProvider,
     Theme,
-    ThemeProvider,
+    ThemeProvider
 } from "@mui/material";
-import { withStyles } from "@mui/styles";
-import { SnackbarProvider as UnstyledSnackbarProvider } from "notistack";
+import { SnackbarProvider } from "notistack";
 import React, { useState } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { HashRouter, Redirect, Route, Switch } from "react-router-dom";
@@ -16,7 +16,7 @@ import {
     GuitarDemoPath,
     RootPath,
     SongPath,
-    TutorialPath,
+    TutorialPath
 } from "./common/paths";
 import AboutScreen from "./components/about/About";
 import DragAndDrop from "./components/edit/DragAndDrop";
@@ -28,37 +28,32 @@ import TutorialRoutes from "./components/Tutorial";
 import {
     SetUserContext,
     User,
-    UserContext,
+    UserContext
 } from "./components/user/userContext";
 import { withCloudSaveSongContext } from "./components/WithSongContext";
 
-declare module "@mui/styles/defaultTheme" {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface DefaultTheme extends Theme {}
-}
+const lightBlue: PaletteColorOptions = {
+    main: "#4fc3f7",
+    light: "#8bf6ff",
+    dark: "#0093c4",
+    contrastText: "#000000",
+};
+
+const purple: PaletteColorOptions = {
+    main: "#844ffc",
+    light: "#bb7eff",
+    dark: "#4a1fc8",
+    contrastText: "#ffffff",
+};
+
+const green: PaletteColorOptions = {
+    main: "#00c853",
+    light: "#5efc82",
+    dark: "#009624",
+    contrastText: "#000000",
+};
 
 const createTheme = (): Theme => {
-    const lightBlue: PaletteColorOptions = {
-        main: "#4fc3f7",
-        light: "#8bf6ff",
-        dark: "#0093c4",
-        contrastText: "#000000",
-    };
-
-    const purple: PaletteColorOptions = {
-        main: "#844ffc",
-        light: "#bb7eff",
-        dark: "#4a1fc8",
-        contrastText: "#ffffff",
-    };
-
-    const green: PaletteColorOptions = {
-        main: "#00c853",
-        light: "#5efc82",
-        dark: "#009624",
-        contrastText: "#000000",
-    };
-
     return createMuiTheme({
         palette: {
             primary: lightBlue,
@@ -74,11 +69,7 @@ const createTheme = (): Theme => {
 
 const theme: Theme = createTheme();
 
-const SnackbarProvider = withStyles((theme: Theme) => ({
-    variantSuccess: {
-        backgroundColor: theme.palette.success.main,
-    },
-}))(UnstyledSnackbarProvider);
+const snackbarSuccessClassName = cx(css({ backgroundColor: green.main }));
 
 const MainSong = withCloudSaveSongContext(SongRouter);
 
@@ -148,7 +139,9 @@ const App: React.FC<{}> = (): JSX.Element => {
                         titleTemplate="%s - Chord Paper"
                         defaultTitle="Chord Paper"
                     />
-                    <SnackbarProvider>
+                    <SnackbarProvider
+                        classes={{ variantSuccess: snackbarSuccessClassName }}
+                    >
                         <HashRouter>
                             <DragAndDrop>
                                 <GlobalKeyListenerProvider>

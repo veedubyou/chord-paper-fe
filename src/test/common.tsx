@@ -1,4 +1,4 @@
-import { createTheme, ThemeProvider, Theme, StyledEngineProvider } from "@mui/material";
+import { createTheme, StyledEngineProvider, ThemeProvider } from "@mui/material";
 import { SnackbarProvider } from "notistack";
 import React from "react";
 import { HelmetProvider } from "react-helmet-async";
@@ -10,13 +10,6 @@ import ChordPaper from "../components/edit/ChordPaper";
 import DragAndDrop from "../components/edit/DragAndDrop";
 import { SetUserContext, UserContext } from "../components/user/userContext";
 import { withSongContext } from "../components/WithSongContext";
-
-
-declare module '@mui/styles/defaultTheme' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
-
 
 const Song = withSongContext(ChordPaper);
 

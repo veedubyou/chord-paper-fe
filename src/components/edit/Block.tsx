@@ -1,7 +1,6 @@
 import { Box, Grid, inputBaseClasses, styled, Theme } from "@mui/material";
 import { red } from "@mui/material/colors";
-import makeStyles from "@mui/styles/makeStyles";
-import clsx from "clsx";
+import {cx} from "@emotion/css";
 import { List } from "immutable";
 import React from "react";
 import { ConnectDropTarget } from "react-dnd";
@@ -19,10 +18,9 @@ import DraggableChordSymbol from "./block-dnd/DraggableChordSymbol";
 import { useChordTokenDragState } from "./block-dnd/useChordTokenDragState";
 import {
     chordTargetClassName,
-    dragOverChordLyricStyle,
     firstTokenClassName,
-    hoverChordLyricStyle,
-} from "./HighlightChordLyricStyle";
+    makeHighlightableBlockStyles
+} from "./HighlightableBlockStyle";
 import { useEditingState } from "./InteractionContext";
 import TextInput from "./TextInput";
 import Token from "./Token";
@@ -44,34 +42,20 @@ const ChordInput = styled(TextInput)({
     },
 });
 
-const useFirstTokenStyle = {
-    dragOver: makeStyles(
-        dragOverChordLyricStyle({
-            outline: (theme: Theme) => ({
-                borderColor: red[300],
-                color: red[300],
-            }),
-            customLyricClassSelector: firstTokenClassName,
-            customChordSymbolClassSelector: blockChordSymbolClassName,
-            customChordTargetClassSelector: blockChordTargetClassName,
-        })
-    ),
-    hoverable: makeStyles(
-        hoverChordLyricStyle({
-            outline: (theme: Theme) => ({
-                color: theme.palette.primary.dark,
-            }),
-            customLyricClassSelector: firstTokenClassName,
-            customChordSymbolClassSelector: blockChordSymbolClassName,
-            customChordTargetClassSelector: blockChordTargetClassName,
-        })
-    ),
-};
+const useFirstTokenStyle = makeHighlightableBlockStyles({
+    dragOverOutline: (theme: Theme) => ({
+        borderColor: red[300],
+        color: red[300],
+    }),
+    hoverOutline: (theme: Theme) => ({
+        color: theme.palette.primary.dark,
+    }),
+    customLyricClassSelector: firstTokenClassName,
+    customChordSymbolClassSelector: blockChordSymbolClassName,
+    customChordTargetClassSelector: blockChordTargetClassName,
+});
 
-const useNormalTokenStyle = {
-    dragOver: makeStyles(dragOverChordLyricStyle()),
-    hoverable: makeStyles(hoverChordLyricStyle()),
-};
+const useNormalTokenStyle = makeHighlightableBlockStyles();
 
 export interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
@@ -82,21 +66,15 @@ export interface BlockProps extends DataTestID {
 }
 
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
-    const chordTokenStyle = {
-        hoverable: useFirstTokenStyle.hoverable(),
-        dragOver: useFirstTokenStyle.dragOver(),
-    };
+    const chordTokenStyle = useFirstTokenStyle();
+    const chordlessTokenStyle = useNormalTokenStyle();
 
-    const chordlessTokenStyle = {
-        hoverable: useNormalTokenStyle.hoverable(),
-        dragOver: useNormalTokenStyle.dragOver(),
-    };
     const { editing, startEdit, finishEdit } = useEditingState();
 
     const [gridClassName, onChordDragOver, onLyricDragOver] =
         useChordTokenDragState(
-            chordTokenStyle.hoverable.root,
-            chordTokenStyle.dragOver.root
+            chordTokenStyle.hoverable,
+            chordTokenStyle.dragOver
         );
 
     let lyricTokens: List<Lyric> = props.chordBlock.lyricTokens;
@@ -181,8 +159,8 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                 key={index}
                 blockID={props.chordBlock}
                 tokenIndex={index}
-                hoverableClassName={chordlessTokenStyle.hoverable.root}
-                dragOverClassName={chordlessTokenStyle.dragOver.root}
+                hoverableClassName={chordlessTokenStyle.hoverable}
+                dragOverClassName={chordlessTokenStyle.dragOver}
             >
                 {(dropRef: ConnectDropTarget) => (
                     <Token
@@ -238,7 +216,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             <DraggableChordSymbol
                 chordBlockID={props.chordBlock}
                 onDrop={onDrop}
-                className={clsx(
+                className={cx(
                     chordSymbolClassName,
                     blockChordSymbolClassName
                 )}
@@ -258,7 +236,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                 className={gridClassName}
             >
                 <Grid
-                    className={clsx(
+                    className={cx(
                         chordTargetClassName,
                         blockChordTargetClassName
                     )}

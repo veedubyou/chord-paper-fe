@@ -3,11 +3,11 @@ import {
     TextField,
     TextFieldProps,
     Theme,
+    TypographyStyle,
     TypographyVariant,
     useTheme
 } from "@mui/material";
 import { grey } from '@mui/material/colors';
-import { CSSProperties } from "@mui/styles";
 import React from "react";
 import { MUIStyledProps } from "../../common/styledProps";
 
@@ -51,7 +51,7 @@ const ControlledTextInput: React.FC<ControlledTextInputProps> = (
     };
 
     const browserInputProps = (() => {
-        let variant: CSSProperties | undefined = undefined;
+        let variant: TypographyStyle | undefined = undefined;
         if (props.typographyVariant !== undefined) {
             variant = theme?.typography?.[props.typographyVariant];
         }
