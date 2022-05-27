@@ -45,8 +45,6 @@ const LastSavedAt: React.FC<LastSavedAtProps> = (
         return () => clearInterval(interval);
     }, [setLastRefreshed]);
 
-    console.log("props.sx", props.sx);
-
     return (
         <Typography
             variant="caption"

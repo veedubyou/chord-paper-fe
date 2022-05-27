@@ -2,7 +2,12 @@ import { css, cx } from "@emotion/css";
 import { useTheme } from "@mui/material";
 import React, { useCallback, useMemo, useRef } from "react";
 import { useDebouncedCallback } from "use-debounce/lib";
+import { PlainFn, noopFn } from "../../../common/PlainFn";
 
+export type HighlightColourContext = {
+    getColour: () => HighlightColour;
+    rotateColour: PlainFn;
+};
 export type HighlightColour = "blue" | "purple" | "red";
 
 // adding a debounce interval - when scrolling multiple highlights could activate that
@@ -16,9 +21,10 @@ const rotateColourDebounceTime = 300;
 // that still contrasts with blue and purple
 const redColor = "#ff9679";
 
-const HighlightBorderContext = React.createContext<() => HighlightColour>(
-    () => "red"
-);
+export const HighlightBorderContext = React.createContext<HighlightColourContext>({
+    getColour: () => "red",
+    rotateColour: noopFn,
+});
 
 interface HighlightColourProviderProps {
     children: React.ReactNode | React.ReactNode[];
@@ -26,7 +32,7 @@ interface HighlightColourProviderProps {
 
 export const useHighlightBorders = () => {
     const theme = useTheme();
-    const getAndRotateCurrentColour = React.useContext(HighlightBorderContext);
+    const { getColour } = React.useContext(HighlightBorderContext);
 
     const coloursClassNames = useMemo(
         () => ({
@@ -37,7 +43,7 @@ export const useHighlightBorders = () => {
         [theme]
     );
 
-    const currentColour = getAndRotateCurrentColour();
+    const currentColour = getColour();
     return coloursClassNames[currentColour];
 };
 
@@ -66,17 +72,23 @@ export const HighlightColourProvider: React.FC<HighlightColourProviderProps> = (
             }
         },
         rotateColourDebounceTime,
-        { leading: false, trailing: true }
+        { leading: true, trailing: false }
     );
 
-    const getAndRotateColour = useCallback((): HighlightColour => {
-        const currentColour = currentColourRef.current;
-        rotateColour();
-        return currentColour;
-    }, [rotateColour]);
+    const getColour = useCallback((): HighlightColour => {
+        return currentColourRef.current;
+    }, []);
+
+    const colourContext = useMemo(
+        (): HighlightColourContext => ({
+            getColour: getColour,
+            rotateColour: rotateColour,
+        }),
+        [getColour, rotateColour]
+    );
 
     return (
-        <HighlightBorderContext.Provider value={getAndRotateColour}>
+        <HighlightBorderContext.Provider value={colourContext}>
             {props.children}
         </HighlightBorderContext.Provider>
     );

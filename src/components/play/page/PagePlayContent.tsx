@@ -5,7 +5,6 @@ import React, { useEffect, useState } from "react";
 import useScrollbarSize from "react-scrollbar-size";
 import { ChordLine } from "../../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import FocusedElement from "../common/FocusedElement";
 import PlayLine from "../common/PlayLine";
 import { useNavigationKeys } from "../common/useNavigateKeys";
 
@@ -165,12 +164,10 @@ const PagePlayContent: React.FC<PagePlayContentProps> = (
     ]);
 
     return (
-        <FocusedElement>
-            <ColumnedPaper>
-                <MarginBox>{lines}</MarginBox>
-                {emptyColumns}
-            </ColumnedPaper>
-        </FocusedElement>
+        <ColumnedPaper>
+            <MarginBox>{lines}</MarginBox>
+            {emptyColumns}
+        </ColumnedPaper>
     );
 };
 

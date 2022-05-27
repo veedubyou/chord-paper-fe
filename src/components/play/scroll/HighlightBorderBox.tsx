@@ -8,7 +8,6 @@ const transitionFunction = "cubic-bezier(.19,1,.22,1)";
 interface HighlightBorderBoxProps {
     highlight?: boolean;
     children: React.ReactElement;
-    lyrics: string;
 }
 
 interface BorderBoxProps extends HighlightBorderBoxProps, MUIStyledProps {}
@@ -18,9 +17,7 @@ const BorderBox = React.memo(
         (
             props: BorderBoxProps,
             ref: React.ForwardedRef<Element>
-        ): JSX.Element => {
-            console.log("rerendering: ", props.lyrics, props.highlight);
-
+        ): JSX.Element => {            
             return (
                 <Box
                     ref={ref}
@@ -59,7 +56,6 @@ const HighlightBorderBox = React.forwardRef(
             <BorderBox
                 ref={ref}
                 className={containerClassName}
-                lyrics={props.lyrics}
             >
                 {props.children}
             </BorderBox>
