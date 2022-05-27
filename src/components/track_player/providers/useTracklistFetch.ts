@@ -4,7 +4,7 @@ import { useDebouncedCallback } from "use-debounce";
 import {
     BackendResult,
     getTrackList,
-    updateTrackList
+    updateTrackList,
 } from "../../../common/backend/requests";
 import { TrackList } from "../../../common/ChordModel/tracks/TrackList";
 import { FetchState } from "../../../common/fetch";
