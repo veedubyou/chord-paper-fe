@@ -67,10 +67,7 @@ const ScrollablePlayLine: React.FC<ScrollablePlayLineProps> = (
     );
 
     return (
-        <HighlightBorderBox
-            ref={captureRef}
-            highlight={props.highlight}
-        >
+        <HighlightBorderBox ref={captureRef} highlight={props.highlight}>
             <PlayLine chordLine={props.chordLine} />
         </HighlightBorderBox>
     );

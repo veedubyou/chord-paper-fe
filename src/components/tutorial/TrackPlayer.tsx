@@ -7,7 +7,7 @@ import { ControlPaneBox } from "../track_player/internal_player/ControlPane";
 import PlayrateControl from "../track_player/internal_player/PlayrateControl";
 import StemTrackControlPane, {
     ControlPaneButtonColour,
-    StemControl
+    StemControl,
 } from "../track_player/internal_player/stem/StemTrackControlPane";
 import TransposeControl from "../track_player/internal_player/TransposeControl";
 import { LineBreak } from "./Common";

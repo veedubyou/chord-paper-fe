@@ -1,6 +1,6 @@
 import { Box, Grid, inputBaseClasses, styled, Theme } from "@mui/material";
 import { red } from "@mui/material/colors";
-import {cx} from "@emotion/css";
+import { cx } from "@emotion/css";
 import { List } from "immutable";
 import React from "react";
 import { ConnectDropTarget } from "react-dnd";
@@ -19,7 +19,7 @@ import { useChordTokenDragState } from "./block-dnd/useChordTokenDragState";
 import {
     chordTargetClassName,
     firstTokenClassName,
-    makeHighlightableBlockStyles
+    makeHighlightableBlockStyles,
 } from "./HighlightableBlockStyle";
 import { useEditingState } from "./InteractionContext";
 import TextInput from "./TextInput";
@@ -216,10 +216,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
             <DraggableChordSymbol
                 chordBlockID={props.chordBlock}
                 onDrop={onDrop}
-                className={cx(
-                    chordSymbolClassName,
-                    blockChordSymbolClassName
-                )}
+                className={cx(chordSymbolClassName, blockChordSymbolClassName)}
                 ref={dropRef}
             >
                 {props.chordBlock.chord}

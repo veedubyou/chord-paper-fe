@@ -10,7 +10,7 @@ import { KeyDownHandlerProps, useKeyDownHandler } from "./useKeyHandler";
 import { PasteHandlerProps, usePasteHandler } from "./usePasteHandler";
 import {
     useFocusAndPlaceCaretEffect,
-    useSelectionChangeEffect
+    useSelectionChangeEffect,
 } from "./useSelectionHandler";
 
 const InputTypography = styled(Typography)({

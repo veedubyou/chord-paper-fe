@@ -17,7 +17,7 @@ const BorderBox = React.memo(
         (
             props: BorderBoxProps,
             ref: React.ForwardedRef<Element>
-        ): JSX.Element => {            
+        ): JSX.Element => {
             return (
                 <Box
                     ref={ref}
@@ -53,10 +53,7 @@ const HighlightBorderBox = React.forwardRef(
         })();
 
         return (
-            <BorderBox
-                ref={ref}
-                className={containerClassName}
-            >
+            <BorderBox ref={ref} className={containerClassName}>
                 {props.children}
             </BorderBox>
         );

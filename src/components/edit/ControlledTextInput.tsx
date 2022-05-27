@@ -5,9 +5,9 @@ import {
     Theme,
     TypographyStyle,
     TypographyVariant,
-    useTheme
+    useTheme,
 } from "@mui/material";
-import { grey } from '@mui/material/colors';
+import { grey } from "@mui/material/colors";
 import React from "react";
 import { MUIStyledProps } from "../../common/styledProps";
 

@@ -88,8 +88,7 @@ export const withBottomRightBox = (children: React.ReactElement) => {
     );
 };
 
-
-export const TitleBar = styled(Box)<BoxProps>(({theme}) => ({
+export const TitleBar = styled(Box)<BoxProps>(({ theme }) => ({
     width: "100%",
     display: "flex",
     justifyContent: "space-between",

@@ -1,6 +1,6 @@
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import TuneIcon from "@mui/icons-material/Tune";
-import { SpeedDialAction } from '@mui/material';
+import { SpeedDialAction } from "@mui/material";
 import React, { useState } from "react";
 import { PlainFn } from "../../../common/PlainFn";
 import BasePlayMenu from "../common/BasePlayMenu";
@@ -44,7 +44,7 @@ const PagePlayMenu: React.FC<PagePlayMenuProps> = (
                 tooltipTitle="Scroll View"
                 onMouseDownCapture={props.onScrollView}
             />
-                
+
             <SpeedDialAction
                 icon={<TuneIcon />}
                 tooltipTitle="Display Settings"

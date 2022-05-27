@@ -6,7 +6,7 @@ import {
     Grid,
     Paper as UnstyledPaper,
     styled,
-    Typography as UnstyledTypography
+    Typography as UnstyledTypography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { isLeft } from "fp-ts/lib/These";

@@ -1,8 +1,9 @@
 import { css, cx } from "@emotion/css";
 import {
     createTheme as createMuiTheme,
-    PaletteColorOptions, Theme,
-    ThemeProvider
+    PaletteColorOptions,
+    Theme,
+    ThemeProvider,
 } from "@mui/material";
 import { SnackbarProvider } from "notistack";
 import React, { useState } from "react";
@@ -14,7 +15,7 @@ import {
     GuitarDemoPath,
     RootPath,
     SongPath,
-    TutorialPath
+    TutorialPath,
 } from "./common/paths";
 import AboutScreen from "./components/about/About";
 import DragAndDrop from "./components/edit/DragAndDrop";
@@ -26,7 +27,7 @@ import TutorialRoutes from "./components/Tutorial";
 import {
     SetUserContext,
     User,
-    UserContext
+    UserContext,
 } from "./components/user/userContext";
 import { withCloudSaveSongContext } from "./components/WithSongContext";
 

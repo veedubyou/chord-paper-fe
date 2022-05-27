@@ -1,6 +1,10 @@
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import UnstyledMoreVertIcon from "@mui/icons-material/MoreVert";
-import { SpeedDial as UnstyledSpeedDial, SpeedDialAction, styled } from "@mui/material";
+import {
+    SpeedDial as UnstyledSpeedDial,
+    SpeedDialAction,
+    styled,
+} from "@mui/material";
 import { grey } from "@mui/material/colors";
 import React, { useState } from "react";
 import { PlainFn } from "../../../common/PlainFn";
@@ -11,8 +15,8 @@ interface BasePlayMenuProps {
 }
 
 const MenuIcon = styled(UnstyledMoreVertIcon)({
-        backgroundColor: "transparent",
-    });
+    backgroundColor: "transparent",
+});
 
 const SpeedDial = styled(UnstyledSpeedDial)(({ theme }) => ({
     position: "fixed",

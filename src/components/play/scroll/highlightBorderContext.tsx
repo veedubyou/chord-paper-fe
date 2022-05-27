@@ -21,10 +21,11 @@ const rotateColourDebounceTime = 300;
 // that still contrasts with blue and purple
 const redColor = "#ff9679";
 
-export const HighlightBorderContext = React.createContext<HighlightColourContext>({
-    getColour: () => "red",
-    rotateColour: noopFn,
-});
+export const HighlightBorderContext =
+    React.createContext<HighlightColourContext>({
+        getColour: () => "red",
+        rotateColour: noopFn,
+    });
 
 interface HighlightColourProviderProps {
     children: React.ReactNode | React.ReactNode[];

@@ -3,7 +3,8 @@ import {
     Button as UnstyledButton,
     Grid,
     Slider,
-    styled, Typography,
+    styled,
+    Typography,
 } from "@mui/material";
 import {
     blueGrey,
@@ -12,7 +13,7 @@ import {
     lightGreen,
     pink,
     purple,
-    yellow
+    yellow,
 } from "@mui/material/colors";
 import React from "react";
 

@@ -13,14 +13,14 @@ import {
     Menu,
     MenuItem,
     styled,
-    Typography as UnstyledTypography
+    Typography as UnstyledTypography,
 } from "@mui/material";
 import lodash from "lodash";
 import React, { useState } from "react";
 import { SingleTrack } from "../../../common/ChordModel/tracks/SingleTrack";
 import {
     SplitStemTrack,
-    SplitStemTypes
+    SplitStemTypes,
 } from "../../../common/ChordModel/tracks/SplitStemRequest";
 import {
     FiveStemKeys,
@@ -28,7 +28,7 @@ import {
     FourStemKeys,
     FourStemTrack,
     TwoStemKeys,
-    TwoStemTrack
+    TwoStemTrack,
 } from "../../../common/ChordModel/tracks/StemTrack";
 import { Track } from "../../../common/ChordModel/tracks/Track";
 import { TrackList } from "../../../common/ChordModel/tracks/TrackList";
@@ -54,8 +54,8 @@ const FlexBox = styled(Box)(({ theme }) => ({
 }));
 
 const InlineBlockBox = styled(UnstyledBox)({
-        display: "inline-block",
-    });
+    display: "inline-block",
+});
 
 const AddNewRowBox = styled(UnstyledBox)(({ theme }) => ({
     cursor: "pointer",

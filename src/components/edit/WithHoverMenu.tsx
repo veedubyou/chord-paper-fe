@@ -1,8 +1,4 @@
-import {
-    Button,
-    ButtonGroup,
-    styled
-} from "@mui/material";
+import { Button, ButtonGroup, styled } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import React from "react";
 import { DataTestID } from "../../common/DataTestID";
@@ -22,7 +18,7 @@ const TransparentTooltip = makeStyledTooltip(() => ({
     // so that the customized style is observed. be great to fix this in the future
     margin: "0px !important",
     backgroundColor: "transparent",
-}))
+}));
 
 // const TransparentTooltip = styled(({ className, ...props }: TooltipProps) => (
 //     <Tooltip {...props} classes={{ popper: className }} />

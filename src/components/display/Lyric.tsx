@@ -1,13 +1,10 @@
 import { styled, Typography, TypographyProps } from "@mui/material";
 import { CSSProperties } from "@mui/styled-engine";
-import {cx} from "@emotion/css"
+import { cx } from "@emotion/css";
 import React from "react";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { DataTestID } from "../../common/DataTestID";
-import {
-    spaceClassName,
-    wordClassName,
-} from "../edit/HighlightableBlockStyle";
+import { spaceClassName, wordClassName } from "../edit/HighlightableBlockStyle";
 import { deserializeLyrics } from "../lyrics/Serialization";
 
 export const lyricTypographyVariant: "h6" = "h6";
@@ -24,7 +21,7 @@ export const lyricStyle: CSSProperties = {
 };
 
 export const LyricTypography = styled(Typography)<TypographyProps>({
-    ...lyricStyle
+    ...lyricStyle,
 });
 
 interface LyricTypographyProps extends DataTestID {

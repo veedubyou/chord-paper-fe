@@ -4,7 +4,8 @@ import {
     BoxProps,
     Button,
     LinearProgress,
-    styled, Typography
+    styled,
+    Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import ky, { DownloadProgress } from "ky";
@@ -20,7 +21,7 @@ import { getAudioCtx } from "./audioCtx";
 import LoadedStemTrackPlayer, { StemInput } from "./LoadedStemTrackPlayer";
 import { ControlPaneButtonColour } from "./StemTrackControlPane";
 
-const PaddedBox = styled(Box)<BoxProps>(({theme}) => ({
+const PaddedBox = styled(Box)<BoxProps>(({ theme }) => ({
     padding: theme.spacing(2),
     backgroundColor: grey[100],
 }));

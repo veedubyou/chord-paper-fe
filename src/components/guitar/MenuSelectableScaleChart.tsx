@@ -2,7 +2,8 @@ import {
     Box,
     Grid,
     styled,
-    TextField, Tooltip as UnstyledTooltip
+    TextField,
+    Tooltip as UnstyledTooltip,
 } from "@mui/material";
 import React, { useState } from "react";
 import { Scale, ScaleUtility } from "../../common/music/scale/Scale";

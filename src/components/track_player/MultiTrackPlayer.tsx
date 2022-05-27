@@ -8,9 +8,10 @@ import {
     FormControl,
     MenuItem,
     Select as UnstyledSelect,
-    SelectChangeEvent, Slide,
+    SelectChangeEvent,
+    Slide,
     styled,
-    Theme
+    Theme,
 } from "@mui/material";
 import { SystemStyleObject } from "@mui/system";
 import React, { useEffect } from "react";
@@ -22,11 +23,11 @@ import {
     roundedCornersStyle,
     roundedTopCornersStyle,
     TitleBar,
-    withBottomRightBox
+    withBottomRightBox,
 } from "./common";
 import {
     PlayerControls,
-    unfocusedControls
+    unfocusedControls,
 } from "./internal_player/usePlayerControls";
 import { TrackListLoad } from "./providers/TrackListProvider";
 import TrackPlayer from "./TrackPlayer";

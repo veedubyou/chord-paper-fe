@@ -1,9 +1,5 @@
 import UnstyledAddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import {
-    Divider as UnstyledDivider,
-    Grid,
-    styled
-} from "@mui/material";
+import { Divider as UnstyledDivider, Grid, styled } from "@mui/material";
 import React from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { IDable } from "../../common/ChordModel/Collection";

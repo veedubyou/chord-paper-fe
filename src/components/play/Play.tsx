@@ -10,7 +10,7 @@ import LoadingRender from "../loading/LoadingRender";
 import JamStation from "../track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
-    TrackListLoad
+    TrackListLoad,
 } from "../track_player/providers/TrackListProvider";
 import PagePlayView from "./page/PagePlayView";
 import ScrollPlayView from "./scroll/ScrollPlayView";

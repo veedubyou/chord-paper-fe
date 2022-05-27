@@ -8,7 +8,7 @@ import { LineBreak, LyricsTypography, ChordTypography } from "./Common";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { convertToTutorialComponent } from "./TutorialComponent";
 
-const title = "Chord Positioning"
+const title = "Chord Positioning";
 
 const ChordPositioning: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({
