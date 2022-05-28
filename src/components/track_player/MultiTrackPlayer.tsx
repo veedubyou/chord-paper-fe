@@ -45,7 +45,6 @@ const TitleBarButton = styled(Button)(({ theme }) => ({
 
 const paddingLeftStyle: SystemStyleObject<Theme> = {
     [`& .{selectClasses.select}`]: {
-        // theme.spacing(2)
         paddingLeft: 2,
     },
 };
