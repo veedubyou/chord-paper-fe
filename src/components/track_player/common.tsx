@@ -71,6 +71,7 @@ const BottomRightBox = styled(Box)(({ theme }) => ({
     position: "fixed",
     bottom: 0,
     right: theme.spacing(2),
+    // just bump the z index slightly to above 0 to cover most things
     zIndex: 1,
     ...roundedTopCornersStyle(theme),
 }));
