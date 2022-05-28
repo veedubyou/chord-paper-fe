@@ -8,22 +8,28 @@ interface LoadingSpinnerProps {
     sx?: SystemStyleObject<Theme>;
 }
 
-const LoadingSpinner: React.FC<LoadingSpinnerProps> = (
-    props: LoadingSpinnerProps
-): JSX.Element => {
-    return (
-        <Box
-            sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                margin: 0.5,
-                ...props.sx,
-            }}
-        >
-            <CircularProgress size={props.size} thickness={props.thickness} />
-        </Box>
-    );
-};
+const LoadingSpinner = React.forwardRef(
+    (
+        props: LoadingSpinnerProps,
+        ref: React.ForwardedRef<Element>
+    ): JSX.Element => {
+        return (
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    ...props.sx,
+                }}
+                ref={ref}
+            >
+                <CircularProgress
+                    size={props.size}
+                    thickness={props.thickness}
+                />
+            </Box>
+        );
+    }
+);
 
 export default LoadingSpinner;
