@@ -132,7 +132,10 @@ const MicroPlayer: React.FC<MicroPlayerProps> = (
                             className={props.className}
                             onClick={props.onClick}
                             disabled={props.disabled}
-                            sx={{ roundedTopCornersStyle, ...props.sx }}
+                            sx={(theme: Theme) => ({
+                                ...roundedTopCornersStyle(theme),
+                                ...props.sx,
+                            })}
                         >
                             {icon}
                         </Button>

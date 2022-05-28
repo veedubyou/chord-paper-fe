@@ -3,7 +3,7 @@ import {
     createTheme as createMuiTheme,
     PaletteColorOptions,
     Theme,
-    ThemeProvider,
+    ThemeProvider
 } from "@mui/material";
 import { SnackbarProvider } from "notistack";
 import React, { useState } from "react";
@@ -15,7 +15,7 @@ import {
     GuitarDemoPath,
     RootPath,
     SongPath,
-    TutorialPath,
+    TutorialPath
 } from "./common/paths";
 import AboutScreen from "./components/about/About";
 import DragAndDrop from "./components/edit/DragAndDrop";
@@ -27,7 +27,7 @@ import TutorialRoutes from "./components/Tutorial";
 import {
     SetUserContext,
     User,
-    UserContext,
+    UserContext
 } from "./components/user/userContext";
 import { withCloudSaveSongContext } from "./components/WithSongContext";
 
@@ -62,6 +62,18 @@ const createTheme = (): Theme => {
         typography: {
             fontFamily: "Merriweather",
             fontWeightRegular: 300,
+        },
+        components: {
+            MuiButton: {
+                styleOverrides: {
+                    root: {
+                        color: "black",
+                        "&:hover": {
+                            backgroundColor: "rgba(0, 0, 0, 0.04)"
+                        },
+                    },
+                },
+            },
         },
     });
 };
