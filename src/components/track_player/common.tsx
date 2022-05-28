@@ -1,7 +1,6 @@
 import { Box, BoxProps, Theme, TypographyVariant } from "@mui/material";
 import { blueGrey, grey } from "@mui/material/colors";
 import { styled } from "@mui/material/styles";
-import { SystemStyleObject } from "@mui/system";
 import React from "react";
 
 export const roundedTopCornersStyle = (theme: Theme) => ({
@@ -68,23 +67,18 @@ export const widthOfString = (
 
 export const greyTextColour = grey[700];
 
-const bottomRightStyle = (theme: Theme): SystemStyleObject<Theme> => {
-    const lowestPlayerZIndex = theme.zIndex.mobileStepper;
-
-    return {
-        position: "fixed",
-        bottom: 0,
-        right: theme.spacing(2),
-        zIndex: lowestPlayerZIndex,
-        ...roundedTopCornersStyle(theme),
-    };
-};
+const BottomRightBox = styled(Box)(({ theme }) => ({
+    position: "fixed",
+    bottom: 0,
+    right: theme.spacing(2),
+    ...roundedTopCornersStyle(theme),
+}));
 
 export const withBottomRightBox = (children: React.ReactElement) => {
     return (
-        <Box boxShadow={4} sx={bottomRightStyle}>
+        <BottomRightBox boxShadow={4}>
             {children}
-        </Box>
+        </BottomRightBox>
     );
 };
 
