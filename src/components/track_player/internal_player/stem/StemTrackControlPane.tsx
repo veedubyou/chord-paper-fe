@@ -27,7 +27,7 @@ const VolumeSlider = styled(Slider)({
     color: blueGrey[400],
 });
 
-const coloredButton = (color: string) => {
+const colouredButton = (color: string) => {
     return styled(UnstyledButton)(({ theme }) => ({
         backgroundColor: color,
         width: "100%",
@@ -42,15 +42,15 @@ const coloredButton = (color: string) => {
     }));
 };
 
-const DisabledButton = coloredButton(grey[300]);
+const DisabledButton = colouredButton(grey[300]);
 
 const ColouredButtons = {
-    white: coloredButton("white"),
-    pink: coloredButton(pink[200]),
-    yellow: coloredButton(yellow[200]),
-    purple: coloredButton(purple[100]),
-    lightBlue: coloredButton(lightBlue[200]),
-    lightGreen: coloredButton(lightGreen[100]),
+    white: colouredButton("white"),
+    pink: colouredButton(pink[200]),
+    yellow: colouredButton(yellow[200]),
+    purple: colouredButton(purple[100]),
+    lightBlue: colouredButton(lightBlue[200]),
+    lightGreen: colouredButton(lightGreen[100]),
 };
 
 export type ControlPaneButtonColour = keyof typeof ColouredButtons;
