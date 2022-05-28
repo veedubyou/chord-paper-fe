@@ -6,7 +6,7 @@ import {
     Grid,
     Paper as UnstyledPaper,
     styled,
-    Typography as UnstyledTypography,
+    Typography as UnstyledTypography
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { isLeft } from "fp-ts/lib/These";
@@ -16,7 +16,6 @@ import { Link } from "react-router-dom";
 import SigninIcon from "../../assets/img/google_signin.svg";
 import { BackendError, RequestError } from "../../common/backend/errors";
 import { login } from "../../common/backend/requests";
-import { MUIStyledProps } from "../../common/styledProps";
 import { getRouteForTutorialComponent } from "../Tutorial";
 import LoginTutorial from "../tutorial/Login";
 import { deserializeUser, User, UserContext } from "./userContext";
@@ -40,7 +39,7 @@ const googleSignInID = "google-sign-in";
 const googleClientID =
     "650853277550-ta69qbfcvdl6tb5ogtnh2d07ae9rcdlf.apps.googleusercontent.com";
 
-interface LoginProps extends MUIStyledProps {
+interface LoginProps {
     onUserChanged: (user: User | null) => void;
 }
 
@@ -283,7 +282,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     })();
 
     return (
-        <Paper id={googleSignInID} classes={props.className}>
+        <Paper id={googleSignInID}>
             <Grid container alignItems="center" justifyContent="center">
                 <Grid item>
                     <img
