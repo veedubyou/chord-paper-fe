@@ -92,7 +92,6 @@ const makeEditingSizeStyle = (size: number) => {
         "&:before": {
             content: '"\\a0"',
         },
-        // margin: "0.05em",
         ...plainStyle,
     };
 };

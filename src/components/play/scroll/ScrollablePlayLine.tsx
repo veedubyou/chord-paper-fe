@@ -3,8 +3,8 @@ import { ChordLine } from "../../../common/ChordModel/ChordLine";
 import { PlainFn } from "../../../common/PlainFn";
 import PlayLine from "../common/PlayLine";
 import HighlightBorderBox from "./HighlightBorderBox";
-import { useInViewElement } from "./InViewElement";
-import { useScrollable } from "./ScrollingElement";
+import { useInPageView } from "./useInPageView";
+import { useScrollable } from "./useScrollable";
 
 // these values determine the portion of the viewport that is used to consider
 // the next line that the user can scroll to
@@ -36,14 +36,14 @@ interface ScrollablePlayLineProps {
 const ScrollablePlayLine: React.FC<ScrollablePlayLineProps> = (
     props: ScrollablePlayLineProps
 ): JSX.Element => {
-    const currentPageInViewRef = useInViewElement({
+    const currentPageInViewRef = useInPageView({
         topMarginPercentage: topCurrentViewportMarginPercent,
         bottomMarginPercentage: bottomCurrentViewportMarginPercent,
         isInViewFnCallback: props.isInCurrentViewFnCallback,
         inViewChanged: props.inViewChanged,
     });
 
-    const previousPageInViewRef = useInViewElement({
+    const previousPageInViewRef = useInPageView({
         topMarginPercentage: topPreviousViewportMarginPercent,
         bottomMarginPercentage: bottomPreviousViewportMarginPercent,
         isInViewFnCallback: props.isInPreviousViewFnCallback,

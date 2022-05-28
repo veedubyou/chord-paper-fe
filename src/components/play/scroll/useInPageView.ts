@@ -1,15 +1,10 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 import { PlainFn } from "../../../common/PlainFn";
 
-export interface ViewportElement {
-    scrollIntoView: PlainFn;
-    isInView: () => boolean;
-}
-
 type IsInViewFn = () => boolean;
 
-interface InViewElementProps {
+interface useInPageViewProps {
     topMarginPercentage: number;
     bottomMarginPercentage: number;
     isInViewFnCallback: (isInView: IsInViewFn) => void;
@@ -18,7 +13,7 @@ interface InViewElementProps {
 
 type InViewRef = (node: Element | null | undefined) => void;
 
-export const useInViewElement = (props: InViewElementProps): InViewRef => {
+export const useInPageView = (props: useInPageViewProps): InViewRef => {
     const { ref: inViewRef, inView } = useInView({
         threshold: 0.9,
         rootMargin: `${props.topMarginPercentage}% 0px ${props.bottomMarginPercentage}% 0px`,
@@ -29,11 +24,13 @@ export const useInViewElement = (props: InViewElementProps): InViewRef => {
 
     props.isInViewFnCallback(() => inViewCache.current);
 
-    const oldValue = inViewCache.current;
-    if (oldValue !== inView) {
-        inViewCache.current = inView;
-        inViewChanged?.();
-    }
+    useEffect(() => {
+        const oldValue = inViewCache.current;
+        if (oldValue !== inView) {
+            inViewCache.current = inView;
+            inViewChanged?.();
+        }
+    }, [inView, inViewChanged]);
 
     return inViewRef;
 };
