@@ -8,9 +8,8 @@ const Typography = styled(UnstyledTypography)({
     color: grey[600],
 });
 
-interface LastSavedAtProps extends MUIStyledCommonProps<Theme> {
+interface LastSavedAtProps extends MUIStyledProps {
     lastSaved: Date;
-    className?: string;
 }
 
 const LastSavedAt: React.FC<LastSavedAtProps> = (

@@ -67,6 +67,8 @@ const createTheme = (): Theme => {
             MuiButton: {
                 styleOverrides: {
                     root: {
+                        // overriding button styles
+                        // to resemble MUI 4 aesthetics
                         color: "black",
                         "&:hover": {
                             backgroundColor: "rgba(0, 0, 0, 0.04)"
