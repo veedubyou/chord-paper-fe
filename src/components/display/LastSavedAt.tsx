@@ -1,8 +1,8 @@
-import { styled, Theme, Typography as UnstyledTypography } from "@mui/material";
+import { styled, Typography as UnstyledTypography } from "@mui/material";
 import { grey } from "@mui/material/colors";
-import { MUIStyledCommonProps } from "@mui/system";
 import { DateTime, Duration } from "luxon";
 import React, { useEffect, useState } from "react";
+import { MUIStyledProps } from "../../common/styledProps";
 
 const Typography = styled(UnstyledTypography)({
     color: grey[600],

@@ -3,14 +3,15 @@ import {
     Grid,
     styled,
     TextField,
-    Tooltip as UnstyledTooltip,
+    Theme
 } from "@mui/material";
 import React, { useState } from "react";
 import { Scale, ScaleUtility } from "../../common/music/scale/Scale";
+import { makeStyledTooltipMenu } from "../edit/StyledTooltip";
 import FretSelector from "./FretSelector";
 import ScaleChart, { StartingFret } from "./ScaleChart";
 
-const Tooltip = styled(UnstyledTooltip)(({ theme }) => ({
+const Tooltip = makeStyledTooltipMenu((theme: Theme) => ({
     background: "white",
     boxShadow: theme.shadows[2],
 }));
