@@ -115,6 +115,7 @@ const StemTrackControlPane = <StemKey extends string>(
                                 min={0}
                                 max={200}
                                 step={10}
+                                size="small"
                                 valueLabelDisplay="auto"
                             />
                         </Box>

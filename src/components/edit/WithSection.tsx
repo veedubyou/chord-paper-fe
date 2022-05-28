@@ -10,14 +10,14 @@ import {
 import { ChordSongAction } from "../reducer/reducer";
 import UnstyledEditableTypography, { EditControl } from "./EditableTypography";
 import { useEditingState } from "./InteractionContext";
-import { makeStyledTooltip } from "./StyledTooltip";
+import { makeStyledTooltipMenu } from "./StyledTooltip";
 import TimeInput from "./TimeInput";
 
 const EditableTypography = styled(UnstyledEditableTypography)({
     ...sectionLabelStyle,
 });
 
-const Tooltip = makeStyledTooltip((theme: Theme) => ({
+const Tooltip = makeStyledTooltipMenu((theme: Theme) => ({
     background: "white",
     boxShadow: theme.shadows[2],
 }));

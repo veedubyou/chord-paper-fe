@@ -2,7 +2,7 @@ import { Button, ButtonGroup, styled } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import React from "react";
 import { DataTestID } from "../../common/DataTestID";
-import { makeStyledTooltip } from "./StyledTooltip";
+import { makeStyledTooltipMenu } from "./StyledTooltip";
 
 const HoverMenuButton = styled(Button)({
     backgroundColor: "transparent",
@@ -11,7 +11,7 @@ const HoverMenuButton = styled(Button)({
     },
 });
 
-const TransparentTooltip = makeStyledTooltip(() => ({
+const TransparentTooltip = makeStyledTooltipMenu(() => ({
     padding: "0px",
     // !important is awful. however MUI keeps overriding the specified style
     // and there isn't a good guide on how to compose this properly
@@ -19,14 +19,6 @@ const TransparentTooltip = makeStyledTooltip(() => ({
     margin: "0px !important",
     backgroundColor: "transparent",
 }));
-
-// const TransparentTooltip = styled(({ className, ...props }: TooltipProps) => (
-//     <Tooltip {...props} classes={{ popper: className }} />
-// ))({
-//     [`& .${tooltipClasses.tooltip}`]: {
-
-//     },
-// });
 
 export interface MenuItem extends DataTestID {
     icon: React.ReactElement;

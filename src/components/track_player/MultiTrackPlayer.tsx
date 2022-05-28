@@ -149,7 +149,6 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
             <FormControl size="small">
                 <Select
                     sx={paddingLeftStyle}
-                    disableUnderline
                     value={props.currentTrackIndex}
                     onChange={trackChangeHandler}
                 >
