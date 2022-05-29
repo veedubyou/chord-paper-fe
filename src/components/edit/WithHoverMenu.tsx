@@ -1,29 +1,24 @@
-import {
-    Button as UnstyledButton,
-    ButtonGroup,
-    Theme,
-    Tooltip as UnstyledTooltip,
-    withStyles,
-} from "@material-ui/core";
+import { Button, ButtonGroup, styled } from "@mui/material";
+import { grey } from "@mui/material/colors";
 import React from "react";
 import { DataTestID } from "../../common/DataTestID";
+import { makeStyledTooltipMenu } from "./StyledTooltip";
 
-const Button = withStyles((theme: Theme) => ({
-    contained: {
-        backgroundColor: "transparent",
-        "&:hover": {
-            backgroundColor: theme.palette.primary.dark,
-        },
+const HoverMenuButton = styled(Button)({
+    backgroundColor: "transparent",
+    "&:hover": {
+        backgroundColor: grey[200],
     },
-}))(UnstyledButton);
+});
 
-const Tooltip = withStyles({
-    tooltip: {
-        padding: 0,
-        background: "transparent",
-        margin: 0,
-    },
-})(UnstyledTooltip);
+const TransparentTooltip = makeStyledTooltipMenu(() => ({
+    padding: "0px",
+    // !important is awful. however MUI keeps overriding the specified style
+    // and there isn't a good guide on how to compose this properly
+    // so that the customized style is observed. be great to fix this in the future
+    margin: "0px !important",
+    backgroundColor: "transparent",
+}));
 
 export interface MenuItem extends DataTestID {
     icon: React.ReactElement;
@@ -38,26 +33,26 @@ export interface WithHoverMenuProps {
 const WithHoverMenu: React.FC<WithHoverMenuProps> = (
     props: WithHoverMenuProps
 ): JSX.Element => {
-    const hoverMenu = (
+    const buttons = props.menuItems.map((item: MenuItem, index: number) => (
+        <HoverMenuButton
+            key={index}
+            onClick={item.onClick}
+            data-testid={item["data-testid"]}
+        >
+            {item.icon}
+        </HoverMenuButton>
+    ));
+
+    const menuContents = (
         <ButtonGroup orientation="vertical" variant="text">
-            {props.menuItems.map((menuItem: MenuItem, index: number) => {
-                return (
-                    <Button
-                        key={index}
-                        onClick={menuItem.onClick}
-                        data-testid={menuItem["data-testid"]}
-                    >
-                        {menuItem.icon}
-                    </Button>
-                );
-            })}
+            {buttons}
         </ButtonGroup>
     );
 
     return (
-        <Tooltip placement="right" title={hoverMenu} interactive>
+        <TransparentTooltip placement="right" title={menuContents}>
             {props.children}
-        </Tooltip>
+        </TransparentTooltip>
     );
 };
 

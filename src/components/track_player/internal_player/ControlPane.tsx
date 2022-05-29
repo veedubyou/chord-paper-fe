@@ -1,5 +1,4 @@
-import { Box, Theme } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Box, styled } from "@mui/material";
 import React, { useEffect } from "react";
 import { PlainFn } from "../../../common/PlainFn";
 import { useRegisterTopKeyListener } from "../../GlobalKeyListener";
@@ -31,26 +30,22 @@ interface ControlPaneProps {
     sectionLabel: string;
 }
 
-const RightJustifiedControlGroup = withStyles({
-    root: {
-        marginLeft: "auto",
-    },
-})(ControlGroup);
+const RightJustifiedControlGroup = styled(ControlGroup)({
+    marginLeft: "auto",
+});
 
-export const ControlPaneBox = withStyles((theme: Theme) => {
+export const ControlPaneBox = styled(Box)(({ theme }) => {
     const buttonHeight = theme.spacing(5);
     return {
-        root: {
-            ...controlPaneStyle,
-            justifyContent: "space-between",
-            // these series of CSS allows flex items
-            // to be "pushed off" when they run out of space
-            flexWrap: "wrap",
-            overflow: "hidden",
-            maxHeight: buttonHeight,
-        },
+        ...controlPaneStyle,
+        justifyContent: "space-between",
+        // these series of CSS allows flex items
+        // to be "pushed off" when they run out of space
+        flexWrap: "wrap",
+        overflow: "hidden",
+        maxHeight: buttonHeight,
     };
-})(Box);
+});
 
 const ControlPane: React.FC<ControlPaneProps> = (
     props: ControlPaneProps

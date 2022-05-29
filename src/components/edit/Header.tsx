@@ -1,18 +1,25 @@
-import { Box, Grid, Theme, Typography } from "@material-ui/core";
-import { useTheme, withStyles } from "@material-ui/styles";
+import { Box, Grid, styled, Typography } from "@mui/material";
 import React from "react";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import UnstyledLastSavedAt from "../display/LastSavedAt";
 import { ChordSongAction } from "../reducer/reducer";
 import EditableTypography from "./EditableTypography";
 
-const LastSavedAt = withStyles((theme: Theme) => ({
-    root: {
-        position: "absolute",
-        top: theme.spacing(2),
-        right: theme.spacing(2),
-    },
-}))(UnstyledLastSavedAt);
+const LastSavedAt = styled(UnstyledLastSavedAt)(({ theme }) => ({
+    position: "absolute",
+    top: theme.spacing(2),
+    right: theme.spacing(2),
+}));
+
+const TitleBox = styled(Box)(({ theme }) => ({
+    paddingBottom: theme.spacing(4),
+}));
+
+const HeaderBox = styled(Box)(({ theme }) => ({
+    paddingTop: theme.spacing(8),
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+}));
 
 interface HeaderProps {
     song: ChordSong;
@@ -20,8 +27,6 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
-    const theme: Theme = useTheme();
-
     const updateTitleHandler = (newTitle: string) => {
         props.songDispatch({ type: "set-header", title: newTitle });
     };
@@ -35,7 +40,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
     };
 
     const title = (
-        <Box paddingBottom={theme.spacing(0.5)}>
+        <TitleBox>
             <EditableTypography
                 value={props.song.title}
                 variant="h4"
@@ -44,7 +49,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
                 placeholder="Song Title"
                 onValueChange={updateTitleHandler}
             />
-        </Box>
+        </TitleBox>
     );
 
     const lastSavedAt: React.ReactNode =
@@ -53,8 +58,8 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
         );
 
     const details = (
-        <Grid container justify="center">
-            <Grid container item xs={6} justify="center">
+        <Grid container justifyContent="center">
+            <Grid container item xs={6} justifyContent="center">
                 <Grid item>
                     <Typography display="block" variant="caption">
                         Composed by:{" "}
@@ -70,7 +75,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
                     />
                 </Grid>
             </Grid>
-            <Grid container item xs={6} justify="center">
+            <Grid container item xs={6} justifyContent="center">
                 <Grid item>
                     <Typography display="inline" variant="caption">
                         Performed by:{" "}
@@ -89,16 +94,11 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
     );
 
     return (
-        <Box
-            paddingTop={theme.spacing(1)}
-            paddingLeft={theme.spacing(0.5)}
-            paddingRight={theme.spacing(0.5)}
-            data-testid="Header"
-        >
+        <HeaderBox data-testid="Header">
             {lastSavedAt}
             {title}
             {details}
-        </Box>
+        </HeaderBox>
     );
 };
 

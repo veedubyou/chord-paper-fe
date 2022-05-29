@@ -1,17 +1,14 @@
-import { Grid, Paper, Theme, Typography } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Grid, Paper, styled, Typography } from "@mui/material";
 import React from "react";
 import { inflatingWhitespace } from "../../common/Whitespace";
 import CenteredLayoutWithMenu from "../display/CenteredLayoutWithMenu";
 
-const RootPaper = withStyles((theme: Theme) => ({
-    root: {
-        marginTop: theme.spacing(5),
-        padding: theme.spacing(5),
-        minHeight: theme.spacing(46),
-        minWidth: theme.spacing(92),
-    },
-}))(Paper);
+const RootPaper = styled(Paper)(({ theme }) => ({
+    marginTop: theme.spacing(5),
+    padding: theme.spacing(5),
+    minHeight: theme.spacing(46),
+    minWidth: theme.spacing(92),
+}));
 
 const About: React.FC<{}> = (): JSX.Element => {
     return (

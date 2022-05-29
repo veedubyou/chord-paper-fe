@@ -1,6 +1,6 @@
-import { makeStyles, Typography, TypographyVariant } from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import { StyledComponentProps, withStyles } from "@material-ui/styles";
+import { styled, Theme, Typography, TypographyVariant } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import { MUIStyledCommonProps, SystemStyleObject } from "@mui/system";
 import React from "react";
 import { Lyric } from "../../../common/ChordModel/Lyric";
 import { PlainFn } from "../../../common/PlainFn";
@@ -13,31 +13,27 @@ import {
     useSelectionChangeEffect,
 } from "./useSelectionHandler";
 
-const InputTypography = withStyles({
-    root: {
-        width: "100%",
-        backgroundColor: grey[200],
-        whiteSpace: "pre",
-        display: "inline-block",
-    },
-})(Typography);
-
-const useContentEditableStyle = makeStyles({
-    root: {
-        display: "inline-block",
-        width: "100%",
-        pointerEvents: "auto",
-        userSelect: "text",
-        outline: "none",
-        wordSpacing: ".15em",
-        // this prevent the span height from collapsing if there's no content
-        "&:empty:before": {
-            content: '"\\a0"',
-        },
-    },
+const InputTypography = styled(Typography)({
+    width: "100%",
+    backgroundColor: grey[200],
+    whiteSpace: "pre",
+    display: "inline-block",
 });
 
-interface LyricInputProps extends StyledComponentProps {
+const contentEditableStyle: SystemStyleObject<Theme> = {
+    display: "inline-block",
+    width: "100%",
+    pointerEvents: "auto",
+    userSelect: "text",
+    outline: "none",
+    wordSpacing: ".15em",
+    // this prevent the span height from collapsing if there's no content
+    "&:empty:before": {
+        content: '"\\a0"',
+    },
+};
+
+export interface LyricInputProps extends MUIStyledCommonProps<Theme> {
     children: Lyric;
     onFinish: (newValue: Lyric) => void;
     onSpecialBackspace: PlainFn;
@@ -105,7 +101,6 @@ const LyricInput: React.FC<LyricInputProps> = (
         finish(value());
     };
 
-    const contentEditableStyle = useContentEditableStyle();
     const lyricContent = deserializeLyrics(props.children, true);
 
     useFocusAndPlaceCaretEffect(contentEditableRef);
@@ -113,14 +108,15 @@ const LyricInput: React.FC<LyricInputProps> = (
 
     return (
         <InputTypography
-            classes={props.classes}
+            sx={props.sx}
             variant={props.variant}
             display="inline"
             data-testid="LyricInput"
         >
             <span
                 contentEditable
-                className={contentEditableStyle.root}
+                spellCheck={false}
+                style={contentEditableStyle}
                 ref={contentEditableRef}
                 data-testid="InnerInput"
                 onBlur={handleBlur}

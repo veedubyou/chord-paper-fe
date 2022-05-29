@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
 import Playground from "./Playground";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
@@ -8,7 +8,7 @@ import { LineBreak, LyricsTypography, ChordTypography } from "./Common";
 import { Lyric } from "../../common/ChordModel/Lyric";
 import { convertToTutorialComponent } from "./TutorialComponent";
 
-const title = "Chord Positioning"
+const title = "Chord Positioning";
 
 const ChordPositioning: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({

@@ -3,14 +3,15 @@ import {
     TextField,
     TextFieldProps,
     Theme,
+    TypographyStyle,
     TypographyVariant,
     useTheme,
-} from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import { CSSProperties, StyledComponentProps } from "@material-ui/styles";
+} from "@mui/material";
+import { grey } from "@mui/material/colors";
 import React from "react";
+import { MUIStyledProps } from "../../common/styledProps";
 
-interface ControlledTextInputProps extends StyledComponentProps {
+interface ControlledTextInputProps extends MUIStyledProps {
     value: string;
     onValueChange: (newValue: string) => void;
     onFinish?: (newValue: string) => void;
@@ -50,14 +51,14 @@ const ControlledTextInput: React.FC<ControlledTextInputProps> = (
     };
 
     const browserInputProps = (() => {
-        let variant: CSSProperties | undefined = undefined;
+        let variant: TypographyStyle | undefined = undefined;
         if (props.typographyVariant !== undefined) {
             variant = theme?.typography?.[props.typographyVariant];
         }
 
-        const padding: number = (() => {
+        const padding: string = (() => {
             if (props.paddingSpacing === undefined) {
-                return 0;
+                return "0px";
             }
 
             return theme.spacing(props.paddingSpacing);
@@ -72,7 +73,6 @@ const ControlledTextInput: React.FC<ControlledTextInputProps> = (
                 opacity: 1,
                 background: grey[100],
             },
-            className: props.classes?.root,
         };
 
         if (props.width !== undefined && inputProps.style) {
@@ -85,9 +85,11 @@ const ControlledTextInput: React.FC<ControlledTextInputProps> = (
     return (
         <TextField
             autoFocus
+            className={props.className}
             variant={props.variant}
             inputProps={{
                 "data-testid": "InnerInput",
+                spellCheck: false,
                 ...browserInputProps,
             }}
             InputProps={props.InputProps}

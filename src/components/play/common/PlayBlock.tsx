@@ -1,4 +1,4 @@
-import { Box, Grid } from "@material-ui/core";
+import { Box, Grid } from "@mui/material";
 import React from "react";
 import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
 import ChordSymbol from "../../display/ChordSymbol";

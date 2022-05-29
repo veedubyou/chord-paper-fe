@@ -1,4 +1,14 @@
+import UnstyledCloseIcon from "@mui/icons-material/Close";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import FreeBreakfastIcon from "@mui/icons-material/FreeBreakfast";
+import LibraryMusicIcon from "@mui/icons-material/LibraryMusic";
+import UnstyledMenuIcon from "@mui/icons-material/Menu";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import PetsIcon from "@mui/icons-material/Pets";
+import StoreIcon from "@mui/icons-material/Store";
 import {
+    Box,
     Collapse,
     Divider,
     Drawer as UnstyledDrawer,
@@ -8,20 +18,10 @@ import {
     ListItemIcon,
     ListItemText,
     Paper,
-    Theme,
+    styled,
     Typography,
-} from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import UnstyledCloseIcon from "@material-ui/icons/Close";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import FreeBreakfastIcon from "@material-ui/icons/FreeBreakfast";
-import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
-import UnstyledMenuIcon from "@material-ui/icons/Menu";
-import MusicNoteIcon from "@material-ui/icons/MusicNote";
-import PetsIcon from "@material-ui/icons/Pets";
-import StoreIcon from "@material-ui/icons/Store";
-import { makeStyles, withStyles } from "@material-ui/styles";
+} from "@mui/material";
+import { grey } from "@mui/material/colors";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { DemoPath, SongPath } from "../common/paths";
@@ -31,58 +31,20 @@ import { allExerciseRoutes, ExerciseRoute } from "./Tutorial";
 import Login from "./user/Login";
 import { SetUserContext, UserContext } from "./user/userContext";
 
-const withPointerStyle = withStyles({
-    root: {
-        cursor: "pointer",
-    },
+const pointerStyle = {
+    cursor: "pointer",
+};
+
+const MenuIcon = styled(UnstyledMenuIcon)(pointerStyle);
+const CloseIcon = styled(UnstyledCloseIcon)(pointerStyle);
+
+const Drawer = styled(UnstyledDrawer)({
+    display: "flex",
+    flexDirection: "column",
 });
 
-const MenuIcon = withPointerStyle(UnstyledMenuIcon);
-const CloseIcon = withPointerStyle(UnstyledCloseIcon);
-
-const Drawer = withStyles({
-    root: {
-        display: "flex",
-        flexDirection: "column",
-    },
-})(UnstyledDrawer);
-
-const VerticalGridItem = withStyles({
-    root: {
-        maxWidth: "none",
-    },
-})(Grid);
-
-const TitleGrid = withStyles((theme: Theme) => ({
-    root: {
-        padding: theme.spacing(3),
-    },
-}))(Grid);
-
-const TitleName = withStyles({
-    root: {
-        color: grey[600],
-    },
-})(Typography);
-
-const CollapsedMenuSurface = withStyles({
-    root: {
-        minWidth: "24px",
-        height: "100vh",
-    },
-})(Paper);
-
-const FullHeightGrid = withStyles({
-    root: {
-        height: "100%",
-        width: "100%",
-    },
-})(Grid);
-
-const useFillerStyle = makeStyles({
-    root: {
-        flexGrow: 1,
-    },
+const VerticalGridItem = styled(Grid)({
+    maxWidth: "none",
 });
 
 interface CollapsedSideMenuProps {
@@ -95,19 +57,28 @@ export const CollapsedSideMenu: React.FC<CollapsedSideMenuProps> = (
 ): JSX.Element => {
     return (
         <Drawer variant="persistent" open={props.open} anchor="left">
-            <CollapsedMenuSurface>
-                <FullHeightGrid
+            <Paper
+                sx={{
+                    minWidth: "24px",
+                    height: "100vh",
+                }}
+            >
+                <Grid
                     container
                     direction="column"
                     alignContent="center"
+                    sx={{
+                        height: "100%",
+                        width: "100%",
+                    }}
                 >
                     <VerticalGridItem item xs={1}></VerticalGridItem>
                     <VerticalGridItem item xs={1}>
                         <MenuIcon onClick={props.onClick} />
                     </VerticalGridItem>
                     <VerticalGridItem item xs={10}></VerticalGridItem>
-                </FullHeightGrid>
-            </CollapsedMenuSurface>
+                </Grid>
+            </Paper>
         </Drawer>
     );
 };
@@ -120,7 +91,6 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
     const [showLoadSongsDialog, setShowLoadSongsDialog] = useState(false);
 
     const [learnSubmenuOpen, setLearnSubMenuOpen] = useState(false);
-    const fillerStyle = useFillerStyle();
 
     const typographyProps = {
         variant: "h6" as "h6",
@@ -171,28 +141,39 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
         color: "inherit",
     };
 
+    const fillerBox = <Box sx={{ flexGrow: 1 }} />;
+
     const collapsedMenu = (
         <CollapsedSideMenu open={!expanded} onClick={() => setExpanded(true)} />
     );
 
     const expandedMenu = (
         <Drawer variant="persistent" open={expanded} anchor="left">
-            <TitleGrid container alignItems="center" justify="space-between">
+            <Grid
+                container
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ padding: 3 }}
+            >
                 <Grid item>
                     <Link
                         to="/"
                         style={linkStyle}
                         data-testid="Menu-TitleButton"
                     >
-                        <TitleName variant="h5" display="inline">
+                        <Typography
+                            variant="h5"
+                            display="inline"
+                            sx={{ color: grey[600] }}
+                        >
                             Chord Paper
-                        </TitleName>
+                        </Typography>
                     </Link>
                 </Grid>
                 <Grid item>
                     <CloseIcon onClick={() => setExpanded(false)} />
                 </Grid>
-            </TitleGrid>
+            </Grid>
 
             <Divider />
             <List>
@@ -263,7 +244,7 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
                     </ListItem>
                 </Link>
             </List>
-            <div className={fillerStyle.root} />
+            {fillerBox}
             <Login onUserChanged={onUserChanged} />
         </Drawer>
     );

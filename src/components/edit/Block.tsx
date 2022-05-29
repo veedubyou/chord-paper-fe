@@ -1,9 +1,9 @@
-import { Box, Grid, makeStyles, Theme } from "@material-ui/core";
-import red from "@material-ui/core/colors/red";
-import { withStyles } from "@material-ui/styles";
-import clsx from "clsx";
+import { Box, Grid, inputBaseClasses, styled, Theme } from "@mui/material";
+import { red } from "@mui/material/colors";
+import { cx } from "@emotion/css";
 import { List } from "immutable";
 import React from "react";
+import { ConnectDropTarget } from "react-dnd";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { IDable } from "../../common/ChordModel/Collection";
 import { Lyric } from "../../common/ChordModel/Lyric";
@@ -18,10 +18,9 @@ import DraggableChordSymbol from "./block-dnd/DraggableChordSymbol";
 import { useChordTokenDragState } from "./block-dnd/useChordTokenDragState";
 import {
     chordTargetClassName,
-    dragOverChordLyricStyle,
     firstTokenClassName,
-    hoverChordLyricStyle,
-} from "./HighlightChordLyricStyle";
+    makeHighlightableBlockStyles,
+} from "./HighlightableBlockStyle";
 import { useEditingState } from "./InteractionContext";
 import TextInput from "./TextInput";
 import Token from "./Token";
@@ -31,44 +30,32 @@ const chordSymbolClassName = "ChordSymbol";
 const blockChordSymbolClassName = "BlockChordSymbol";
 const blockChordTargetClassName = "BlockChordTarget";
 
-const ChordInput = withStyles((theme: Theme) => ({
-    root: {
+// this height keeps the chords, the chord input, and lyrics the same height
+// so that everything lines up
+const rowHeight = "2em";
+
+const ChordInput = styled(TextInput)({
+    width: "4em",
+    height: rowHeight,
+    [`& .${inputBaseClasses.input}`]: {
         fontFamily: "PoriChord",
-        borderBottom: "solid",
-        borderBottomColor: theme.palette.primary.main,
-        borderBottomWidth: "2px",
-        width: "4em",
     },
-}))(TextInput);
+});
 
-const useFirstTokenStyle = {
-    dragOver: makeStyles(
-        dragOverChordLyricStyle({
-            outline: (theme: Theme) => ({
-                borderColor: red[300],
-                color: red[300],
-            }),
-            customLyricClassSelector: firstTokenClassName,
-            customChordSymbolClassSelector: blockChordSymbolClassName,
-            customChordTargetClassSelector: blockChordTargetClassName,
-        })
-    ),
-    hoverable: makeStyles(
-        hoverChordLyricStyle({
-            outline: (theme: Theme) => ({
-                color: theme.palette.primary.dark,
-            }),
-            customLyricClassSelector: firstTokenClassName,
-            customChordSymbolClassSelector: blockChordSymbolClassName,
-            customChordTargetClassSelector: blockChordTargetClassName,
-        })
-    ),
-};
+const useFirstTokenStyle = makeHighlightableBlockStyles({
+    dragOverOutline: (theme: Theme) => ({
+        borderColor: red[300],
+        color: red[300],
+    }),
+    hoverOutline: (theme: Theme) => ({
+        color: theme.palette.primary.dark,
+    }),
+    customLyricClassSelector: firstTokenClassName,
+    customChordSymbolClassSelector: blockChordSymbolClassName,
+    customChordTargetClassSelector: blockChordTargetClassName,
+});
 
-const useNormalTokenStyle = {
-    dragOver: makeStyles(dragOverChordLyricStyle()),
-    hoverable: makeStyles(hoverChordLyricStyle()),
-};
+const useNormalTokenStyle = makeHighlightableBlockStyles();
 
 export interface BlockProps extends DataTestID {
     chordBlock: ChordBlock;
@@ -79,21 +66,15 @@ export interface BlockProps extends DataTestID {
 }
 
 const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
-    const chordTokenStyle = {
-        hoverable: useFirstTokenStyle.hoverable(),
-        dragOver: useFirstTokenStyle.dragOver(),
-    };
+    const chordTokenStyle = useFirstTokenStyle();
+    const chordlessTokenStyle = useNormalTokenStyle();
 
-    const chordlessTokenStyle = {
-        hoverable: useNormalTokenStyle.hoverable(),
-        dragOver: useNormalTokenStyle.dragOver(),
-    };
     const { editing, startEdit, finishEdit } = useEditingState();
 
     const [gridClassName, onChordDragOver, onLyricDragOver] =
         useChordTokenDragState(
-            chordTokenStyle.hoverable.root,
-            chordTokenStyle.dragOver.root
+            chordTokenStyle.hoverable,
+            chordTokenStyle.dragOver
         );
 
     let lyricTokens: List<Lyric> = props.chordBlock.lyricTokens;
@@ -156,7 +137,11 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                 blockID={props.chordBlock}
                 onDragOver={onLyricDragOver}
             >
-                <Token index={0}>{lyric}</Token>
+                {(dropRef: ConnectDropTarget) => (
+                    <Token index={0} ref={dropRef}>
+                        {lyric}
+                    </Token>
+                )}
             </ChordTokenDroppable>
         );
     };
@@ -174,12 +159,18 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                 key={index}
                 blockID={props.chordBlock}
                 tokenIndex={index}
-                hoverableClassName={chordlessTokenStyle.hoverable.root}
-                dragOverClassName={chordlessTokenStyle.dragOver.root}
+                hoverableClassName={chordlessTokenStyle.hoverable}
+                dragOverClassName={chordlessTokenStyle.dragOver}
             >
-                <Token index={index} invisibleTarget={invisibleTargetOption}>
-                    {lyric}
-                </Token>
+                {(dropRef: ConnectDropTarget) => (
+                    <Token
+                        index={index}
+                        invisibleTarget={invisibleTargetOption}
+                        ref={dropRef}
+                    >
+                        {lyric}
+                    </Token>
+                )}
             </ChordlessTokenDroppable>
         );
     };
@@ -199,7 +190,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
 
     const lyricBlocks = subsequentLyricBlocks.unshift(firstLyricBlock);
 
-    const chordRow: React.ReactElement = (() => {
+    const chordRow = (dropRef: ConnectDropTarget) => {
         if (editing) {
             return (
                 <Box data-testid="ChordEdit">
@@ -214,25 +205,27 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
         }
 
         if (props.chordBlock.chord === "") {
-            return <ChordSymbol>{props.chordBlock.chord}</ChordSymbol>;
+            return (
+                <ChordSymbol ref={dropRef}>
+                    {props.chordBlock.chord}
+                </ChordSymbol>
+            );
         }
 
         return (
             <DraggableChordSymbol
                 chordBlockID={props.chordBlock}
                 onDrop={onDrop}
-                className={clsx(
-                    chordSymbolClassName,
-                    blockChordSymbolClassName
-                )}
+                className={cx(chordSymbolClassName, blockChordSymbolClassName)}
+                ref={dropRef}
             >
                 {props.chordBlock.chord}
             </DraggableChordSymbol>
         );
-    })();
+    };
 
     return (
-        <Box display="inline-block">
+        <Box display="inline-block" sx={{ verticalAlign: "bottom" }}>
             <Grid
                 container
                 direction="column"
@@ -240,11 +233,12 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                 className={gridClassName}
             >
                 <Grid
-                    className={clsx(
+                    className={cx(
                         chordTargetClassName,
                         blockChordTargetClassName
                     )}
                     onClick={clickHandler(0)}
+                    height={rowHeight}
                     item
                 >
                     <ChordTokenDroppable
@@ -254,7 +248,7 @@ const Block: React.FC<BlockProps> = (props: BlockProps): JSX.Element => {
                         {chordRow}
                     </ChordTokenDroppable>
                 </Grid>
-                <Grid item data-testid="Lyric">
+                <Grid item height={rowHeight} data-testid="Lyric">
                     {lyricBlocks}
                 </Grid>
             </Grid>

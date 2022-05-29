@@ -1,12 +1,7 @@
-import {
-    Grid,
-    makeStyles,
-    Paper as UnstyledPaper,
-    withStyles,
-} from "@material-ui/core";
+import { Grid, Paper as UnstyledPaper, styled, Theme } from "@mui/material";
+import { SystemStyleObject } from "@mui/system";
 import { List } from "immutable";
-import React, { useMemo, useState } from "react";
-import { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../common/ChordModel/ChordSong";
 import { useRegisterKeyListener } from "../GlobalKeyListener";
@@ -18,17 +13,13 @@ import Line from "./Line";
 import NewLine from "./NewLine";
 import { handleUndoRedo } from "./Undo";
 
-const useUninteractiveStyle = makeStyles({
-    root: {
-        pointerEvents: "none",
-    },
-});
+const uninteractiveSx: SystemStyleObject<Theme> = {
+    pointerEvents: "none",
+};
 
-const Paper = withStyles({
-    root: {
-        width: "auto",
-    },
-})(UnstyledPaper);
+const Paper = styled(UnstyledPaper)({
+    width: "auto",
+});
 
 type KeyDownHandler = (
     event: KeyboardEvent,
@@ -65,7 +56,6 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         []
     );
 
-    const uninteractiveStyle = useUninteractiveStyle();
     // prevent other interactions if currently interacting
     const allowInteraction: boolean = !interacting;
 
@@ -127,19 +117,17 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         return lines;
     })();
 
-    const paperClassName = allowInteraction
-        ? undefined
-        : uninteractiveStyle.root;
+    const paperSx = allowInteraction ? undefined : uninteractiveSx;
 
     return (
         <InteractionContext.Provider value={interactionContextValue}>
             <Paper
                 onCopy={allowInteraction ? handleCopy : undefined}
-                className={paperClassName}
+                sx={paperSx}
                 elevation={0}
                 tabIndex={0}
             >
-                <Grid container justify="center">
+                <Grid container justifyContent="center">
                     <Grid item xs={10}>
                         {lines}
                     </Grid>

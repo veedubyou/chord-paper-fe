@@ -1,6 +1,5 @@
-import { Typography } from "@material-ui/core";
-import RadioIcon from "@material-ui/icons/Radio";
-import { withStyles } from "@material-ui/styles";
+import RadioIcon from "@mui/icons-material/Radio";
+import { styled, Typography } from "@mui/material";
 import React from "react";
 import { noopFn } from "../../common/PlainFn";
 import { ControlButton } from "../track_player/internal_player/ControlButton";
@@ -16,11 +15,9 @@ import { convertToTutorialComponent } from "./TutorialComponent";
 
 const title = "Track Player";
 
-const SmallControlPaneBox = withStyles({
-    root: {
-        width: "min-content",
-    },
-})(ControlPaneBox);
+const SmallControlPaneBox = styled(ControlPaneBox)({
+    width: "min-content",
+});
 
 const TrackPlayer: React.FC<{}> = (): JSX.Element => {
     const makeStemControl = <

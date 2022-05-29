@@ -1,8 +1,8 @@
-import TextField from "@material-ui/core/TextField";
+import TextField from "@mui/material/TextField";
 import Autocomplete, {
     AutocompleteRenderInputParams,
     createFilterOptions,
-} from "@material-ui/lab/Autocomplete";
+} from "@mui/material/Autocomplete";
 import React from "react";
 import { AllNotes, Note } from "../../common/music/foundation/Note";
 import { ScaleName, ScaleTypes } from "../../common/music/scale/Scale";

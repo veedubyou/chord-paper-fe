@@ -1,5 +1,4 @@
-import { Box, Theme, Tooltip as UnstyledTooltip } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Box, styled, Theme } from "@mui/material";
 import React, { useCallback } from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { DataTestID } from "../../common/DataTestID";
@@ -11,18 +10,17 @@ import {
 import { ChordSongAction } from "../reducer/reducer";
 import UnstyledEditableTypography, { EditControl } from "./EditableTypography";
 import { useEditingState } from "./InteractionContext";
+import { makeStyledTooltipMenu } from "./StyledTooltip";
 import TimeInput from "./TimeInput";
 
-const EditableTypography = withStyles(sectionLabelStyle)(
-    UnstyledEditableTypography
-);
+const EditableTypography = styled(UnstyledEditableTypography)({
+    ...sectionLabelStyle,
+});
 
-const Tooltip = withStyles((theme: Theme) => ({
-    tooltip: {
-        background: "white",
-        boxShadow: theme.shadows[2],
-    },
-}))(UnstyledTooltip);
+const Tooltip = makeStyledTooltipMenu((theme: Theme) => ({
+    background: "white",
+    boxShadow: theme.shadows[2],
+}));
 
 export interface MenuItem extends DataTestID {
     icon: React.ReactElement;
@@ -95,7 +93,6 @@ const WithSection: React.FC<WithSectionProps> = (
                 <Tooltip
                     arrow
                     placement="left"
-                    interactive
                     title={timeInput}
                     disableFocusListener={disableTooltipFocus}
                 >

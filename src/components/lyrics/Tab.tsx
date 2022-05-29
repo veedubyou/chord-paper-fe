@@ -1,6 +1,6 @@
-import { makeStyles } from "@material-ui/core";
+import { css, cx } from "@emotion/css";
+import { blueGrey } from "@mui/material/colors";
 import React from "react";
-import blueGrey from "@material-ui/core/colors/blueGrey";
 
 // for data attribute
 export const dataSetTabName = "lyrictabtype";
@@ -77,74 +77,43 @@ export const lyricTabTypeOfDOMNode = (node: Node): SizedTab | null => {
 
 const sizeBasis = 1.5;
 
-const sizeStyleFn = (size: number) => {
+const makePlainSizeStyle = (size: number) => {
     return {
-        root: {
-            display: "inline-block",
-            width: `${sizeBasis * size}em`,
-        },
-    };
-};
-
-const makeSizeStyle = (size: number) => {
-    return makeStyles(sizeStyleFn(size));
-};
-
-const makeSizeMap = {
-    [SizedTab.SmallTab]: makeSizeStyle(1),
-    [SizedTab.MediumTab]: makeSizeStyle(2),
-    [SizedTab.LargeTab]: makeSizeStyle(4),
-};
-
-const useSizeMap = () => {
-    // listing explicitly instead of using a loop to let
-    // typescript know the available keys
-    return {
-        [SizedTab.SmallTab]: makeSizeMap[SizedTab.SmallTab](),
-        [SizedTab.MediumTab]: makeSizeMap[SizedTab.MediumTab](),
-        [SizedTab.LargeTab]: makeSizeMap[SizedTab.LargeTab](),
+        display: "inline-block",
+        width: `${sizeBasis * size}em`,
     };
 };
 
 const makeEditingSizeStyle = (size: number) => {
-    const style = sizeStyleFn(size);
+    const plainStyle = makePlainSizeStyle(size);
 
-    return makeStyles({
-        root: {
-            backgroundColor: blueGrey[100],
-            "&:before": {
-                content: '"\\a0"',
-            },
-            margin: "0.05em",
-            ...style.root,
-        },
-    });
-};
-
-const makeEditingSizeMap = {
-    [SizedTab.SmallTab]: makeEditingSizeStyle(1),
-    [SizedTab.MediumTab]: makeEditingSizeStyle(2),
-    [SizedTab.LargeTab]: makeEditingSizeStyle(4),
-};
-
-const useEditingSizeMap = () => {
-    // listing explicitly instead of using a loop to let
-    // typescript know the available keys
     return {
-        [SizedTab.SmallTab]: makeEditingSizeMap[SizedTab.SmallTab](),
-        [SizedTab.MediumTab]: makeEditingSizeMap[SizedTab.MediumTab](),
-        [SizedTab.LargeTab]: makeEditingSizeMap[SizedTab.LargeTab](),
+        backgroundColor: blueGrey[100],
+        "&:before": {
+            content: '"\\a0"',
+        },
+        ...plainStyle,
     };
+};
+
+const plainTabClassNames = {
+    [SizedTab.SmallTab]: cx(css(makePlainSizeStyle(1))),
+    [SizedTab.MediumTab]: cx(css(makePlainSizeStyle(2))),
+    [SizedTab.LargeTab]: cx(css(makePlainSizeStyle(4))),
+};
+
+const editableTabClassNames = {
+    [SizedTab.SmallTab]: cx(css(makeEditingSizeStyle(1))),
+    [SizedTab.MediumTab]: cx(css(makeEditingSizeStyle(2))),
+    [SizedTab.LargeTab]: cx(css(makeEditingSizeStyle(4))),
 };
 
 export type DomLyricTabFn = (sizeType: SizedTab) => Node;
 
 export const useDomLyricTab = (): DomLyricTabFn => {
-    const sizeMap = useEditingSizeMap();
-
     return (sizeType: SizedTab): Node => {
         const node = document.createElement("span");
-        node.className = sizeMap[sizeType].root;
+        node.className = editableTabClassNames[sizeType];
         node.contentEditable = "false";
 
         const tabType = findTabType("sizedTab", sizeType);
@@ -160,15 +129,12 @@ interface TabProps {
 }
 
 const Tab: React.FC<TabProps> = (props: TabProps): JSX.Element => {
-    const normalSizeMap = useSizeMap();
-    const editingSizeMap = useEditingSizeMap();
-
-    const sizeMap = props.edit ? editingSizeMap : normalSizeMap;
+    const tabStyles = props.edit ? editableTabClassNames : plainTabClassNames;
     const tabType = findTabType("sizedTab", props.type);
 
     return (
         <span
-            className={sizeMap[props.type].root}
+            className={tabStyles[props.type]}
             contentEditable="false"
             data-lyrictabtype={tabType[dataAttributeTabName]}
         ></span>

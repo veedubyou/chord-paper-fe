@@ -8,7 +8,7 @@ import {
     ListItem,
     ListItemText,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { isLeft } from "fp-ts/lib/Either";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";

@@ -1,8 +1,12 @@
-import { Theme } from "@material-ui/core";
-import { ClassNameMap, makeStyles } from "@material-ui/styles";
-import React, { useCallback, useRef } from "react";
+import { Theme } from "@mui/material";
+import React, { useCallback, useMemo, useRef } from "react";
 import { useDebouncedCallback } from "use-debounce/lib";
+import { noopFn, PlainFn } from "../../../common/PlainFn";
 
+export type HighlightBorder = {
+    getBorderColour: () => HighlightColour;
+    rotateBorderColour: PlainFn;
+};
 export type HighlightColour = "blue" | "purple" | "red";
 
 // adding a debounce interval - when scrolling multiple highlights could activate that
@@ -16,61 +20,31 @@ const rotateColourDebounceTime = 300;
 // that still contrasts with blue and purple
 const redColor = "#ff9679";
 
-const HighlightBorderContext = React.createContext<() => HighlightColour>(
-    () => "red"
-);
+export const HighlightBorderContext =
+    React.createContext<HighlightBorder>({
+        getBorderColour: () => "red",
+        rotateBorderColour: noopFn,
+    });
 
-interface HighlightColourProviderProps {
+interface HighlightBorderProviderProps {
     children: React.ReactNode | React.ReactNode[];
 }
 
-type MakeHighlightColoursMapType = {
-    blue: ReturnType<typeof makeStyles>;
-    purple: ReturnType<typeof makeStyles>;
-    red: ReturnType<typeof makeStyles>;
+const colourStyleMap = {
+    blue: (theme: Theme) => ({ borderColor: theme.palette.primary.main }),
+    purple: (theme: Theme) => ({ borderColor: theme.palette.secondary.main }),
+    red: (theme: Theme) => ({ borderColor: redColor }),
 };
 
-const useHighlightBorders = (
-    colourMap: MakeHighlightColoursMapType
-): ClassNameMap<"root"> => {
-    const getAndRotateCurrentColour = React.useContext(HighlightBorderContext);
-    const currentColour = getAndRotateCurrentColour();
+export const useHighlightBorders = () => {
+    const { getBorderColour: getColour } = React.useContext(HighlightBorderContext);
 
-    const highlightColourStyles = {
-        blue: colourMap["blue"]({}),
-        purple: colourMap["purple"]({}),
-        red: colourMap["red"]({}),
-    };
-
-    return highlightColourStyles[currentColour];
+    const currentColour = getColour();
+    return colourStyleMap[currentColour];
 };
 
-type useRootStyleType = () => ClassNameMap<"root">;
-
-export const makeHighlightBorders = (): useRootStyleType => {
-    const useHighlightColoursMap: MakeHighlightColoursMapType = {
-        blue: makeStyles((theme: Theme) => ({
-            root: {
-                borderColor: theme.palette.primary.main,
-            },
-        })),
-        purple: makeStyles((theme: Theme) => ({
-            root: {
-                borderColor: theme.palette.secondary.main,
-            },
-        })),
-        red: makeStyles((theme: Theme) => ({
-            root: {
-                borderColor: redColor,
-            },
-        })),
-    };
-
-    return () => useHighlightBorders(useHighlightColoursMap);
-};
-
-export const HighlightColourProvider: React.FC<HighlightColourProviderProps> = (
-    props: HighlightColourProviderProps
+export const HighlightBorderProvider: React.FC<HighlightBorderProviderProps> = (
+    props: HighlightBorderProviderProps
 ): JSX.Element => {
     const currentColourRef = useRef<HighlightColour>("red");
 
@@ -97,14 +71,20 @@ export const HighlightColourProvider: React.FC<HighlightColourProviderProps> = (
         { leading: false, trailing: true }
     );
 
-    const getAndRotateColour = useCallback((): HighlightColour => {
-        const currentColour = currentColourRef.current;
-        rotateColour();
-        return currentColour;
-    }, [rotateColour]);
+    const getColour = useCallback((): HighlightColour => {
+        return currentColourRef.current;
+    }, []);
+
+    const colourContext = useMemo(
+        (): HighlightBorder => ({
+            getBorderColour: getColour,
+            rotateBorderColour: rotateColour,
+        }),
+        [getColour, rotateColour]
+    );
 
     return (
-        <HighlightBorderContext.Provider value={getAndRotateColour}>
+        <HighlightBorderContext.Provider value={colourContext}>
             {props.children}
         </HighlightBorderContext.Provider>
     );

@@ -1,9 +1,9 @@
-import { TextFieldProps, TypographyVariant } from "@material-ui/core";
-import { StyledComponentProps } from "@material-ui/styles";
+import { TextFieldProps, TypographyVariant } from "@mui/material";
 import React, { useState } from "react";
+import { MUIStyledProps } from "../../common/styledProps";
 import ControlledTextInput from "./ControlledTextInput";
 
-interface TextInputProps extends StyledComponentProps {
+interface TextInputProps extends MUIStyledProps {
     value: string;
     onFinish?: (newValue: string) => void;
     width?: string;
@@ -18,7 +18,7 @@ const TextInput: React.FC<TextInputProps> = (
 
     return (
         <ControlledTextInput
-            classes={props.classes}
+            className={props.className}
             value={value}
             onValueChange={setValue}
             variant={props.variant}

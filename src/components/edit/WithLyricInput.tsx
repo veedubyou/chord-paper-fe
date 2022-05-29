@@ -1,4 +1,4 @@
-import { Box, Theme, withStyles } from "@material-ui/core";
+import { Box, styled } from "@mui/material";
 import { isLeft } from "fp-ts/lib/Either";
 import { useSnackbar } from "notistack";
 import React, { useMemo } from "react";
@@ -9,16 +9,14 @@ import { lyricStyle, lyricTypographyVariant } from "../display/Lyric";
 import { ChordSongAction } from "../reducer/reducer";
 import { deserializeCopiedChordLines } from "./CopyAndPaste";
 import { useEditingState } from "./InteractionContext";
-import UnstyledLyricInput from "./lyric_input/LyricInput";
+import UnstyledLyricInput, { LyricInputProps } from "./lyric_input/LyricInput";
 
-const LyricInput = withStyles((theme: Theme) => ({
-    root: {
-        ...lyricStyle.root,
-        borderBottom: "solid",
-        borderBottomColor: theme.palette.secondary.main,
-        borderBottomWidth: "2px",
-    },
-}))(UnstyledLyricInput);
+const LyricInput = styled(UnstyledLyricInput)<LyricInputProps>(({ theme }) => ({
+    ...lyricStyle,
+    borderBottom: "solid",
+    borderBottomColor: theme.palette.secondary.main,
+    borderBottomWidth: "2px",
+}));
 
 interface WithLyricInputProps {
     children: (handleEdit: PlainFn) => React.ReactElement;

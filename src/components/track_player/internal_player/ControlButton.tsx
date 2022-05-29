@@ -1,36 +1,29 @@
-import { Button as UnstyledButton, Theme, Tooltip } from "@material-ui/core";
-import { ButtonProps } from "@material-ui/core/Button";
-import DecreaseIcon from "@material-ui/icons/ArrowDropDown";
-import IncreaseIcon from "@material-ui/icons/ArrowDropUp";
-import PauseIcon from "@material-ui/icons/Pause";
-import PlayIcon from "@material-ui/icons/PlayArrow";
-import JumpBackIcon from "@material-ui/icons/Replay";
-import SkipForwardIcon from "@material-ui/icons/SkipNext";
-import SkipBackIcon from "@material-ui/icons/SkipPrevious";
-import { withStyles } from "@material-ui/styles";
+import DecreaseIcon from "@mui/icons-material/ArrowDropDown";
+import IncreaseIcon from "@mui/icons-material/ArrowDropUp";
+import PauseIcon from "@mui/icons-material/Pause";
+import PlayIcon from "@mui/icons-material/PlayArrow";
+import JumpBackIcon from "@mui/icons-material/Replay";
+import SkipForwardIcon from "@mui/icons-material/SkipNext";
+import SkipBackIcon from "@mui/icons-material/SkipPrevious";
+import { Button as UnstyledButton, styled, Tooltip } from "@mui/material";
+import { ButtonProps } from "@mui/material/Button";
 import React from "react";
-import BeginningIcon from "./BeginningIcon";
 import { roundedCornersStyle } from "../common";
+import BeginningIcon from "./BeginningIcon";
 import JumpForwardIcon from "./ForwardIcon";
 
-const Button = withStyles((theme: Theme) => ({
-    root: {
-        minWidth: 0,
-        ...roundedCornersStyle(theme),
-    },
-}))(UnstyledButton);
+const Button = styled(UnstyledButton)(({ theme }) => ({
+    minWidth: 0,
+    ...roundedCornersStyle(theme),
+}));
 
-const PrimaryButton = withStyles((theme: Theme) => ({
-    root: {
-        color: theme.palette.primary.main,
-    },
-}))(Button);
+const PrimaryButton = styled(Button)(({ theme }) => ({
+    color: theme.palette.primary.main,
+}));
 
-const SecondaryButton = withStyles((theme: Theme) => ({
-    root: {
-        color: theme.palette.secondary.main,
-    },
-}))(Button);
+const SecondaryButton = styled(Button)(({ theme }) => ({
+    color: theme.palette.secondary.main,
+}));
 
 const makeControlButton = (
     child: React.ReactElement,

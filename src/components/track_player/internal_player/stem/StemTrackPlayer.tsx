@@ -1,13 +1,13 @@
+import RefreshIcon from "@mui/icons-material/Refresh";
 import {
     Box,
+    BoxProps,
     Button,
     LinearProgress,
-    Theme,
+    styled,
     Typography,
-} from "@material-ui/core";
-import { grey } from "@material-ui/core/colors";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import { withStyles } from "@material-ui/styles";
+} from "@mui/material";
+import { grey } from "@mui/material/colors";
 import ky, { DownloadProgress } from "ky";
 import lodash from "lodash";
 import prettyBytes from "pretty-bytes";
@@ -21,12 +21,10 @@ import { getAudioCtx } from "./audioCtx";
 import LoadedStemTrackPlayer, { StemInput } from "./LoadedStemTrackPlayer";
 import { ControlPaneButtonColour } from "./StemTrackControlPane";
 
-const PaddedBox = withStyles((theme: Theme) => ({
-    root: {
-        padding: theme.spacing(2),
-        backgroundColor: grey[100],
-    },
-}))(Box);
+const PaddedBox = styled(Box)<BoxProps>(({ theme }) => ({
+    padding: theme.spacing(2),
+    backgroundColor: grey[100],
+}));
 
 export interface StemButtonSpec<StemKey extends string> {
     label: StemKey;

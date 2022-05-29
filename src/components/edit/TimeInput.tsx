@@ -1,23 +1,30 @@
-import { IconButton, InputAdornment, Theme } from "@material-ui/core";
-import SlowMotionVideoIcon from "@material-ui/icons/SlowMotionVideo";
-import { StyledComponentProps, withStyles } from "@material-ui/styles";
+import SlowMotionVideoIcon from "@mui/icons-material/SlowMotionVideo";
+import {
+    IconButton,
+    InputAdornment,
+    inputBaseClasses,
+    styled,
+} from "@mui/material";
 import { Duration } from "luxon";
 import React, { useContext, useRef, useState } from "react";
+import { MUIStyledProps } from "../../common/styledProps";
 import { PlayerTimeContext } from "../PlayerTimeContext";
 import { widthOfString } from "../track_player/common";
 import UnstyledControlledTextInput from "./ControlledTextInput";
 
-interface TimeInputProps extends StyledComponentProps {
+interface TimeInputProps extends MUIStyledProps {
     seconds: number | null;
     onFinish?: (newSeconds: number | null) => void;
 }
 
-const ControlledTextInput = withStyles((theme: Theme) => ({
-    root: {
-        textAlign: "right",
-        width: widthOfString(theme, "body1", "00:00"),
-    },
-}))(UnstyledControlledTextInput);
+const ControlledTextInput = styled(UnstyledControlledTextInput)(
+    ({ theme }) => ({
+        [`& .${inputBaseClasses.input}`]: {
+            textAlign: "right",
+            width: widthOfString(theme, "body1", "00:00"),
+        },
+    })
+);
 
 const TimeInput: React.FC<TimeInputProps> = (
     props: TimeInputProps
@@ -120,7 +127,11 @@ const TimeInput: React.FC<TimeInputProps> = (
 
     const buttonAdornment = (
         <InputAdornment position="start">
-            <IconButton edge="start" onClick={handleCurrentTimeButton}>
+            <IconButton
+                edge="start"
+                onClick={handleCurrentTimeButton}
+                size="large"
+            >
                 <SlowMotionVideoIcon />
             </IconButton>
         </InputAdornment>
@@ -150,6 +161,7 @@ const TimeInput: React.FC<TimeInputProps> = (
 
     return (
         <ControlledTextInput
+            className={props.className}
             placeholder="0:00"
             value={formattedValue}
             onValueChange={handleValueChange}

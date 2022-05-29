@@ -1,17 +1,16 @@
-import { Theme } from "@material-ui/core";
-import ForkIcon from "@material-ui/icons/CallSplit";
-import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-import DeleteIcon from "@material-ui/icons/Delete";
-import FolderOpenIcon from "@material-ui/icons/FolderOpen";
-import TransposeIcon from "@material-ui/icons/ImportExport";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
-import PlayIcon from "@material-ui/icons/PlayArrow";
-import SaveIcon from "@material-ui/icons/Save";
+import ForkIcon from "@mui/icons-material/CallSplit";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import DeleteIcon from "@mui/icons-material/Delete";
+import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import TransposeIcon from "@mui/icons-material/ImportExport";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PlayIcon from "@mui/icons-material/PlayArrow";
+import SaveIcon from "@mui/icons-material/Save";
 import {
     SpeedDial as UnstyledSpeedDial,
     SpeedDialAction,
-} from "@material-ui/lab";
-import { withStyles } from "@material-ui/styles";
+    styled,
+} from "@mui/material";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import useKonamiCode from "react-use-konami";
@@ -30,13 +29,11 @@ interface ChordPaperMenuProps {
     onPlay?: PlainFn;
 }
 
-const SpeedDial = withStyles((theme: Theme) => ({
-    root: {
-        position: "fixed",
-        top: theme.spacing(3),
-        right: theme.spacing(2),
-    },
-}))(UnstyledSpeedDial);
+const SpeedDial = styled(UnstyledSpeedDial)(({ theme }) => ({
+    position: "fixed",
+    top: theme.spacing(3),
+    right: theme.spacing(2),
+}));
 
 const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
     props: ChordPaperMenuProps

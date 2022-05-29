@@ -1,46 +1,29 @@
-import {
-    Button,
-    Divider as UnstyledDivider,
-    Grid,
-    Theme,
-    Tooltip as UnstyledTooltip,
-} from "@material-ui/core";
-import UnstyledAddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import { useTheme, withStyles } from "@material-ui/styles";
+import UnstyledAddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { Divider as UnstyledDivider, Grid, styled } from "@mui/material";
 import React from "react";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
 import { IDable } from "../../common/ChordModel/Collection";
 import { DataTestID } from "../../common/DataTestID";
 import { ChordSongAction } from "../reducer/reducer";
+import WithHoverMenu, { MenuItem } from "./WithHoverMenu";
 
-const HighlightableGrid = withStyles({
-    root: {
-        "&:hover .MuiDivider-root": {
-            backgroundColor: "rgba(0, 0, 0, 0.25)",
-        },
+const HighlightableGrid = styled(Grid)(({ theme }) => ({
+    minHeight: theme.spacing(3),
+    "&:hover .MuiDivider-root": {
+        borderColor: "rgba(0, 0, 0, 0.25)",
     },
-})(Grid);
+}));
 
-const Tooltip = withStyles({
-    tooltip: {
-        padding: 0,
-        background: "transparent",
-        margin: 0,
-    },
-})(UnstyledTooltip);
+const Divider = styled(UnstyledDivider)({
+    width: "100%",
+    borderColor: "transparent",
+});
 
-const Divider = withStyles({
-    root: {
-        width: "100%",
-        backgroundColor: "transparent",
-    },
-})(UnstyledDivider);
-
-const AddCircleOutlineIcon = withStyles((theme: Theme) => ({
-    root: {
+const AddCircleOutlineIcon = styled(UnstyledAddCircleOutlineIcon)(
+    ({ theme }) => ({
         color: theme.palette.secondary.light,
-    },
-}))(UnstyledAddCircleOutlineIcon);
+    })
+);
 
 interface NewLineProps extends DataTestID {
     lineID: IDable<ChordLine> | "beginning";
@@ -48,8 +31,6 @@ interface NewLineProps extends DataTestID {
 }
 
 const NewLine: React.FC<NewLineProps> = (props: NewLineProps): JSX.Element => {
-    const theme: Theme = useTheme();
-
     const handleAddLine = () => {
         props.songDispatch({
             type: "add-line",
@@ -57,29 +38,24 @@ const NewLine: React.FC<NewLineProps> = (props: NewLineProps): JSX.Element => {
         });
     };
 
-    const hoverMenu = (): React.ReactElement => {
-        return (
-            <Button data-testid={"AddButton"} onClick={handleAddLine}>
-                <AddCircleOutlineIcon />
-            </Button>
-        );
+    const menuItem: MenuItem = {
+        onClick: handleAddLine,
+        "data-testid": "AddButton",
+        icon: <AddCircleOutlineIcon />,
     };
 
     return (
-        <Tooltip title={hoverMenu()} interactive placement="right">
+        <WithHoverMenu menuItems={[menuItem]}>
             <HighlightableGrid
                 container
                 direction="column"
-                justify="center"
+                justifyContent="center"
                 onClick={handleAddLine}
                 data-testid={props["data-testid"]}
-                style={{
-                    minHeight: theme.spacing(3),
-                }}
             >
                 <Divider />
             </HighlightableGrid>
-        </Tooltip>
+        </WithHoverMenu>
     );
 };
 

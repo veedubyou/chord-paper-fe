@@ -1,15 +1,14 @@
 import {
+    Alert,
+    AlertTitle,
     Box,
     Dialog,
     Grid,
     Paper as UnstyledPaper,
-    StyledComponentProps,
-    Theme,
-    Typography as UnstyledTypography,
-} from "@material-ui/core";
-import grey from "@material-ui/core/colors/grey";
-import { Alert, AlertTitle } from "@material-ui/lab";
-import { makeStyles, withStyles } from "@material-ui/styles";
+    styled,
+    Typography as UnstyledTypography
+} from "@mui/material";
+import { grey } from "@mui/material/colors";
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
@@ -21,45 +20,31 @@ import { getRouteForTutorialComponent } from "../Tutorial";
 import LoginTutorial from "../tutorial/Login";
 import { deserializeUser, User, UserContext } from "./userContext";
 
-const Paper = withStyles({
-    root: {
-        width: "100%",
-        cursor: "pointer",
-    },
-})(UnstyledPaper);
+const Paper = styled(UnstyledPaper)({
+    width: "100%",
+    cursor: "pointer",
+});
 
-const Typography = withStyles((theme: Theme) => ({
-    root: {
-        margin: theme.spacing(2),
-        color: grey[600],
-    },
-}))(UnstyledTypography);
+const Typography = styled(UnstyledTypography)(({ theme }) => ({
+    margin: theme.spacing(2),
+    color: grey[600],
+}));
 
-const Paragraph = withStyles((theme: Theme) => ({
-    root: {
-        marginTop: theme.spacing(2),
-        marginBottom: theme.spacing(2),
-    },
-}))(Box);
+const Paragraph = styled(Box)(({ theme }) => ({
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+}));
 
 const googleSignInID = "google-sign-in";
 const googleClientID =
     "650853277550-ta69qbfcvdl6tb5ogtnh2d07ae9rcdlf.apps.googleusercontent.com";
 
-const useSigninStyles = makeStyles({
-    root: {
-        display: "inline-block",
-        objectFit: "contain",
-    },
-});
-
-interface LoginProps extends StyledComponentProps {
+interface LoginProps {
     onUserChanged: (user: User | null) => void;
 }
 
 const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     const { enqueueSnackbar } = useSnackbar();
-    const signinStyles = useSigninStyles();
 
     const [gapiLoaded, setGapiLoaded] = useState<boolean>(false);
     const [dialogError, setDialogError] = useState<BackendError | null>(null);
@@ -297,13 +282,16 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     })();
 
     return (
-        <Paper id={googleSignInID} classes={props.classes}>
-            <Grid container alignItems="center" justify="center">
+        <Paper id={googleSignInID}>
+            <Grid container alignItems="center" justifyContent="center">
                 <Grid item>
                     <img
                         src={SigninIcon}
                         alt="Google Signin"
-                        className={signinStyles.root}
+                        style={{
+                            display: "inline-block",
+                            objectFit: "contain",
+                        }}
                     />
                 </Grid>
                 <Grid item>

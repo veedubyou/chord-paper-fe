@@ -1,5 +1,5 @@
-import { Typography, withStyles } from "@material-ui/core";
-import ChatBubbleIcon from "@material-ui/icons/ChatBubbleOutline";
+import ChatBubbleIcon from "@mui/icons-material/ChatBubbleOutline";
+import { styled, Typography } from "@mui/material";
 import React from "react";
 import { ChordBlock } from "../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../common/ChordModel/ChordLine";
@@ -12,7 +12,7 @@ import { convertToTutorialComponent } from "./TutorialComponent";
 
 const title = "Labels";
 
-const LabelTypography = withStyles(sectionLabelStyle)(Typography);
+const LabelTypography = styled(Typography)({ ...sectionLabelStyle });
 
 const Labels: React.FC<{}> = (): JSX.Element => {
     const initialSong = new ChordSong({

@@ -495,7 +495,6 @@ export class ChordLine
     }
 
     hasSection(): boolean {
-        return this.section !== undefined;    
+        return this.section !== undefined;
     }
-
 }

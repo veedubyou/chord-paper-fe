@@ -9,9 +9,9 @@ import {
     InputLabel,
     MenuItem,
     Select as UnstyledSelect,
-    Theme,
-} from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+    SelectChangeEvent,
+    styled,
+} from "@mui/material";
 import React, { useState } from "react";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { AllNotes, Note } from "../../../common/music/foundation/Note";
@@ -25,18 +25,14 @@ interface TransposeMenuProps {
     onClose: PlainFn;
 }
 
-const FormControl = withStyles((theme: Theme) => ({
-    root: {
-        margin: theme.spacing(2),
-        display: "flex",
-    },
-}))(UnstyledFormControl);
+const FormControl = styled(UnstyledFormControl)(({ theme }) => ({
+    margin: theme.spacing(2),
+    display: "flex",
+}));
 
-const Select = withStyles((theme: Theme) => ({
-    root: {
-        margin: theme.spacing(0.5),
-    },
-}))(UnstyledSelect);
+const Select = styled(UnstyledSelect)(({ theme }) => ({
+    margin: theme.spacing(0.5),
+}));
 
 interface KeySelection {
     originalKey: Note;
@@ -53,8 +49,8 @@ const TransposeMenu: React.FC<TransposeMenuProps> = (
 
     const keySelectChangeHandler = (
         changedField: "originalKey" | "transposedKey"
-    ): ((event: React.ChangeEvent<{ value: unknown }>) => void) => {
-        return (event: React.ChangeEvent<{ value: unknown }>) => {
+    ): ((event: SelectChangeEvent<unknown>) => void) => {
+        return (event: SelectChangeEvent<unknown>) => {
             const newSelectValue = event.target.value as Note;
             const newKeySelection = { ...keySelection };
             newKeySelection[changedField] = newSelectValue;
@@ -75,7 +71,7 @@ const TransposeMenu: React.FC<TransposeMenuProps> = (
     const createKeySelect = (
         id: string,
         currentKey: Note,
-        changeHandler: (event: React.ChangeEvent<{ value: unknown }>) => void
+        changeHandler: (event: SelectChangeEvent<unknown>) => void
     ) => {
         const menuItems: React.ReactElement[] = [];
 

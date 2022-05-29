@@ -1,12 +1,14 @@
-import { RootRef } from "@material-ui/core";
 import React from "react";
+import { ConnectDropTarget } from "react-dnd";
 import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
 import { IDable } from "../../../common/ChordModel/Collection";
 import { ClassNameable } from "./common";
 import { useChordDrop } from "./useChordDrop";
 
 interface ChordlessTokenDroppableProps {
-    children: React.ReactElement<ClassNameable>;
+    children: (
+        dropTargetRef: ConnectDropTarget
+    ) => React.ReactElement<ClassNameable>;
     hoverableClassName: string;
     dragOverClassName: string;
     blockID: IDable<ChordBlock>;
@@ -22,11 +24,13 @@ const ChordlessTokenDroppable: React.FC<ChordlessTokenDroppableProps> = (
         ? props.dragOverClassName
         : props.hoverableClassName;
 
-    const childrenWithClassName = React.cloneElement(props.children, {
+    const childElement = props.children(dropRef);
+
+    const childrenWithClassName = React.cloneElement(childElement, {
         className: childClassName,
     });
 
-    return <RootRef rootRef={dropRef}>{childrenWithClassName}</RootRef>;
+    return childrenWithClassName;
 };
 
 export default ChordlessTokenDroppable;

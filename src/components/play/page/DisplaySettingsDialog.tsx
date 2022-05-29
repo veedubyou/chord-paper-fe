@@ -11,35 +11,28 @@ import {
     InputAdornment,
     Radio,
     RadioGroup,
+    styled,
     TextField,
     TextFieldProps as TextFieldPropsWithVariant,
-    Theme,
     Typography,
-} from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+} from "@mui/material";
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import React, { ChangeEvent, useState } from "react";
 import { PlainFn } from "../../../common/PlainFn";
 import { isWhitespace } from "../../../common/Whitespace";
 import { PageDisplaySettings } from "./PagePlayContent";
 
-const Box = withStyles((theme: Theme) => ({
-    root: {
-        margin: theme.spacing(1),
-    },
-}))(UnstyledBox);
+const Box = styled(UnstyledBox)(({ theme }) => ({
+    margin: theme.spacing(1),
+}));
 
-const FormLabel = withStyles((theme: Theme) => ({
-    root: {
-        fontSize: "0.75rem",
-    },
-}))(UnstyledFormLabel);
+const FormLabel = styled(UnstyledFormLabel)(({ theme }) => ({
+    fontSize: "0.75rem",
+}));
 
-const RadioLabelTypography = withStyles((theme: Theme) => ({
-    root: {
-        fontSize: "0.75rem",
-    },
-}))(Typography);
+const RadioLabelTypography = styled(Typography)(({ theme }) => ({
+    fontSize: "0.75rem",
+}));
 
 type TextFieldProps = Omit<Partial<TextFieldPropsWithVariant>, "variant">;
 
@@ -70,7 +63,8 @@ const DisplaySettingsDialog: React.FC<DisplaySettingsDialogProps> = (
     props: DisplaySettingsDialogProps
 ): JSX.Element => {
     const [settings, setSettings] = useState<DialogInput>({
-        numberOfColumns: props.defaultSettings.numberOfColumnsPerPage.toString(),
+        numberOfColumns:
+            props.defaultSettings.numberOfColumnsPerPage.toString(),
         fontSize: props.defaultSettings.fontSize.toString(),
         columnMargin: props.defaultSettings.columnMargin.toString(),
         flipType: props.defaultSettings.flipType,

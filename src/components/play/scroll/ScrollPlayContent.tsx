@@ -1,5 +1,4 @@
-import { Box } from "@material-ui/core";
-import { withStyles } from "@material-ui/styles";
+import { Box, styled } from "@mui/material";
 import { List } from "immutable";
 import React, { useCallback, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce/lib";
@@ -7,16 +6,16 @@ import { ChordLine } from "../../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { Collection } from "../../../common/ChordModel/Collection";
 import { PlainFn } from "../../../common/PlainFn";
-import FocusedElement from "../common/FocusedElement";
 import { useNavigationKeys } from "../common/useNavigateKeys";
-import { HighlightColourProvider } from "./highlightBorderContext";
+import {
+    HighlightBorderContext,
+    HighlightBorderProvider,
+} from "./highlightBorderContext";
 import ScrollablePlayLine from "./ScrollablePlayLine";
 
-const FullHeightBox = withStyles({
-    root: {
-        height: "100vh",
-    },
-})(Box);
+const FullHeightBox = styled(Box)({
+    height: "100vh",
+});
 
 interface ViewportLine {
     id: string;
@@ -30,6 +29,15 @@ interface ViewportLine {
 interface ScrollPlayContentProps {
     song: ChordSong;
 }
+
+const ScrollPlayContentWithHighlightProvider: React.FC<ScrollPlayContentProps> =
+    (props: ScrollPlayContentProps): JSX.Element => {
+        return (
+            <HighlightBorderProvider>
+                <ScrollPlayContent song={props.song} />
+            </HighlightBorderProvider>
+        );
+    };
 
 const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
     props: ScrollPlayContentProps
@@ -73,6 +81,8 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
     const [nextScrollLine, setNextScrollLine] = useState<ViewportLine | null>(
         null
     );
+
+    const { rotateBorderColour: rotateColour } = React.useContext(HighlightBorderContext);
 
     const [previousScrollLine, setPreviousScrollLine] =
         useState<ViewportLine | null>(null);
@@ -139,6 +149,7 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
     const handleViewportChange = useDebouncedCallback(setCachedSections, 300, {
         leading: false,
         trailing: true,
+        maxWait: 300,
     });
 
     const makePlayLine = (chordLine: ChordLine): React.ReactElement => {
@@ -183,6 +194,7 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
             return false;
         }
 
+        rotateColour();
         nextScrollLine.scrollInView();
         return true;
     };
@@ -192,6 +204,7 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
             return false;
         }
 
+        rotateColour();
         previousScrollLine.scrollInView();
         return true;
     };
@@ -199,15 +212,11 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
     useNavigationKeys(scrollDown, scrollUp);
 
     return (
-        <FocusedElement>
-            <HighlightColourProvider>
-                <Box>
-                    {playLines}
-                    <FullHeightBox />
-                </Box>
-            </HighlightColourProvider>
-        </FocusedElement>
+        <Box>
+            {playLines}
+            <FullHeightBox />
+        </Box>
     );
 };
 
-export default ScrollPlayContent;
+export default ScrollPlayContentWithHighlightProvider;

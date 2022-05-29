@@ -1,41 +1,24 @@
-import { Button, Slide, Theme, Tooltip } from "@material-ui/core";
-import RadioIcon from "@material-ui/icons/Radio";
-import { withStyles } from "@material-ui/styles";
+import JumpForwardIcon from "@mui/icons-material/FastForward";
+import JumpBackIcon from "@mui/icons-material/FastRewind";
+import PauseIcon from "@mui/icons-material/Pause";
+import PlayIcon from "@mui/icons-material/PlayArrow";
+import RadioIcon from "@mui/icons-material/Radio";
+import { Button, Slide, Theme, Tooltip } from "@mui/material";
+import { SystemStyleObject } from "@mui/system";
 import React, { useEffect, useState } from "react";
+import { MUIStyledProps } from "../../common/styledProps";
 import { useRegisterTopKeyListener } from "../GlobalKeyListener";
 import { roundedTopCornersStyle, withBottomRightBox } from "./common";
 import { PlayerControls } from "./internal_player/usePlayerControls";
-import UnstyledPlayIcon from "@material-ui/icons/PlayArrow";
-import UnstyledPauseIcon from "@material-ui/icons/Pause";
-import JumpBackIcon from "@material-ui/icons/FastRewind";
-import JumpForwardIcon from "@material-ui/icons/FastForward";
 
-const PlayIcon = withStyles((theme: Theme) => ({
-    root: {
-        color: theme.palette.primary.main,
-    },
-}))(UnstyledPlayIcon);
-
-const PauseIcon = withStyles((theme: Theme) => ({
-    root: {
-        color: theme.palette.secondary.main,
-    },
-}))(UnstyledPauseIcon);
-
-const ExpandButton = withStyles((theme: Theme) => ({
-    root: {
-        ...roundedTopCornersStyle(theme),
-    },
-}))(Button);
-
-interface MicroPlayerProps {
+interface MicroPlayerProps extends MUIStyledProps {
     show: boolean;
     playersLoaded: boolean;
     disabled?: boolean;
     tooltipMessage: string;
     playerControls: PlayerControls;
     onClick: () => void;
-    className?: string;
+    sx?: SystemStyleObject<Theme>;
 }
 
 const MicroPlayer: React.FC<MicroPlayerProps> = (
@@ -132,10 +115,10 @@ const MicroPlayer: React.FC<MicroPlayerProps> = (
         }
 
         if (!props.playerControls.playing) {
-            return <PauseIcon />;
+            return <PauseIcon sx={{ color: "secondary.main" }} />;
         }
 
-        return <PlayIcon />;
+        return <PlayIcon sx={{ color: "primary.main" }} />;
     })();
 
     return (
@@ -145,13 +128,17 @@ const MicroPlayer: React.FC<MicroPlayerProps> = (
                 // https://material-ui.com/components/tooltips/#disabled-elements
                 <Tooltip title={props.tooltipMessage}>
                     <span>
-                        <ExpandButton
+                        <Button
                             className={props.className}
                             onClick={props.onClick}
                             disabled={props.disabled}
+                            sx={(theme: Theme) => ({
+                                ...roundedTopCornersStyle(theme),
+                                ...props.sx,
+                            })}
                         >
                             {icon}
-                        </ExpandButton>
+                        </Button>
                     </span>
                 </Tooltip>
             )}

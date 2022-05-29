@@ -1,26 +1,22 @@
-import { Box, Divider, Theme } from "@material-ui/core";
-import { StyledComponentProps, withStyles } from "@material-ui/styles";
+import { Box, Divider, styled, Theme } from "@mui/material";
+import { MUIStyledCommonProps } from "@mui/system";
 import React from "react";
 
-export const ControlGroupBox = withStyles({
-    root: {
-        display: "flex",
-        alignContent: "center",
-        flexShrink: 0,
-        flexGrow: 0,
-    },
-})(Box);
+export const ControlGroupBox = styled(Box)({
+    display: "flex",
+    alignContent: "center",
+    flexShrink: 0,
+    flexGrow: 0,
+});
 
-export const VerticalMiddleDivider = withStyles((theme: Theme) => ({
-    root: {
-        marginLeft: 0,
-        marginRight: 0,
-        marginTop: theme.spacing(1.5),
-        marginBottom: theme.spacing(1.5),
-    },
-}))(Divider);
+export const VerticalMiddleDivider = styled(Divider)(({ theme }) => ({
+    marginLeft: 0,
+    marginRight: 0,
+    marginTop: theme.spacing(1.5),
+    marginBottom: theme.spacing(1.5),
+}));
 
-interface ControlGroupProps extends StyledComponentProps {
+interface ControlGroupProps extends MUIStyledCommonProps<Theme> {
     children: React.ReactNode[];
     dividers: "left" | "right";
     edgeDivider?: boolean;
@@ -63,9 +59,7 @@ const ControlGroup: React.FC<ControlGroupProps> = (
         }
     );
 
-    return (
-        <ControlGroupBox classes={props.classes}>{contents}</ControlGroupBox>
-    );
+    return <ControlGroupBox sx={props.sx}>{contents}</ControlGroupBox>;
 };
 
 export default ControlGroup;

@@ -1,7 +1,5 @@
-import ChromeReaderModeIcon from '@material-ui/icons/ChromeReaderMode';
-import {
-    SpeedDialAction
-} from "@material-ui/lab";
+import ChromeReaderModeIcon from "@mui/icons-material/ChromeReaderMode";
+import { SpeedDialAction } from "@mui/material";
 import React from "react";
 import { PlainFn } from "../../../common/PlainFn";
 import BasePlayMenu from "../common/BasePlayMenu";

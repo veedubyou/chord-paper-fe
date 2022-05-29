@@ -1,20 +1,17 @@
-import { Box, Typography, Theme } from "@material-ui/core";
+import { Box, styled, Typography } from "@mui/material";
 import React from "react";
 import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
 import { ChordLine } from "../../../common/ChordModel/ChordLine";
-import PlayBlock from "./PlayBlock";
-import { withStyles } from "@material-ui/styles";
 import {
     sectionLabelStyle,
     sectionTypographyVariant,
 } from "../../display/SectionLabel";
+import PlayBlock from "./PlayBlock";
 
-const LabelTypography = withStyles(sectionLabelStyle)(Typography);
-const TopMarginBox = withStyles((theme: Theme) => ({
-    root: {
-        marginTop: theme.spacing(1),
-    },
-}))(Box);
+const LabelTypography = styled(Typography)({ ...sectionLabelStyle });
+const TopMarginBox = styled(Box)(({ theme }) => ({
+    marginTop: theme.spacing(1),
+}));
 
 interface PlayLineProps {
     chordLine: ChordLine;

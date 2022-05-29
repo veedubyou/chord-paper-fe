@@ -1,6 +1,5 @@
-import { Fab as UnstyledFab, Paper, Theme } from "@material-ui/core";
-import UnstyledPlayArrowIcon from "@material-ui/icons/PlayArrow";
-import { withStyles } from "@material-ui/styles";
+import UnstyledPlayArrowIcon from "@mui/icons-material/PlayArrow";
+import { Fab as UnstyledFab, Paper, styled } from "@mui/material";
 import React from "react";
 import { Link, Route } from "react-router-dom";
 import { MultiFC, transformToFC } from "../common/FunctionalComponent";
@@ -148,30 +147,24 @@ export const getRouteForTutorialComponent = (
     return matchingExercise.route;
 };
 
-const PlayArrowIcon = withStyles({
-    root: {
-        color: "white",
-    },
-})(UnstyledPlayArrowIcon);
+const PlayArrowIcon = styled(UnstyledPlayArrowIcon)({
+    color: "white",
+});
 
-const RootPaper = withStyles((theme: Theme) => ({
-    root: {
-        marginTop: theme.spacing(5),
-        marginBottom: theme.spacing(5),
-        padding: theme.spacing(5),
-        minHeight: theme.spacing(46),
-        width: theme.spacing(92),
-        position: "relative",
-    },
-}))(Paper);
+const RootPaper = styled(Paper)(({ theme }) => ({
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(5),
+    padding: theme.spacing(5),
+    minHeight: theme.spacing(46),
+    width: theme.spacing(92),
+    position: "relative",
+}));
 
-const Fab = withStyles((theme: Theme) => ({
-    root: {
-        position: "absolute",
-        bottom: theme.spacing(2),
-        right: theme.spacing(2),
-    },
-}))(UnstyledFab);
+const Fab = styled(UnstyledFab)(({ theme }) => ({
+    position: "absolute",
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+}));
 
 interface SingleTutorialProps {
     route: string;

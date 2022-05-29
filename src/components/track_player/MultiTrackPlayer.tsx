@@ -1,20 +1,24 @@
+import EditIcon from "@mui/icons-material/Edit";
+import CollapseDownIcon from "@mui/icons-material/ExpandMore";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import {
     Box,
     Button,
     Divider,
+    FormControl,
     MenuItem,
     Select as UnstyledSelect,
+    SelectChangeEvent,
     Slide,
+    styled,
     Theme,
-} from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
-import CollapseDownIcon from "@material-ui/icons/ExpandMore";
-import RefreshIcon from "@material-ui/icons/Refresh";
-import { makeStyles, withStyles } from "@material-ui/styles";
+} from "@mui/material";
+import { SystemStyleObject } from "@mui/system";
 import React, { useEffect } from "react";
 import { Track } from "../../common/ChordModel/tracks/Track";
 import { PlainFn } from "../../common/PlainFn";
 import { useRegisterTopKeyListener } from "../GlobalKeyListener";
+import LoadingSpinner from "../loading/LoadingSpinner";
 import {
     roundedCornersStyle,
     roundedTopCornersStyle,
@@ -27,49 +31,38 @@ import {
 } from "./internal_player/usePlayerControls";
 import { TrackListLoad } from "./providers/TrackListProvider";
 import TrackPlayer from "./TrackPlayer";
-import LoadingSpinner from "../loading/LoadingSpinner";
 
-const FlexBox = withStyles((theme: Theme) => ({
-    root: {
-        display: "flex",
-        alignItems: "center",
-        margin: theme.spacing(0.5),
-    },
-}))(Box);
-
-const TitleBarButton = withStyles((theme: Theme) => ({
-    root: {
-        minWidth: 0,
-        ...roundedCornersStyle(theme),
-    },
-}))(Button);
-
-const usePaddingLeftStyle = makeStyles((theme: Theme) => ({
-    root: {
-        "& .MuiSelect-select": {
-            paddingLeft: theme.spacing(2),
-        },
-    },
+const FlexBox = styled(Box)(({ theme }) => ({
+    display: "flex",
+    alignItems: "center",
+    margin: theme.spacing(0.5),
 }));
 
-const Select = withStyles((theme: Theme) => ({
-    root: {
-        minWidth: theme.spacing(30),
-    },
-}))(UnstyledSelect);
+const TitleBarButton = styled(Button)(({ theme }) => ({
+    minWidth: 0,
+    ...roundedCornersStyle(theme),
+}));
 
-const FullPlayerContainer = withStyles((theme: Theme) => {
+const paddingLeftStyle: SystemStyleObject<Theme> = {
+    [`& .{selectClasses.select}`]: {
+        paddingLeft: 2,
+    },
+};
+
+const Select = styled(UnstyledSelect)(({ theme }) => ({
+    minWidth: theme.spacing(30),
+}));
+
+const FullPlayerContainer = styled(Box)(({ theme }) => {
     const transportControlsWidth = theme.spacing(36);
 
     return {
-        root: {
-            backgroundColor: "white",
-            minWidth: "50vw",
-            maxWidth: transportControlsWidth,
-            ...roundedTopCornersStyle(theme),
-        },
+        backgroundColor: "white",
+        minWidth: "50vw",
+        maxWidth: transportControlsWidth,
+        ...roundedTopCornersStyle(theme),
     };
-})(Box);
+});
 
 interface MultiTrackPlayerProps {
     show: boolean;
@@ -88,7 +81,6 @@ interface MultiTrackPlayerProps {
 const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
     props: MultiTrackPlayerProps
 ): JSX.Element => {
-    const paddingLeftStyle = usePaddingLeftStyle();
     const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
 
     {
@@ -125,12 +117,7 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
         </TitleBarButton>
     );
 
-    const trackChangeHandler = (
-        event: React.ChangeEvent<{
-            name?: string | undefined;
-            value: unknown;
-        }>
-    ) => {
+    const trackChangeHandler = (event: SelectChangeEvent<unknown>) => {
         const value: unknown = event.target.value;
         if (typeof value !== "number") {
             console.error(
@@ -158,14 +145,15 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
         })();
 
         return (
-            <Select
-                className={paddingLeftStyle.root}
-                disableUnderline
-                value={props.currentTrackIndex}
-                onChange={trackChangeHandler}
-            >
-                {items}
-            </Select>
+            <FormControl size="small">
+                <Select
+                    sx={paddingLeftStyle}
+                    value={props.currentTrackIndex}
+                    onChange={trackChangeHandler}
+                >
+                    {items}
+                </Select>
+            </FormControl>
         );
     })();
 

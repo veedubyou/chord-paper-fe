@@ -1,4 +1,4 @@
-import { createMuiTheme, ThemeProvider } from "@material-ui/core";
+import { createTheme, ThemeProvider } from "@mui/material";
 import { SnackbarProvider } from "notistack";
 import React from "react";
 import { HelmetProvider } from "react-helmet-async";
@@ -18,7 +18,7 @@ export const withProviders = (children: React.ReactNode) => {
         <UserContext.Provider value={null}>
             <SetUserContext.Provider value={noopFn}>
                 <HelmetProvider>
-                    <ThemeProvider theme={createMuiTheme()}>
+                    <ThemeProvider theme={createTheme()}>
                         <HashRouter>
                             <DragAndDrop>
                                 <SnackbarProvider>{children}</SnackbarProvider>
