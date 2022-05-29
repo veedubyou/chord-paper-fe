@@ -68,7 +68,7 @@ export const HighlightBorderProvider: React.FC<HighlightBorderProviderProps> = (
             }
         },
         rotateColourDebounceTime,
-        { leading: true, trailing: false }
+        { leading: false, trailing: true }
     );
 
     const getColour = useCallback((): HighlightColour => {
