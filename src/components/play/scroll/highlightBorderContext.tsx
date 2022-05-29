@@ -1,12 +1,11 @@
-import { css, cx } from "@emotion/css";
-import { useTheme } from "@mui/material";
+import { Theme } from "@mui/material";
 import React, { useCallback, useMemo, useRef } from "react";
 import { useDebouncedCallback } from "use-debounce/lib";
-import { PlainFn, noopFn } from "../../../common/PlainFn";
+import { noopFn, PlainFn } from "../../../common/PlainFn";
 
-export type HighlightColourContext = {
-    getColour: () => HighlightColour;
-    rotateColour: PlainFn;
+export type HighlightBorder = {
+    getBorderColour: () => HighlightColour;
+    rotateBorderColour: PlainFn;
 };
 export type HighlightColour = "blue" | "purple" | "red";
 
@@ -22,34 +21,30 @@ const rotateColourDebounceTime = 300;
 const redColor = "#ff9679";
 
 export const HighlightBorderContext =
-    React.createContext<HighlightColourContext>({
-        getColour: () => "red",
-        rotateColour: noopFn,
+    React.createContext<HighlightBorder>({
+        getBorderColour: () => "red",
+        rotateBorderColour: noopFn,
     });
 
-interface HighlightColourProviderProps {
+interface HighlightBorderProviderProps {
     children: React.ReactNode | React.ReactNode[];
 }
 
-export const useHighlightBorders = () => {
-    const theme = useTheme();
-    const { getColour } = React.useContext(HighlightBorderContext);
-
-    const coloursClassNames = useMemo(
-        () => ({
-            blue: cx(css({ borderColor: theme.palette.primary.main })),
-            purple: cx(css({ borderColor: theme.palette.secondary.main })),
-            red: cx(css({ borderColor: redColor })),
-        }),
-        [theme]
-    );
-
-    const currentColour = getColour();
-    return coloursClassNames[currentColour];
+const colourStyleMap = {
+    blue: (theme: Theme) => ({ borderColor: theme.palette.primary.main }),
+    purple: (theme: Theme) => ({ borderColor: theme.palette.secondary.main }),
+    red: (theme: Theme) => ({ borderColor: redColor }),
 };
 
-export const HighlightColourProvider: React.FC<HighlightColourProviderProps> = (
-    props: HighlightColourProviderProps
+export const useHighlightBorders = () => {
+    const { getBorderColour: getColour } = React.useContext(HighlightBorderContext);
+
+    const currentColour = getColour();
+    return colourStyleMap[currentColour];
+};
+
+export const HighlightBorderProvider: React.FC<HighlightBorderProviderProps> = (
+    props: HighlightBorderProviderProps
 ): JSX.Element => {
     const currentColourRef = useRef<HighlightColour>("red");
 
@@ -81,9 +76,9 @@ export const HighlightColourProvider: React.FC<HighlightColourProviderProps> = (
     }, []);
 
     const colourContext = useMemo(
-        (): HighlightColourContext => ({
-            getColour: getColour,
-            rotateColour: rotateColour,
+        (): HighlightBorder => ({
+            getBorderColour: getColour,
+            rotateBorderColour: rotateColour,
         }),
         [getColour, rotateColour]
     );

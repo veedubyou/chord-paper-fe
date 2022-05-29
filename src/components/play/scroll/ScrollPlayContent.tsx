@@ -9,7 +9,7 @@ import { PlainFn } from "../../../common/PlainFn";
 import { useNavigationKeys } from "../common/useNavigateKeys";
 import {
     HighlightBorderContext,
-    HighlightColourProvider,
+    HighlightBorderProvider,
 } from "./highlightBorderContext";
 import ScrollablePlayLine from "./ScrollablePlayLine";
 
@@ -33,9 +33,9 @@ interface ScrollPlayContentProps {
 const ScrollPlayContentWithHighlightProvider: React.FC<ScrollPlayContentProps> =
     (props: ScrollPlayContentProps): JSX.Element => {
         return (
-            <HighlightColourProvider>
+            <HighlightBorderProvider>
                 <ScrollPlayContent song={props.song} />
-            </HighlightColourProvider>
+            </HighlightBorderProvider>
         );
     };
 
@@ -82,7 +82,7 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
         null
     );
 
-    const { rotateColour } = React.useContext(HighlightBorderContext);
+    const { rotateBorderColour: rotateColour } = React.useContext(HighlightBorderContext);
 
     const [previousScrollLine, setPreviousScrollLine] =
         useState<ViewportLine | null>(null);

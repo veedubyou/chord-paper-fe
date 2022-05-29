@@ -1,61 +1,45 @@
 import { Box, Theme } from "@mui/material";
 import React from "react";
-import { MUIStyledProps } from "../../../common/styledProps";
 import { useHighlightBorders } from "./highlightBorderContext";
 
 const transitionFunction = "cubic-bezier(.19,1,.22,1)";
 
-interface HighlightBorderBoxProps {
+interface HighlightableBorderBoxProps {
     highlight?: boolean;
     children: React.ReactElement;
 }
 
-interface BorderBoxProps extends HighlightBorderBoxProps, MUIStyledProps {}
-
-const BorderBox = React.memo(
-    React.forwardRef(
-        (
-            props: BorderBoxProps,
-            ref: React.ForwardedRef<Element>
-        ): JSX.Element => {
-            return (
-                <Box
-                    ref={ref}
-                    className={props.className}
-                    sx={(theme: Theme) => ({
-                        borderColor: "transparent",
-                        borderStyle: "dashed",
-                        borderRadius: theme.spacing(1.5),
-                        borderWidth: theme.spacing(0.3),
-                        transition: `border-color ${transitionFunction} 2s`,
-                    })}
-                >
-                    {props.children}
-                </Box>
-            );
-        }
-    )
-);
-
 const HighlightBorderBox = React.forwardRef(
     (
-        props: HighlightBorderBoxProps,
+        props: HighlightableBorderBoxProps,
         ref: React.ForwardedRef<Element>
     ): JSX.Element => {
-        const highlightClassName = useHighlightBorders();
+        const highlightStyle = useHighlightBorders();
 
-        const containerClassName: string | undefined = (() => {
+        const containerStyle = (() => {
             if (props.highlight === true) {
-                return highlightClassName;
+                return highlightStyle;
             }
 
-            return undefined;
+            // do nothing, but make it a function so it's easier to spread
+            // in the SX expression below
+            return (theme: Theme) => undefined;
         })();
 
         return (
-            <BorderBox ref={ref} className={containerClassName}>
+            <Box
+                ref={ref}
+                sx={(theme: Theme) => ({
+                    borderColor: "transparent",
+                    borderStyle: "dashed",
+                    borderRadius: theme.spacing(1.5),
+                    borderWidth: theme.spacing(0.3),
+                    transition: `border-color ${transitionFunction} 2s`,
+                    ...containerStyle(theme),
+                })}
+            >
                 {props.children}
-            </BorderBox>
+            </Box>
         );
     }
 );

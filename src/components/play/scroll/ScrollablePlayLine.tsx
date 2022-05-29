@@ -33,44 +33,44 @@ interface ScrollablePlayLineProps {
     inViewChanged: PlainFn;
 }
 
-const ScrollablePlayLine: React.FC<ScrollablePlayLineProps> = (
-    props: ScrollablePlayLineProps
-): JSX.Element => {
-    const currentPageInViewRef = useInPageView({
-        topMarginPercentage: topCurrentViewportMarginPercent,
-        bottomMarginPercentage: bottomCurrentViewportMarginPercent,
-        isInViewFnCallback: props.isInCurrentViewFnCallback,
-        inViewChanged: props.inViewChanged,
-    });
+const ScrollablePlayLine = React.memo(
+    (props: ScrollablePlayLineProps): JSX.Element => {
+        const currentPageInViewRef = useInPageView({
+            topMarginPercentage: topCurrentViewportMarginPercent,
+            bottomMarginPercentage: bottomCurrentViewportMarginPercent,
+            isInViewFnCallback: props.isInCurrentViewFnCallback,
+            inViewChanged: props.inViewChanged,
+        });
 
-    const previousPageInViewRef = useInPageView({
-        topMarginPercentage: topPreviousViewportMarginPercent,
-        bottomMarginPercentage: bottomPreviousViewportMarginPercent,
-        isInViewFnCallback: props.isInPreviousViewFnCallback,
-    });
+        const previousPageInViewRef = useInPageView({
+            topMarginPercentage: topPreviousViewportMarginPercent,
+            bottomMarginPercentage: bottomPreviousViewportMarginPercent,
+            isInViewFnCallback: props.isInPreviousViewFnCallback,
+        });
 
-    const scrollRef = useScrollable(props.scrollFnCallback);
+        const scrollRef = useScrollable(props.scrollFnCallback);
 
-    const captureRef = useCallback(
-        (elem: Element | null) => {
-            if (elem !== null) {
-                scrollRef.current = elem;
-                currentPageInViewRef(elem);
-                previousPageInViewRef(elem);
-            } else {
-                scrollRef.current = undefined;
-                currentPageInViewRef(null);
-                previousPageInViewRef(null);
-            }
-        },
-        [currentPageInViewRef, previousPageInViewRef, scrollRef]
-    );
+        const captureRef = useCallback(
+            (elem: Element | null) => {
+                if (elem !== null) {
+                    scrollRef.current = elem;
+                    currentPageInViewRef(elem);
+                    previousPageInViewRef(elem);
+                } else {
+                    scrollRef.current = undefined;
+                    currentPageInViewRef(null);
+                    previousPageInViewRef(null);
+                }
+            },
+            [currentPageInViewRef, previousPageInViewRef, scrollRef]
+        );
 
-    return (
-        <HighlightBorderBox ref={captureRef} highlight={props.highlight}>
-            <PlayLine chordLine={props.chordLine} />
-        </HighlightBorderBox>
-    );
-};
+        return (
+            <HighlightBorderBox ref={captureRef} highlight={props.highlight}>
+                <PlayLine chordLine={props.chordLine} />
+            </HighlightBorderBox>
+        );
+    }
+);
 
 export default ScrollablePlayLine;
