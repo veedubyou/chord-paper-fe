@@ -150,6 +150,7 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
                     sx={paddingLeftStyle}
                     value={props.currentTrackIndex}
                     onChange={trackChangeHandler}
+                    MenuProps={{ disableScrollLock: true }}
                 >
                     {items}
                 </Select>
