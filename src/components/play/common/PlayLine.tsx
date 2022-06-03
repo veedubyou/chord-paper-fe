@@ -49,4 +49,4 @@ const PlayLine: React.FC<PlayLineProps> = (
     return lineComponent;
 };
 
-export default PlayLine;
+export default React.memo(PlayLine);

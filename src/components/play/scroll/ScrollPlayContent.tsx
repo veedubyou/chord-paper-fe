@@ -5,7 +5,7 @@ import { useDebouncedCallback } from "use-debounce/lib";
 import { ChordLine } from "../../../common/ChordModel/ChordLine";
 import { ChordSong } from "../../../common/ChordModel/ChordSong";
 import { Collection } from "../../../common/ChordModel/Collection";
-import { PlainFn } from "../../../common/PlainFn";
+import { PlainFn, noopFn } from "../../../common/PlainFn";
 import { useNavigationKeys } from "../common/useNavigateKeys";
 import {
     HighlightBorderContext,
@@ -22,8 +22,11 @@ interface ViewportLine {
     type: "ViewportLine";
     chordLine: ChordLine;
     isInCurrentView: () => boolean;
+    setIsInCurrentView: (fn: () => boolean) => void;
     isInPreviousView: () => boolean;
+    setIsInPreviousView: (fn: () => boolean) => void;
     scrollInView: PlainFn;
+    setScrollInView: (fn: PlainFn) => void;
 }
 
 interface ScrollPlayContentProps {
@@ -44,27 +47,49 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
 ): JSX.Element => {
     const lines = props.song.chordLines;
 
-    const makeViewportLine = (chordLine: ChordLine): ViewportLine => ({
-        id: chordLine.id,
-        type: "ViewportLine",
-        chordLine: chordLine,
-        isInCurrentView: () => {
-            console.error(
-                "isInCurrentView method not initialized",
-                chordLine.id
-            );
-            return false;
-        },
-        isInPreviousView: () => {
-            console.error(
-                "isInPreviousView method not initialized",
-                chordLine.id
-            );
-            return false;
-        },
-        scrollInView: () =>
-            console.error("scrollInView method not initialized", chordLine.id),
-    });
+    const makeViewportLine = (chordLine: ChordLine): ViewportLine => {
+        const viewportLine: ViewportLine = {
+            id: chordLine.id,
+            type: "ViewportLine",
+            chordLine: chordLine,
+            isInCurrentView: () => {
+                console.error(
+                    "isInCurrentView method not initialized",
+                    chordLine.id
+                );
+                return false;
+            },
+            isInPreviousView: () => {
+                console.error(
+                    "isInPreviousView method not initialized",
+                    chordLine.id
+                );
+                return false;
+            },
+            scrollInView: () =>
+                console.error(
+                    "scrollInView method not initialized",
+                    chordLine.id
+                ),
+            setIsInCurrentView: noopFn,
+            setIsInPreviousView: noopFn,
+            setScrollInView: noopFn,
+        };
+
+        viewportLine.setIsInCurrentView = (inViewFn: () => boolean) => {
+            viewportLine.isInCurrentView = inViewFn;
+        };
+
+        viewportLine.setIsInPreviousView = (inViewFn: () => boolean) => {
+            viewportLine.isInPreviousView = inViewFn;
+        };
+
+        viewportLine.setScrollInView = (scrollFn: PlainFn) => {
+            viewportLine.scrollInView = scrollFn;
+        };
+
+        return viewportLine;
+    };
 
     const makeViewportLines = (
         chordLines: List<ChordLine>
@@ -82,7 +107,9 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
         null
     );
 
-    const { rotateBorderColour: rotateColour } = React.useContext(HighlightBorderContext);
+    const { rotateBorderColour: rotateColour } = React.useContext(
+        HighlightBorderContext
+    );
 
     const [previousScrollLine, setPreviousScrollLine] =
         useState<ViewportLine | null>(null);
@@ -158,18 +185,6 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
             type: "ViewportLine",
         });
 
-        const setInCurrentViewFn = (inViewFn: () => boolean) => {
-            lineRef.isInCurrentView = inViewFn;
-        };
-
-        const setInPreviousViewFn = (inViewFn: () => boolean) => {
-            lineRef.isInPreviousView = inViewFn;
-        };
-
-        const setScrollFn = (scrollFn: PlainFn) => {
-            lineRef.scrollInView = scrollFn;
-        };
-
         const highlight =
             chordLine.id === nextScrollLine?.id ||
             chordLine.id === previousScrollLine?.id;
@@ -179,9 +194,9 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
                 key={chordLine.id}
                 chordLine={chordLine}
                 highlight={highlight}
-                isInCurrentViewFnCallback={setInCurrentViewFn}
-                isInPreviousViewFnCallback={setInPreviousViewFn}
-                scrollFnCallback={setScrollFn}
+                isInCurrentViewFnCallback={lineRef.setIsInCurrentView}
+                isInPreviousViewFnCallback={lineRef.setIsInPreviousView}
+                scrollFnCallback={lineRef.setScrollInView}
                 inViewChanged={handleViewportChange}
             />
         );
