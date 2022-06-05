@@ -263,4 +263,4 @@ const SideMenu: React.FC<{}> = (): JSX.Element => {
     );
 };
 
-export default SideMenu;
+export default React.memo(SideMenu);
