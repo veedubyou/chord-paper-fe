@@ -4,12 +4,12 @@ import React from "react";
 import { noopFn } from "../../common/PlainFn";
 import { ControlButton } from "../track_player/internal_player/ControlButton";
 import { ControlPaneBox } from "../track_player/internal_player/ControlPane";
-import PlayrateControl from "../track_player/internal_player/PlayrateControl";
+import TempoControl from "../track_player/internal_player/advanced_controls/TempoControl";
 import StemTrackControlPane, {
     ControlPaneButtonColour,
     StemControl,
 } from "../track_player/internal_player/stem/StemTrackControlPane";
-import TransposeControl from "../track_player/internal_player/TransposeControl";
+import TransposeControl from "../track_player/internal_player/advanced_controls/TransposeControl";
 import { LineBreak } from "./Common";
 import { convertToTutorialComponent } from "./TutorialComponent";
 
@@ -114,7 +114,7 @@ const TrackPlayer: React.FC<{}> = (): JSX.Element => {
                 On the right, you will see a control like this:
             </Typography>
             <SmallControlPaneBox>
-                <PlayrateControl playratePercentage={100} onChange={noopFn} />
+                <TempoControl tempoPercentage={100} onTempoChange={noopFn} />
             </SmallControlPaneBox>
             <Typography>
                 Here, you can slow down the tempo of a track to listen more
@@ -128,7 +128,7 @@ const TrackPlayer: React.FC<{}> = (): JSX.Element => {
                 right like this:
             </Typography>
             <SmallControlPaneBox>
-                <TransposeControl transposeLevel={0} onChange={noopFn} />
+                <TransposeControl transposeLevel={0} onTransposeChange={noopFn} />
             </SmallControlPaneBox>
             <Typography>
                 This allows you to transpose the song up or down a desired

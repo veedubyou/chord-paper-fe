@@ -1,8 +1,8 @@
 import { Box, styled, Tooltip, Typography } from "@mui/material";
 import React from "react";
-import { greyTextColour } from "../common";
-import { ControlButton } from "./ControlButton";
-import { ControlGroupBox } from "./ControlGroup";
+import { greyTextColour, widthOfString } from "../../common";
+import { ControlButton } from "../ControlButton";
+import { ControlGroupBox } from "../ControlGroup";
 
 const TransposeBox = styled(ControlGroupBox)({
     justifyContent: "space-between",
@@ -10,26 +10,28 @@ const TransposeBox = styled(ControlGroupBox)({
 
 const TransposeDisplay = styled(Typography)(({ theme }) => ({
     color: greyTextColour,
+    minWidth: widthOfString(theme, "h6", "♯12"),
     display: "flex",
     justifyContent: "center",
+    alignItems: "center",
 }));
 
 interface TransposeControlProps {
     transposeLevel: number;
-    onChange: (newTransposeLevel: number) => void;
+    onTransposeChange: (newTransposeLevel: number) => void;
 }
 
 const TransposeControl: React.FC<TransposeControlProps> = (
     props: TransposeControlProps
 ): JSX.Element => {
-    const playrate = Math.round(props.transposeLevel);
+    const tempo = Math.round(props.transposeLevel);
     const interval = 1;
 
-    const onDecrease = () => props.onChange(playrate - interval);
-    const onIncrease = () => props.onChange(playrate + interval);
+    const onDecrease = () => props.onTransposeChange(tempo - interval);
+    const onIncrease = () => props.onTransposeChange(tempo + interval);
 
-    const decreaseDisabled = playrate - interval < -12;
-    const increaseDisabled = playrate + interval > 12;
+    const decreaseDisabled = tempo - interval < -12;
+    const increaseDisabled = tempo + interval > 12;
 
     const transposeText: string = (() => {
         if (props.transposeLevel > 0) {

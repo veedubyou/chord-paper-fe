@@ -194,22 +194,22 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
             Tone.Transport.pause();
         }
 
-        const playrate = props.playerControls.playrate.percentage / 100;
+        const tempo = props.playerControls.tempo.percentage / 100;
 
         // Tone transport doesn't observe slowed down time, only each individual node plays the sound back slower
         // e.g. if a 10s clip is played at 50% speed, then Tone transport will finish playing it from 0s to 20s
-        // so to compare player time and Tone transport time, it needs to be scaled against the playrate
-        const adjustedToneTime = Tone.Transport.seconds * playrate;
+        // so to compare player time and Tone transport time, it needs to be scaled against the tempo
+        const adjustedToneTime = Tone.Transport.seconds * tempo;
 
         // sync the time
         if (Math.abs(props.playerControls.currentTime - adjustedToneTime) > 1) {
             Tone.Transport.seconds =
-                props.playerControls.currentTime / playrate;
+                props.playerControls.currentTime / tempo;
         }
     }, [
         props.playerControls.playing,
         props.playerControls.currentTime,
-        props.playerControls.playrate.percentage,
+        props.playerControls.tempo.percentage,
     ]);
 
     // synchronize player state and track volumes/mutedness
@@ -232,10 +232,10 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
                 node.endNode.mute = stemState.muted || stemVolume === 0;
 
                 node.playerNode.playbackRate =
-                    props.playerControls.playrate.percentage / 100;
+                    props.playerControls.tempo.percentage / 100;
             }
         );
-    }, [toneNodes, playerState, props.playerControls.playrate.percentage]);
+    }, [toneNodes, playerState, props.playerControls.tempo.percentage]);
 
     // synchronize player state and pitch shift
     useEffect(() => {
@@ -352,7 +352,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
                 onSkipBack={props.playerControls.skipBack}
                 onSkipForward={props.playerControls.skipForward}
                 onGoToBeginning={props.playerControls.goToBeginning}
-                playrate={props.playerControls.playrate}
+                tempo={props.playerControls.tempo}
                 transpose={{
                     level: playerState.masterPitchShift,
                     onChange: handlePitchShift,

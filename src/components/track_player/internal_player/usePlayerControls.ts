@@ -34,7 +34,7 @@ export interface PlayerControls {
     onPlay: PlainFn;
     onPause: PlainFn;
     currentSectionLabel: string;
-    playrate: {
+    tempo: {
         percentage: number;
         onChange: (val: number) => void;
     };
@@ -81,7 +81,7 @@ export const unfocusedControls: PlayerControls = {
     onPlay: noopFn,
     onPause: noopFn,
     currentSectionLabel: "",
-    playrate: {
+    tempo: {
         percentage: 100,
         onChange: noopFn,
     },
@@ -108,7 +108,7 @@ export const usePlayerControls = (
         pointA: null,
     });
     const playerRef = useRef<ReactPlayer | FilePlayer>();
-    const [playratePercentage, setPlayratePercentage] = useState(100);
+    const [tempoPercentage, setTempoPercentage] = useState(100);
     const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
     const { enqueueSnackbar } = useSnackbar();
 
@@ -404,9 +404,9 @@ export const usePlayerControls = (
         onPlay: handlePlayState,
         onPause: handlePauseState,
         currentSectionLabel: currentSectionLabel,
-        playrate: {
-            percentage: playratePercentage,
-            onChange: setPlayratePercentage,
+        tempo: {
+            percentage: tempoPercentage,
+            onChange: setTempoPercentage,
         },
     };
 };
