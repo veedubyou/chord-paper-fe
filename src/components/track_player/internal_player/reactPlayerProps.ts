@@ -11,7 +11,7 @@ const makeBasePlayerProps = (
         ref: playerControls.playerRef,
         playing: playerControls.playing,
         controls: true,
-        playbackRate: playerControls.playrate.percentage / 100,
+        playbackRate: playerControls.tempo.percentage / 100,
         onPlay: playerControls.onPlay,
         onPause: playerControls.onPause,
         onProgress: playerControls.onProgress,

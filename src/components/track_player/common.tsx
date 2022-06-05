@@ -91,3 +91,4 @@ export const TitleBar = styled(Box)<BoxProps>(({ theme }) => ({
     alignItems: "center",
     ...roundedTopCornersStyle(theme),
 }));
+

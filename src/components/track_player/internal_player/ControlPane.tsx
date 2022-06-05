@@ -4,10 +4,9 @@ import { PlainFn } from "../../../common/PlainFn";
 import { useRegisterTopKeyListener } from "../../GlobalKeyListener";
 import { controlPaneStyle } from "../common";
 import { ControlButton } from "./ControlButton";
-import ControlGroup from "./ControlGroup";
-import PlayrateControl from "./PlayrateControl";
+import ControlGroup, { ControlGroupBox } from "./ControlGroup";
 import SectionLabel from "./SectionLabel";
-import TransposeControl from "./TransposeControl";
+import AdvancedControls from "./advanced_controls/AdvancedControls";
 import { ButtonActionAndState } from "./usePlayerControls";
 
 interface ControlPaneProps {
@@ -19,7 +18,7 @@ interface ControlPaneProps {
     onGoToBeginning: PlainFn;
     onSkipBack: ButtonActionAndState;
     onSkipForward: ButtonActionAndState;
-    playrate: {
+    tempo: {
         percentage: number;
         onChange: (newPercentage: number) => void;
     };
@@ -30,7 +29,7 @@ interface ControlPaneProps {
     sectionLabel: string;
 }
 
-const RightJustifiedControlGroup = styled(ControlGroup)({
+const RightJustifiedControlBox = styled(ControlGroupBox)({
     marginLeft: "auto",
 });
 
@@ -100,24 +99,6 @@ const ControlPane: React.FC<ControlPaneProps> = (
         };
     }, [props, addTopKeyListener, removeKeyListener]);
 
-    const transposeControl: JSX.Element | null = (() => {
-        if (props.transpose === undefined) {
-            return null;
-        }
-
-        return (
-            <ControlGroup dividers="left" edgeDivider>
-                {[
-                    <TransposeControl
-                        key="transpose-control"
-                        transposeLevel={props.transpose.level}
-                        onChange={props.transpose.onChange}
-                    />,
-                ]}
-            </ControlGroup>
-        );
-    })();
-
     return (
         <ControlPaneBox>
             <ControlGroup dividers="right">
@@ -135,16 +116,12 @@ const ControlPane: React.FC<ControlPaneProps> = (
                 />
             </ControlGroup>
             <SectionLabel value={props.sectionLabel} />
-            <RightJustifiedControlGroup dividers="left">
-                {[
-                    <PlayrateControl
-                        key="playrate-control"
-                        playratePercentage={props.playrate.percentage}
-                        onChange={props.playrate.onChange}
-                    />,
-                ]}
-            </RightJustifiedControlGroup>
-            {transposeControl}
+            <RightJustifiedControlBox>
+                <AdvancedControls
+                    tempo={props.tempo}
+                    transpose={props.transpose}
+                />
+            </RightJustifiedControlBox>
         </ControlPaneBox>
     );
 };

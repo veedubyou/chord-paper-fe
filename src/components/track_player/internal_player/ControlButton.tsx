@@ -1,5 +1,6 @@
 import DecreaseIcon from "@mui/icons-material/ArrowDropDown";
 import IncreaseIcon from "@mui/icons-material/ArrowDropUp";
+import CloseIcon from "@mui/icons-material/Close";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayIcon from "@mui/icons-material/PlayArrow";
 import JumpBackIcon from "@mui/icons-material/Replay";
@@ -8,21 +9,17 @@ import SkipBackIcon from "@mui/icons-material/SkipPrevious";
 import { Button as UnstyledButton, styled, Tooltip } from "@mui/material";
 import { ButtonProps } from "@mui/material/Button";
 import React from "react";
+import BeginningIcon from "../../icons/BeginningIcon";
+import FlatIcon from "../../icons/FlatIcon";
+import FlatSharpIcon from "../../icons/FlatSharpIcon";
+import JumpForwardIcon from "../../icons/ForwardIcon";
+import MetronomeIcon from "../../icons/MetronomeIcon";
+import SharpIcon from "../../icons/SharpIcon";
 import { roundedCornersStyle } from "../common";
-import BeginningIcon from "./BeginningIcon";
-import JumpForwardIcon from "./ForwardIcon";
 
 const Button = styled(UnstyledButton)(({ theme }) => ({
     minWidth: 0,
     ...roundedCornersStyle(theme),
-}));
-
-const PrimaryButton = styled(Button)(({ theme }) => ({
-    color: theme.palette.primary.main,
-}));
-
-const SecondaryButton = styled(Button)(({ theme }) => ({
-    color: theme.palette.secondary.main,
 }));
 
 const makeControlButton = (
@@ -31,7 +28,7 @@ const makeControlButton = (
     tooltipMsg: string,
     color: "primary" | "secondary"
 ): React.FC<ButtonProps> => {
-    const ColoredButton = color === "primary" ? PrimaryButton : SecondaryButton;
+    const buttonColor = color === "primary" ? "primary.main" : "secondary.main";
 
     // the keyboard usage of the player collides with any keyboard triggers of control buttons
     // so disable them entirely, which may happen through keyups
@@ -44,13 +41,14 @@ const makeControlButton = (
     return (props: ButtonProps) => (
         <Tooltip key={key} title={tooltipMsg}>
             <span>
-                <ColoredButton
+                <Button
                     {...props}
                     onKeyUp={preventKeyInvocation}
                     size="large"
+                    sx={{ color: buttonColor }}
                 >
                     {child}
-                </ColoredButton>
+                </Button>
             </span>
         </Tooltip>
     );
@@ -99,28 +97,46 @@ export const ControlButton = {
         "Go to Beginning",
         "primary"
     ),
-    DecreasePlayrate: makeControlButton(
+    DecreaseTempo: makeControlButton(
         <DecreaseIcon />,
-        "decrease-playrate-button",
+        "decrease-tempo-button",
         "Play slower",
         "primary"
     ),
-    IncreasePlayrate: makeControlButton(
+    IncreaseTempo: makeControlButton(
         <IncreaseIcon />,
-        "increase-playrate-button",
+        "increase-tempo-button",
         "Play faster",
         "primary"
     ),
+    TempoMenu: makeControlButton(
+        <MetronomeIcon />,
+        "tempo-menu",
+        "Change tempo",
+        "primary"
+    ),
+    TransposeMenu: makeControlButton(
+        <FlatSharpIcon />,
+        "transpose-menu",
+        "Change pitch",
+        "primary"
+    ),
     TransposeDown: makeControlButton(
-        <DecreaseIcon />,
+        <FlatIcon />,
         "transpose-down-button",
-        "Transpose down half step",
+        "Down half step",
         "primary"
     ),
     TransposeUp: makeControlButton(
-        <IncreaseIcon />,
+        <SharpIcon />,
         "transpose-up-button",
-        "Transpose up half step",
+        "Up half step",
         "primary"
+    ),
+    CloseMenu: makeControlButton(
+        <CloseIcon />,
+        "close-menu",
+        "Close Menu",
+        "secondary"
     ),
 };
