@@ -2,7 +2,6 @@ import ForkIcon from "@mui/icons-material/CallSplit";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import TransposeIcon from "@mui/icons-material/ImportExport";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PlayIcon from "@mui/icons-material/PlayArrow";
 import SaveIcon from "@mui/icons-material/Save";
@@ -17,6 +16,7 @@ import { useCloudCreateSong, useCloudDeleteSongDialog } from "components/edit/me
 import { useLoadMenuAction } from "components/edit/menu/load";
 import { useSaveMenuAction } from "components/edit/menu/save";
 import TransposeMenu from "components/edit/menu/TransposeMenu";
+import TransposeIcon from "components/icons/FlatSharpIcon";
 import { ChordSongAction } from "components/reducer/reducer";
 import { User, UserContext } from "components/user/userContext";
 import { useSnackbar } from "notistack";
