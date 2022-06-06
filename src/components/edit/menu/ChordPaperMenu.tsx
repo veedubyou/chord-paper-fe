@@ -3,7 +3,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import PlayIcon from "@mui/icons-material/PlayArrow";
+import PlayIcon from "@mui/icons-material/Piano";
 import SaveIcon from "@mui/icons-material/Save";
 import {
     SpeedDial as UnstyledSpeedDial,
