@@ -2,7 +2,10 @@ import { Collapse } from "@mui/material";
 import TempoControl from "components/track_player/internal_player/advanced_controls/TempoControl";
 import TransposeControl from "components/track_player/internal_player/advanced_controls/TransposeControl";
 import { ControlButton } from "components/track_player/internal_player/ControlButton";
-import { ControlGroupBox, VerticalMiddleDivider } from "components/track_player/internal_player/ControlGroup";
+import {
+    ControlGroupBox,
+    VerticalMiddleDivider,
+} from "components/track_player/internal_player/ControlGroup";
 import React, { useState } from "react";
 
 interface AdvancedControlsProps {
@@ -21,8 +24,8 @@ interface Menu {
     controls: React.ReactElement;
 }
 
-type MenuTypes = "tempo" | "transpose";
-const menuOrder: MenuTypes[] = ["tempo", "transpose"];
+type MenuTypes = "tempo" | "transpose" | "abLoop";
+const menuOrder: MenuTypes[] = ["tempo", "transpose", "abLoop"];
 
 const AdvancedControls: React.FC<AdvancedControlsProps> = (
     props: AdvancedControlsProps
@@ -61,6 +64,11 @@ const AdvancedControls: React.FC<AdvancedControlsProps> = (
         ),
     };
 
+    const abLoopMenu: Menu = {
+        icon: <ControlButton.ABLoopMenu />,
+        controls: <></>,
+    };
+
     const showCloseButton = currentMenu !== null;
     const closeButton = (
         <Collapse
@@ -75,6 +83,7 @@ const AdvancedControls: React.FC<AdvancedControlsProps> = (
     const menus: Record<MenuTypes, Menu | null> = {
         tempo: tempoMenu,
         transpose: transposeMenu,
+        abLoop: abLoopMenu,
     };
 
     const makeCollapsibleMenu = (menuType: MenuTypes): React.ReactElement[] => {

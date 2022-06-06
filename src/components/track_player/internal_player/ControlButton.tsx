@@ -8,6 +8,7 @@ import SkipForwardIcon from "@mui/icons-material/SkipNext";
 import SkipBackIcon from "@mui/icons-material/SkipPrevious";
 import { Button as UnstyledButton, styled, Tooltip } from "@mui/material";
 import { ButtonProps } from "@mui/material/Button";
+import ABLoopIcon from "components/icons/ABLoopIcon";
 import BeginningIcon from "components/icons/BeginningIcon";
 import FlatIcon from "components/icons/FlatIcon";
 import FlatSharpIcon from "components/icons/FlatSharpIcon";
@@ -113,6 +114,12 @@ export const ControlButton = {
         <MetronomeIcon />,
         "tempo-menu",
         "Change tempo",
+        "primary"
+    ),
+    ABLoopMenu: makeControlButton(
+        <ABLoopIcon />,
+        "ab-loop-menu",
+        "Set AB Loop",
         "primary"
     ),
     TransposeMenu: makeControlButton(
