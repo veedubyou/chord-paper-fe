@@ -1,9 +1,9 @@
 import { Box, Grid, styled, Typography } from "@mui/material";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import UnstyledLastSavedAt from "components/display/LastSavedAt";
+import EditableTypography from "components/edit/EditableTypography";
+import { ChordSongAction } from "components/reducer/reducer";
 import React from "react";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
-import UnstyledLastSavedAt from "../display/LastSavedAt";
-import { ChordSongAction } from "../reducer/reducer";
-import EditableTypography from "./EditableTypography";
 
 const LastSavedAt = styled(UnstyledLastSavedAt)(({ theme }) => ({
     position: "absolute",

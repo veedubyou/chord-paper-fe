@@ -1,5 +1,5 @@
+import { noopFn } from "common/PlainFn";
 import React, { useContext, useRef } from "react";
-import { noopFn } from "../common/PlainFn";
 
 type KeyListener = (event: KeyboardEvent) => void;
 interface StoredKeyListener {

@@ -1,5 +1,5 @@
+import FullScreenLoading from "components/loading/FullScreenLoading";
 import React, { useEffect, useState } from "react";
-import FullScreenLoading from "./FullScreenLoading";
 
 interface LoadingRenderProps {
     children: React.ReactElement;

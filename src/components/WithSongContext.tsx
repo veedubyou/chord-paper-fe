@@ -1,7 +1,7 @@
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { ChordSongAction, useChordSongReducer } from "components/reducer/reducer";
+import { useCloud } from "components/useCloud";
 import React from "react";
-import { ChordSong } from "../common/ChordModel/ChordSong";
-import { ChordSongAction, useChordSongReducer } from "./reducer/reducer";
-import { useCloud } from "./useCloud";
 
 interface OriginalComponentProps {
     song: ChordSong;

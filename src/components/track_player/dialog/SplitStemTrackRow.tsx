@@ -1,9 +1,9 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Divider, Grid, styled } from "@mui/material";
+import { SplitStemTrack } from "common/ChordModel/tracks/SplitStemRequest";
+import LabelField from "components/track_player/dialog/LabelField";
+import URLField from "components/track_player/dialog/URLField";
 import React from "react";
-import { SplitStemTrack } from "../../../common/ChordModel/tracks/SplitStemRequest";
-import LabelField from "./LabelField";
-import URLField from "./URLField";
 
 interface SplitStemTrackRowProps {
     track: SplitStemTrack;

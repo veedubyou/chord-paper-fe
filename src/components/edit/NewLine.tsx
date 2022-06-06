@@ -1,11 +1,11 @@
 import UnstyledAddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Divider as UnstyledDivider, Grid, styled } from "@mui/material";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { IDable } from "common/ChordModel/Collection";
+import { DataTestID } from "common/DataTestID";
+import WithHoverMenu, { MenuItem } from "components/edit/WithHoverMenu";
+import { ChordSongAction } from "components/reducer/reducer";
 import React from "react";
-import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { IDable } from "../../common/ChordModel/Collection";
-import { DataTestID } from "../../common/DataTestID";
-import { ChordSongAction } from "../reducer/reducer";
-import WithHoverMenu, { MenuItem } from "./WithHoverMenu";
 
 const HighlightableGrid = styled(Grid)(({ theme }) => ({
     minHeight: theme.spacing(3),

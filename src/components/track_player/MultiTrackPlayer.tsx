@@ -11,26 +11,26 @@ import {
     SelectChangeEvent,
     Slide,
     styled,
-    Theme,
+    Theme
 } from "@mui/material";
 import { SystemStyleObject } from "@mui/system";
-import React, { useEffect } from "react";
-import { Track } from "../../common/ChordModel/tracks/Track";
-import { PlainFn } from "../../common/PlainFn";
-import { useRegisterTopKeyListener } from "../GlobalKeyListener";
-import LoadingSpinner from "../loading/LoadingSpinner";
+import { Track } from "common/ChordModel/tracks/Track";
+import { PlainFn } from "common/PlainFn";
+import { useRegisterTopKeyListener } from "components/GlobalKeyListener";
+import LoadingSpinner from "components/loading/LoadingSpinner";
 import {
     roundedCornersStyle,
     roundedTopCornersStyle,
     TitleBar,
-    withBottomRightBox,
-} from "./common";
+    withBottomRightBox
+} from "components/track_player/common";
 import {
     PlayerControls,
-    unfocusedControls,
-} from "./internal_player/usePlayerControls";
-import { TrackListLoad } from "./providers/TrackListProvider";
-import TrackPlayer from "./TrackPlayer";
+    unfocusedControls
+} from "components/track_player/internal_player/usePlayerControls";
+import { TrackListLoad } from "components/track_player/providers/TrackListProvider";
+import TrackPlayer from "components/track_player/TrackPlayer";
+import React, { useEffect } from "react";
 
 const FlexBox = styled(Box)(({ theme }) => ({
     display: "flex",

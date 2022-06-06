@@ -1,19 +1,19 @@
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { MultiFC, transformToFC } from "common/FunctionalComponent";
+import { PlaySongPath } from "common/paths";
+import { PlainFn } from "common/PlainFn";
+import CenteredLayout from "components/display/CenteredLayout";
+import LoadingRender from "components/loading/LoadingRender";
+import PagePlayView from "components/play/page/PagePlayView";
+import ScrollPlayView from "components/play/scroll/ScrollPlayView";
+import JamStation from "components/track_player/JamStation";
+import TrackListProvider, {
+    TrackListChangeHandler,
+    TrackListLoad
+} from "components/track_player/providers/TrackListProvider";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { Redirect, Route, useHistory } from "react-router-dom";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { MultiFC, transformToFC } from "../../common/FunctionalComponent";
-import { PlaySongPath } from "../../common/paths";
-import { PlainFn } from "../../common/PlainFn";
-import CenteredLayout from "../display/CenteredLayout";
-import LoadingRender from "../loading/LoadingRender";
-import JamStation from "../track_player/JamStation";
-import TrackListProvider, {
-    TrackListChangeHandler,
-    TrackListLoad,
-} from "../track_player/providers/TrackListProvider";
-import PagePlayView from "./page/PagePlayView";
-import ScrollPlayView from "./scroll/ScrollPlayView";
 
 interface PlayProps {
     song: ChordSong;

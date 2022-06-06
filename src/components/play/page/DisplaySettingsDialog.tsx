@@ -14,13 +14,13 @@ import {
     styled,
     TextField,
     TextFieldProps as TextFieldPropsWithVariant,
-    Typography,
+    Typography
 } from "@mui/material";
+import { PlainFn } from "common/PlainFn";
+import { isWhitespace } from "common/Whitespace";
+import { PageDisplaySettings } from "components/play/page/PagePlayContent";
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import React, { ChangeEvent, useState } from "react";
-import { PlainFn } from "../../../common/PlainFn";
-import { isWhitespace } from "../../../common/Whitespace";
-import { PageDisplaySettings } from "./PagePlayContent";
 
 const Box = styled(UnstyledBox)(({ theme }) => ({
     margin: theme.spacing(1),

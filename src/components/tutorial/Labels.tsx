@@ -1,14 +1,14 @@
 import ChatBubbleIcon from "@mui/icons-material/ChatBubbleOutline";
 import { styled, Typography } from "@mui/material";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { Lyric } from "common/ChordModel/Lyric";
+import { sectionLabelStyle } from "components/display/SectionLabel";
+import { LineBreak } from "components/tutorial/Common";
+import Playground from "components/tutorial/Playground";
+import { convertToTutorialComponent } from "components/tutorial/TutorialComponent";
 import React from "react";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
-import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { Lyric } from "../../common/ChordModel/Lyric";
-import { sectionLabelStyle } from "../display/SectionLabel";
-import { LineBreak } from "./Common";
-import Playground from "./Playground";
-import { convertToTutorialComponent } from "./TutorialComponent";
 
 const title = "Labels";
 

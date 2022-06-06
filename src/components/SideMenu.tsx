@@ -24,12 +24,12 @@ import {
 import { grey } from "@mui/material/colors";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { DemoPath, SongPath } from "../common/paths";
-import { PlainFn } from "../common/PlainFn";
-import LoadSongDialog from "./LoadSongDialog";
-import { allExerciseRoutes, ExerciseRoute } from "./Tutorial";
-import Login from "./user/Login";
-import { SetUserContext, UserContext } from "./user/userContext";
+import { DemoPath, SongPath } from "common/paths";
+import { PlainFn } from "common/PlainFn";
+import LoadSongDialog from "components/LoadSongDialog";
+import { allExerciseRoutes, ExerciseRoute } from "components/Tutorial";
+import Login from "components/user/Login";
+import { SetUserContext, UserContext } from "components/user/userContext";
 
 const pointerStyle = {
     cursor: "pointer",

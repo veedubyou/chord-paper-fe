@@ -1,5 +1,5 @@
+import { noopFn } from "common/PlainFn";
 import React from "react";
-import { noopFn } from "../../common/PlainFn";
 
 interface LoginResponse {
     id: string;

@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material";
+import { LineBreak } from "components/tutorial/Common";
+import { convertToTutorialComponent } from "components/tutorial/TutorialComponent";
 import React from "react";
-import { LineBreak } from "./Common";
-import { convertToTutorialComponent } from "./TutorialComponent";
 
 const title = "Learn Chord Paper";
 

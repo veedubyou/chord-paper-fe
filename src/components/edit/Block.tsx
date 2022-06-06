@@ -1,29 +1,29 @@
+import { cx } from "@emotion/css";
 import { Box, Grid, inputBaseClasses, styled, Theme } from "@mui/material";
 import { red } from "@mui/material/colors";
-import { cx } from "@emotion/css";
-import { List } from "immutable";
-import React from "react";
-import { ConnectDropTarget } from "react-dnd";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
-import { IDable } from "../../common/ChordModel/Collection";
-import { Lyric } from "../../common/ChordModel/Lyric";
-import { DataTestID } from "../../common/DataTestID";
-import { inflatingWhitespace } from "../../common/Whitespace";
-import ChordSymbol from "../display/ChordSymbol";
-import { lyricTypographyVariant } from "../display/Lyric";
-import { ChordSongAction } from "../reducer/reducer";
-import ChordlessTokenDroppable from "./block-dnd/ChordlessTokenDroppable";
-import ChordTokenDroppable from "./block-dnd/ChordTokenDroppable";
-import DraggableChordSymbol from "./block-dnd/DraggableChordSymbol";
-import { useChordTokenDragState } from "./block-dnd/useChordTokenDragState";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { IDable } from "common/ChordModel/Collection";
+import { Lyric } from "common/ChordModel/Lyric";
+import { DataTestID } from "common/DataTestID";
+import { inflatingWhitespace } from "common/Whitespace";
+import ChordSymbol from "components/display/ChordSymbol";
+import { lyricTypographyVariant } from "components/display/Lyric";
+import ChordlessTokenDroppable from "components/edit/block-dnd/ChordlessTokenDroppable";
+import ChordTokenDroppable from "components/edit/block-dnd/ChordTokenDroppable";
+import DraggableChordSymbol from "components/edit/block-dnd/DraggableChordSymbol";
+import { useChordTokenDragState } from "components/edit/block-dnd/useChordTokenDragState";
 import {
     chordTargetClassName,
     firstTokenClassName,
-    makeHighlightableBlockStyles,
-} from "./HighlightableBlockStyle";
-import { useEditingState } from "./InteractionContext";
-import TextInput from "./TextInput";
-import Token from "./Token";
+    makeHighlightableBlockStyles
+} from "components/edit/HighlightableBlockStyle";
+import { useEditingState } from "components/edit/InteractionContext";
+import TextInput from "components/edit/TextInput";
+import Token from "components/edit/Token";
+import { ChordSongAction } from "components/reducer/reducer";
+import { List } from "immutable";
+import React from "react";
+import { ConnectDropTarget } from "react-dnd";
 
 const chordSymbolClassName = "ChordSymbol";
 

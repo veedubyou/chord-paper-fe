@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import { noopFn, PlainFn } from "../../common/PlainFn";
+import { noopFn, PlainFn } from "common/PlainFn";
+import React, { useContext, useState } from "react";
 
 export interface InteractionSetter {
     startInteraction: PlainFn;

@@ -1,8 +1,8 @@
+import { PlayerControls } from "components/track_player/internal_player/usePlayerControls";
 import { ReactEventHandler } from "react";
 import { ReactPlayerProps } from "react-player";
 import { BaseReactPlayerProps } from "react-player/base";
 import { FilePlayerProps } from "react-player/file";
-import { PlayerControls } from "./usePlayerControls";
 
 const makeBasePlayerProps = (
     playerControls: PlayerControls

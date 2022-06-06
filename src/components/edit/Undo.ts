@@ -1,4 +1,4 @@
-import { ChordSongAction } from "../reducer/reducer";
+import { ChordSongAction } from "components/reducer/reducer";
 
 export const handleUndoRedo = (
     event: KeyboardEvent,

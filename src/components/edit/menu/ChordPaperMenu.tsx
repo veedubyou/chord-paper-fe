@@ -9,19 +9,19 @@ import SaveIcon from "@mui/icons-material/Save";
 import {
     SpeedDial as UnstyledSpeedDial,
     SpeedDialAction,
-    styled,
+    styled
 } from "@mui/material";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { PlainFn } from "common/PlainFn";
+import { useCloudCreateSong, useCloudDeleteSongDialog } from "components/edit/menu/cloudSave";
+import { useLoadMenuAction } from "components/edit/menu/load";
+import { useSaveMenuAction } from "components/edit/menu/save";
+import TransposeMenu from "components/edit/menu/TransposeMenu";
+import { ChordSongAction } from "components/reducer/reducer";
+import { User, UserContext } from "components/user/userContext";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import useKonamiCode from "react-use-konami";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { PlainFn } from "../../../common/PlainFn";
-import { ChordSongAction } from "../../reducer/reducer";
-import { User, UserContext } from "../../user/userContext";
-import { useCloudCreateSong, useCloudDeleteSongDialog } from "./cloudSave";
-import { useLoadMenuAction } from "./load";
-import { useSaveMenuAction } from "./save";
-import TransposeMenu from "./TransposeMenu";
 
 interface ChordPaperMenuProps {
     song: ChordSong;

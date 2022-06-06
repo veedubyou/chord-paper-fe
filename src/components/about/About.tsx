@@ -1,7 +1,7 @@
 import { Grid, Paper, styled, Typography } from "@mui/material";
+import { inflatingWhitespace } from "common/Whitespace";
+import CenteredLayoutWithMenu from "components/display/CenteredLayoutWithMenu";
 import React from "react";
-import { inflatingWhitespace } from "../../common/Whitespace";
-import CenteredLayoutWithMenu from "../display/CenteredLayoutWithMenu";
 
 const RootPaper = styled(Paper)(({ theme }) => ({
     marginTop: theme.spacing(5),

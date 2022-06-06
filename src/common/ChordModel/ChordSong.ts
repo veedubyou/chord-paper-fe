@@ -3,20 +3,20 @@ import { Json, parse } from "fp-ts/Json";
 import * as iots from "io-ts";
 import { DateFromISOString } from "io-ts-types";
 import lodash from "lodash";
-import { User } from "../../components/user/userContext";
-import { ChordBlock } from "./ChordBlock";
+import { User } from "components/user/userContext";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
 import {
     ChordLine,
     ChordLineValidatedFields,
     ChordLineValidator,
     TimeSection,
     timeSectionSortFn,
-} from "./ChordLine";
-import { Collection, CollectionMethods, IDable } from "./Collection";
-import { Lyric } from "./Lyric";
+} from "common/ChordModel/ChordLine";
+import { Collection, CollectionMethods, IDable } from "common/ChordModel/Collection";
+import { Lyric } from "common/ChordModel/Lyric";
 import { List, Record } from "immutable";
-import { Note } from "../music/foundation/Note";
-import { transposeSong } from "../music/transpose/Transpose";
+import { Note } from "common/music/foundation/Note";
+import { transposeSong } from "common/music/transpose/Transpose";
 
 const MetadataValidator = iots.type({
     title: iots.string,

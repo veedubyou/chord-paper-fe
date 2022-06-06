@@ -1,4 +1,4 @@
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
+import { ChordSong } from "common/ChordModel/ChordSong";
 export const useSaveMenuAction = (song: ChordSong) => {
     return () => {
         const jsonStr = JSON.stringify(song.fork());

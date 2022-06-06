@@ -1,6 +1,6 @@
+import { contentEditableElement } from "components/edit/lyric_input/SelectionUtils";
+import { lyricTabTypeOfDOMNode } from "components/lyrics/Tab";
 import { useEffect } from "react";
-import { lyricTabTypeOfDOMNode } from "../../lyrics/Tab";
-import { contentEditableElement } from "./SelectionUtils";
 
 type HandlerFn = (selection: Selection) => boolean;
 

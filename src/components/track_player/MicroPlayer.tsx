@@ -5,11 +5,11 @@ import PlayIcon from "@mui/icons-material/PlayArrow";
 import RadioIcon from "@mui/icons-material/Radio";
 import { Button, Slide, Theme, Tooltip } from "@mui/material";
 import { SystemStyleObject } from "@mui/system";
+import { MUIStyledProps } from "common/styledProps";
+import { useRegisterTopKeyListener } from "components/GlobalKeyListener";
+import { roundedTopCornersStyle, withBottomRightBox } from "components/track_player/common";
+import { PlayerControls } from "components/track_player/internal_player/usePlayerControls";
 import React, { useEffect, useState } from "react";
-import { MUIStyledProps } from "../../common/styledProps";
-import { useRegisterTopKeyListener } from "../GlobalKeyListener";
-import { roundedTopCornersStyle, withBottomRightBox } from "./common";
-import { PlayerControls } from "./internal_player/usePlayerControls";
 
 interface MicroPlayerProps extends MUIStyledProps {
     show: boolean;

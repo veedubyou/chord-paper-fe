@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
+import { textFieldValidation } from "components/track_player/dialog/error";
 import React from "react";
-import { textFieldValidation } from "./error";
 
 interface LabelFieldProps {
     value: string;

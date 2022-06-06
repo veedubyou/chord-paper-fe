@@ -1,4 +1,4 @@
-import { ChordSong } from "./ChordModel/ChordSong";
+import { ChordSong } from "common/ChordModel/ChordSong";
 import { Either, right } from "fp-ts/lib/Either";
 
 const lastSavedKey = "last-auto-saved-song";

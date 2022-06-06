@@ -1,12 +1,12 @@
 import { Box } from "@mui/material";
+import { SingleTrack } from "common/ChordModel/tracks/SingleTrack";
+import ControlPane from "components/track_player/internal_player/ControlPane";
+import { ensureGoogleDriveCacheBusted } from "components/track_player/internal_player/google_drive";
+import { makeReactPlayerProps } from "components/track_player/internal_player/reactPlayerProps";
+import { PlayerControls } from "components/track_player/internal_player/usePlayerControls";
 import React, { useEffect, useMemo } from "react";
 import ReactPlayer, { ReactPlayerProps } from "react-player";
 import shortid from "shortid";
-import { SingleTrack } from "../../../../common/ChordModel/tracks/SingleTrack";
-import ControlPane from "../ControlPane";
-import { ensureGoogleDriveCacheBusted } from "../google_drive";
-import { makeReactPlayerProps } from "../reactPlayerProps";
-import { PlayerControls } from "../usePlayerControls";
 
 interface SingleTrackPlayerProps {
     focused: boolean;

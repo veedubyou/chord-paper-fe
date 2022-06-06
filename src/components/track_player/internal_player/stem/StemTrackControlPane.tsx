@@ -4,7 +4,7 @@ import {
     Grid,
     Slider,
     styled,
-    Typography,
+    Typography
 } from "@mui/material";
 import {
     blueGrey,
@@ -13,7 +13,7 @@ import {
     lightGreen,
     pink,
     purple,
-    yellow,
+    yellow
 } from "@mui/material/colors";
 import React from "react";
 

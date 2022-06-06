@@ -2,19 +2,19 @@ import UnstyledBackspaceIcon from "@mui/icons-material/Backspace";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import { Box, Slide, styled } from "@mui/material";
 import { grey, red } from "@mui/material/colors";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { Collection, IDable } from "common/ChordModel/Collection";
+import { Lyric } from "common/ChordModel/Lyric";
+import { DataTestID } from "common/DataTestID";
+import { PlainFn } from "common/PlainFn";
+import Block from "components/edit/Block";
+import WithHoverMenu, { MenuItem } from "components/edit/WithHoverMenu";
+import WithLyricInput from "components/edit/WithLyricInput";
+import WithSection from "components/edit/WithSection";
+import { ChordSongAction } from "components/reducer/reducer";
 import { List } from "immutable";
 import React, { useMemo, useState } from "react";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
-import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { Collection, IDable } from "../../common/ChordModel/Collection";
-import { Lyric } from "../../common/ChordModel/Lyric";
-import { DataTestID } from "../../common/DataTestID";
-import { PlainFn } from "../../common/PlainFn";
-import { ChordSongAction } from "../reducer/reducer";
-import Block from "./Block";
-import WithHoverMenu, { MenuItem } from "./WithHoverMenu";
-import WithLyricInput from "./WithLyricInput";
-import WithSection from "./WithSection";
 
 const AtomicSelectionBox = styled(Box)({
     userSelect: "all",

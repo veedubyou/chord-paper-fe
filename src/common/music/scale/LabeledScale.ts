@@ -1,5 +1,5 @@
-import { Note } from "../foundation/Note";
-import { Scale } from "./Scale";
+import { Note } from "common/music/foundation/Note";
+import { Scale } from "common/music/scale/Scale";
 
 export type LabeledNote = {
     note: Note;

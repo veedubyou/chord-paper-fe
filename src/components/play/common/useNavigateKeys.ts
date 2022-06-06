@@ -1,7 +1,7 @@
+import { useRegisterKeyListener } from "components/GlobalKeyListener";
+import { isNavigateBackwardsKey, isNavigateForwardsKey } from "components/play/common/keyMap";
 import { useEffect } from "react";
 import { useThrottledCallback } from "use-debounce/lib";
-import { useRegisterKeyListener } from "../../GlobalKeyListener";
-import { isNavigateBackwardsKey, isNavigateForwardsKey } from "./keyMap";
 
 type NavigateFn = () => boolean;
 const throttleTimeInterval = 400;

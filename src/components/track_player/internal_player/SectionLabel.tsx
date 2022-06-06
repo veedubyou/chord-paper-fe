@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
+import { greyTextColour } from "components/track_player/common";
 import React from "react";
-import { greyTextColour } from "../common";
 
 interface SectionLabelProps {
     value: string;

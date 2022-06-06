@@ -1,8 +1,8 @@
+import { parseRequestError, RequestError } from "common/backend/errors";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { TrackList } from "common/ChordModel/tracks/TrackList";
 import { Either, left, right } from "fp-ts/lib/Either";
 import ky from "ky";
-import { ChordSong } from "../ChordModel/ChordSong";
-import { TrackList } from "../ChordModel/tracks/TrackList";
-import { parseRequestError, RequestError } from "./errors";
 
 export type ResponseJSON = unknown;
 export type BackendResult = Either<RequestError, ResponseJSON>;

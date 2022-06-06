@@ -1,14 +1,14 @@
 import { Box, Grid, Paper as UnstyledPaper, styled } from "@mui/material";
+import { AllScales, ScaleUtility } from "common/music/scale/Scale";
+import FretSelector from "components/guitar/FretSelector";
+import MenuSelectableScaleChart from "components/guitar/MenuSelectableScaleChart";
+import { StartingFret } from "components/guitar/ScaleChart";
+import ScaleSelection, { SelectableScale } from "components/guitar/ScaleSelection";
 import React, { useRef, useState } from "react";
 import "swiper/components/navigation/navigation.min.css";
 import SwiperCore, { Navigation, Pagination } from "swiper/core";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/swiper.min.css";
-import { AllScales, ScaleUtility } from "../../common/music/scale/Scale";
-import FretSelector from "./FretSelector";
-import MenuSelectableScaleChart from "./MenuSelectableScaleChart";
-import { StartingFret } from "./ScaleChart";
-import ScaleSelection, { SelectableScale } from "./ScaleSelection";
 
 // install Swiper modules
 SwiperCore.use([Navigation, Pagination]);

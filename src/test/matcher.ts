@@ -1,5 +1,5 @@
 import { MatcherFunction, waitFor, within } from "@testing-library/react";
-import { findTabType, lyricTabTypeOfDOMNode } from "../components/lyrics/Tab";
+import { findTabType, lyricTabTypeOfDOMNode } from "components/lyrics/Tab";
 
 // looks in all the descendents, finds all the qualifying elements
 // for each qualifying node, return its text content

@@ -1,7 +1,7 @@
-import { mapObjectKey } from "../../mapObject";
-import { Importance } from "../foundation/Importance";
-import { Scale, ScaleNote } from "../scale/Scale";
-import { AllStringNames, Fret, Fretboard, StringName } from "./Fretboard";
+import { mapObjectKey } from "common/mapObject";
+import { Importance } from "common/music/foundation/Importance";
+import { AllStringNames, Fret, Fretboard, StringName } from "common/music/guitar/Fretboard";
+import { Scale, ScaleNote } from "common/music/scale/Scale";
 
 export type GuitarFretLabel = {
     fret: number;

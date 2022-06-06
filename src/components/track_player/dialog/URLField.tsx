@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
+import { textFieldValidation } from "components/track_player/dialog/error";
+import { convertViewLinkToExportLink } from "components/track_player/internal_player/google_drive";
 import React from "react";
-import { convertViewLinkToExportLink } from "../internal_player/google_drive";
-import { textFieldValidation } from "./error";
 
 interface URLFieldProps {
     labelText: string;

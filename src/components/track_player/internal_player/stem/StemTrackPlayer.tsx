@@ -5,21 +5,21 @@ import {
     Button,
     LinearProgress,
     styled,
-    Typography,
+    Typography
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { StemTrack } from "common/ChordModel/tracks/StemTrack";
+import { DetailedLoadingFetchState } from "common/fetch";
+import { mapObject } from "common/mapObject";
+import { PlainFn } from "common/PlainFn";
+import { getAudioCtx } from "components/track_player/internal_player/stem/audioCtx";
+import LoadedStemTrackPlayer, { StemInput } from "components/track_player/internal_player/stem/LoadedStemTrackPlayer";
+import { ControlPaneButtonColour } from "components/track_player/internal_player/stem/StemTrackControlPane";
+import { PlayerControls } from "components/track_player/internal_player/usePlayerControls";
 import ky, { DownloadProgress } from "ky";
 import lodash from "lodash";
 import prettyBytes from "pretty-bytes";
 import React, { useEffect, useRef, useState } from "react";
-import { StemTrack } from "../../../../common/ChordModel/tracks/StemTrack";
-import { DetailedLoadingFetchState } from "../../../../common/fetch";
-import { mapObject } from "../../../../common/mapObject";
-import { PlainFn } from "../../../../common/PlainFn";
-import { PlayerControls } from "../usePlayerControls";
-import { getAudioCtx } from "./audioCtx";
-import LoadedStemTrackPlayer, { StemInput } from "./LoadedStemTrackPlayer";
-import { ControlPaneButtonColour } from "./StemTrackControlPane";
 
 const PaddedBox = styled(Box)<BoxProps>(({ theme }) => ({
     padding: theme.spacing(2),

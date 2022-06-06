@@ -1,8 +1,8 @@
 import { getOrElse, isLeft } from "fp-ts/lib/Either";
-import { ChordBlock } from "../ChordBlock";
-import { ChordLine } from "../ChordLine";
-import { Lyric } from "../Lyric";
-import "./matcher";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { Lyric } from "common/ChordModel/Lyric";
+import "common/ChordModel/test/matcher";
 
 const rawTextFn = (rawStr: string) => rawStr;
 

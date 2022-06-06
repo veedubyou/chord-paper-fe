@@ -2,8 +2,8 @@ import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
 import lodash from "lodash";
 import shortid from "shortid";
-import { IDable } from "./Collection";
-import { Lyric, LyricValidator } from "./Lyric";
+import { IDable } from "common/ChordModel/Collection";
+import { Lyric, LyricValidator } from "common/ChordModel/Lyric";
 import { List, Record } from "immutable";
 
 interface ChordBlockConstructorParams {

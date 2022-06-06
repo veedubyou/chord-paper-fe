@@ -1,21 +1,21 @@
 import { Collapse } from "@mui/material";
-import React from "react";
 import {
     FiveStemKeys,
     FourStemKeys,
-    TwoStemKeys,
-} from "../../common/ChordModel/tracks/StemTrack";
-import { Track } from "../../common/ChordModel/tracks/Track";
-import { PlainFn } from "../../common/PlainFn";
-import ErrorImage from "../display/ErrorImage";
-import SingleTrackPlayer from "./internal_player/single/SingleTrackPlayer";
+    TwoStemKeys
+} from "common/ChordModel/tracks/StemTrack";
+import { Track } from "common/ChordModel/tracks/Track";
+import { PlainFn } from "common/PlainFn";
+import ErrorImage from "components/display/ErrorImage";
+import LoadingSpinner from "components/loading/LoadingSpinner";
+import SingleTrackPlayer from "components/track_player/internal_player/single/SingleTrackPlayer";
 import StemTrackPlayer, {
-    StemButtonSpec,
-} from "./internal_player/stem/StemTrackPlayer";
-import { PlayerControls } from "./internal_player/usePlayerControls";
-import LoadingSplitStemTrackView from "./LoadingSplitStemTrackView";
-import { useTrackFetch } from "./providers/useTrackFetch";
-import LoadingSpinner from "../loading/LoadingSpinner";
+    StemButtonSpec
+} from "components/track_player/internal_player/stem/StemTrackPlayer";
+import { PlayerControls } from "components/track_player/internal_player/usePlayerControls";
+import LoadingSplitStemTrackView from "components/track_player/LoadingSplitStemTrackView";
+import { useTrackFetch } from "components/track_player/providers/useTrackFetch";
+import React from "react";
 
 interface TrackPlayerProps {
     focused: boolean;

@@ -1,17 +1,17 @@
 import { styled, Theme, Typography, TypographyVariant } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { MUIStyledCommonProps, SystemStyleObject } from "@mui/system";
-import React from "react";
-import { Lyric } from "../../../common/ChordModel/Lyric";
-import { PlainFn } from "../../../common/PlainFn";
-import { deserializeLyrics, serializeLyrics } from "../../lyrics/Serialization";
-import { contentEditableElement } from "./SelectionUtils";
-import { KeyDownHandlerProps, useKeyDownHandler } from "./useKeyHandler";
-import { PasteHandlerProps, usePasteHandler } from "./usePasteHandler";
+import { Lyric } from "common/ChordModel/Lyric";
+import { PlainFn } from "common/PlainFn";
+import { contentEditableElement } from "components/edit/lyric_input/SelectionUtils";
+import { KeyDownHandlerProps, useKeyDownHandler } from "components/edit/lyric_input/useKeyHandler";
+import { PasteHandlerProps, usePasteHandler } from "components/edit/lyric_input/usePasteHandler";
 import {
     useFocusAndPlaceCaretEffect,
-    useSelectionChangeEffect,
-} from "./useSelectionHandler";
+    useSelectionChangeEffect
+} from "components/edit/lyric_input/useSelectionHandler";
+import { deserializeLyrics, serializeLyrics } from "components/lyrics/Serialization";
+import React from "react";
 
 const InputTypography = styled(Typography)({
     width: "100%",

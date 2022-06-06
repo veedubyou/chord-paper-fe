@@ -9,16 +9,16 @@ import {
     Typography as UnstyledTypography
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import SigninIcon from "assets/img/google_signin.svg";
+import { BackendError, RequestError } from "common/backend/errors";
+import { login } from "common/backend/requests";
+import { getRouteForTutorialComponent } from "components/Tutorial";
+import LoginTutorial from "components/tutorial/Login";
+import { deserializeUser, User, UserContext } from "components/user/userContext";
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import SigninIcon from "../../assets/img/google_signin.svg";
-import { BackendError, RequestError } from "../../common/backend/errors";
-import { login } from "../../common/backend/requests";
-import { getRouteForTutorialComponent } from "../Tutorial";
-import LoginTutorial from "../tutorial/Login";
-import { deserializeUser, User, UserContext } from "./userContext";
 
 const Paper = styled(UnstyledPaper)({
     width: "100%",

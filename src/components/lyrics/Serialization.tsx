@@ -1,12 +1,12 @@
-import { List } from "immutable";
-import React from "react";
-import { Lyric } from "../../common/ChordModel/Lyric";
+import { Lyric } from "common/ChordModel/Lyric";
 import Tab, {
     findTabType,
     isValidTabValue,
     lyricTabTypeOfDOMNode,
-    SizedTab,
-} from "./Tab";
+    SizedTab
+} from "components/lyrics/Tab";
+import { List } from "immutable";
+import React from "react";
 
 const deserializeLyricStr = (
     lyrics: string,

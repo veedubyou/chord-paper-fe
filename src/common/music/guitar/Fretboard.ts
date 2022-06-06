@@ -1,6 +1,6 @@
-import { mapObjectKey } from "../../mapObject";
-import { asSemitone } from "../foundation/Distance";
-import { AllNotes, Note, NoteUtilities } from "../foundation/Note";
+import { mapObjectKey } from "common/mapObject";
+import { asSemitone } from "common/music/foundation/Distance";
+import { AllNotes, Note, NoteUtilities } from "common/music/foundation/Note";
 
 export type StringName = "E" | "A" | "D" | "G" | "B" | "highE";
 export const AllStringNames: Record<StringName, undefined> = {

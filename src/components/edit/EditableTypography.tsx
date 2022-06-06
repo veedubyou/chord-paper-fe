@@ -1,10 +1,10 @@
 import { Box, styled, Typography, TypographyProps } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { DataTestID } from "common/DataTestID";
+import { PlainFn } from "common/PlainFn";
+import { inflateIfEmpty } from "common/Whitespace";
+import TextInput from "components/edit/TextInput";
 import React, { useState } from "react";
-import { DataTestID } from "../../common/DataTestID";
-import { PlainFn } from "../../common/PlainFn";
-import { inflateIfEmpty } from "../../common/Whitespace";
-import TextInput from "./TextInput";
 
 export interface EditControl {
     editing: boolean;

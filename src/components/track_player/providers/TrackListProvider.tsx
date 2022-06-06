@@ -1,10 +1,10 @@
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { TrackList } from "common/ChordModel/tracks/TrackList";
+import { PlainFn } from "common/PlainFn";
+import ErrorImage from "components/display/ErrorImage";
+import { useTracklistFetch } from "components/track_player/providers/useTracklistFetch";
+import { User, UserContext } from "components/user/userContext";
 import React from "react";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { TrackList } from "../../../common/ChordModel/tracks/TrackList";
-import { PlainFn } from "../../../common/PlainFn";
-import ErrorImage from "../../display/ErrorImage";
-import { User, UserContext } from "../../user/userContext";
-import { useTracklistFetch } from "./useTracklistFetch";
 
 interface LoadingTrackListState {
     state: "loading";

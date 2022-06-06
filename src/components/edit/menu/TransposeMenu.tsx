@@ -10,13 +10,13 @@ import {
     MenuItem,
     Select as UnstyledSelect,
     SelectChangeEvent,
-    styled,
+    styled
 } from "@mui/material";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { AllNotes, Note } from "common/music/foundation/Note";
+import { PlainFn } from "common/PlainFn";
+import { ChordSongAction } from "components/reducer/reducer";
 import React, { useState } from "react";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { AllNotes, Note } from "../../../common/music/foundation/Note";
-import { PlainFn } from "../../../common/PlainFn";
-import { ChordSongAction } from "../../reducer/reducer";
 
 interface TransposeMenuProps {
     open: boolean;

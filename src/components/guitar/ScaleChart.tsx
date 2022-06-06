@@ -1,12 +1,12 @@
 import { Box, styled } from "@mui/material";
-import React, { useEffect, useRef } from "react";
-import { Finger, FretLabelPosition, Shape, SVGuitarChord } from "svguitar";
-import { StringName } from "../../common/music/guitar/Fretboard";
+import { StringName } from "common/music/guitar/Fretboard";
 import {
     generateGuitarScaleView,
-    GuitarFretLabel,
-} from "../../common/music/guitar/Scale";
-import { Scale } from "../../common/music/scale/Scale";
+    GuitarFretLabel
+} from "common/music/guitar/Scale";
+import { Scale } from "common/music/scale/Scale";
+import React, { useEffect, useRef } from "react";
+import { Finger, FretLabelPosition, Shape, SVGuitarChord } from "svguitar";
 
 const ChartBox = styled(Box)({
     transform: "rotate(270deg)",

@@ -1,10 +1,10 @@
-import { ChordBlock } from "../../ChordModel/ChordBlock";
-import { ChordSong } from "../../ChordModel/ChordSong";
-import { AllNotes, Note } from "../foundation/Note";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { AllNotes, Note } from "common/music/foundation/Note";
 import {
     IntervalToNote,
-    NoteToInterval,
-} from "../foundation/NoteIntervalConversion";
+    NoteToInterval
+} from "common/music/foundation/NoteIntervalConversion";
 
 const transposeNote = (note: Note, fromKey: Note, toKey: Note): Note => {
     const interval = NoteToInterval[fromKey][note];

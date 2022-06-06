@@ -1,6 +1,6 @@
+import { ChordSong } from "common/ChordModel/ChordSong";
 import { isLeft } from "fp-ts/lib/Either";
 import { ProviderContext } from "notistack";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
 
 type EnqueueSnackbarType = ProviderContext["enqueueSnackbar"];
 

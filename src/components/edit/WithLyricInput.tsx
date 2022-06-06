@@ -1,15 +1,15 @@
 import { Box, styled } from "@mui/material";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { Lyric } from "common/ChordModel/Lyric";
+import { PlainFn } from "common/PlainFn";
+import { lyricStyle, lyricTypographyVariant } from "components/display/Lyric";
+import { deserializeCopiedChordLines } from "components/edit/CopyAndPaste";
+import { useEditingState } from "components/edit/InteractionContext";
+import UnstyledLyricInput, { LyricInputProps } from "components/edit/lyric_input/LyricInput";
+import { ChordSongAction } from "components/reducer/reducer";
 import { isLeft } from "fp-ts/lib/Either";
 import { useSnackbar } from "notistack";
 import React, { useMemo } from "react";
-import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { Lyric } from "../../common/ChordModel/Lyric";
-import { PlainFn } from "../../common/PlainFn";
-import { lyricStyle, lyricTypographyVariant } from "../display/Lyric";
-import { ChordSongAction } from "../reducer/reducer";
-import { deserializeCopiedChordLines } from "./CopyAndPaste";
-import { useEditingState } from "./InteractionContext";
-import UnstyledLyricInput, { LyricInputProps } from "./lyric_input/LyricInput";
 
 const LyricInput = styled(UnstyledLyricInput)<LyricInputProps>(({ theme }) => ({
     ...lyricStyle,

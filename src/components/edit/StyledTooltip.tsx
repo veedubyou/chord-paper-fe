@@ -3,7 +3,7 @@ import {
     Theme,
     Tooltip,
     tooltipClasses,
-    TooltipProps,
+    TooltipProps
 } from "@mui/material";
 import { StandardCSSProperties } from "@mui/system";
 import React from "react";

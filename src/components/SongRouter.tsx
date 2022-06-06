@@ -1,11 +1,11 @@
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { MultiFC, transformToFC } from "common/FunctionalComponent";
+import { SongIDPath } from "common/paths";
+import ChordPaperScreen from "components/edit/ChordPaper";
+import PlayRoutes from "components/play/Play";
+import { ChordSongAction } from "components/reducer/reducer";
 import React from "react";
 import { Redirect, Route, useHistory } from "react-router-dom";
-import { ChordSong } from "../common/ChordModel/ChordSong";
-import { MultiFC, transformToFC } from "../common/FunctionalComponent";
-import { SongIDPath } from "../common/paths";
-import ChordPaperScreen from "./edit/ChordPaper";
-import PlayRoutes from "./play/Play";
-import { ChordSongAction } from "./reducer/reducer";
 
 interface SongRouterProps {
     path: SongIDPath;

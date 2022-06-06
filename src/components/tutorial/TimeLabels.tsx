@@ -1,18 +1,18 @@
 import SlowMotionVideoIcon from "@mui/icons-material/SlowMotionVideo";
 import { styled, Typography } from "@mui/material";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { Lyric } from "common/ChordModel/Lyric";
+import { sectionLabelStyle } from "components/display/SectionLabel";
+import PlayerTimeProvider, { PlayerTimeContext } from "components/PlayerTimeContext";
+import { getRouteForTutorialComponent } from "components/Tutorial";
+import { LineBreak } from "components/tutorial/Common";
+import Playground from "components/tutorial/Playground";
+import TrackPlayer from "components/tutorial/TrackPlayer";
+import { convertToTutorialComponent } from "components/tutorial/TutorialComponent";
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
-import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { Lyric } from "../../common/ChordModel/Lyric";
-import { sectionLabelStyle } from "../display/SectionLabel";
-import PlayerTimeProvider, { PlayerTimeContext } from "../PlayerTimeContext";
-import { getRouteForTutorialComponent } from "../Tutorial";
-import { LineBreak } from "./Common";
-import Playground from "./Playground";
-import TrackPlayer from "./TrackPlayer";
-import { convertToTutorialComponent } from "./TutorialComponent";
 
 const title = "Labels with Timestamp";
 

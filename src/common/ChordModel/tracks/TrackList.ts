@@ -1,9 +1,9 @@
+import { SingleTrack } from "common/ChordModel/tracks/SingleTrack";
+import { SplitStemTrack } from "common/ChordModel/tracks/SplitStemRequest";
+import { FiveStemTrack, FourStemTrack, TwoStemTrack } from "common/ChordModel/tracks/StemTrack";
+import { Track, TrackValidator } from "common/ChordModel/tracks/Track";
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
-import { SingleTrack } from "./SingleTrack";
-import { SplitStemTrack } from "./SplitStemRequest";
-import { FiveStemTrack, FourStemTrack, TwoStemTrack } from "./StemTrack";
-import { Track, TrackValidator } from "./Track";
 
 const TrackListValidator = iots.type({
     song_id: iots.string,

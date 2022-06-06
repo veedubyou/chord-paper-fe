@@ -3,11 +3,11 @@ import UnstyledMoreVertIcon from "@mui/icons-material/MoreVert";
 import {
     SpeedDial as UnstyledSpeedDial,
     SpeedDialAction,
-    styled,
+    styled
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { PlainFn } from "common/PlainFn";
 import React, { useState } from "react";
-import { PlainFn } from "../../../common/PlainFn";
 
 interface BasePlayMenuProps {
     children: React.ReactElement | React.ReactElement[];

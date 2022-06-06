@@ -1,14 +1,14 @@
-import { isLeft } from "fp-ts/lib/Either";
-import { useState } from "react";
-import { useDebouncedCallback } from "use-debounce";
 import {
     BackendResult,
     getTrackList,
-    updateTrackList,
-} from "../../../common/backend/requests";
-import { TrackList } from "../../../common/ChordModel/tracks/TrackList";
-import { FetchState } from "../../../common/fetch";
-import { PlainFn } from "../../../common/PlainFn";
+    updateTrackList
+} from "common/backend/requests";
+import { TrackList } from "common/ChordModel/tracks/TrackList";
+import { FetchState } from "common/fetch";
+import { PlainFn } from "common/PlainFn";
+import { isLeft } from "fp-ts/lib/Either";
+import { useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 interface LoadingTrackListState {
     state: "loading";

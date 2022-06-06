@@ -1,5 +1,5 @@
+import { PlainFn } from "common/PlainFn";
 import React, { useCallback, useRef } from "react";
-import { PlainFn } from "../../../common/PlainFn";
 
 export const useScrollable = (
     scrollFnCallback: (scrollFn: PlainFn) => void

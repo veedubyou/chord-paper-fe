@@ -1,9 +1,9 @@
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { IDable } from "common/ChordModel/Collection";
+import { ClassNameable } from "components/edit/block-dnd/common";
+import { useChordDrop } from "components/edit/block-dnd/useChordDrop";
 import React from "react";
 import { ConnectDropTarget } from "react-dnd";
-import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
-import { IDable } from "../../../common/ChordModel/Collection";
-import { ClassNameable } from "./common";
-import { useChordDrop } from "./useChordDrop";
 
 interface ChordlessTokenDroppableProps {
     children: (

@@ -1,12 +1,12 @@
-import React from "react";
 import { Typography } from "@mui/material";
-import Playground from "./Playground";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
-import { LineBreak, LyricsTypography, ChordTypography } from "./Common";
-import { Lyric } from "../../common/ChordModel/Lyric";
-import { convertToTutorialComponent } from "./TutorialComponent";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { Lyric } from "common/ChordModel/Lyric";
+import { ChordTypography, LineBreak, LyricsTypography } from "components/tutorial/Common";
+import Playground from "components/tutorial/Playground";
+import { convertToTutorialComponent } from "components/tutorial/TutorialComponent";
+import React from "react";
 
 const title = "Chord Positioning";
 

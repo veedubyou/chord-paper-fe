@@ -1,6 +1,6 @@
-import * as iots from "io-ts";
-import { BaseTrackValidator, validateValue } from "./BaseTrack";
+import { BaseTrackValidator, validateValue } from "common/ChordModel/tracks/BaseTrack";
 import { Record } from "immutable";
+import * as iots from "io-ts";
 
 export const SingleTrackValidator = iots.intersection([
     BaseTrackValidator,

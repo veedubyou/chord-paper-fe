@@ -1,14 +1,14 @@
+import { RequestError, useErrorSnackbar } from "common/backend/errors";
+import { updateSong } from "common/backend/requests";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { EditSongPath } from "common/paths";
+import { ChordSongAction } from "components/reducer/reducer";
+import { User, UserContext } from "components/user/userContext";
 import { isLeft } from "fp-ts/lib/Either";
 import isOnline from "is-online";
 import { useSnackbar } from "notistack";
 import React, { useCallback, useEffect, useRef } from "react";
 import { Prompt, useHistory } from "react-router";
-import { RequestError, useErrorSnackbar } from "../common/backend/errors";
-import { updateSong } from "../common/backend/requests";
-import { ChordSong } from "../common/ChordModel/ChordSong";
-import { EditSongPath } from "../common/paths";
-import { ChordSongAction } from "./reducer/reducer";
-import { User, UserContext } from "./user/userContext";
 
 const saveInterval = 10000;
 

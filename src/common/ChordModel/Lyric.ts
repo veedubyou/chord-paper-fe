@@ -1,7 +1,7 @@
 import { List } from "immutable";
 import * as iots from "io-ts";
-import { allTabTypes, isValidTabValue } from "../../components/lyrics/Tab";
-import { isWhitespace } from "../Whitespace";
+import { allTabTypes, isValidTabValue } from "components/lyrics/Tab";
+import { isWhitespace } from "common/Whitespace";
 
 export const LyricValidator = iots.type({
     serializedLyric: iots.string,

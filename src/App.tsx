@@ -5,31 +5,31 @@ import {
     Theme,
     ThemeProvider
 } from "@mui/material";
-import { SnackbarProvider } from "notistack";
-import React, { useState } from "react";
-import { Helmet, HelmetProvider } from "react-helmet-async";
-import { HashRouter, Redirect, Route, Switch } from "react-router-dom";
-import { ChordSong } from "./common/ChordModel/ChordSong";
+import { ChordSong } from "common/ChordModel/ChordSong";
 import {
     AboutPath,
     GuitarDemoPath,
     RootPath,
     SongPath,
     TutorialPath
-} from "./common/paths";
-import AboutScreen from "./components/about/About";
-import DragAndDrop from "./components/edit/DragAndDrop";
-import GlobalKeyListenerProvider from "./components/GlobalKeyListener";
-import GuitarDemo from "./components/guitar/GuitarDemo";
-import SongFetcher from "./components/SongFetcher";
-import SongRouter from "./components/SongRouter";
-import TutorialRoutes from "./components/Tutorial";
+} from "common/paths";
+import AboutScreen from "components/about/About";
+import DragAndDrop from "components/edit/DragAndDrop";
+import GlobalKeyListenerProvider from "components/GlobalKeyListener";
+import GuitarDemo from "components/guitar/GuitarDemo";
+import SongFetcher from "components/SongFetcher";
+import SongRouter from "components/SongRouter";
+import TutorialRoutes from "components/Tutorial";
 import {
     SetUserContext,
     User,
     UserContext
-} from "./components/user/userContext";
-import { withCloudSaveSongContext } from "./components/WithSongContext";
+} from "components/user/userContext";
+import { withCloudSaveSongContext } from "components/WithSongContext";
+import { SnackbarProvider } from "notistack";
+import React, { useState } from "react";
+import { Helmet, HelmetProvider } from "react-helmet-async";
+import { HashRouter, Redirect, Route, Switch } from "react-router-dom";
 
 const lightBlue: PaletteColorOptions = {
     main: "#4fc3f7",

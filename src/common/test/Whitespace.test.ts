@@ -1,4 +1,4 @@
-import { isWhitespace } from "../Whitespace";
+import { isWhitespace } from "common/Whitespace";
 
 describe("isWhitespace", () => {
     test("normal space", () => {

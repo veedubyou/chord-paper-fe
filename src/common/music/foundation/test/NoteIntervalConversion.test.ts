@@ -1,5 +1,5 @@
-import { AllNotes, Note } from "../Note";
-import { IntervalToNote, NoteToInterval } from "../NoteIntervalConversion";
+import { AllNotes, Note } from "common/music/foundation/Note";
+import { IntervalToNote, NoteToInterval } from "common/music/foundation/NoteIntervalConversion";
 
 describe("NoteIntervalConversion", () => {
     // note - the inverse test is expected to fail because it's higher resolution and the system

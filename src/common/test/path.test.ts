@@ -1,4 +1,4 @@
-import { DemoPath, SongPath } from "../paths";
+import { DemoPath, SongPath } from "common/paths";
 
 describe("paths", () => {
     describe("song paths", () => {

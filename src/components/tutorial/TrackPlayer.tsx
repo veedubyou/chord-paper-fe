@@ -1,17 +1,17 @@
 import RadioIcon from "@mui/icons-material/Radio";
 import { styled, Typography } from "@mui/material";
-import React from "react";
-import { noopFn } from "../../common/PlainFn";
-import { ControlButton } from "../track_player/internal_player/ControlButton";
-import { ControlPaneBox } from "../track_player/internal_player/ControlPane";
-import TempoControl from "../track_player/internal_player/advanced_controls/TempoControl";
+import { noopFn } from "common/PlainFn";
+import TempoControl from "components/track_player/internal_player/advanced_controls/TempoControl";
+import TransposeControl from "components/track_player/internal_player/advanced_controls/TransposeControl";
+import { ControlButton } from "components/track_player/internal_player/ControlButton";
+import { ControlPaneBox } from "components/track_player/internal_player/ControlPane";
 import StemTrackControlPane, {
     ControlPaneButtonColour,
-    StemControl,
-} from "../track_player/internal_player/stem/StemTrackControlPane";
-import TransposeControl from "../track_player/internal_player/advanced_controls/TransposeControl";
-import { LineBreak } from "./Common";
-import { convertToTutorialComponent } from "./TutorialComponent";
+    StemControl
+} from "components/track_player/internal_player/stem/StemTrackControlPane";
+import { LineBreak } from "components/tutorial/Common";
+import { convertToTutorialComponent } from "components/tutorial/TutorialComponent";
+import React from "react";
 
 const title = "Track Player";
 

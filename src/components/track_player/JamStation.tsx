@@ -1,16 +1,16 @@
 import { Theme } from "@mui/material";
 import { SystemStyleObject } from "@mui/system";
+import { TimeSection } from "common/ChordModel/ChordLine";
+import { TrackList } from "common/ChordModel/tracks/TrackList";
+import { PlainFn } from "common/PlainFn";
+import TrackListEditDialog from "components/track_player/dialog/TrackListEditDialog";
+import { usePlayerControls } from "components/track_player/internal_player/usePlayerControls";
+import MicroPlayer from "components/track_player/MicroPlayer";
+import MultiTrackPlayer from "components/track_player/MultiTrackPlayer";
+import { TrackListLoad } from "components/track_player/providers/TrackListProvider";
 import { List } from "immutable";
 import React, { useCallback, useState } from "react";
 import shortid from "shortid";
-import { TimeSection } from "../../common/ChordModel/ChordLine";
-import { TrackList } from "../../common/ChordModel/tracks/TrackList";
-import { PlainFn } from "../../common/PlainFn";
-import TrackListEditDialog from "./dialog/TrackListEditDialog";
-import { usePlayerControls } from "./internal_player/usePlayerControls";
-import MicroPlayer from "./MicroPlayer";
-import MultiTrackPlayer from "./MultiTrackPlayer";
-import { TrackListLoad } from "./providers/TrackListProvider";
 
 type PlayerVisibilityState = "minimized" | "full";
 

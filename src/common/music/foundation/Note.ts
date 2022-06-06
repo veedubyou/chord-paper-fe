@@ -1,6 +1,6 @@
-import { mapObjectKey } from "../../mapObject";
-import { assertFound } from "./assert";
-import { asDegree, asSemitone, Degree, Semitone } from "./Distance";
+import { mapObjectKey } from "common/mapObject";
+import { assertFound } from "common/music/foundation/assert";
+import { asDegree, asSemitone, Degree, Semitone } from "common/music/foundation/Distance";
 
 type NaturalNote = "C" | "D" | "E" | "F" | "G" | "A" | "B";
 

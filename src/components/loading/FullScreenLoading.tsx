@@ -1,8 +1,8 @@
 import { DialogContent, Modal } from "@mui/material";
+import CenteredLayoutWithMenu from "components/display/CenteredLayoutWithMenu";
+import LoadingSpinner from "components/loading/LoadingSpinner";
+import { CollapsedSideMenu } from "components/SideMenu";
 import React from "react";
-import CenteredLayoutWithMenu from "../display/CenteredLayoutWithMenu";
-import { CollapsedSideMenu } from "../SideMenu";
-import LoadingSpinner from "./LoadingSpinner";
 
 const FullScreenLoading: React.FC<{}> = (): JSX.Element => {
     const collapsedMenu = <CollapsedSideMenu open />;

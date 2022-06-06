@@ -1,13 +1,13 @@
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
-import { chordPaperFromLyrics } from "./common";
+import { chordPaperFromLyrics } from "test/common";
 import {
     ExpectChordAndLyricFn,
     FindByTestIdChainFn,
     getExpectChordAndLyric,
     getFindByTestIdChain,
-    TestIDParam,
-} from "./matcher";
-import { changeContentEditableText } from "./userEvent";
+    TestIDParam
+} from "test/matcher";
+import { changeContentEditableText } from "test/userEvent";
 
 afterEach(cleanup);
 

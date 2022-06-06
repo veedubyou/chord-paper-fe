@@ -3,22 +3,22 @@ import {
     fireEvent,
     Matcher,
     render,
-    waitForElementToBeRemoved,
+    waitForElementToBeRemoved
 } from "@testing-library/react";
-import { ChordBlock } from "../common/ChordModel/ChordBlock";
-import { ChordLine } from "../common/ChordModel/ChordLine";
-import { ChordSong } from "../common/ChordModel/ChordSong";
-import { Lyric } from "../common/ChordModel/Lyric";
-import { chordPaperFromLyrics, chordPaperFromSong } from "./common";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { Lyric } from "common/ChordModel/Lyric";
+import { chordPaperFromLyrics, chordPaperFromSong } from "test/common";
 import {
     ExpectChordAndLyricFn,
     FindByTestIdChainFn,
     getExpectChordAndLyric,
     getFindByTestIdChain,
     lyricsInElement,
-    matchLyric,
-} from "./matcher";
-import { changeContentEditableText, Keys, pressKey } from "./userEvent";
+    matchLyric
+} from "test/matcher";
+import { changeContentEditableText, Keys, pressKey } from "test/userEvent";
 
 afterEach(cleanup);
 

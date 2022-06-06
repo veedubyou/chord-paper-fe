@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
+import { StartingFret } from "components/guitar/ScaleChart";
 import React from "react";
-import { StartingFret } from "./ScaleChart";
 
 interface FretSelectorProps {
     startingFret: StartingFret;

@@ -1,11 +1,11 @@
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, Divider, Grid, styled } from "@mui/material";
+import { StemTrack } from "common/ChordModel/tracks/StemTrack";
+import { mapObject } from "common/mapObject";
+import LabelField from "components/track_player/dialog/LabelField";
+import URLField from "components/track_player/dialog/URLField";
 import lodash from "lodash";
 import React from "react";
-import { StemTrack } from "../../../common/ChordModel/tracks/StemTrack";
-import { mapObject } from "../../../common/mapObject";
-import LabelField from "./LabelField";
-import URLField from "./URLField";
 
 export type URLFieldLabel<StemKey extends string> = {
     key: StemKey;

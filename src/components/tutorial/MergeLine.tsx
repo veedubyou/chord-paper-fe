@@ -1,12 +1,12 @@
 import { Typography } from "@mui/material";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { Lyric } from "common/ChordModel/Lyric";
+import { LineBreak } from "components/tutorial/Common";
+import Playground from "components/tutorial/Playground";
+import { convertToTutorialComponent } from "components/tutorial/TutorialComponent";
 import React from "react";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
-import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { Lyric } from "../../common/ChordModel/Lyric";
-import { LineBreak } from "./Common";
-import Playground from "./Playground";
-import { convertToTutorialComponent } from "./TutorialComponent";
 
 const title = "Merge Lines";
 

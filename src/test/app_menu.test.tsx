@@ -1,8 +1,8 @@
 import { fireEvent, render } from "@testing-library/react";
+import App from "App";
 import React from "react";
-import App from "../App";
-import { FindByTestIdChainFn, getFindByTestIdChain } from "./matcher";
-import { gapiStub } from "./common";
+import { gapiStub } from "test/common";
+import { FindByTestIdChainFn, getFindByTestIdChain } from "test/matcher";
 
 beforeAll(gapiStub);
 

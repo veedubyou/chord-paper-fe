@@ -1,5 +1,5 @@
-import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
-import { IDable } from "../../../common/ChordModel/Collection";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { IDable } from "common/ChordModel/Collection";
 
 export const DNDChordType: "chord" = "chord";
 
