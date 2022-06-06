@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/chord-paper-fe/static/css/main.78c714c7.chunk.css",
-    "main.js": "/chord-paper-fe/static/js/main.e9f190fa.chunk.js",
-    "main.js.map": "/chord-paper-fe/static/js/main.e9f190fa.chunk.js.map",
+    "main.js": "/chord-paper-fe/static/js/main.f597c145.chunk.js",
+    "main.js.map": "/chord-paper-fe/static/js/main.f597c145.chunk.js.map",
     "runtime-main.js": "/chord-paper-fe/static/js/runtime-main.822757b0.js",
     "runtime-main.js.map": "/chord-paper-fe/static/js/runtime-main.822757b0.js.map",
     "static/css/2.0088e07d.chunk.css": "/chord-paper-fe/static/css/2.0088e07d.chunk.css",
-    "static/js/2.e8d4d841.chunk.js": "/chord-paper-fe/static/js/2.e8d4d841.chunk.js",
-    "static/js/2.e8d4d841.chunk.js.map": "/chord-paper-fe/static/js/2.e8d4d841.chunk.js.map",
+    "static/js/2.e832b015.chunk.js": "/chord-paper-fe/static/js/2.e832b015.chunk.js",
+    "static/js/2.e832b015.chunk.js.map": "/chord-paper-fe/static/js/2.e832b015.chunk.js.map",
     "index.html": "/chord-paper-fe/index.html",
     "static/css/2.0088e07d.chunk.css.map": "/chord-paper-fe/static/css/2.0088e07d.chunk.css.map",
     "static/css/main.78c714c7.chunk.css.map": "/chord-paper-fe/static/css/main.78c714c7.chunk.css.map",
-    "static/js/2.e8d4d841.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.e8d4d841.chunk.js.LICENSE.txt",
+    "static/js/2.e832b015.chunk.js.LICENSE.txt": "/chord-paper-fe/static/js/2.e832b015.chunk.js.LICENSE.txt",
     "static/media/index.css": "/chord-paper-fe/static/media/PoriChord.a44d4113.woff2",
     "static/media/error.91c3c13e.jpeg": "/chord-paper-fe/static/media/error.91c3c13e.jpeg",
     "static/media/google_signin.1875863c.svg": "/chord-paper-fe/static/media/google_signin.1875863c.svg",
@@ -20,8 +20,8 @@
   "entrypoints": [
     "static/js/runtime-main.822757b0.js",
     "static/css/2.0088e07d.chunk.css",
-    "static/js/2.e8d4d841.chunk.js",
+    "static/js/2.e832b015.chunk.js",
     "static/css/main.78c714c7.chunk.css",
-    "static/js/main.e9f190fa.chunk.js"
+    "static/js/main.f597c145.chunk.js"
   ]
 }
