@@ -1,5 +1,5 @@
-import { mapObjectKey } from "../../mapObject";
-import { asSemitone, Degree, Semitone } from "./Distance";
+import { mapObjectKey } from "common/mapObject";
+import { asSemitone, Degree, Semitone } from "common/music/foundation/Distance";
 
 type NaturalInterval = "1" | "2" | "3" | "4" | "5" | "6" | "7";
 // a bit of a difference in nomenclature here

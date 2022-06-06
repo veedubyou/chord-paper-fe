@@ -1,17 +1,17 @@
 import { Box, styled } from "@mui/material";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { Collection } from "common/ChordModel/Collection";
+import { noopFn, PlainFn } from "common/PlainFn";
+import { useNavigationKeys } from "components/play/common/useNavigateKeys";
+import {
+    HighlightBorderContext,
+    HighlightBorderProvider
+} from "components/play/scroll/highlightBorderContext";
+import ScrollablePlayLine from "components/play/scroll/ScrollablePlayLine";
 import { List } from "immutable";
 import React, { useCallback, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce/lib";
-import { ChordLine } from "../../../common/ChordModel/ChordLine";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { Collection } from "../../../common/ChordModel/Collection";
-import { PlainFn, noopFn } from "../../../common/PlainFn";
-import { useNavigationKeys } from "../common/useNavigateKeys";
-import {
-    HighlightBorderContext,
-    HighlightBorderProvider,
-} from "./highlightBorderContext";
-import ScrollablePlayLine from "./ScrollablePlayLine";
 
 const FullHeightBox = styled(Box)({
     height: "100vh",

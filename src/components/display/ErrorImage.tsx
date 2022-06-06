@@ -1,6 +1,6 @@
+import ErrorImg from "assets/img/error.jpeg";
+import { useErrorSnackbar } from "common/backend/errors";
 import React, { useEffect } from "react";
-import ErrorImg from "../../assets/img/error.jpeg";
-import { useErrorSnackbar } from "../../common/backend/errors";
 
 interface ErrorImageProps {
     error: unknown;

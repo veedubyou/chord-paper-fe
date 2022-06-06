@@ -1,9 +1,9 @@
 import { Collapse } from "@mui/material";
+import TempoControl from "components/track_player/internal_player/advanced_controls/TempoControl";
+import TransposeControl from "components/track_player/internal_player/advanced_controls/TransposeControl";
+import { ControlButton } from "components/track_player/internal_player/ControlButton";
+import { ControlGroupBox, VerticalMiddleDivider } from "components/track_player/internal_player/ControlGroup";
 import React, { useState } from "react";
-import { ControlButton } from "../ControlButton";
-import { ControlGroupBox, VerticalMiddleDivider } from "../ControlGroup";
-import TempoControl from "./TempoControl";
-import TransposeControl from "./TransposeControl";
 
 interface AdvancedControlsProps {
     tempo: {

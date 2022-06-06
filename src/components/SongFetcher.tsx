@@ -1,11 +1,11 @@
+import { getSong } from "common/backend/requests";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { FetchState } from "common/fetch";
+import ErrorImage from "components/display/ErrorImage";
+import FullScreenLoading from "components/loading/FullScreenLoading";
 import { isLeft } from "fp-ts/lib/These";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { getSong } from "../common/backend/requests";
-import { ChordSong } from "../common/ChordModel/ChordSong";
-import { FetchState } from "../common/fetch";
-import ErrorImage from "./display/ErrorImage";
-import FullScreenLoading from "./loading/FullScreenLoading";
 
 interface IDParams {
     id: string;

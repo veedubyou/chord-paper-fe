@@ -1,7 +1,7 @@
 import { TextFieldProps, TypographyVariant } from "@mui/material";
+import { MUIStyledProps } from "common/styledProps";
+import ControlledTextInput from "components/edit/ControlledTextInput";
 import React, { useState } from "react";
-import { MUIStyledProps } from "../../common/styledProps";
-import ControlledTextInput from "./ControlledTextInput";
 
 interface TextInputProps extends MUIStyledProps {
     value: string;

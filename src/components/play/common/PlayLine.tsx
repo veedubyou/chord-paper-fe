@@ -1,12 +1,12 @@
 import { Box, styled, Typography } from "@mui/material";
-import React from "react";
-import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
-import { ChordLine } from "../../../common/ChordModel/ChordLine";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordLine } from "common/ChordModel/ChordLine";
 import {
     sectionLabelStyle,
-    sectionTypographyVariant,
-} from "../../display/SectionLabel";
-import PlayBlock from "./PlayBlock";
+    sectionTypographyVariant
+} from "components/display/SectionLabel";
+import PlayBlock from "components/play/common/PlayBlock";
+import React from "react";
 
 const LabelTypography = styled(Typography)({ ...sectionLabelStyle });
 const TopMarginBox = styled(Box)(({ theme }) => ({

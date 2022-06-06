@@ -1,8 +1,8 @@
-import { Typography } from "@mui/material";
 import PlayIcon from "@mui/icons-material/PlayArrow";
+import { Typography } from "@mui/material";
+import { LineBreak } from "components/tutorial/Common";
+import { convertToTutorialComponent } from "components/tutorial/TutorialComponent";
 import React from "react";
-import { LineBreak } from "./Common";
-import { convertToTutorialComponent } from "./TutorialComponent";
 
 const title = "Play Mode";
 

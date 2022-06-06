@@ -1,7 +1,7 @@
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { IDable } from "common/ChordModel/Collection";
+import { DNDChord, DNDChordType } from "components/edit/block-dnd/common";
 import { ConnectDropTarget, DropTargetMonitor, useDrop } from "react-dnd";
-import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
-import { IDable } from "../../../common/ChordModel/Collection";
-import { DNDChord, DNDChordType } from "./common";
 
 interface DropObject {
     type: "dropped-chord-result";

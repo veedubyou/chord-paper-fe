@@ -1,12 +1,12 @@
-import TextField from "@mui/material/TextField";
 import Autocomplete, {
     AutocompleteRenderInputParams,
-    createFilterOptions,
+    createFilterOptions
 } from "@mui/material/Autocomplete";
-import React from "react";
-import { AllNotes, Note } from "../../common/music/foundation/Note";
-import { ScaleName, ScaleTypes } from "../../common/music/scale/Scale";
+import TextField from "@mui/material/TextField";
+import { AllNotes, Note } from "common/music/foundation/Note";
+import { ScaleName, ScaleTypes } from "common/music/scale/Scale";
 import lodash from "lodash";
+import React from "react";
 
 export type SelectableScale = {
     note: Note;

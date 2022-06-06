@@ -1,5 +1,5 @@
 import { List } from "immutable";
-import { Lyric } from "../Lyric";
+import { Lyric } from "common/ChordModel/Lyric";
 
 describe("lyric tokenizer", () => {
     const rawStringGetter = (rawString: string): string => {

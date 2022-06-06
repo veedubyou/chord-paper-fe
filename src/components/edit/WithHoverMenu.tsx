@@ -1,8 +1,8 @@
 import { Button, ButtonGroup, styled } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { DataTestID } from "common/DataTestID";
+import { makeStyledTooltipMenu } from "components/edit/StyledTooltip";
 import React from "react";
-import { DataTestID } from "../../common/DataTestID";
-import { makeStyledTooltipMenu } from "./StyledTooltip";
 
 const HoverMenuButton = styled(Button)({
     backgroundColor: "transparent",

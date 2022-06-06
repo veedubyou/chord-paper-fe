@@ -1,9 +1,9 @@
 import { getOrElse, isLeft } from "fp-ts/lib/Either";
-import { ChordBlock } from "../ChordBlock";
-import { ChordLine } from "../ChordLine";
-import { ChordSong } from "../ChordSong";
-import { Lyric } from "../Lyric";
-import "./matcher";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { Lyric } from "common/ChordModel/Lyric";
+import "common/ChordModel/test/matcher";
 
 describe("Chord Song", () => {
     const testLines = (): ChordLine[] => {

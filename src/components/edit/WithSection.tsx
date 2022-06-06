@@ -1,17 +1,17 @@
 import { Box, styled, Theme } from "@mui/material";
-import React, { useCallback } from "react";
-import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { DataTestID } from "../../common/DataTestID";
-import { PlainFn } from "../../common/PlainFn";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { DataTestID } from "common/DataTestID";
+import { PlainFn } from "common/PlainFn";
 import {
     sectionLabelStyle,
-    sectionTypographyVariant,
-} from "../display/SectionLabel";
-import { ChordSongAction } from "../reducer/reducer";
-import UnstyledEditableTypography, { EditControl } from "./EditableTypography";
-import { useEditingState } from "./InteractionContext";
-import { makeStyledTooltipMenu } from "./StyledTooltip";
-import TimeInput from "./TimeInput";
+    sectionTypographyVariant
+} from "components/display/SectionLabel";
+import UnstyledEditableTypography, { EditControl } from "components/edit/EditableTypography";
+import { useEditingState } from "components/edit/InteractionContext";
+import { makeStyledTooltipMenu } from "components/edit/StyledTooltip";
+import TimeInput from "components/edit/TimeInput";
+import { ChordSongAction } from "components/reducer/reducer";
+import React, { useCallback } from "react";
 
 const EditableTypography = styled(UnstyledEditableTypography)({
     ...sectionLabelStyle,

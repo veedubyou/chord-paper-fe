@@ -1,6 +1,6 @@
+import { DragOverHandler } from "components/edit/block-dnd/common";
 import { List } from "immutable";
 import { useCallback, useReducer } from "react";
-import { DragOverHandler } from "./common";
 
 type SetDragOverAction = {
     index: number;

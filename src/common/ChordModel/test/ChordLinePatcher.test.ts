@@ -1,8 +1,8 @@
-import { ChordBlock } from "../ChordBlock";
-import { ChordLine } from "../ChordLine";
-import { replaceChordLineLyrics } from "../ChordLinePatcher";
-import { Lyric } from "../Lyric";
-import "./matcher";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { replaceChordLineLyrics } from "common/ChordModel/ChordLinePatcher";
+import { Lyric } from "common/ChordModel/Lyric";
+import "common/ChordModel/test/matcher";
 
 describe("ChordLinePatcher", () => {
     let chordLine: ChordLine;

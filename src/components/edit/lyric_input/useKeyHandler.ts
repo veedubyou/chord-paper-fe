@@ -1,10 +1,4 @@
-import { PlainFn } from "../../../common/PlainFn";
-import {
-    DomLyricTabFn,
-    lyricTabTypeOfDOMNode,
-    SizedTab,
-    useDomLyricTab,
-} from "../../lyrics/Tab";
+import { PlainFn } from "common/PlainFn";
 import {
     childIndex,
     contentEditableElement,
@@ -12,8 +6,14 @@ import {
     isSelectionAtBeginning,
     nodeAfterSelection,
     nodeBeforeSelection,
-    selectionRange,
-} from "./SelectionUtils";
+    selectionRange
+} from "components/edit/lyric_input/SelectionUtils";
+import {
+    DomLyricTabFn,
+    lyricTabTypeOfDOMNode,
+    SizedTab,
+    useDomLyricTab
+} from "components/lyrics/Tab";
 
 type ContentEditableElement = HTMLSpanElement;
 type HandlerFn = (

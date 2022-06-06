@@ -1,7 +1,7 @@
-import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { IDable } from "../../common/ChordModel/Collection";
-import { ChordSongAction } from "../reducer/reducer";
-import { getSelectedLineIDs } from "./LineSelection";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { IDable } from "common/ChordModel/Collection";
+import { getSelectedLineIDs } from "components/edit/LineSelection";
+import { ChordSongAction } from "components/reducer/reducer";
 
 export const handleBatchLineDelete = (
     event: KeyboardEvent,

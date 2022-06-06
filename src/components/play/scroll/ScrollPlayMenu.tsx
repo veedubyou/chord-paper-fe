@@ -1,8 +1,8 @@
 import ChromeReaderModeIcon from "@mui/icons-material/ChromeReaderMode";
 import { SpeedDialAction } from "@mui/material";
+import { PlainFn } from "common/PlainFn";
+import BasePlayMenu from "components/play/common/BasePlayMenu";
 import React from "react";
-import { PlainFn } from "../../../common/PlainFn";
-import BasePlayMenu from "../common/BasePlayMenu";
 
 interface ScrollPlayMenuProps {
     onPageView?: PlainFn;

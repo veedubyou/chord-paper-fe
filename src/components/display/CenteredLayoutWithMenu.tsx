@@ -1,8 +1,8 @@
 import { Grid, styled } from "@mui/material";
+import Background from "assets/img/symphony.png";
+import SideMenu from "components/SideMenu";
+import Version from "components/Version";
 import React from "react";
-import Background from "../../assets/img/symphony.png";
-import SideMenu from "../SideMenu";
-import Version from "../Version";
 
 const AppLayout = styled(Grid)({
     backgroundImage: `url(${Background})`,

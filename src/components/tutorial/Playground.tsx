@@ -1,9 +1,9 @@
 import UnstyledCheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { Badge as UnstyledBadge, Paper, styled } from "@mui/material";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import ChordPaperBody from "components/edit/ChordPaperBody";
+import { useChordSongReducer } from "components/reducer/reducer";
 import React, { useEffect, useState } from "react";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
-import ChordPaperBody from "../edit/ChordPaperBody";
-import { useChordSongReducer } from "../reducer/reducer";
 
 const CheckCircleIcon = styled(UnstyledCheckCircleIcon)(({ theme }) => ({
     color: theme.palette.success.main,

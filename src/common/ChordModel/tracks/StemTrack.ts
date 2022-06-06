@@ -1,6 +1,6 @@
+import { BaseTrackValidator, validateValue } from "common/ChordModel/tracks/BaseTrack";
+import { mapObject } from "common/mapObject";
 import * as iots from "io-ts";
-import { mapObject } from "../../mapObject";
-import { BaseTrackValidator, validateValue } from "./BaseTrack";
 
 const makeStemTrackValidator = <T extends object, S extends string>(
     emptyKeyMap: T,

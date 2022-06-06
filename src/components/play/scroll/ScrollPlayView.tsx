@@ -1,8 +1,8 @@
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { PlainFn } from "common/PlainFn";
+import ScrollPlayContent from "components/play/scroll/ScrollPlayContent";
+import ScrollPlayMenu from "components/play/scroll/ScrollPlayMenu";
 import React from "react";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { PlainFn } from "../../../common/PlainFn";
-import ScrollPlayContent from "./ScrollPlayContent";
-import ScrollPlayMenu from "./ScrollPlayMenu";
 
 interface ScrollPlayViewProps {
     song: ChordSong;

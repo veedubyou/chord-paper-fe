@@ -1,4 +1,4 @@
-import { IDable, Collection } from "../Collection";
+import { IDable, Collection } from "common/ChordModel/Collection";
 
 describe("Collection", () => {
     class Item implements IDable<Item> {

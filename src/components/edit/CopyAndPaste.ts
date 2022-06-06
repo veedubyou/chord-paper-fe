@@ -1,14 +1,14 @@
+import {
+    ChordLine,
+    ChordLineValidatedFields,
+    ChordLineValidator
+} from "common/ChordModel/ChordLine";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { getSelectedLineIDs } from "components/edit/LineSelection";
 import { Either, isLeft, left, parseJSON, right } from "fp-ts/lib/Either";
 import { List } from "immutable";
 import * as iots from "io-ts";
 import { useSnackbar } from "notistack";
-import {
-    ChordLine,
-    ChordLineValidatedFields,
-    ChordLineValidator,
-} from "../../common/ChordModel/ChordLine";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { getSelectedLineIDs } from "./LineSelection";
 
 const CopiedChordLinesValidator = iots.type({
     copiedChordLines: iots.array(ChordLineValidator),

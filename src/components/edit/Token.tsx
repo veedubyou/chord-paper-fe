@@ -1,17 +1,17 @@
 import { cx } from "@emotion/css";
 import { Box, styled } from "@mui/material";
-import React from "react";
-import { Lyric } from "../../common/ChordModel/Lyric";
+import { Lyric } from "common/ChordModel/Lyric";
 import LyricDisplay, {
     LyricTypography,
-    lyricTypographyProps,
-} from "../display/Lyric";
-import { deserializeLyrics } from "../lyrics/Serialization";
+    lyricTypographyProps
+} from "components/display/Lyric";
 import {
     chordSymbolClassName,
     chordTargetClassName,
-    firstTokenClassName,
-} from "./HighlightableBlockStyle";
+    firstTokenClassName
+} from "components/edit/HighlightableBlockStyle";
+import { deserializeLyrics } from "components/lyrics/Serialization";
+import React from "react";
 
 const InvisibleTypography = styled(LyricTypography)({
     color: "transparent",

@@ -1,15 +1,15 @@
 import { createTheme, ThemeProvider } from "@mui/material";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { Lyric } from "common/ChordModel/Lyric";
+import { noopFn } from "common/PlainFn";
+import ChordPaper from "components/edit/ChordPaper";
+import DragAndDrop from "components/edit/DragAndDrop";
+import { SetUserContext, UserContext } from "components/user/userContext";
+import { withSongContext } from "components/WithSongContext";
 import { SnackbarProvider } from "notistack";
 import React from "react";
 import { HelmetProvider } from "react-helmet-async";
 import { HashRouter } from "react-router-dom";
-import { ChordSong } from "../common/ChordModel/ChordSong";
-import { Lyric } from "../common/ChordModel/Lyric";
-import { noopFn } from "../common/PlainFn";
-import ChordPaper from "../components/edit/ChordPaper";
-import DragAndDrop from "../components/edit/DragAndDrop";
-import { SetUserContext, UserContext } from "../components/user/userContext";
-import { withSongContext } from "../components/WithSongContext";
 
 const Song = withSongContext(ChordPaper);
 

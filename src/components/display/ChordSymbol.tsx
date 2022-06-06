@@ -1,7 +1,7 @@
 import { styled, Typography } from "@mui/material";
+import { inflateIfEmpty } from "common/Whitespace";
+import { lyricTypographyVariant } from "components/display/Lyric";
 import React from "react";
-import { inflateIfEmpty } from "../../common/Whitespace";
-import { lyricTypographyVariant } from "./Lyric";
 
 const ChordTypography = styled(Typography)({
     whiteSpace: "pre",

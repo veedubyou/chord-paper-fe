@@ -1,12 +1,12 @@
 import { Box, Paper, styled } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useWindowWidth } from "@react-hook/window-size";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import PlayLine from "components/play/common/PlayLine";
+import { useNavigationKeys } from "components/play/common/useNavigateKeys";
 import React, { useEffect, useState } from "react";
 import useScrollbarSize from "react-scrollbar-size";
-import { ChordLine } from "../../../common/ChordModel/ChordLine";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import PlayLine from "../common/PlayLine";
-import { useNavigationKeys } from "../common/useNavigateKeys";
 
 export interface PageDisplaySettings {
     numberOfColumnsPerPage: number;

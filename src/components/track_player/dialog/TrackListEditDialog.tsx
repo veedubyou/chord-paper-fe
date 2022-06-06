@@ -13,30 +13,30 @@ import {
     Menu,
     MenuItem,
     styled,
-    Typography as UnstyledTypography,
+    Typography as UnstyledTypography
 } from "@mui/material";
-import lodash from "lodash";
-import React, { useState } from "react";
-import { SingleTrack } from "../../../common/ChordModel/tracks/SingleTrack";
+import { SingleTrack } from "common/ChordModel/tracks/SingleTrack";
 import {
     SplitStemTrack,
-    SplitStemTypes,
-} from "../../../common/ChordModel/tracks/SplitStemRequest";
+    SplitStemTypes
+} from "common/ChordModel/tracks/SplitStemRequest";
 import {
     FiveStemKeys,
     FiveStemTrack,
     FourStemKeys,
     FourStemTrack,
     TwoStemKeys,
-    TwoStemTrack,
-} from "../../../common/ChordModel/tracks/StemTrack";
-import { Track } from "../../../common/ChordModel/tracks/Track";
-import { TrackList } from "../../../common/ChordModel/tracks/TrackList";
-import { PlainFn } from "../../../common/PlainFn";
-import { TrackListLoad } from "../providers/TrackListProvider";
-import SingleTrackRow from "./SingleTrackRow";
-import SplitStemTrackRow from "./SplitStemTrackRow";
-import StemTrackRow, { URLFieldLabel } from "./StemTrackRow";
+    TwoStemTrack
+} from "common/ChordModel/tracks/StemTrack";
+import { Track } from "common/ChordModel/tracks/Track";
+import { TrackList } from "common/ChordModel/tracks/TrackList";
+import { PlainFn } from "common/PlainFn";
+import SingleTrackRow from "components/track_player/dialog/SingleTrackRow";
+import SplitStemTrackRow from "components/track_player/dialog/SplitStemTrackRow";
+import StemTrackRow, { URLFieldLabel } from "components/track_player/dialog/StemTrackRow";
+import { TrackListLoad } from "components/track_player/providers/TrackListProvider";
+import lodash from "lodash";
+import React, { useState } from "react";
 
 interface TrackListEditDialogProps {
     open: boolean;

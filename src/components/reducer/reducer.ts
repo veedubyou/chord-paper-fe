@@ -1,11 +1,11 @@
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { IDable } from "common/ChordModel/Collection";
+import { Lyric } from "common/ChordModel/Lyric";
+import { Note } from "common/music/foundation/Note";
 import { List, Record } from "immutable";
 import { useCallback, useReducer } from "react";
-import { ChordBlock } from "../../common/ChordModel/ChordBlock";
-import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { IDable } from "../../common/ChordModel/Collection";
-import { Lyric } from "../../common/ChordModel/Lyric";
-import { Note } from "../../common/music/foundation/Note";
 
 type ReplaceSong = {
     type: "replace-song";

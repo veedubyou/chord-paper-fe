@@ -1,13 +1,13 @@
 import { Box, styled } from "@mui/material";
+import { PlainFn } from "common/PlainFn";
+import { useRegisterTopKeyListener } from "components/GlobalKeyListener";
+import { controlPaneStyle } from "components/track_player/common";
+import AdvancedControls from "components/track_player/internal_player/advanced_controls/AdvancedControls";
+import { ControlButton } from "components/track_player/internal_player/ControlButton";
+import ControlGroup, { ControlGroupBox } from "components/track_player/internal_player/ControlGroup";
+import SectionLabel from "components/track_player/internal_player/SectionLabel";
+import { ButtonActionAndState } from "components/track_player/internal_player/usePlayerControls";
 import React, { useEffect } from "react";
-import { PlainFn } from "../../../common/PlainFn";
-import { useRegisterTopKeyListener } from "../../GlobalKeyListener";
-import { controlPaneStyle } from "../common";
-import { ControlButton } from "./ControlButton";
-import ControlGroup, { ControlGroupBox } from "./ControlGroup";
-import SectionLabel from "./SectionLabel";
-import AdvancedControls from "./advanced_controls/AdvancedControls";
-import { ButtonActionAndState } from "./usePlayerControls";
 
 interface ControlPaneProps {
     show: boolean;

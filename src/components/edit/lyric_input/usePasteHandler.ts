@@ -1,9 +1,9 @@
-import { Lyric } from "../../../common/ChordModel/Lyric";
-import { serializeLyrics } from "../../lyrics/Serialization";
+import { Lyric } from "common/ChordModel/Lyric";
 import {
     insertNodeAtSelection,
-    splitContentBySelection,
-} from "./SelectionUtils";
+    splitContentBySelection
+} from "components/edit/lyric_input/SelectionUtils";
+import { serializeLyrics } from "components/lyrics/Serialization";
 
 type HandlerFn = (event: React.ClipboardEvent<HTMLDivElement>) => boolean;
 

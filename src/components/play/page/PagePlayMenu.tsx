@@ -1,11 +1,11 @@
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import TuneIcon from "@mui/icons-material/Tune";
 import { SpeedDialAction } from "@mui/material";
+import { PlainFn } from "common/PlainFn";
+import BasePlayMenu from "components/play/common/BasePlayMenu";
+import DisplaySettingsDialog from "components/play/page/DisplaySettingsDialog";
+import { PageDisplaySettings } from "components/play/page/PagePlayContent";
 import React, { useState } from "react";
-import { PlainFn } from "../../../common/PlainFn";
-import BasePlayMenu from "../common/BasePlayMenu";
-import DisplaySettingsDialog from "./DisplaySettingsDialog";
-import { PageDisplaySettings } from "./PagePlayContent";
 
 interface PagePlayMenuProps {
     displaySettings: PageDisplaySettings;

@@ -6,10 +6,10 @@ import {
     ChordBlock,
     ChordBlockValidatedFields,
     ChordBlockValidator,
-} from "./ChordBlock";
-import { replaceChordLineLyrics } from "./ChordLinePatcher";
-import { Collection, CollectionMethods, IDable } from "./Collection";
-import { Lyric } from "./Lyric";
+} from "common/ChordModel/ChordBlock";
+import { replaceChordLineLyrics } from "common/ChordModel/ChordLinePatcher";
+import { Collection, CollectionMethods, IDable } from "common/ChordModel/Collection";
+import { Lyric } from "common/ChordModel/Lyric";
 import { List, Record } from "immutable";
 
 const requiredFields = iots.type({

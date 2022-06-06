@@ -1,10 +1,10 @@
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { PlainFn } from "common/PlainFn";
+import PlayLine from "components/play/common/PlayLine";
+import HighlightBorderBox from "components/play/scroll/HighlightBorderBox";
+import { useInPageView } from "components/play/scroll/useInPageView";
+import { useScrollable } from "components/play/scroll/useScrollable";
 import React, { useCallback } from "react";
-import { ChordLine } from "../../../common/ChordModel/ChordLine";
-import { PlainFn } from "../../../common/PlainFn";
-import PlayLine from "../common/PlayLine";
-import HighlightBorderBox from "./HighlightBorderBox";
-import { useInPageView } from "./useInPageView";
-import { useScrollable } from "./useScrollable";
 
 // these values determine the portion of the viewport that is used to consider
 // the next line that the user can scroll to

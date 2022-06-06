@@ -7,18 +7,18 @@ import {
     List,
     ListItem,
     ListItemText,
-    Typography,
+    Typography
 } from "@mui/material";
+import { getSongsForUser } from "common/backend/requests";
+import { SongSummary } from "common/ChordModel/ChordSong";
+import { FetchState } from "common/fetch";
+import { SongPath } from "common/paths";
+import { PlainFn } from "common/PlainFn";
+import ErrorImage from "components/display/ErrorImage";
+import { UserContext } from "components/user/userContext";
 import { isLeft } from "fp-ts/lib/Either";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { getSongsForUser } from "../common/backend/requests";
-import { SongSummary } from "../common/ChordModel/ChordSong";
-import { FetchState } from "../common/fetch";
-import { SongPath } from "../common/paths";
-import { PlainFn } from "../common/PlainFn";
-import ErrorImage from "./display/ErrorImage";
-import { UserContext } from "./user/userContext";
 
 interface LoadSongsDialogProps {
     open: boolean;

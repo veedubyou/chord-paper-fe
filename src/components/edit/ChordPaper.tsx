@@ -1,20 +1,20 @@
 import { Paper, styled } from "@mui/material";
-import React from "react";
-import { Helmet } from "react-helmet-async";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { PlainFn } from "../../common/PlainFn";
-import CenteredLayoutWithMenu from "../display/CenteredLayoutWithMenu";
-import LoadingRender from "../loading/LoadingRender";
-import PlayerTimeProvider from "../PlayerTimeContext";
-import { ChordSongAction } from "../reducer/reducer";
-import JamStation from "../track_player/JamStation";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { PlainFn } from "common/PlainFn";
+import CenteredLayoutWithMenu from "components/display/CenteredLayoutWithMenu";
+import ChordPaperBody from "components/edit/ChordPaperBody";
+import Header from "components/edit/Header";
+import ChordPaperMenu from "components/edit/menu/ChordPaperMenu";
+import LoadingRender from "components/loading/LoadingRender";
+import PlayerTimeProvider from "components/PlayerTimeContext";
+import { ChordSongAction } from "components/reducer/reducer";
+import JamStation from "components/track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
-    TrackListLoad,
-} from "../track_player/providers/TrackListProvider";
-import ChordPaperBody from "./ChordPaperBody";
-import Header from "./Header";
-import ChordPaperMenu from "./menu/ChordPaperMenu";
+    TrackListLoad
+} from "components/track_player/providers/TrackListProvider";
+import React from "react";
+import { Helmet } from "react-helmet-async";
 
 const RootPaper = styled(Paper)(({ theme }) => ({
     position: "relative",

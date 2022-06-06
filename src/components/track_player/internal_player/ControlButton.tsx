@@ -8,14 +8,14 @@ import SkipForwardIcon from "@mui/icons-material/SkipNext";
 import SkipBackIcon from "@mui/icons-material/SkipPrevious";
 import { Button as UnstyledButton, styled, Tooltip } from "@mui/material";
 import { ButtonProps } from "@mui/material/Button";
+import BeginningIcon from "components/icons/BeginningIcon";
+import FlatIcon from "components/icons/FlatIcon";
+import FlatSharpIcon from "components/icons/FlatSharpIcon";
+import JumpForwardIcon from "components/icons/ForwardIcon";
+import MetronomeIcon from "components/icons/MetronomeIcon";
+import SharpIcon from "components/icons/SharpIcon";
+import { roundedCornersStyle } from "components/track_player/common";
 import React from "react";
-import BeginningIcon from "../../icons/BeginningIcon";
-import FlatIcon from "../../icons/FlatIcon";
-import FlatSharpIcon from "../../icons/FlatSharpIcon";
-import JumpForwardIcon from "../../icons/ForwardIcon";
-import MetronomeIcon from "../../icons/MetronomeIcon";
-import SharpIcon from "../../icons/SharpIcon";
-import { roundedCornersStyle } from "../common";
 
 const Button = styled(UnstyledButton)(({ theme }) => ({
     minWidth: 0,

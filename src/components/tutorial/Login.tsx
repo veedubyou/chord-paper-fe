@@ -1,11 +1,11 @@
-import { Typography } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { Typography } from "@mui/material";
+import { getRouteForTutorialComponent } from "components/Tutorial";
+import { LineBreak } from "components/tutorial/Common";
+import TrackPlayer from "components/tutorial/TrackPlayer";
+import { convertToTutorialComponent } from "components/tutorial/TutorialComponent";
 import React from "react";
 import { Link } from "react-router-dom";
-import { getRouteForTutorialComponent } from "../Tutorial";
-import { LineBreak } from "./Common";
-import TrackPlayer from "./TrackPlayer";
-import { convertToTutorialComponent } from "./TutorialComponent";
 
 const title = "Logging In";
 

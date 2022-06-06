@@ -1,8 +1,8 @@
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { IDable } from "common/ChordModel/Collection";
+import { useChordDrop } from "components/edit/block-dnd/useChordDrop";
 import React, { useEffect } from "react";
 import { ConnectDropTarget } from "react-dnd";
-import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
-import { IDable } from "../../../common/ChordModel/Collection";
-import { useChordDrop } from "./useChordDrop";
 
 interface ChordTokenDroppableProps {
     children: (dropRef: ConnectDropTarget) => React.ReactElement;

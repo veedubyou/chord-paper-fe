@@ -1,6 +1,6 @@
+import { PlainFn } from "common/PlainFn";
 import { useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
-import { PlainFn } from "../../../common/PlainFn";
 
 type IsInViewFn = () => boolean;
 

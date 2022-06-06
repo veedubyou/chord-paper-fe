@@ -1,6 +1,6 @@
 import { Box, Theme } from "@mui/material";
+import { useHighlightBorders } from "components/play/scroll/highlightBorderContext";
 import React from "react";
-import { useHighlightBorders } from "./highlightBorderContext";
 
 const transitionFunction = "cubic-bezier(.19,1,.22,1)";
 

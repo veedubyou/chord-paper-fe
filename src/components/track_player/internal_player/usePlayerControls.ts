@@ -1,13 +1,13 @@
+import { TimeSection } from "common/ChordModel/ChordLine";
+import { noopFn, PlainFn } from "common/PlainFn";
+import { useRegisterTopKeyListener } from "components/GlobalKeyListener";
+import { PlayerTimeContext } from "components/PlayerTimeContext";
 import { List } from "immutable";
 import { Duration } from "luxon";
 import { useSnackbar } from "notistack";
 import { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import FilePlayer from "react-player/file";
-import { TimeSection } from "../../../common/ChordModel/ChordLine";
-import { noopFn, PlainFn } from "../../../common/PlainFn";
-import { useRegisterTopKeyListener } from "../../GlobalKeyListener";
-import { PlayerTimeContext } from "../../PlayerTimeContext";
 
 export interface ButtonActionAndState {
     action: PlainFn;

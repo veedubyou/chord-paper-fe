@@ -1,8 +1,8 @@
 import { Box, Grid } from "@mui/material";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import ChordSymbol from "components/display/ChordSymbol";
+import LyricTypography from "components/display/Lyric";
 import React from "react";
-import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
-import ChordSymbol from "../../display/ChordSymbol";
-import LyricTypography from "../../display/Lyric";
 
 interface PlayBlockProps {
     block: ChordBlock;

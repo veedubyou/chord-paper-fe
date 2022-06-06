@@ -1,3 +1,3 @@
-import { makeTextIcon } from "./makeTextIcon";
+import { makeTextIcon } from "components/icons/makeTextIcon";
 
 export default makeTextIcon("♭");

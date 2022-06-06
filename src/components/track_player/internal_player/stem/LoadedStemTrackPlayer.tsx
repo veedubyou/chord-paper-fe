@@ -1,5 +1,14 @@
 import { Box } from "@mui/material";
 import audioBufferToWav from "audiobuffer-to-wav";
+import { PlainFn } from "common/PlainFn";
+import ControlPane from "components/track_player/internal_player/ControlPane";
+import { makeFilePlayerProps } from "components/track_player/internal_player/reactPlayerProps";
+import { getAudioCtx } from "components/track_player/internal_player/stem/audioCtx";
+import StemTrackControlPane, {
+    ControlPaneButtonColour,
+    StemControl
+} from "components/track_player/internal_player/stem/StemTrackControlPane";
+import { PlayerControls } from "components/track_player/internal_player/usePlayerControls";
 import lodash from "lodash";
 import { useSnackbar } from "notistack";
 import React, {
@@ -8,19 +17,10 @@ import React, {
     useEffect,
     useMemo,
     useRef,
-    useState,
+    useState
 } from "react";
 import FilePlayer from "react-player/file";
 import * as Tone from "tone";
-import { PlainFn } from "../../../../common/PlainFn";
-import ControlPane from "../ControlPane";
-import { makeFilePlayerProps } from "../reactPlayerProps";
-import { PlayerControls } from "../usePlayerControls";
-import { getAudioCtx } from "./audioCtx";
-import StemTrackControlPane, {
-    ControlPaneButtonColour,
-    StemControl,
-} from "./StemTrackControlPane";
 
 interface StemToneNodes<StemKey extends string> {
     label: StemKey;

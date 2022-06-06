@@ -1,8 +1,8 @@
 import { Box, styled, Tooltip, Typography } from "@mui/material";
+import { greyTextColour, widthOfString } from "components/track_player/common";
+import { ControlButton } from "components/track_player/internal_player/ControlButton";
+import { ControlGroupBox } from "components/track_player/internal_player/ControlGroup";
 import React from "react";
-import { greyTextColour, widthOfString } from "../../common";
-import { ControlButton } from "../ControlButton";
-import { ControlGroupBox } from "../ControlGroup";
 
 const TempoBox = styled(ControlGroupBox)({
     justifyContent: "space-between",

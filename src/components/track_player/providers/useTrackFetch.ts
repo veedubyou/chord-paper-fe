@@ -1,7 +1,7 @@
-import { Track } from "../../../common/ChordModel/tracks/Track";
-import { TrackList } from "../../../common/ChordModel/tracks/TrackList";
-import { PlainFn } from "../../../common/PlainFn";
-import { useTracklistFetch } from "./useTracklistFetch";
+import { Track } from "common/ChordModel/tracks/Track";
+import { TrackList } from "common/ChordModel/tracks/TrackList";
+import { PlainFn } from "common/PlainFn";
+import { useTracklistFetch } from "components/track_player/providers/useTracklistFetch";
 
 interface LoadingTrackState {
     state: "loading";

@@ -4,18 +4,18 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Typography,
+    Typography
 } from "@mui/material";
+import { useErrorSnackbar } from "common/backend/errors";
+import { createSong, deleteSong } from "common/backend/requests";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { SongPath } from "common/paths";
+import { noopFn, PlainFn } from "common/PlainFn";
+import { User } from "components/user/userContext";
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useErrorSnackbar } from "../../../common/backend/errors";
-import { createSong, deleteSong } from "../../../common/backend/requests";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { SongPath } from "../../../common/paths";
-import { noopFn, PlainFn } from "../../../common/PlainFn";
-import { User } from "../../user/userContext";
 
 export const useCloudCreateSong = () => {
     const { enqueueSnackbar } = useSnackbar();

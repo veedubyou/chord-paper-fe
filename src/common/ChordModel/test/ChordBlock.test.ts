@@ -1,7 +1,7 @@
 import { getOrElse, isLeft } from "fp-ts/lib/Either";
-import { ChordBlock } from "../ChordBlock";
-import { Lyric } from "../Lyric";
-import "./matcher";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { Lyric } from "common/ChordModel/Lyric";
+import "common/ChordModel/test/matcher";
 
 describe("ChordBlock", () => {
     describe("de/serialization", () => {

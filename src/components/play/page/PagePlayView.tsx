@@ -1,9 +1,9 @@
 import { createTheme, Theme, ThemeProvider } from "@mui/material";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { PlainFn } from "common/PlainFn";
+import PagePlayContent, { PageDisplaySettings } from "components/play/page/PagePlayContent";
+import PagePlayMenu from "components/play/page/PagePlayMenu";
 import React, { useState } from "react";
-import { ChordSong } from "../../../common/ChordModel/ChordSong";
-import { PlainFn } from "../../../common/PlainFn";
-import PagePlayContent, { PageDisplaySettings } from "./PagePlayContent";
-import PagePlayMenu from "./PagePlayMenu";
 
 interface PagePlayViewProps {
     song: ChordSong;

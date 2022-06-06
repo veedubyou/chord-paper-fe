@@ -3,14 +3,14 @@ import {
     IconButton,
     InputAdornment,
     inputBaseClasses,
-    styled,
+    styled
 } from "@mui/material";
+import { MUIStyledProps } from "common/styledProps";
+import UnstyledControlledTextInput from "components/edit/ControlledTextInput";
+import { PlayerTimeContext } from "components/PlayerTimeContext";
+import { widthOfString } from "components/track_player/common";
 import { Duration } from "luxon";
 import React, { useContext, useRef, useState } from "react";
-import { MUIStyledProps } from "../../common/styledProps";
-import { PlayerTimeContext } from "../PlayerTimeContext";
-import { widthOfString } from "../track_player/common";
-import UnstyledControlledTextInput from "./ControlledTextInput";
 
 interface TimeInputProps extends MUIStyledProps {
     seconds: number | null;

@@ -1,19 +1,19 @@
 // generating all intervals for all notes
 
-import { mapObjectKey } from "../../mapObject";
+import { mapObjectKey } from "common/mapObject";
 import {
     AllIntervals,
     findInterval,
     Interval,
     IntervalUtility,
-} from "./Interval";
+} from "common/music/foundation/Interval";
 import {
     NoteUtilities,
     AllNotes,
     getNoteLetter,
     Note,
     NoteLetter,
-} from "./Note";
+} from "common/music/foundation/Note";
 
 type IntervalToNoteMapping = Record<Interval, Note>;
 type NoteToIntervalMapping = Record<Note, Interval>;

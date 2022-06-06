@@ -1,17 +1,17 @@
 import { Grid, Paper as UnstyledPaper, styled, Theme } from "@mui/material";
 import { SystemStyleObject } from "@mui/system";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { ChordSong } from "common/ChordModel/ChordSong";
+import { handleBatchLineDelete } from "components/edit/BatchDelete";
+import { useLineCopyHandler } from "components/edit/CopyAndPaste";
+import { InteractionContext, InteractionSetter } from "components/edit/InteractionContext";
+import Line from "components/edit/Line";
+import NewLine from "components/edit/NewLine";
+import { handleUndoRedo } from "components/edit/Undo";
+import { useRegisterKeyListener } from "components/GlobalKeyListener";
+import { ChordSongAction } from "components/reducer/reducer";
 import { List } from "immutable";
 import React, { useEffect, useMemo, useState } from "react";
-import { ChordLine } from "../../common/ChordModel/ChordLine";
-import { ChordSong } from "../../common/ChordModel/ChordSong";
-import { useRegisterKeyListener } from "../GlobalKeyListener";
-import { ChordSongAction } from "../reducer/reducer";
-import { handleBatchLineDelete } from "./BatchDelete";
-import { useLineCopyHandler } from "./CopyAndPaste";
-import { InteractionContext, InteractionSetter } from "./InteractionContext";
-import Line from "./Line";
-import NewLine from "./NewLine";
-import { handleUndoRedo } from "./Undo";
 
 const uninteractiveSx: SystemStyleObject<Theme> = {
     pointerEvents: "none",

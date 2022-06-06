@@ -1,8 +1,8 @@
-import { mapObjectKey } from "../../mapObject";
-import { Importance } from "../foundation/Importance";
-import { Interval } from "../foundation/Interval";
-import { AllNotes, Note } from "../foundation/Note";
-import { IntervalToNote } from "../foundation/NoteIntervalConversion";
+import { mapObjectKey } from "common/mapObject";
+import { Importance } from "common/music/foundation/Importance";
+import { Interval } from "common/music/foundation/Interval";
+import { AllNotes, Note } from "common/music/foundation/Note";
+import { IntervalToNote } from "common/music/foundation/NoteIntervalConversion";
 
 export type ScaleInterval = {
     interval: Interval;

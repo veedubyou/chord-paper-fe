@@ -1,7 +1,7 @@
 import { boolean } from "io-ts";
-import { ChordBlock } from "../ChordBlock";
-import { ChordLine, Section } from "../ChordLine";
-import { ChordSong, SongSummary } from "../ChordSong";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordLine, Section } from "common/ChordModel/ChordLine";
+import { ChordSong, SongSummary } from "common/ChordModel/ChordSong";
 
 type BlockMatcherFields = {
     chord: string;

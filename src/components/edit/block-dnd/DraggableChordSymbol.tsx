@@ -1,10 +1,10 @@
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { IDable } from "common/ChordModel/Collection";
+import ChordSymbol, { ChordSymbolProps } from "components/display/ChordSymbol";
+import { DNDChord, NewDNDChord } from "components/edit/block-dnd/common";
+import { isDropResult } from "components/edit/block-dnd/useChordDrop";
 import React, { useCallback } from "react";
 import { DragSourceMonitor, useDrag } from "react-dnd";
-import { ChordBlock } from "../../../common/ChordModel/ChordBlock";
-import { IDable } from "../../../common/ChordModel/Collection";
-import ChordSymbol, { ChordSymbolProps } from "../../display/ChordSymbol";
-import { DNDChord, NewDNDChord } from "./common";
-import { isDropResult } from "./useChordDrop";
 
 interface DraggableChordSymbolProps extends ChordSymbolProps {
     chordBlockID: IDable<ChordBlock>;

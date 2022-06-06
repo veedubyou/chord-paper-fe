@@ -1,9 +1,9 @@
 import { DiffMatchPatch, DiffOperation } from "diff-match-patch-typescript";
-import { findTabType, SizedTab } from "../../components/lyrics/Tab";
-import { ChordBlock } from "./ChordBlock";
-import { ChordLine } from "./ChordLine";
-import { Collection } from "./Collection";
-import { Lyric } from "./Lyric";
+import { findTabType, SizedTab } from "components/lyrics/Tab";
+import { ChordBlock } from "common/ChordModel/ChordBlock";
+import { ChordLine } from "common/ChordModel/ChordLine";
+import { Collection } from "common/ChordModel/Collection";
+import { Lyric } from "common/ChordModel/Lyric";
 
 const differ: DiffMatchPatch = (() => {
     const dmp = new DiffMatchPatch();
