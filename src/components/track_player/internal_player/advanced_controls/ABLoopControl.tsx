@@ -1,16 +1,15 @@
 import { FirstPage, Repeat } from "@mui/icons-material";
 import {
-    Box,
     styled,
     ToggleButton as UnstyledToggleButton,
-    ToggleButtonGroup,
+    ToggleButtonGroup
 } from "@mui/material";
 import { PlayerTimeContext } from "components/PlayerTimeContext";
 import {
     ABLoop,
     ABLoopMode,
     isABLoopSet,
-    isPlayableABLoop,
+    isPlayableABLoop
 } from "components/track_player/internal_player/ABLoop";
 import { ControlButton } from "components/track_player/internal_player/ControlButton";
 import ControlGroup from "components/track_player/internal_player/ControlGroup";
