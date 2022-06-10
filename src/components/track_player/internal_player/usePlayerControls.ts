@@ -1,6 +1,5 @@
 import { TimeSection } from "common/ChordModel/ChordLine";
 import { noopFn, PlainFn } from "common/PlainFn";
-import { useRegisterTopKeyListener } from "components/GlobalKeyListener";
 import { PlayerTimeContext } from "components/PlayerTimeContext";
 import {
     ABLoop,
@@ -8,7 +7,6 @@ import {
 } from "components/track_player/internal_player/ABLoop";
 import { List } from "immutable";
 import { Duration } from "luxon";
-import { useSnackbar } from "notistack";
 import { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import FilePlayer from "react-player/file";
@@ -119,8 +117,6 @@ export const usePlayerControls = (
     });
     const playerRef = useRef<ReactPlayer | FilePlayer>();
     const [tempoPercentage, setTempoPercentage] = useState(100);
-    const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
-    const { enqueueSnackbar } = useSnackbar();
 
     // a ref version so that a past render can access a future state
     // see outOfSyncWorkaround for the reason
@@ -143,60 +139,6 @@ export const usePlayerControls = (
             getPlayerTimeRef.current = getCurrentTime;
         }, [getPlayerTimeRef, getCurrentTime]);
     }
-
-    useEffect(() => {
-        const setABLoopToNow = () => {
-            const timeFormatted = Duration.fromMillis(
-                currentTimeRef.current * 1000
-            ).toFormat("m:ss");
-
-            setABLoop({
-                ...abLoop,
-                timeA: currentTimeRef.current,
-            });
-            enqueueSnackbar(
-                `Point A in A/B loop has been set to ${timeFormatted}`,
-                { variant: "info" }
-            );
-        };
-
-        const clearABLoop = () => {
-            setABLoop({
-                timeA: null,
-                mode: "disabled",
-            });
-
-            enqueueSnackbar(`A/B loop has been cleared`, {
-                variant: "info",
-            });
-        };
-
-        const handleKey = (event: KeyboardEvent) => {
-            const isCtrl = event.ctrlKey || event.metaKey;
-
-            if (isCtrl && event.code === "KeyA") {
-                if (abLoop.timeA !== null) {
-                    clearABLoop();
-                } else {
-                    setABLoopToNow();
-                }
-
-                event.preventDefault();
-                return true;
-            }
-
-            return false;
-        };
-
-        addTopKeyListener(handleKey);
-        return () => removeKeyListener(handleKey);
-    }, [
-        addTopKeyListener,
-        removeKeyListener,
-        enqueueSnackbar,
-        setABLoop,
-        abLoop,
-    ]);
 
     const seekTo = (time: number) => {
         if (time < 0) {
