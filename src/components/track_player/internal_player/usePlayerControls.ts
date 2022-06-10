@@ -2,8 +2,8 @@ import { TimeSection } from "common/ChordModel/ChordLine";
 import { noopFn, PlainFn } from "common/PlainFn";
 import { PlayerTimeContext } from "components/PlayerTimeContext";
 import {
-    ABLoop,
-    ABLoopDefaultLength,
+    ABLoop, isABLoopSet,
+    isPlayableABLoop
 } from "components/track_player/internal_player/ABLoop";
 import { List } from "immutable";
 import { Duration } from "luxon";
@@ -89,6 +89,7 @@ export const unfocusedControls: PlayerControls = {
     abLoop: {
         abLoop: {
             timeA: null,
+            timeB: null,
             mode: "disabled",
         },
         onChange: noopFn,
@@ -114,6 +115,7 @@ export const usePlayerControls = (
     const [currentTime, setCurrentTime] = useState(0);
     const [abLoop, setABLoop] = useState<ABLoop>({
         timeA: null,
+        timeB: null,
         mode: "disabled",
     });
     const playerRef = useRef<ReactPlayer | FilePlayer>();
@@ -329,13 +331,17 @@ export const usePlayerControls = (
             return;
         }
 
-        if (abLoop.timeA === null) {
+        if (!isABLoopSet(abLoop)) {
             return;
         }
 
-        const pointB: number = abLoop.timeA + ABLoopDefaultLength;
+        if (!isPlayableABLoop(abLoop)) {
+            return;
+        }
+
         const isOutsideABLoop =
-            playedSeconds < abLoop.timeA || playedSeconds >= pointB;
+            playedSeconds < abLoop.timeA || playedSeconds >= abLoop.timeB;
+
         if (!isOutsideABLoop) {
             return;
         }

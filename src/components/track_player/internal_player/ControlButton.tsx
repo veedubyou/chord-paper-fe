@@ -11,6 +11,7 @@ import { ButtonProps } from "@mui/material/Button";
 import ABLoopIcon from "components/icons/ABLoopIcon";
 import AIcon from "components/icons/AIcon";
 import BeginningIcon from "components/icons/BeginningIcon";
+import BIcon from "components/icons/BIcon";
 import FlatIcon from "components/icons/FlatIcon";
 import FlatSharpIcon from "components/icons/FlatSharpIcon";
 import JumpForwardIcon from "components/icons/ForwardIcon";
@@ -118,7 +119,7 @@ export const ControlButton = {
     ABLoopMenu: makeControlButton(
         <ABLoopIcon />,
         "ab-loop-menu",
-        "Set AB Loop",
+        "Set A/B Loop",
         "primary.main"
     ),
     TransposeMenu: makeControlButton(
@@ -155,6 +156,18 @@ export const ControlButton = {
         <AIcon />,
         "clear-point-a",
         "Clear Point A",
+        "primary.main"
+    ),
+    SetPointB: makeControlButton(
+        <BIcon />,
+        "set-point-b",
+        "Set Point B",
+        "action.active"
+    ),
+    ClearPointB: makeControlButton(
+        <BIcon />,
+        "clear-point-b",
+        "Clear Point B",
         "primary.main"
     ),
 };

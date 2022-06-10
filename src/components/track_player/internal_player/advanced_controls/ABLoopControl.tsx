@@ -1,5 +1,6 @@
 import { FirstPage, Repeat } from "@mui/icons-material";
 import {
+    Box,
     styled,
     ToggleButton as UnstyledToggleButton,
     ToggleButtonGroup,
@@ -8,9 +9,12 @@ import { PlayerTimeContext } from "components/PlayerTimeContext";
 import {
     ABLoop,
     ABLoopMode,
+    isABLoopSet,
+    isPlayableABLoop,
 } from "components/track_player/internal_player/ABLoop";
 import { ControlButton } from "components/track_player/internal_player/ControlButton";
 import ControlGroup from "components/track_player/internal_player/ControlGroup";
+import { useSnackbar } from "notistack";
 import { useContext } from "react";
 
 const ToggleButton = styled(UnstyledToggleButton)(({ theme }) => ({
@@ -27,34 +31,62 @@ const ABLoopControl: React.FC<ABLoopControlProps> = (
     props: ABLoopControlProps
 ): JSX.Element => {
     const getPlayerTimeRef = useContext(PlayerTimeContext);
+    const { enqueueSnackbar } = useSnackbar();
 
     const isPointASet = props.abLoop.timeA !== null;
+    const isPointBSet = props.abLoop.timeB !== null;
+
+    const getTime = (): number | null => {
+        const playerTimeFn = getPlayerTimeRef.current;
+
+        if (playerTimeFn === null) {
+            return null;
+        }
+
+        return playerTimeFn();
+    };
+
+    const ensureMode = (abLoop: ABLoop): ABLoopMode => {
+        if (!isABLoopSet(abLoop)) {
+            return abLoop.mode;
+        }
+
+        const abLoopDisabled = abLoop.mode === "disabled";
+
+        if (abLoopDisabled) {
+            const defaultABLoopMode = "rewind";
+            return defaultABLoopMode;
+        }
+
+        return abLoop.mode;
+    };
+
+    const setNewLoop = (newABLoop: ABLoop) => {
+        if (isABLoopSet(newABLoop)) {
+            if (!isPlayableABLoop(newABLoop)) {
+                enqueueSnackbar("Point A must be before Point B", {
+                    variant: "warning",
+                });
+
+                return;
+            }
+        }
+
+        const newMode = ensureMode(newABLoop);
+        props.onABLoopChange({ ...newABLoop, mode: newMode });
+    };
 
     const setPointA = () => {
-        const newTime = (function () {
-            const playerTimeFn = getPlayerTimeRef.current;
+        setNewLoop({
+            ...props.abLoop,
+            timeA: getTime(),
+        });
+    };
 
-            if (playerTimeFn === null) {
-                return null;
-            }
-
-            return playerTimeFn();
-        })();
-
-        const newMode: ABLoopMode = (function () {
-            const abLoopTurnedOff = props.abLoop.mode === "disabled";
-
-            if (abLoopTurnedOff) {
-                const defaultABLoopMode = "rewind";
-                return defaultABLoopMode;
-            }
-
-            return props.abLoop.mode;
-        })();
-
-        props.onABLoopChange({
-            timeA: newTime,
-            mode: newMode,
+    const setPointB = () => {
+        setNewLoop({
+            ...props.abLoop,
+            timeB: getTime(),
         });
     };
 
@@ -65,9 +97,20 @@ const ABLoopControl: React.FC<ABLoopControlProps> = (
         });
     };
 
+    const clearPointB = () => {
+        props.onABLoopChange({
+            ...props.abLoop,
+            timeB: null,
+        });
+    };
+
     const setAButton = <ControlButton.SetPointA onClick={setPointA} />;
     const clearAButton = <ControlButton.ClearPointA onClick={clearPointA} />;
     const aButton = isPointASet ? clearAButton : setAButton;
+
+    const setBButton = <ControlButton.SetPointB onClick={setPointB} />;
+    const clearBButton = <ControlButton.ClearPointB onClick={clearPointB} />;
+    const bButton = isPointBSet ? clearBButton : setBButton;
 
     const handleModeChange = (
         _event: React.MouseEvent<HTMLElement>,
@@ -85,6 +128,7 @@ const ABLoopControl: React.FC<ABLoopControlProps> = (
     return (
         <ControlGroup dividers="left">
             {aButton}
+            {bButton}
             <ToggleButtonGroup
                 size="small"
                 color="primary"
@@ -104,4 +148,3 @@ const ABLoopControl: React.FC<ABLoopControlProps> = (
 };
 
 export default ABLoopControl;
-
