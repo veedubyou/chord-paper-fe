@@ -6,7 +6,7 @@ import { makeFilePlayerProps } from "components/track_player/internal_player/rea
 import { getAudioCtx } from "components/track_player/internal_player/stem/audioCtx";
 import StemTrackControlPane, {
     ControlPaneButtonColour,
-    StemControl
+    StemControl,
 } from "components/track_player/internal_player/stem/StemTrackControlPane";
 import { PlayerControls } from "components/track_player/internal_player/usePlayerControls";
 import lodash from "lodash";
@@ -17,7 +17,7 @@ import React, {
     useEffect,
     useMemo,
     useRef,
-    useState
+    useState,
 } from "react";
 import FilePlayer from "react-player/file";
 import * as Tone from "tone";
@@ -203,8 +203,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
 
         // sync the time
         if (Math.abs(props.playerControls.currentTime - adjustedToneTime) > 1) {
-            Tone.Transport.seconds =
-                props.playerControls.currentTime / tempo;
+            Tone.Transport.seconds = props.playerControls.currentTime / tempo;
         }
     }, [
         props.playerControls.playing,
@@ -353,6 +352,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
                 onSkipForward={props.playerControls.skipForward}
                 onGoToBeginning={props.playerControls.goToBeginning}
                 tempo={props.playerControls.tempo}
+                abLoop={props.playerControls.abLoop}
                 transpose={{
                     level: playerState.masterPitchShift,
                     onChange: handlePitchShift,

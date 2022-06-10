@@ -8,6 +8,8 @@ import SkipForwardIcon from "@mui/icons-material/SkipNext";
 import SkipBackIcon from "@mui/icons-material/SkipPrevious";
 import { Button as UnstyledButton, styled, Tooltip } from "@mui/material";
 import { ButtonProps } from "@mui/material/Button";
+import ABLoopIcon from "components/icons/ABLoopIcon";
+import AIcon from "components/icons/AIcon";
 import BeginningIcon from "components/icons/BeginningIcon";
 import FlatIcon from "components/icons/FlatIcon";
 import FlatSharpIcon from "components/icons/FlatSharpIcon";
@@ -26,10 +28,8 @@ const makeControlButton = (
     child: React.ReactElement,
     key: string,
     tooltipMsg: string,
-    color: "primary" | "secondary"
+    color: "primary.main" | "secondary.main" | "action.active"
 ): React.FC<ButtonProps> => {
-    const buttonColor = color === "primary" ? "primary.main" : "secondary.main";
-
     // the keyboard usage of the player collides with any keyboard triggers of control buttons
     // so disable them entirely, which may happen through keyups
     const preventKeyInvocation = (
@@ -42,10 +42,10 @@ const makeControlButton = (
         <Tooltip key={key} title={tooltipMsg}>
             <span>
                 <Button
-                    {...props}
                     onKeyUp={preventKeyInvocation}
                     size="large"
-                    sx={{ color: buttonColor }}
+                    sx={{ color: color }}
+                    {...props}
                 >
                     {child}
                 </Button>
@@ -59,84 +59,102 @@ export const ControlButton = {
         <PlayIcon />,
         "play-button",
         "Play the damn song",
-        "primary"
+        "primary.main"
     ),
     Pause: makeControlButton(
         <PauseIcon />,
         "pause-button",
         "Pause",
-        "secondary"
+        "secondary.main"
     ),
     JumpBack: makeControlButton(
         <JumpBackIcon />,
         "jump-back-buttonn",
         "Jump Back",
-        "primary"
+        "primary.main"
     ),
     JumpForward: makeControlButton(
         <JumpForwardIcon />,
         "jump-forward-button",
         "Jump Forward",
-        "primary"
+        "primary.main"
     ),
     SkipBack: makeControlButton(
         <SkipBackIcon />,
         "skip-back-button",
         "Go back a section",
-        "primary"
+        "primary.main"
     ),
     SkipForward: makeControlButton(
         <SkipForwardIcon />,
         "skip-back-button",
         "Go forward a section",
-        "primary"
+        "primary.main"
     ),
     Beginning: makeControlButton(
         <BeginningIcon />,
         "beginning-button",
         "Go to Beginning",
-        "primary"
+        "primary.main"
     ),
     DecreaseTempo: makeControlButton(
         <DecreaseIcon />,
         "decrease-tempo-button",
         "Play slower",
-        "primary"
+        "primary.main"
     ),
     IncreaseTempo: makeControlButton(
         <IncreaseIcon />,
         "increase-tempo-button",
         "Play faster",
-        "primary"
+        "primary.main"
     ),
     TempoMenu: makeControlButton(
         <MetronomeIcon />,
         "tempo-menu",
         "Change tempo",
-        "primary"
+        "primary.main"
+    ),
+    ABLoopMenu: makeControlButton(
+        <ABLoopIcon />,
+        "ab-loop-menu",
+        "Set AB Loop",
+        "primary.main"
     ),
     TransposeMenu: makeControlButton(
         <FlatSharpIcon />,
         "transpose-menu",
         "Change pitch",
-        "primary"
+        "primary.main"
     ),
     TransposeDown: makeControlButton(
         <FlatIcon />,
         "transpose-down-button",
         "Down half step",
-        "primary"
+        "primary.main"
     ),
     TransposeUp: makeControlButton(
         <SharpIcon />,
         "transpose-up-button",
         "Up half step",
-        "primary"
+        "primary.main"
     ),
     CloseMenu: makeControlButton(
         <CloseIcon />,
         "close-menu",
         "Close Menu",
-        "secondary"
+        "secondary.main"
+    ),
+    SetPointA: makeControlButton(
+        <AIcon />,
+        "set-point-a",
+        "Set Point A",
+        "action.active"
+    ),
+    ClearPointA: makeControlButton(
+        <AIcon />,
+        "clear-point-a",
+        "Clear Point A",
+        "primary.main"
     ),
 };

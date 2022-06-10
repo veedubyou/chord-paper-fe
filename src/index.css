@@ -37,3 +37,9 @@ code {
     font-display: swap;
     src: url("./assets/fonts/Merriweather-Regular.woff2") format("woff2");
 }
+
+@font-face {
+    font-family: "PressStart";
+    font-display: swap;
+    src: url("./assets/fonts/PressStart2P-Regular.ttf") format('truetype');
+}

@@ -4,9 +4,11 @@ import { DataTestID } from "common/DataTestID";
 import { PlainFn } from "common/PlainFn";
 import {
     sectionLabelStyle,
-    sectionTypographyVariant
+    sectionTypographyVariant,
 } from "components/display/SectionLabel";
-import UnstyledEditableTypography, { EditControl } from "components/edit/EditableTypography";
+import UnstyledEditableTypography, {
+    EditControl,
+} from "components/edit/EditableTypography";
 import { useEditingState } from "components/edit/InteractionContext";
 import { makeStyledTooltipMenu } from "components/edit/StyledTooltip";
 import TimeInput from "components/edit/TimeInput";
@@ -81,7 +83,13 @@ const WithSection: React.FC<WithSectionProps> = (
         const time: number | null =
             section?.type === "time" ? section.time : null;
 
-        return <TimeInput seconds={time} onFinish={handleTimeChange} />;
+        return (
+            <TimeInput
+                seconds={time}
+                onFinish={handleTimeChange}
+                label="timestamp"
+            />
+        );
     })();
 
     // prevent tooltip from stealing focus from the editable textfield

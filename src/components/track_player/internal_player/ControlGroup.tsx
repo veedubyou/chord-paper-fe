@@ -7,6 +7,7 @@ export const ControlGroupBox = styled(Box)({
     alignContent: "center",
     flexShrink: 0,
     flexGrow: 0,
+    height: "100%",
 });
 
 export const VerticalMiddleDivider = styled(Divider)(({ theme }) => ({

@@ -7,7 +7,6 @@ import {
     TypographyVariant,
     useTheme
 } from "@mui/material";
-import { grey } from "@mui/material/colors";
 import { MUIStyledProps } from "common/styledProps";
 import React from "react";
 
@@ -15,6 +14,7 @@ interface ControlledTextInputProps extends MUIStyledProps {
     value: string;
     onValueChange: (newValue: string) => void;
     onFinish?: (newValue: string) => void;
+    label?: string;
     width?: string;
     variant: TextFieldProps["variant"];
     InputProps?: TextFieldProps["InputProps"];
@@ -71,7 +71,6 @@ const ControlledTextInput: React.FC<ControlledTextInputProps> = (
                 padding: padding,
                 fontSize: fontSize,
                 opacity: 1,
-                background: grey[100],
             },
         };
 
@@ -87,6 +86,7 @@ const ControlledTextInput: React.FC<ControlledTextInputProps> = (
             autoFocus
             className={props.className}
             variant={props.variant}
+            label={props.label}
             inputProps={{
                 "data-testid": "InnerInput",
                 spellCheck: false,

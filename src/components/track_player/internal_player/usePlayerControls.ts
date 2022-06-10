@@ -1,10 +1,12 @@
 import { TimeSection } from "common/ChordModel/ChordLine";
 import { noopFn, PlainFn } from "common/PlainFn";
-import { useRegisterTopKeyListener } from "components/GlobalKeyListener";
 import { PlayerTimeContext } from "components/PlayerTimeContext";
+import {
+    ABLoop,
+    ABLoopDefaultLength,
+} from "components/track_player/internal_player/ABLoop";
 import { List } from "immutable";
 import { Duration } from "luxon";
-import { useSnackbar } from "notistack";
 import { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import FilePlayer from "react-player/file";
@@ -38,6 +40,10 @@ export interface PlayerControls {
         percentage: number;
         onChange: (val: number) => void;
     };
+    abLoop: {
+        abLoop: ABLoop;
+        onChange: (newABLoop: ABLoop) => void;
+    };
 }
 
 class NoopMutableRef {
@@ -53,12 +59,6 @@ class NoopMutableRef {
         return undefined;
     }
 }
-
-interface ABLoop {
-    pointA: number | null;
-}
-
-const ABLoopLength = 5;
 
 export const unfocusedControls: PlayerControls = {
     playerRef: new NoopMutableRef(),
@@ -85,6 +85,13 @@ export const unfocusedControls: PlayerControls = {
         percentage: 100,
         onChange: noopFn,
     },
+    abLoop: {
+        abLoop: {
+            timeA: null,
+            mode: "disabled",
+        },
+        onChange: noopFn,
+    },
 };
 
 const getSection = (
@@ -105,12 +112,11 @@ export const usePlayerControls = (
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [abLoop, setABLoop] = useState<ABLoop>({
-        pointA: null,
+        timeA: null,
+        mode: "disabled",
     });
     const playerRef = useRef<ReactPlayer | FilePlayer>();
     const [tempoPercentage, setTempoPercentage] = useState(100);
-    const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
-    const { enqueueSnackbar } = useSnackbar();
 
     // a ref version so that a past render can access a future state
     // see outOfSyncWorkaround for the reason
@@ -134,59 +140,6 @@ export const usePlayerControls = (
         }, [getPlayerTimeRef, getCurrentTime]);
     }
 
-    useEffect(() => {
-        const setABLoopToNow = () => {
-            const timeFormatted = Duration.fromMillis(
-                currentTimeRef.current * 1000
-            ).toFormat("m:ss");
-
-            setABLoop({
-                ...abLoop,
-                pointA: currentTimeRef.current,
-            });
-            enqueueSnackbar(
-                `Point A in A/B loop has been set to ${timeFormatted}`,
-                { variant: "info" }
-            );
-        };
-
-        const clearABLoop = () => {
-            setABLoop({
-                pointA: null,
-            });
-
-            enqueueSnackbar(`A/B loop has been cleared`, {
-                variant: "info",
-            });
-        };
-
-        const handleKey = (event: KeyboardEvent) => {
-            const isCtrl = event.ctrlKey || event.metaKey;
-
-            if (isCtrl && event.code === "KeyA") {
-                if (abLoop.pointA !== null) {
-                    clearABLoop();
-                } else {
-                    setABLoopToNow();
-                }
-
-                event.preventDefault();
-                return true;
-            }
-
-            return false;
-        };
-
-        addTopKeyListener(handleKey);
-        return () => removeKeyListener(handleKey);
-    }, [
-        addTopKeyListener,
-        removeKeyListener,
-        enqueueSnackbar,
-        setABLoop,
-        abLoop,
-    ]);
-
     const seekTo = (time: number) => {
         if (time < 0) {
             time = 0;
@@ -203,7 +156,7 @@ export const usePlayerControls = (
         setPlaying(false);
     };
 
-    const outOfSyncWorkaround = () => {
+    const outOfSyncWorkaround = (nextSeekTime?: number) => {
         // this is pretty unpleasant, but on certain videos, React Player can run into a race condition where
         // it doesn't respond to playing=true/false, so the play and pause button doesn't actually affect the track
         // this can be repro'd inconsistently by quickly toggling play/pause several times, or jump back, then pause in the compact player
@@ -213,13 +166,14 @@ export const usePlayerControls = (
         // however, it can't be too soon, hence the set timeout
         // and also we would want to seek to the time of the most updated time, not the one during the current render, hence the use of ref
         setTimeout(() => {
-            seekTo(currentTimeRef.current);
+            const seekTime = nextSeekTime ?? currentTimeRef.current;
+            seekTo(seekTime);
         }, 200);
     };
 
-    const pauseAction = () => {
+    const pauseAction = (nextSeekTime?: number) => {
         setPlaying(false);
-        outOfSyncWorkaround();
+        outOfSyncWorkaround(nextSeekTime);
     };
 
     const playAction = () => {
@@ -364,13 +318,32 @@ export const usePlayerControls = (
     })();
 
     const handleABLoop = (playedSeconds: number) => {
-        if (abLoop.pointA === null) {
+        if (abLoop.mode === "disabled") {
             return;
         }
 
-        const pointB: number = abLoop.pointA + ABLoopLength;
-        if (playedSeconds < abLoop.pointA || playedSeconds >= pointB) {
-            seekTo(abLoop.pointA);
+        if (abLoop.timeA === null) {
+            return;
+        }
+
+        const pointB: number = abLoop.timeA + ABLoopDefaultLength;
+        const isOutsideABLoop =
+            playedSeconds < abLoop.timeA || playedSeconds >= pointB;
+        if (!isOutsideABLoop) {
+            return;
+        }
+
+        switch (abLoop.mode) {
+            case "loop": {
+                seekTo(abLoop.timeA);
+                return;
+            }
+
+            case "rewind": {
+                seekTo(abLoop.timeA);
+                pauseAction(abLoop.timeA);
+                return;
+            }
         }
     };
 
@@ -407,6 +380,10 @@ export const usePlayerControls = (
         tempo: {
             percentage: tempoPercentage,
             onChange: setTempoPercentage,
+        },
+        abLoop: {
+            abLoop: abLoop,
+            onChange: setABLoop,
         },
     };
 };
