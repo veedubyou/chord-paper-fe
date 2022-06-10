@@ -10,6 +10,7 @@ import { Duration } from "luxon";
 import { useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import FilePlayer from "react-player/file";
+import YouTubePlayer from "react-player/youtube";
 
 export interface ButtonActionAndState {
     action: PlainFn;
@@ -157,18 +158,24 @@ export const usePlayerControls = (
     };
 
     const outOfSyncWorkaround = (nextSeekTime?: number) => {
-        // this is pretty unpleasant, but on certain videos, React Player can run into a race condition where
-        // it doesn't respond to playing=true/false, so the play and pause button doesn't actually affect the track
-        // this can be repro'd inconsistently by quickly toggling play/pause several times, or jump back, then pause in the compact player
-        //
-        // attempt at throttling didn't work, the wonkiness can occur even at 5 seconds of throttling depending on the course of events
-        // one observation is that this wonky state can be reset out of by performing a seek after it gets into this state
-        // however, it can't be too soon, hence the set timeout
-        // and also we would want to seek to the time of the most updated time, not the one during the current render, hence the use of ref
-        setTimeout(() => {
-            const seekTime = nextSeekTime ?? currentTimeRef.current;
-            seekTo(seekTime);
-        }, 200);
+        const currentURL = playerRef.current?.props.url;
+        const applyWorkaround =
+            typeof currentURL === "string" && YouTubePlayer.canPlay(currentURL);
+
+        if (applyWorkaround) {
+            // this is pretty unpleasant, but on certain videos, React Player can run into a race condition where
+            // it doesn't respond to playing=true/false, so the play and pause button doesn't actually affect the track
+            // this can be repro'd inconsistently by quickly toggling play/pause several times, or jump back, then pause in the compact player
+            //
+            // attempt at throttling didn't work, the wonkiness can occur even at 5 seconds of throttling depending on the course of events
+            // one observation is that this wonky state can be reset out of by performing a seek after it gets into this state
+            // however, it can't be too soon, hence the set timeout
+            // and also we would want to seek to the time of the most updated time, not the one during the current render, hence the use of ref
+            setTimeout(() => {
+                const seekTime = nextSeekTime ?? currentTimeRef.current;
+                seekTo(seekTime);
+            }, 200);
+        }
     };
 
     const pauseAction = (nextSeekTime?: number) => {
