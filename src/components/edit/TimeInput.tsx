@@ -1,9 +1,10 @@
-import SlowMotionVideoIcon from "@mui/icons-material/SlowMotionVideo";
+import CurrentTimeIcon from "@mui/icons-material/Downloading";
 import {
+    FormControl,
     IconButton,
     InputAdornment,
     inputBaseClasses,
-    styled
+    styled,
 } from "@mui/material";
 import { MUIStyledProps } from "common/styledProps";
 import UnstyledControlledTextInput from "components/edit/ControlledTextInput";
@@ -15,6 +16,7 @@ import React, { useContext, useRef, useState } from "react";
 interface TimeInputProps extends MUIStyledProps {
     seconds: number | null;
     onFinish?: (newSeconds: number | null) => void;
+    label?: string;
 }
 
 const ControlledTextInput = styled(UnstyledControlledTextInput)(
@@ -126,13 +128,14 @@ const TimeInput: React.FC<TimeInputProps> = (
     };
 
     const buttonAdornment = (
-        <InputAdornment position="start">
+        <InputAdornment position="end">
             <IconButton
-                edge="start"
+                edge="end"
                 onClick={handleCurrentTimeButton}
                 size="large"
+                sx={{ padding: 0.5 }}
             >
-                <SlowMotionVideoIcon />
+                <CurrentTimeIcon />
             </IconButton>
         </InputAdornment>
     );
@@ -160,22 +163,25 @@ const TimeInput: React.FC<TimeInputProps> = (
     const error = !validateTimeValue(value);
 
     return (
-        <ControlledTextInput
-            className={props.className}
-            placeholder="0:00"
-            value={formattedValue}
-            onValueChange={handleValueChange}
-            variant="standard"
-            typographyVariant="body1"
-            onFinish={() => finish(value)}
-            paddingSpacing={0.5}
-            error={error}
-            InputProps={{
-                startAdornment: buttonAdornment,
-                disableUnderline: !error,
-            }}
-            inputRef={inputBoxRef}
-        />
+        <FormControl variant="filled" sx={{ margin: 1 }}>
+            <ControlledTextInput
+                label={props.label}
+                className={props.className}
+                placeholder="0:00"
+                value={formattedValue}
+                onValueChange={handleValueChange}
+                variant="outlined"
+                typographyVariant="body1"
+                onFinish={() => finish(value)}
+                paddingSpacing={0.5}
+                error={error}
+                InputProps={{
+                    endAdornment: buttonAdornment,
+                    disableUnderline: !error,
+                }}
+                inputRef={inputBoxRef}
+            />
+        </FormControl>
     );
 };
 

@@ -1,3 +1,3 @@
-import { makeTextIcon } from "components/icons/makeTextIcon";
+import { makeRobotoIcon } from "components/icons/makeTextIcon";
 
-export default makeTextIcon("♭");
+export default makeRobotoIcon("♭");

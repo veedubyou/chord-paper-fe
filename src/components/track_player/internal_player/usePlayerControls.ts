@@ -2,6 +2,10 @@ import { TimeSection } from "common/ChordModel/ChordLine";
 import { noopFn, PlainFn } from "common/PlainFn";
 import { useRegisterTopKeyListener } from "components/GlobalKeyListener";
 import { PlayerTimeContext } from "components/PlayerTimeContext";
+import {
+    ABLoop,
+    ABLoopDefaultLength,
+} from "components/track_player/internal_player/ABLoop";
 import { List } from "immutable";
 import { Duration } from "luxon";
 import { useSnackbar } from "notistack";
@@ -38,6 +42,10 @@ export interface PlayerControls {
         percentage: number;
         onChange: (val: number) => void;
     };
+    abLoop: {
+        abLoop: ABLoop;
+        onChange: (newABLoop: ABLoop) => void;
+    };
 }
 
 class NoopMutableRef {
@@ -53,12 +61,6 @@ class NoopMutableRef {
         return undefined;
     }
 }
-
-interface ABLoop {
-    pointA: number | null;
-}
-
-const ABLoopLength = 5;
 
 export const unfocusedControls: PlayerControls = {
     playerRef: new NoopMutableRef(),
@@ -85,6 +87,13 @@ export const unfocusedControls: PlayerControls = {
         percentage: 100,
         onChange: noopFn,
     },
+    abLoop: {
+        abLoop: {
+            timeA: null,
+            mode: "disabled",
+        },
+        onChange: noopFn,
+    },
 };
 
 const getSection = (
@@ -105,7 +114,8 @@ export const usePlayerControls = (
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [abLoop, setABLoop] = useState<ABLoop>({
-        pointA: null,
+        timeA: null,
+        mode: "disabled",
     });
     const playerRef = useRef<ReactPlayer | FilePlayer>();
     const [tempoPercentage, setTempoPercentage] = useState(100);
@@ -142,7 +152,7 @@ export const usePlayerControls = (
 
             setABLoop({
                 ...abLoop,
-                pointA: currentTimeRef.current,
+                timeA: currentTimeRef.current,
             });
             enqueueSnackbar(
                 `Point A in A/B loop has been set to ${timeFormatted}`,
@@ -152,7 +162,8 @@ export const usePlayerControls = (
 
         const clearABLoop = () => {
             setABLoop({
-                pointA: null,
+                timeA: null,
+                mode: "disabled",
             });
 
             enqueueSnackbar(`A/B loop has been cleared`, {
@@ -164,7 +175,7 @@ export const usePlayerControls = (
             const isCtrl = event.ctrlKey || event.metaKey;
 
             if (isCtrl && event.code === "KeyA") {
-                if (abLoop.pointA !== null) {
+                if (abLoop.timeA !== null) {
                     clearABLoop();
                 } else {
                     setABLoopToNow();
@@ -203,7 +214,7 @@ export const usePlayerControls = (
         setPlaying(false);
     };
 
-    const outOfSyncWorkaround = () => {
+    const outOfSyncWorkaround = (nextSeekTime?: number) => {
         // this is pretty unpleasant, but on certain videos, React Player can run into a race condition where
         // it doesn't respond to playing=true/false, so the play and pause button doesn't actually affect the track
         // this can be repro'd inconsistently by quickly toggling play/pause several times, or jump back, then pause in the compact player
@@ -213,13 +224,14 @@ export const usePlayerControls = (
         // however, it can't be too soon, hence the set timeout
         // and also we would want to seek to the time of the most updated time, not the one during the current render, hence the use of ref
         setTimeout(() => {
-            seekTo(currentTimeRef.current);
+            const seekTime = nextSeekTime ?? currentTimeRef.current;
+            seekTo(seekTime);
         }, 200);
     };
 
-    const pauseAction = () => {
+    const pauseAction = (nextSeekTime?: number) => {
         setPlaying(false);
-        outOfSyncWorkaround();
+        outOfSyncWorkaround(nextSeekTime);
     };
 
     const playAction = () => {
@@ -364,13 +376,32 @@ export const usePlayerControls = (
     })();
 
     const handleABLoop = (playedSeconds: number) => {
-        if (abLoop.pointA === null) {
+        if (abLoop.mode === "disabled") {
             return;
         }
 
-        const pointB: number = abLoop.pointA + ABLoopLength;
-        if (playedSeconds < abLoop.pointA || playedSeconds >= pointB) {
-            seekTo(abLoop.pointA);
+        if (abLoop.timeA === null) {
+            return;
+        }
+
+        const pointB: number = abLoop.timeA + ABLoopDefaultLength;
+        const isOutsideABLoop =
+            playedSeconds < abLoop.timeA || playedSeconds >= pointB;
+        if (!isOutsideABLoop) {
+            return;
+        }
+
+        switch (abLoop.mode) {
+            case "loop": {
+                seekTo(abLoop.timeA);
+                return;
+            }
+
+            case "rewind": {
+                seekTo(abLoop.timeA);
+                pauseAction(abLoop.timeA);
+                return;
+            }
         }
     };
 
@@ -407,6 +438,10 @@ export const usePlayerControls = (
         tempo: {
             percentage: tempoPercentage,
             onChange: setTempoPercentage,
+        },
+        abLoop: {
+            abLoop: abLoop,
+            onChange: setABLoop,
         },
     };
 };

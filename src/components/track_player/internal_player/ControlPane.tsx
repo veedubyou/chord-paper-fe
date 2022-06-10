@@ -4,9 +4,12 @@ import { useRegisterTopKeyListener } from "components/GlobalKeyListener";
 import { controlPaneStyle } from "components/track_player/common";
 import AdvancedControls from "components/track_player/internal_player/advanced_controls/AdvancedControls";
 import { ControlButton } from "components/track_player/internal_player/ControlButton";
-import ControlGroup, { ControlGroupBox } from "components/track_player/internal_player/ControlGroup";
+import ControlGroup, {
+    ControlGroupBox,
+} from "components/track_player/internal_player/ControlGroup";
 import SectionLabel from "components/track_player/internal_player/SectionLabel";
 import { ButtonActionAndState } from "components/track_player/internal_player/usePlayerControls";
+import { ABLoop } from "components/track_player/internal_player/ABLoop";
 import React, { useEffect } from "react";
 
 interface ControlPaneProps {
@@ -21,6 +24,10 @@ interface ControlPaneProps {
     tempo: {
         percentage: number;
         onChange: (newPercentage: number) => void;
+    };
+    abLoop: {
+        abLoop: ABLoop;
+        onChange: (newABLoop: ABLoop) => void;
     };
     transpose?: {
         level: number;
@@ -119,6 +126,7 @@ const ControlPane: React.FC<ControlPaneProps> = (
             <RightJustifiedControlBox>
                 <AdvancedControls
                     tempo={props.tempo}
+                    abLoop={props.abLoop}
                     transpose={props.transpose}
                 />
             </RightJustifiedControlBox>

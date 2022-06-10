@@ -49,6 +49,7 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
                 onSkipForward={props.playerControls.skipForward}
                 onGoToBeginning={props.playerControls.goToBeginning}
                 tempo={props.playerControls.tempo}
+                abLoop={props.playerControls.abLoop}
             />
         </Box>
     );
