@@ -172,7 +172,6 @@ export const usePlayerControls = (
             // however, it can't be too soon, hence the set timeout
             // and also we would want to seek to the time of the most updated time, not the one during the current render, hence the use of ref
             setTimeout(() => {
-                console.log("workaround working");
                 const seekTime = nextSeekTime ?? currentTimeRef.current;
                 seekTo(seekTime);
             }, 200);
