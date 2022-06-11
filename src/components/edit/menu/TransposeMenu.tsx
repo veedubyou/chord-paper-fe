@@ -1,13 +1,13 @@
 import {
+    Box,
     Button,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
     FormControl as UnstyledFormControl,
-    Grid,
-    InputLabel,
-    MenuItem,
+    FormHelperText,
+    Grid, MenuItem,
     Select as UnstyledSelect,
     SelectChangeEvent,
     styled
@@ -69,7 +69,6 @@ const TransposeMenu: React.FC<TransposeMenuProps> = (
     };
 
     const createKeySelect = (
-        id: string,
         currentKey: Note,
         changeHandler: (event: SelectChangeEvent<unknown>) => void
     ) => {
@@ -80,7 +79,7 @@ const TransposeMenu: React.FC<TransposeMenuProps> = (
         }
 
         return (
-            <Select id={id} value={currentKey} onChange={changeHandler}>
+            <Select value={currentKey} onChange={changeHandler}>
                 {menuItems}
             </Select>
         );
@@ -93,26 +92,20 @@ const TransposeMenu: React.FC<TransposeMenuProps> = (
                 <Grid container direction="row">
                     <Grid item>
                         <FormControl>
-                            <InputLabel htmlFor="original-key">
-                                Original Key
-                            </InputLabel>
                             {createKeySelect(
-                                "original-key",
                                 keySelection.originalKey,
                                 keySelectChangeHandler("originalKey")
                             )}
+                            <FormHelperText>Original Key</FormHelperText>
                         </FormControl>
                     </Grid>
                     <Grid item>
                         <FormControl>
-                            <InputLabel htmlFor="transposed-key">
-                                Transposed Key
-                            </InputLabel>
                             {createKeySelect(
-                                "transposed-key",
                                 keySelection.transposedKey,
                                 keySelectChangeHandler("transposedKey")
                             )}
+                            <FormHelperText>Transposed Key</FormHelperText>
                         </FormControl>
                     </Grid>
                 </Grid>
