@@ -1,5 +1,6 @@
 import { FirstPage, Repeat } from "@mui/icons-material";
 import {
+    Collapse,
     styled,
     ToggleButton as UnstyledToggleButton,
     ToggleButtonGroup
@@ -7,12 +8,13 @@ import {
 import { PlayerTimeContext } from "components/PlayerTimeContext";
 import {
     ABLoop,
-    ABLoopMode,
-    isABLoopSet,
-    isPlayableABLoop
+    ABLoopMode
 } from "components/track_player/internal_player/ABLoop";
 import { ControlButton } from "components/track_player/internal_player/ControlButton";
-import ControlGroup from "components/track_player/internal_player/ControlGroup";
+import ControlGroup, {
+    ControlGroupBox
+} from "components/track_player/internal_player/ControlGroup";
+import { Either, isLeft } from "fp-ts/lib/Either";
 import { useSnackbar } from "notistack";
 import { useContext } from "react";
 
@@ -32,8 +34,12 @@ const ABLoopControl: React.FC<ABLoopControlProps> = (
     const getPlayerTimeRef = useContext(PlayerTimeContext);
     const { enqueueSnackbar } = useSnackbar();
 
-    const isPointASet = props.abLoop.timeA !== null;
-    const isPointBSet = props.abLoop.timeB !== null;
+    const abLoop = props.abLoop;
+
+    const isPointASet = abLoop.timeA !== null;
+    const isPointBSet = !abLoop.isDefaultLoop() && abLoop.timeB !== null;
+    const isDefaultLoopSet = abLoop.isDefaultLoop();
+    const showBButton = !isDefaultLoopSet;
 
     const getTime = (): number | null => {
         const playerTimeFn = getPlayerTimeRef.current;
@@ -46,7 +52,7 @@ const ABLoopControl: React.FC<ABLoopControlProps> = (
     };
 
     const ensureMode = (abLoop: ABLoop): ABLoopMode => {
-        if (!isABLoopSet(abLoop)) {
+        if (!abLoop.isSet()) {
             return abLoop.mode;
         }
 
@@ -61,47 +67,45 @@ const ABLoopControl: React.FC<ABLoopControlProps> = (
     };
 
     const setNewLoop = (newABLoop: ABLoop) => {
-        if (isABLoopSet(newABLoop)) {
-            if (!isPlayableABLoop(newABLoop)) {
-                enqueueSnackbar("Point A must be before Point B", {
-                    variant: "warning",
-                });
+        const newMode = ensureMode(newABLoop);
+        props.onABLoopChange(newABLoop.setMode(newMode));
+    };
 
-                return;
-            }
+    const checkErrorAndSetNewLoop = (
+        newABLoopResult: Either<Error, ABLoop>
+    ) => {
+        if (isLeft(newABLoopResult)) {
+            enqueueSnackbar(newABLoopResult.left.message, {
+                variant: "warning",
+            });
+
+            return;
         }
 
-        const newMode = ensureMode(newABLoop);
-        props.onABLoopChange({ ...newABLoop, mode: newMode });
+        setNewLoop(newABLoopResult.right);
     };
 
     const setPointA = () => {
-        setNewLoop({
-            ...props.abLoop,
-            timeA: getTime(),
-        });
+        checkErrorAndSetNewLoop(abLoop.setA(getTime()));
     };
 
     const setPointB = () => {
-        setNewLoop({
-            ...props.abLoop,
-            timeB: getTime(),
-        });
+        checkErrorAndSetNewLoop(abLoop.setB(getTime()));
     };
 
     const clearPointA = () => {
-        props.onABLoopChange({
-            ...props.abLoop,
-            timeA: null,
-        });
+        setNewLoop(abLoop.clearA());
     };
 
     const clearPointB = () => {
-        props.onABLoopChange({
-            ...props.abLoop,
-            timeB: null,
-        });
+        setNewLoop(abLoop.clearB());
     };
+
+    const setDefaultLoop = () => {
+        setNewLoop(abLoop.setDefaultLoop());
+    };
+
+    const clearDefaultLoop = clearPointB;
 
     const setAButton = <ControlButton.SetPointA onClick={setPointA} />;
     const clearAButton = <ControlButton.ClearPointA onClick={clearPointA} />;
@@ -111,6 +115,16 @@ const ABLoopControl: React.FC<ABLoopControlProps> = (
     const clearBButton = <ControlButton.ClearPointB onClick={clearPointB} />;
     const bButton = isPointBSet ? clearBButton : setBButton;
 
+    const enableDefaultLoopButton = (
+        <ControlButton.EnableDefaultLoop onClick={setDefaultLoop} />
+    );
+    const disableDefaultLoopButton = (
+        <ControlButton.DisableDefaultLoop onClick={clearDefaultLoop} />
+    );
+    const defaultLoopButton = isDefaultLoopSet
+        ? disableDefaultLoopButton
+        : enableDefaultLoopButton;
+
     const handleModeChange = (
         _event: React.MouseEvent<HTMLElement>,
         changedMode: "loop" | "rewind" | null
@@ -118,20 +132,22 @@ const ABLoopControl: React.FC<ABLoopControlProps> = (
         const newMode: "loop" | "rewind" | "disabled" =
             changedMode ?? "disabled";
 
-        props.onABLoopChange({
-            ...props.abLoop,
-            mode: newMode,
-        });
+        props.onABLoopChange(abLoop.setMode(newMode));
     };
 
     return (
         <ControlGroup dividers="left">
-            {aButton}
-            {bButton}
+            <ControlGroupBox>
+                {aButton}
+                <Collapse in={showBButton} orientation="horizontal">
+                    {bButton}
+                </Collapse>
+            </ControlGroupBox>
+            {defaultLoopButton}
             <ToggleButtonGroup
                 size="small"
                 color="primary"
-                value={props.abLoop.mode}
+                value={abLoop.mode}
                 onChange={handleModeChange}
                 exclusive
             >
