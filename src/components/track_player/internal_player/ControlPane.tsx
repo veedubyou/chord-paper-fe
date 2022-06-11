@@ -2,14 +2,13 @@ import { Box, styled } from "@mui/material";
 import { PlainFn } from "common/PlainFn";
 import { useRegisterTopKeyListener } from "components/GlobalKeyListener";
 import { controlPaneStyle } from "components/track_player/common";
+import { ABLoop } from "components/track_player/internal_player/ABLoop";
 import AdvancedControls from "components/track_player/internal_player/advanced_controls/AdvancedControls";
 import { ControlButton } from "components/track_player/internal_player/ControlButton";
 import ControlGroup, {
-    ControlGroupBox,
+    ControlGroupBox
 } from "components/track_player/internal_player/ControlGroup";
-import SectionLabel from "components/track_player/internal_player/SectionLabel";
 import { ButtonActionAndState } from "components/track_player/internal_player/usePlayerControls";
-import { ABLoop } from "components/track_player/internal_player/ABLoop";
 import React, { useEffect } from "react";
 
 interface ControlPaneProps {
@@ -122,7 +121,6 @@ const ControlPane: React.FC<ControlPaneProps> = (
                     onClick={props.onSkipForward.action}
                 />
             </ControlGroup>
-            <SectionLabel value={props.sectionLabel} />
             <RightJustifiedControlBox>
                 <AdvancedControls
                     tempo={props.tempo}
