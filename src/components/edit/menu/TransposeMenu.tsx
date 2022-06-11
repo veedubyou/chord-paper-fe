@@ -6,10 +6,11 @@ import {
     DialogTitle,
     FormControl as UnstyledFormControl,
     FormHelperText,
-    Grid, MenuItem,
+    Grid,
+    MenuItem,
     Select as UnstyledSelect,
     SelectChangeEvent,
-    styled
+    styled,
 } from "@mui/material";
 import { ChordSong } from "common/ChordModel/ChordSong";
 import { AllNotes, Note } from "common/music/foundation/Note";
