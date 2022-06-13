@@ -296,7 +296,10 @@ export class ChordSong
             currentSection.push(line);
         });
 
-        allSections = allSections.push(List(currentSection));
+        const currentSectionHasContent = currentSection.length > 0;
+        if (currentSectionHasContent) {
+            allSections = allSections.push(List(currentSection));
+        }
 
         return allSections;
     }

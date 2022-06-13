@@ -6,10 +6,12 @@ import CenteredLayout from "components/display/CenteredLayout";
 import LoadingRender from "components/loading/LoadingRender";
 import PagePlayView from "components/play/page/PagePlayView";
 import ScrollPlayView from "components/play/scroll/ScrollPlayView";
+import PlayerSectionProvider from "components/PlayerSectionContext";
+import PlayerTimeProvider from "components/PlayerTimeContext";
 import JamStation from "components/track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
-    TrackListLoad
+    TrackListLoad,
 } from "components/track_player/providers/TrackListProvider";
 import React from "react";
 import { Helmet } from "react-helmet-async";
@@ -58,15 +60,19 @@ const PlayScreen: React.FC<PlayScreenProps> = (
     return (
         <LoadingRender>
             <CenteredLayout>
-                <Helmet>
-                    <title>
-                        {props.song.metadata.title !== ""
-                            ? props.song.metadata.title
-                            : "New Song"}
-                    </title>
-                </Helmet>
-                {props.children}
-                {trackPlayer}
+                <PlayerTimeProvider>
+                    <PlayerSectionProvider song={props.song}>
+                        <Helmet>
+                            <title>
+                                {props.song.metadata.title !== ""
+                                    ? props.song.metadata.title
+                                    : "New Song"}
+                            </title>
+                        </Helmet>
+                        {props.children}
+                        {trackPlayer}
+                    </PlayerSectionProvider>
+                </PlayerTimeProvider>
             </CenteredLayout>
         </LoadingRender>
     );

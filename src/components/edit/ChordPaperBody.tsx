@@ -2,9 +2,9 @@ import { Grid, Paper as UnstyledPaper, styled, Theme } from "@mui/material";
 import { SystemStyleObject } from "@mui/system";
 import { ChordLine } from "common/ChordModel/ChordLine";
 import { ChordSong } from "common/ChordModel/ChordSong";
+import SectionHighlight from "components/display/SectionHighlight";
 import { handleBatchLineDelete } from "components/edit/BatchDelete";
 import { useLineCopyHandler } from "components/edit/CopyAndPaste";
-import LineWithSectionHighlight from "components/edit/LineWithSectionHighlight";
 import {
     InteractionContext,
     InteractionSetter,
@@ -88,51 +88,32 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         return () => removeKeyListener(handleKeyDown);
     }, [allowInteraction, addKeyListener, removeKeyListener, songDispatch]);
 
-    const makeLineElements = (
-        line: ChordLine,
-        sectionID: string,
-        index: number,
-        listSize: number
-    ): React.ReactElement => {
-        const isTop = index === 0;
-        const isBottom = index === listSize - 1;
-
-        return (
-            <LineWithSectionHighlight
+    const makeLineElement = (line: ChordLine): React.ReactElement[] => {
+        return [
+            <Line
                 key={line.id}
-                sectionID={sectionID}
-                top={isTop}
-                bottom={isBottom}
-            >
-                <Line
-                    key={line.id}
-                    chordLine={line}
-                    songDispatch={songDispatch}
-                    data-lineid={line.id}
-                    data-testid="Line"
-                />
-                <NewLine
-                    key={`NewLine-${line.id}`}
-                    lineID={line}
-                    songDispatch={songDispatch}
-                    data-testid="NewLine"
-                />
-            </LineWithSectionHighlight>
-        );
+                chordLine={line}
+                songDispatch={songDispatch}
+                data-lineid={line.id}
+                data-testid="Line"
+            />,
+            <NewLine
+                key={`NewLine-${line.id}`}
+                lineID={line}
+                songDispatch={songDispatch}
+                data-testid="NewLine"
+            />,
+        ];
     };
 
     const lines: List<JSX.Element> = (() => {
-        let lines = props.song.timeSectionedChordLines.flatMap(
+        let lines = props.song.timeSectionedChordLines.map(
             (section: List<ChordLine>) => {
-                const sectionID = section.get(0)?.id;
-                if (sectionID === undefined) {
-                    throw new Error(
-                        "Sections are expected to have at least one line"
-                    );
-                }
-
-                return section.map((line: ChordLine, index: number) =>
-                    makeLineElements(line, sectionID, index, section.size)
+                return (
+                    <SectionHighlight
+                        sectionLines={section}
+                        lineElementFn={makeLineElement}
+                    />
                 );
             }
         );
