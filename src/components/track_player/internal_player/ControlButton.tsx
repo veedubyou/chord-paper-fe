@@ -16,6 +16,7 @@ import FlatIcon from "components/icons/FlatIcon";
 import FlatSharpIcon from "components/icons/FlatSharpIcon";
 import JumpForwardIcon from "components/icons/ForwardIcon";
 import MetronomeIcon from "components/icons/MetronomeIcon";
+import Plus5Icon from "components/icons/Plus5Icon";
 import SharpIcon from "components/icons/SharpIcon";
 import { roundedCornersStyle } from "components/track_player/common";
 import React from "react";
@@ -168,6 +169,18 @@ export const ControlButton = {
         <BIcon />,
         "clear-point-b",
         "Clear Point B",
+        "primary.main"
+    ),
+    EnableDefaultLoop: makeControlButton(
+        <Plus5Icon />,
+        "enable-default-loop",
+        "Loop 5 seconds from A",
+        "action.active"
+    ),
+    DisableDefaultLoop: makeControlButton(
+        <Plus5Icon />,
+        "disable-plus-5",
+        "Disable default looping",
         "primary.main"
     ),
 };
