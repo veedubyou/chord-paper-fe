@@ -1,7 +1,7 @@
 import UnstyledBackspaceIcon from "@mui/icons-material/Backspace";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import { Box, Slide, styled } from "@mui/material";
-import { grey, red } from "@mui/material/colors";
+import { red } from "@mui/material/colors";
 import { ChordBlock } from "common/ChordModel/ChordBlock";
 import { ChordLine } from "common/ChordModel/ChordLine";
 import { Collection, IDable } from "common/ChordModel/Collection";
@@ -9,9 +9,9 @@ import { Lyric } from "common/ChordModel/Lyric";
 import { DataTestID } from "common/DataTestID";
 import { PlainFn } from "common/PlainFn";
 import Block from "components/edit/Block";
-import WithHoverMenu, { MenuItem } from "components/edit/WithHoverMenu";
-import WithLyricInput from "components/edit/WithLyricInput";
-import WithSection from "components/edit/WithSection";
+import LineWithHoverMenu, { MenuItem } from "components/edit/LineWithHoverMenu";
+import LineWithLyricInput from "components/edit/LineWithLyricInput";
+import LineWithSection from "components/edit/LineWithSection";
 import { ChordSongAction } from "components/reducer/reducer";
 import { List } from "immutable";
 import React, { useMemo, useState } from "react";
@@ -26,7 +26,7 @@ const BackspaceIcon = styled(UnstyledBackspaceIcon)({
 
 const HighlightableBox = styled(Box)({
     "&:hover": {
-        backgroundColor: grey[100],
+        backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.05) 0 0)",
     },
     whiteSpace: "nowrap",
     overflow: "hidden",
@@ -106,19 +106,19 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     );
 
     const withHoverMenu = (startEdit: PlainFn, menuItems: MenuItem[]) => (
-        <WithHoverMenu menuItems={menuItems}>
+        <LineWithHoverMenu menuItems={menuItems}>
             {basicLine(startEdit)}
-        </WithHoverMenu>
+        </LineWithHoverMenu>
     );
 
     const withLyricInput = (menuItems: MenuItem[]) => (
-        <WithLyricInput chordLine={chordLine} songDispatch={songDispatch}>
+        <LineWithLyricInput chordLine={chordLine} songDispatch={songDispatch}>
             {(startEdit: PlainFn) => withHoverMenu(startEdit, menuItems)}
-        </WithLyricInput>
+        </LineWithLyricInput>
     );
 
     const withSection = (
-        <WithSection chordLine={chordLine} songDispatch={songDispatch}>
+        <LineWithSection chordLine={chordLine} songDispatch={songDispatch}>
             {(editLabel: PlainFn) => {
                 const menuItems: MenuItem[] = [
                     {
@@ -135,7 +135,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
 
                 return withLyricInput(menuItems);
             }}
-        </WithSection>
+        </LineWithSection>
     );
 
     const lineContent: React.ReactElement = withSection;
@@ -147,6 +147,7 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
             in={!removing}
             timeout={250}
             onExited={handlers.remove}
+            appear={false}
         >
             <AtomicSelectionBox>
                 <Box

@@ -29,14 +29,14 @@ export interface MenuItem extends DataTestID {
     onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-export interface WithSectionProps {
+export interface LineWithSectionProps {
     chordLine: ChordLine;
     songDispatch: React.Dispatch<ChordSongAction>;
     children: (editLabel: PlainFn) => React.ReactElement;
 }
 
-const WithSection: React.FC<WithSectionProps> = (
-    props: WithSectionProps
+const LineWithSection: React.FC<LineWithSectionProps> = (
+    props: LineWithSectionProps
 ): JSX.Element => {
     const { editing, startEdit, finishEdit } = useEditingState();
 
@@ -120,4 +120,4 @@ const WithSection: React.FC<WithSectionProps> = (
     );
 };
 
-export default WithSection;
+export default LineWithSection;

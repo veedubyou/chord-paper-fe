@@ -9,10 +9,14 @@ import {
     ChordLine,
     ChordLineValidatedFields,
     ChordLineValidator,
-    TimeSection,
-    timeSectionSortFn,
+    TimestampedSection,
+    timestampedSectionSortFn,
 } from "common/ChordModel/ChordLine";
-import { Collection, CollectionMethods, IDable } from "common/ChordModel/Collection";
+import {
+    Collection,
+    CollectionMethods,
+    IDable,
+} from "common/ChordModel/Collection";
 import { Lyric } from "common/ChordModel/Lyric";
 import { List, Record } from "immutable";
 import { Note } from "common/music/foundation/Note";
@@ -274,17 +278,43 @@ export class ChordSong
         return this.elements;
     }
 
-    get timeSections(): List<TimeSection> {
-        const timeSections: TimeSection[] = [];
+    get timeSectionedChordLines(): List<List<ChordLine>> {
+        let allSections: List<List<ChordLine>> = List();
+        let currentSection: ChordLine[] = [];
+
+        this.chordLines.forEach((line: ChordLine) => {
+            const beginningOfNewSection = line.section?.type === "time";
+            if (beginningOfNewSection) {
+                const currentSectionHasContent = currentSection.length > 0;
+                if (currentSectionHasContent) {
+                    allSections = allSections.push(List(currentSection));
+                }
+
+                currentSection = [];
+            }
+
+            currentSection.push(line);
+        });
+
+        allSections = allSections.push(List(currentSection));
+
+        return allSections;
+    }
+
+    get timestampedSections(): List<TimestampedSection> {
+        const timestampedSections: TimestampedSection[] = [];
 
         this.chordLines.forEach((line: ChordLine) => {
             if (line.section?.type === "time") {
-                timeSections.push(line.section);
+                timestampedSections.push({
+                    ...line.section,
+                    lineID: line.id,
+                });
             }
         });
 
-        timeSections.sort(timeSectionSortFn);
-        return List(timeSections);
+        timestampedSections.sort(timestampedSectionSortFn);
+        return List(timestampedSections);
     }
 
     get title(): string {

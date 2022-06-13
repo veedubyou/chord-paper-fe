@@ -344,7 +344,6 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
             <ControlPane
                 show={props.focused}
                 playing={props.playerControls.playing}
-                sectionLabel={props.playerControls.currentSectionLabel}
                 onTogglePlay={props.playerControls.togglePlay}
                 onJumpBack={props.playerControls.jumpBack}
                 onJumpForward={props.playerControls.jumpForward}

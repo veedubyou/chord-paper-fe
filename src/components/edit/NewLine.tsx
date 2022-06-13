@@ -3,7 +3,7 @@ import { Divider as UnstyledDivider, Grid, styled } from "@mui/material";
 import { ChordLine } from "common/ChordModel/ChordLine";
 import { IDable } from "common/ChordModel/Collection";
 import { DataTestID } from "common/DataTestID";
-import WithHoverMenu, { MenuItem } from "components/edit/WithHoverMenu";
+import LineWithHoverMenu, { MenuItem } from "components/edit/LineWithHoverMenu";
 import { ChordSongAction } from "components/reducer/reducer";
 import React from "react";
 
@@ -45,7 +45,7 @@ const NewLine: React.FC<NewLineProps> = (props: NewLineProps): JSX.Element => {
     };
 
     return (
-        <WithHoverMenu menuItems={[menuItem]}>
+        <LineWithHoverMenu menuItems={[menuItem]}>
             <HighlightableGrid
                 container
                 direction="column"
@@ -55,7 +55,7 @@ const NewLine: React.FC<NewLineProps> = (props: NewLineProps): JSX.Element => {
             >
                 <Divider />
             </HighlightableGrid>
-        </WithHoverMenu>
+        </LineWithHoverMenu>
     );
 };
 

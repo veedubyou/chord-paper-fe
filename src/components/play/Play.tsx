@@ -45,7 +45,7 @@ const PlayScreen: React.FC<PlayScreenProps> = (
                         collapsedButtonSx={{
                             backgroundColor: "transparent",
                         }}
-                        timeSections={props.song.timeSections}
+                        timestampedSections={props.song.timestampedSections}
                         tracklistLoad={tracklistLoad}
                         onTrackListChanged={onChange}
                         onRefresh={onRefresh}

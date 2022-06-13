@@ -4,7 +4,11 @@ import { ChordLine } from "common/ChordModel/ChordLine";
 import { ChordSong } from "common/ChordModel/ChordSong";
 import { handleBatchLineDelete } from "components/edit/BatchDelete";
 import { useLineCopyHandler } from "components/edit/CopyAndPaste";
-import { InteractionContext, InteractionSetter } from "components/edit/InteractionContext";
+import LineWithSectionHighlight from "components/edit/LineWithSectionHighlight";
+import {
+    InteractionContext,
+    InteractionSetter,
+} from "components/edit/InteractionContext";
 import Line from "components/edit/Line";
 import NewLine from "components/edit/NewLine";
 import { handleUndoRedo } from "components/edit/Undo";
@@ -84,24 +88,44 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
         return () => removeKeyListener(handleKeyDown);
     }, [allowInteraction, addKeyListener, removeKeyListener, songDispatch]);
 
-    const lines: List<JSX.Element> = (() => {
-        let lines = props.song.chordLines.list.flatMap((line: ChordLine) => {
-            return [
+    const makeLineElements = (
+        line: ChordLine,
+        sectionID: string
+    ): React.ReactElement => {
+        return (
+            <LineWithSectionHighlight key={line.id} sectionID={sectionID}>
                 <Line
                     key={line.id}
                     chordLine={line}
                     songDispatch={songDispatch}
                     data-lineid={line.id}
                     data-testid="Line"
-                />,
+                />
                 <NewLine
-                    key={"NewLine-" + line.id}
+                    key={`NewLine-${line.id}`}
                     lineID={line}
                     songDispatch={songDispatch}
                     data-testid="NewLine"
-                />,
-            ];
-        });
+                />
+            </LineWithSectionHighlight>
+        );
+    };
+
+    const lines: List<JSX.Element> = (() => {
+        let lines = props.song.timeSectionedChordLines.flatMap(
+            (section: List<ChordLine>) => {
+                const sectionID = section.get(0)?.id;
+                if (sectionID === undefined) {
+                    throw new Error(
+                        "Sections are expected to have at least one line"
+                    );
+                }
+
+                return section.map((line: ChordLine) =>
+                    makeLineElements(line, sectionID)
+                );
+            }
+        );
 
         const firstNewLine = (
             <NewLine
