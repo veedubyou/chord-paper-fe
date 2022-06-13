@@ -1,3 +1,3 @@
 import { makePressStartIcon } from "components/icons/makeTextIcon";
 
-export default makePressStartIcon("A", "1rem");
+export default makePressStartIcon("+5", "0.85rem");

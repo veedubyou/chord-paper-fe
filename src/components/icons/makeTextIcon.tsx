@@ -5,8 +5,8 @@ export const makeRobotoIcon = (textIconContent: string) => {
     return makeTextIcon(textIconContent, "Roboto", "1.25rem", "middle");
 };
 
-export const makePressStartIcon = (textIconContent: string) => {
-    return makeTextIcon(textIconContent, "PressStart", "1rem", "mathematical");
+export const makePressStartIcon = (textIconContent: string, fontSize: string) => {
+    return makeTextIcon(textIconContent, "PressStart", fontSize, "mathematical");
 };
 
 export const makeTextIcon = (
