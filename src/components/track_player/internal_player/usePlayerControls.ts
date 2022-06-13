@@ -1,9 +1,10 @@
-import { TimeSection } from "common/ChordModel/ChordLine";
+import { TimestampedSection } from "common/ChordModel/ChordLine";
+import {
+    findSectionAtTime
+} from "common/ChordModel/Section";
 import { noopFn, PlainFn } from "common/PlainFn";
 import { PlayerTimeContext } from "components/PlayerTimeContext";
-import {
-    ABLoop,
-} from "components/track_player/internal_player/ABLoop";
+import { ABLoop } from "components/track_player/internal_player/ABLoop";
 import { List } from "immutable";
 import { Duration } from "luxon";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -35,7 +36,6 @@ export interface PlayerControls {
     }) => void;
     onPlay: PlainFn;
     onPause: PlainFn;
-    currentSectionLabel: string;
     tempo: {
         percentage: number;
         onChange: (val: number) => void;
@@ -80,7 +80,6 @@ export const unfocusedControls: PlayerControls = {
     onProgress: noopFn,
     onPlay: noopFn,
     onPause: noopFn,
-    currentSectionLabel: "",
     tempo: {
         percentage: 100,
         onChange: noopFn,
@@ -92,10 +91,10 @@ export const unfocusedControls: PlayerControls = {
 };
 
 const getSection = (
-    timeSections: List<TimeSection>,
+    timestampedSections: List<TimestampedSection>,
     index: number
-): TimeSection => {
-    const section = timeSections.get(index);
+): TimestampedSection => {
+    const section = timestampedSections.get(index);
     if (section === undefined) {
         throw new Error("Section index is out of range, unexpected");
     }
@@ -104,7 +103,7 @@ const getSection = (
 };
 
 export const usePlayerControls = (
-    timeSections: List<TimeSection>
+    timestampedSections: List<TimestampedSection>
 ): PlayerControls => {
     const [playing, setPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
@@ -206,35 +205,10 @@ export const usePlayerControls = (
         seekTo(0);
     };
 
-    const currentSectionIndex = ((): number | null => {
-        if (timeSections.size === 0) {
-            return null;
-        }
-
-        let currentSectionIndex: number | null = null;
-
-        timeSections.forEach((section: TimeSection, index: number) => {
-            if (currentTime >= section.time) {
-                if (
-                    currentSectionIndex === null ||
-                    section.time >
-                        getSection(timeSections, currentSectionIndex).time
-                ) {
-                    currentSectionIndex = index;
-                }
-            }
-        });
-
-        return currentSectionIndex;
-    })();
-
-    const currentSection: TimeSection | null =
-        currentSectionIndex != null
-            ? getSection(timeSections, currentSectionIndex)
-            : null;
-
-    const currentSectionLabel =
-        currentSection !== null ? currentSection.name : "";
+    const currentSection = findSectionAtTime(
+        timestampedSections,
+        currentTime
+    );
 
     const skipBackButton: ButtonActionAndState = {
         action: () => {
@@ -242,23 +216,27 @@ export const usePlayerControls = (
                 return;
             }
 
-            const previousSection: TimeSection | null = (() => {
-                if (currentSectionIndex === null || currentSectionIndex === 0) {
+            const previousSection: TimestampedSection | null = (() => {
+                if (currentSection === null || currentSection.index === 0) {
                     return null;
                 }
 
-                return getSection(timeSections, currentSectionIndex - 1);
+                return getSection(
+                    timestampedSections,
+                    currentSection.index - 1
+                );
             })();
 
             if (
                 previousSection !== null &&
-                currentTime <= currentSection.time + skipBackBuffer
+                currentTime <=
+                    currentSection.timestampedSection.time + skipBackBuffer
             ) {
                 seekTo(previousSection.time - skipLeadIn);
                 return;
             }
 
-            seekTo(currentSection.time - skipLeadIn);
+            seekTo(currentSection.timestampedSection.time - skipLeadIn);
         },
         enabled: currentSection !== null,
     };
@@ -267,7 +245,7 @@ export const usePlayerControls = (
         const findNextSectionIndex = (
             sectionIndex: number | null
         ): number | null => {
-            if (timeSections.size === 0) {
+            if (timestampedSections.size === 0) {
                 return null;
             }
 
@@ -275,22 +253,27 @@ export const usePlayerControls = (
                 return 0;
             }
 
-            if (sectionIndex === timeSections.size - 1) {
+            if (sectionIndex === timestampedSections.size - 1) {
                 return null;
             }
 
             return sectionIndex + 1;
         };
 
+        const currentSectionIndex =
+            currentSection !== null ? currentSection.index : null;
         const nextSectionIndex = findNextSectionIndex(currentSectionIndex);
 
         // determine what the actual next section is - it could be the next one or next next one depending on the buffer
-        const nextSectionToSkipTo: TimeSection | null = (() => {
+        const nextSectionToSkipTo: TimestampedSection | null = (() => {
             if (nextSectionIndex === null) {
                 return null;
             }
 
-            const nextSection = getSection(timeSections, nextSectionIndex);
+            const nextSection = getSection(
+                timestampedSections,
+                nextSectionIndex
+            );
 
             // we could return section (n + 1) or section (n + 2)
             // the idea is that, e.g. the user is at 1:05 but the next section is at 1:06, and next next section is 1:30
@@ -304,7 +287,7 @@ export const usePlayerControls = (
                 return null;
             }
 
-            return getSection(timeSections, nextNextSectionIndex);
+            return getSection(timestampedSections, nextNextSectionIndex);
         })();
 
         return {
@@ -377,7 +360,6 @@ export const usePlayerControls = (
         onProgress: handleProgress,
         onPlay: handlePlayState,
         onPause: handlePauseState,
-        currentSectionLabel: currentSectionLabel,
         tempo: {
             percentage: tempoPercentage,
             onChange: setTempoPercentage,

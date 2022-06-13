@@ -8,7 +8,11 @@ import {
     ChordBlockValidator,
 } from "common/ChordModel/ChordBlock";
 import { replaceChordLineLyrics } from "common/ChordModel/ChordLinePatcher";
-import { Collection, CollectionMethods, IDable } from "common/ChordModel/Collection";
+import {
+    Collection,
+    CollectionMethods,
+    IDable,
+} from "common/ChordModel/Collection";
 import { Lyric } from "common/ChordModel/Lyric";
 import { List, Record } from "immutable";
 
@@ -22,7 +26,7 @@ const LabelSectionValidator = iots.type({
     name: iots.string,
 });
 
-const TimeSectionValidator = iots.type({
+const TimestampedSectionValidator = iots.type({
     type: iots.literal("time"),
     name: iots.string,
     time: iots.number,
@@ -30,7 +34,7 @@ const TimeSectionValidator = iots.type({
 
 const SectionValidator = iots.union([
     LabelSectionValidator,
-    TimeSectionValidator,
+    TimestampedSectionValidator,
 ]);
 
 const optionalFields = iots.partial({
@@ -43,12 +47,23 @@ export const ChordLineValidator = iots.intersection([
     optionalFields,
 ]);
 
-export type LabelSection = iots.TypeOf<typeof LabelSectionValidator>;
-export type TimeSection = iots.TypeOf<typeof TimeSectionValidator>;
+type LineIDForSection = { lineID: string };
+
+export type LabelSection = iots.TypeOf<typeof LabelSectionValidator> &
+    LineIDForSection;
+
+export type TimestampedSection = iots.TypeOf<
+    typeof TimestampedSectionValidator
+> &
+    LineIDForSection;
+
 export type Section = iots.TypeOf<typeof SectionValidator>;
 export type ChordLineValidatedFields = iots.TypeOf<typeof ChordLineValidator>;
 
-export const timeSectionSortFn = (a: TimeSection, b: TimeSection): number => {
+export const timestampedSectionSortFn = (
+    a: TimestampedSection,
+    b: TimestampedSection
+): number => {
     if (a.time < b.time) {
         return -1;
     }

@@ -25,13 +25,13 @@ export interface MenuItem extends DataTestID {
     onClick?: (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
-export interface WithHoverMenuProps {
+export interface LineWithHoverMenuProps {
     children: React.ReactElement;
     menuItems: MenuItem[];
 }
 
-const WithHoverMenu: React.FC<WithHoverMenuProps> = (
-    props: WithHoverMenuProps
+const LineWithHoverMenu: React.FC<LineWithHoverMenuProps> = (
+    props: LineWithHoverMenuProps
 ): JSX.Element => {
     const buttons = props.menuItems.map((item: MenuItem, index: number) => (
         <HoverMenuButton
@@ -56,4 +56,4 @@ const WithHoverMenu: React.FC<WithHoverMenuProps> = (
     );
 };
 
-export default WithHoverMenu;
+export default LineWithHoverMenu;

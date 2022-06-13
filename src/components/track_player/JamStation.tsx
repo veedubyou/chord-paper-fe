@@ -1,6 +1,6 @@
 import { Theme } from "@mui/material";
 import { SystemStyleObject } from "@mui/system";
-import { TimeSection } from "common/ChordModel/ChordLine";
+import { TimestampedSection } from "common/ChordModel/ChordLine";
 import { TrackList } from "common/ChordModel/tracks/TrackList";
 import { PlainFn } from "common/PlainFn";
 import TrackListEditDialog from "components/track_player/dialog/TrackListEditDialog";
@@ -16,7 +16,7 @@ type PlayerVisibilityState = "minimized" | "full";
 
 interface JamStationProps {
     tracklistLoad: TrackListLoad;
-    timeSections: List<TimeSection>;
+    timestampedSections: List<TimestampedSection>;
     onTrackListChanged: (trackList: TrackList) => void;
     onRefresh: PlainFn;
     collapsedButtonSx?: SystemStyleObject<Theme>;
@@ -42,7 +42,7 @@ const JamStation: React.FC<JamStationProps> = (
 
     const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
 
-    const playerControls = usePlayerControls(props.timeSections);
+    const playerControls = usePlayerControls(props.timestampedSections);
 
     const trackListIsEmpty =
         props.tracklistLoad.state === "loaded" &&

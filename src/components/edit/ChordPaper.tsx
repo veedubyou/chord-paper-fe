@@ -6,12 +6,13 @@ import ChordPaperBody from "components/edit/ChordPaperBody";
 import Header from "components/edit/Header";
 import ChordPaperMenu from "components/edit/menu/ChordPaperMenu";
 import LoadingRender from "components/loading/LoadingRender";
+import PlayerSectionProvider from "components/PlayerSectionContext";
 import PlayerTimeProvider from "components/PlayerTimeContext";
 import { ChordSongAction } from "components/reducer/reducer";
 import JamStation from "components/track_player/JamStation";
 import TrackListProvider, {
     TrackListChangeHandler,
-    TrackListLoad
+    TrackListLoad,
 } from "components/track_player/providers/TrackListProvider";
 import React from "react";
 import { Helmet } from "react-helmet-async";
@@ -48,7 +49,7 @@ const ChordPaper: React.FC<ChordPaperProps> = (
                         collapsedButtonSx={{
                             backgroundColor: "white",
                         }}
-                        timeSections={props.song.timeSections}
+                        timestampedSections={props.song.timestampedSections}
                         tracklistLoad={tracklistLoad}
                         onTrackListChanged={changeHandler}
                         onRefresh={onRefresh}
@@ -60,30 +61,32 @@ const ChordPaper: React.FC<ChordPaperProps> = (
 
     return (
         <PlayerTimeProvider>
-            <Helmet>
-                <title>
-                    {props.song.metadata.title !== ""
-                        ? props.song.metadata.title
-                        : "New Song"}
-                </title>
-            </Helmet>
-            <RootPaper elevation={3} data-testid="ChordPaper">
-                <Header
-                    data-testid={"Header"}
-                    song={props.song}
-                    songDispatch={props.songDispatch}
-                />
-                <ChordPaperBody
-                    song={props.song}
-                    songDispatch={props.songDispatch}
-                />
-                <ChordPaperMenu
-                    song={props.song}
-                    songDispatch={props.songDispatch}
-                    onPlay={props.onPlay}
-                />
-                {trackPlayer}
-            </RootPaper>
+            <PlayerSectionProvider song={props.song}>
+                <Helmet>
+                    <title>
+                        {props.song.metadata.title !== ""
+                            ? props.song.metadata.title
+                            : "New Song"}
+                    </title>
+                </Helmet>
+                <RootPaper elevation={3} data-testid="ChordPaper">
+                    <Header
+                        data-testid={"Header"}
+                        song={props.song}
+                        songDispatch={props.songDispatch}
+                    />
+                    <ChordPaperBody
+                        song={props.song}
+                        songDispatch={props.songDispatch}
+                    />
+                    <ChordPaperMenu
+                        song={props.song}
+                        songDispatch={props.songDispatch}
+                        onPlay={props.onPlay}
+                    />
+                    {trackPlayer}
+                </RootPaper>
+            </PlayerSectionProvider>
         </PlayerTimeProvider>
     );
 };

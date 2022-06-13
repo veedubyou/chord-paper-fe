@@ -18,7 +18,7 @@ const LyricInput = styled(UnstyledLyricInput)<LyricInputProps>(({ theme }) => ({
     borderBottomWidth: "2px",
 }));
 
-interface WithLyricInputProps {
+interface LineWithLyricInputProps {
     children: (handleEdit: PlainFn) => React.ReactElement;
     chordLine: ChordLine;
     songDispatch: React.Dispatch<ChordSongAction>;
@@ -26,8 +26,8 @@ interface WithLyricInputProps {
 
 // this component is inherently quite coupled with Line & friends
 // however, this is a good opportunity to separate concerns and organize functionality
-const WithLyricInput: React.FC<WithLyricInputProps> = (
-    props: WithLyricInputProps
+const LineWithLyricInput: React.FC<LineWithLyricInputProps> = (
+    props: LineWithLyricInputProps
 ): JSX.Element => {
     const { editing, startEdit, finishEdit } = useEditingState();
     const { songDispatch, chordLine } = props;
@@ -111,7 +111,7 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
     return (
         <>
             {lineElement}
-            <Box position="absolute" left="0" bottom="2px" width="100%">
+            <Box position="absolute" left="0" bottom="0px" width="100%">
                 <LyricInput
                     variant={lyricTypographyVariant}
                     onFinish={handlers.lyricEdit}
@@ -127,4 +127,4 @@ const WithLyricInput: React.FC<WithLyricInputProps> = (
     );
 };
 
-export default WithLyricInput;
+export default LineWithLyricInput;

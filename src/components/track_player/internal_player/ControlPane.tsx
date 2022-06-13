@@ -32,7 +32,6 @@ interface ControlPaneProps {
         level: number;
         onChange: (newLevel: number) => void;
     };
-    sectionLabel: string;
 }
 
 const RightJustifiedControlBox = styled(ControlGroupBox)({
