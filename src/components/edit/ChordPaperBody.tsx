@@ -90,10 +90,20 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
 
     const makeLineElements = (
         line: ChordLine,
-        sectionID: string
+        sectionID: string,
+        index: number,
+        listSize: number
     ): React.ReactElement => {
+        const isTop = index === 0;
+        const isBottom = index === listSize - 1;
+
         return (
-            <LineWithSectionHighlight key={line.id} sectionID={sectionID}>
+            <LineWithSectionHighlight
+                key={line.id}
+                sectionID={sectionID}
+                top={isTop}
+                bottom={isBottom}
+            >
                 <Line
                     key={line.id}
                     chordLine={line}
@@ -121,8 +131,8 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
                     );
                 }
 
-                return section.map((line: ChordLine) =>
-                    makeLineElements(line, sectionID)
+                return section.map((line: ChordLine, index: number) =>
+                    makeLineElements(line, sectionID, index, section.size)
                 );
             }
         );
