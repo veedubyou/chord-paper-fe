@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Theme } from "@mui/material";
 import { alpha } from "@mui/system";
 import { PlayerSectionContext } from "components/PlayerSectionContext";
 import React, { useContext } from "react";
@@ -6,7 +6,23 @@ import React, { useContext } from "react";
 export interface LineWithSectionHighlightProps {
     children: React.ReactElement | React.ReactElement[];
     sectionID: string | null;
+    top?: boolean;
+    bottom?: boolean;
 }
+
+const backgroundColorStyle = (theme: Theme) => ({
+    backgroundColor: alpha(theme.palette.primary.dark, 0.1),
+});
+
+const topLineStyle = (theme: Theme) => ({
+    borderTopLeftRadius: theme.spacing(1),
+    borderTopRightRadius: theme.spacing(1),
+});
+
+const bottomLineStyle = (theme: Theme) => ({
+    borderBottomLeftRadius: theme.spacing(1),
+    borderBottomRightRadius: theme.spacing(1),
+});
 
 const LineWithSectionHighlight: React.FC<LineWithSectionHighlightProps> = (
     props: LineWithSectionHighlightProps
@@ -17,16 +33,26 @@ const LineWithSectionHighlight: React.FC<LineWithSectionHighlightProps> = (
         return <Box>{props.children}</Box>;
     }
 
-    return (
-        <Box
-            sx={(theme) => ({
-                backgroundColor: alpha(theme.palette.primary.dark, 0.1),
-            })}
-        >
-            {props.children}
-        </Box>
-    );
+    const sxFn = (theme: Theme) => {
+        let style = backgroundColorStyle(theme);
+        if (props.top === true) {
+            style = {
+                ...style,
+                ...topLineStyle(theme),
+            };
+        }
+
+        if (props.bottom === true) {
+            style = {
+                ...style,
+                ...bottomLineStyle(theme),
+            };
+        }
+
+        return style;
+    };
+
+    return <Box sx={sxFn}>{props.children}</Box>;
 };
 
 export default LineWithSectionHighlight;
-
