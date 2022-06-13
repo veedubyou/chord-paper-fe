@@ -147,7 +147,6 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
             in={!removing}
             timeout={250}
             onExited={handlers.remove}
-            appear={false}
         >
             <AtomicSelectionBox>
                 <Box
