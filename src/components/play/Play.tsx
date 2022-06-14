@@ -89,7 +89,7 @@ const PlayRoutes: MultiFC<PlayProps> = (props: PlayProps): JSX.Element[] => {
 
     return [
         <Route key={props.path.URL()} path={props.path.URL()} exact>
-            <Redirect to={pageViewPath.URL()} />,
+            <Redirect to={scrollViewPath.URL()} />,
         </Route>,
         <Route key={pageViewPath.URL()} path={pageViewPath.URL()}>
             <PlayScreen song={props.song}>
