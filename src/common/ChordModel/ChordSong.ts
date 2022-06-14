@@ -3,12 +3,12 @@ import {
     ChordLine,
     ChordLineValidatedFields,
     ChordLineValidator,
-    TimestampedSection
+    TimestampedSection,
 } from "common/ChordModel/ChordLine";
 import {
     Collection,
     CollectionMethods,
-    IDable
+    IDable,
 } from "common/ChordModel/Collection";
 import { Lyric } from "common/ChordModel/Lyric";
 import { Note } from "common/music/foundation/Note";
@@ -495,15 +495,17 @@ export class ChordSong
 
     validateTimestampedSections(): Error | null {
         const sections = this.timestampedSections;
+
+        let prevSectionName = "the beginning of the song";
         let prevTime = 0;
         for (const section of sections) {
-            console.log("prev time: ", prevTime);
             if (section.time < prevTime) {
                 return new Error(
-                    `Section ${section.name} has an earlier timestamp than the previous section`
+                    `Section ${section.name} has an earlier timestamp than ${prevSectionName}`
                 );
             }
 
+            prevSectionName = section.name;
             prevTime = section.time;
         }
 
