@@ -60,21 +60,6 @@ export type TimestampedSection = iots.TypeOf<
 export type Section = iots.TypeOf<typeof SectionValidator>;
 export type ChordLineValidatedFields = iots.TypeOf<typeof ChordLineValidator>;
 
-export const timestampedSectionSortFn = (
-    a: TimestampedSection,
-    b: TimestampedSection
-): number => {
-    if (a.time < b.time) {
-        return -1;
-    }
-
-    if (a.time > b.time) {
-        return 1;
-    }
-
-    return 0;
-};
-
 type RecordType = {
     id: string;
     section?: Section;

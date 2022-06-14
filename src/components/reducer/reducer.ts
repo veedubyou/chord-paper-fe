@@ -5,6 +5,7 @@ import { IDable } from "common/ChordModel/Collection";
 import { Lyric } from "common/ChordModel/Lyric";
 import { Note } from "common/music/foundation/Note";
 import { List, Record } from "immutable";
+import { ProviderContext, useSnackbar } from "notistack";
 import { useCallback, useReducer } from "react";
 
 type ReplaceSong = {
@@ -172,7 +173,8 @@ const getCurrentSong = (state: ChordPaperState): ChordSong => {
 // easier to manage
 const chordSongReducer = (
     state: ChordPaperState,
-    action: ChordSongAction
+    action: ChordSongAction,
+    enqueueSnackbar: ProviderContext["enqueueSnackbar"]
 ): ChordPaperState => {
     switch (action.type) {
         case "undo": {
@@ -201,7 +203,16 @@ const chordSongReducer = (
 
         default: {
             const currentSong = getCurrentSong(state);
-            const newSong = chordSongReducerWithoutUndo(currentSong, action);
+            const newSong = chordSongReducerWithoutUndo(
+                currentSong,
+                action,
+                enqueueSnackbar
+            );
+
+            if (newSong === false) {
+                return state;
+            }
+
             const currentSongIndex = state.currentSongIndex;
 
             const blowAwayRedoStack = (
@@ -225,8 +236,9 @@ const chordSongReducer = (
 
 const chordSongReducerWithoutUndo = (
     song: ChordSong,
-    action: ChordSongActionWithoutUndo
-): ChordSong => {
+    action: ChordSongActionWithoutUndo,
+    enqueueSnackbar: ProviderContext["enqueueSnackbar"]
+): ChordSong | false => {
     switch (action.type) {
         case "replace-song": {
             return action.newSong;
@@ -277,7 +289,7 @@ const chordSongReducerWithoutUndo = (
                 action.splitIndex
             );
             if (!splitted) {
-                return song;
+                return false;
             }
 
             return newSong;
@@ -288,7 +300,7 @@ const chordSongReducerWithoutUndo = (
                 action.latterLineID
             );
             if (!merged) {
-                return song;
+                return false;
             }
 
             return newSong;
@@ -412,13 +424,21 @@ const chordSongReducerWithoutUndo = (
                 return line;
             };
 
-            return song.updateCollection((elements) => {
+            song = song.updateCollection((elements) => {
                 return elements.replace(action.lineID, (line) => {
                     line = updateName(line);
                     line = updateTime(line);
                     return line;
                 });
             });
+
+            const validation = song.validateTimestampedSections();
+            if (validation !== null) {
+                enqueueSnackbar(validation.message, { variant: "warning" });
+                return false;
+            }
+
+            return song;
         }
 
         case "transpose": {
@@ -431,16 +451,17 @@ export const useChordSongReducer = (
     initialSong: ChordSong,
     onChange?: (newSong: ChordSong, action: ChordSongAction) => void
 ): [ChordSong, React.Dispatch<ChordSongAction>] => {
+    const { enqueueSnackbar } = useSnackbar();
     const reducerWithChangeCallback = useCallback(
         (state: ChordPaperState, action: ChordSongAction): ChordPaperState => {
-            const newState = chordSongReducer(state, action);
+            const newState = chordSongReducer(state, action, enqueueSnackbar);
             const newSong = getCurrentSong(state);
 
             onChange?.(newSong, action);
 
             return newState;
         },
-        [onChange]
+        [onChange, enqueueSnackbar]
     );
 
     const initialState = ChordPaperStateConstructor({
