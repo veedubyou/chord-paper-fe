@@ -3,8 +3,10 @@ import { grey } from "@mui/material/colors";
 import { useWindowWidth } from "@react-hook/window-size";
 import { ChordLine } from "common/ChordModel/ChordLine";
 import { ChordSong } from "common/ChordModel/ChordSong";
+import { makeSection } from "components/display/SectionHighlight";
 import PlayLine from "components/play/common/PlayLine";
 import { useNavigationKeys } from "components/play/common/useNavigateKeys";
+import { List } from "immutable";
 import React, { useEffect, useState } from "react";
 import useScrollbarSize from "react-scrollbar-size";
 
@@ -99,9 +101,15 @@ const PagePlayContent: React.FC<PagePlayContentProps> = (
         marginRight: `${columnMargin}px`,
     });
 
-    const lines = props.song.chordLines.list.map((chordLine: ChordLine) => {
-        return <PlayLine chordLine={chordLine} key={chordLine.id} />;
-    });
+    const makeLineElement = (line: ChordLine) => (
+        <PlayLine chordLine={line} key={line.id} />
+    );
+
+    const lines = props.song.timeSectionedChordLines.flatMap(
+        (sectionLines: List<ChordLine>) => {
+            return makeSection(sectionLines, makeLineElement);
+        }
+    );
 
     const FullHeightBox = styled(Box)({
         height: viewportHeightWithoutScrollbar,
