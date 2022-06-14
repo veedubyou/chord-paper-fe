@@ -3,24 +3,20 @@ import LineWithSectionHighlight from "components/display/LineWithSectionHighligh
 import { List } from "immutable";
 import React from "react";
 
-export interface SectionHighlightProps {
-    sectionLines: List<ChordLine>;
+export const makeSection = (
+    sectionLines: List<ChordLine>,
     lineElementFn: (
         line: ChordLine
-    ) => React.ReactElement | React.ReactElement[];
-}
-
-const SectionHighlight: React.FC<SectionHighlightProps> = (
-    props: SectionHighlightProps
-): JSX.Element => {
-    const sectionID = props.sectionLines.get(0)?.id;
+    ) => React.ReactElement | React.ReactElement[]
+) => {
+    const sectionID = sectionLines.get(0)?.id;
     if (sectionID === undefined) {
         throw new Error("Sections are expected to have at least one line");
     }
 
     const makeLineElement = (line: ChordLine, index: number) => {
         const isTop = index === 0;
-        const isBottom = index === props.sectionLines.size - 1;
+        const isBottom = index === sectionLines.size - 1;
         return (
             <LineWithSectionHighlight
                 key={line.id}
@@ -28,15 +24,10 @@ const SectionHighlight: React.FC<SectionHighlightProps> = (
                 top={isTop}
                 bottom={isBottom}
             >
-                {props.lineElementFn(line)}
+                {lineElementFn(line)}
             </LineWithSectionHighlight>
         );
     };
 
-    const lines = props.sectionLines.map(makeLineElement);
-
-    return <>{lines}</>;
+    return sectionLines.map(makeLineElement);
 };
-
-export default SectionHighlight;
-

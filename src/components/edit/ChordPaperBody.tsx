@@ -2,12 +2,12 @@ import { Grid, Paper as UnstyledPaper, styled, Theme } from "@mui/material";
 import { SystemStyleObject } from "@mui/system";
 import { ChordLine } from "common/ChordModel/ChordLine";
 import { ChordSong } from "common/ChordModel/ChordSong";
-import SectionHighlight from "components/display/SectionHighlight";
+import { makeSection } from "components/display/SectionHighlight";
 import { handleBatchLineDelete } from "components/edit/BatchDelete";
 import { useLineCopyHandler } from "components/edit/CopyAndPaste";
 import {
     InteractionContext,
-    InteractionSetter,
+    InteractionSetter
 } from "components/edit/InteractionContext";
 import Line from "components/edit/Line";
 import NewLine from "components/edit/NewLine";
@@ -107,15 +107,8 @@ const ChordPaperBody: React.FC<ChordPaperBodyProps> = (
     };
 
     const lines: List<JSX.Element> = (() => {
-        let lines = props.song.timeSectionedChordLines.map(
-            (section: List<ChordLine>) => {
-                return (
-                    <SectionHighlight
-                        sectionLines={section}
-                        lineElementFn={makeLineElement}
-                    />
-                );
-            }
+        let lines = props.song.timeSectionedChordLines.flatMap(
+            (section: List<ChordLine>) => makeSection(section, makeLineElement)
         );
 
         const firstNewLine = (

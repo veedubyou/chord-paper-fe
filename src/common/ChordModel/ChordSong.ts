@@ -1,26 +1,25 @@
-import { Either, isLeft, left, right } from "fp-ts/lib/Either";
-import { Json, parse } from "fp-ts/Json";
-import * as iots from "io-ts";
-import { DateFromISOString } from "io-ts-types";
-import lodash from "lodash";
-import { User } from "components/user/userContext";
 import { ChordBlock } from "common/ChordModel/ChordBlock";
 import {
     ChordLine,
     ChordLineValidatedFields,
     ChordLineValidator,
-    TimestampedSection,
-    timestampedSectionSortFn,
+    TimestampedSection
 } from "common/ChordModel/ChordLine";
 import {
     Collection,
     CollectionMethods,
-    IDable,
+    IDable
 } from "common/ChordModel/Collection";
 import { Lyric } from "common/ChordModel/Lyric";
-import { List, Record } from "immutable";
 import { Note } from "common/music/foundation/Note";
 import { transposeSong } from "common/music/transpose/Transpose";
+import { User } from "components/user/userContext";
+import { Json, parse } from "fp-ts/Json";
+import { Either, isLeft, left, right } from "fp-ts/lib/Either";
+import { List, Record } from "immutable";
+import * as iots from "io-ts";
+import { DateFromISOString } from "io-ts-types";
+import lodash from "lodash";
 
 const MetadataValidator = iots.type({
     title: iots.string,
@@ -316,7 +315,6 @@ export class ChordSong
             }
         });
 
-        timestampedSections.sort(timestampedSectionSortFn);
         return List(timestampedSections);
     }
 
@@ -493,5 +491,22 @@ export class ChordSong
 
     transpose(fromKey: Note, toKey: Note): ChordSong {
         return transposeSong(this, fromKey, toKey);
+    }
+
+    validateTimestampedSections(): Error | null {
+        const sections = this.timestampedSections;
+        let prevTime = 0;
+        for (const section of sections) {
+            console.log("prev time: ", prevTime);
+            if (section.time < prevTime) {
+                return new Error(
+                    `Section ${section.name} has an earlier timestamp than the previous section`
+                );
+            }
+
+            prevTime = section.time;
+        }
+
+        return null;
     }
 }

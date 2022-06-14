@@ -3,11 +3,11 @@ import { ChordLine } from "common/ChordModel/ChordLine";
 import { ChordSong } from "common/ChordModel/ChordSong";
 import { Collection } from "common/ChordModel/Collection";
 import { noopFn, PlainFn } from "common/PlainFn";
-import SectionHighlight from "components/display/SectionHighlight";
+import { makeSection } from "components/display/SectionHighlight";
 import { useNavigationKeys } from "components/play/common/useNavigateKeys";
 import {
     HighlightBorderContext,
-    HighlightBorderProvider
+    HighlightBorderProvider,
 } from "components/play/scroll/highlightBorderContext";
 import ScrollablePlayLine from "components/play/scroll/ScrollablePlayLine";
 import { List } from "immutable";
@@ -204,14 +204,8 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
     };
 
     const sections = props.song.timeSectionedChordLines.map(
-        (sectionLines: List<ChordLine>) => {
-            return (
-                <SectionHighlight
-                    sectionLines={sectionLines}
-                    lineElementFn={makePlayLine}
-                />
-            );
-        }
+        (sectionLines: List<ChordLine>) =>
+            makeSection(sectionLines, makePlayLine)
     );
 
     const scrollDown = (): boolean => {
