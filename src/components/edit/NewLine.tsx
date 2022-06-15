@@ -7,7 +7,7 @@ import LineWithHoverMenu, { MenuItem } from "components/edit/LineWithHoverMenu";
 import { ChordSongAction } from "components/reducer/reducer";
 import React from "react";
 
-const HighlightableGrid = styled(Grid)(({ theme }) => ({
+const ColourOnHoverGrid = styled(Grid)(({ theme }) => ({
     minHeight: theme.spacing(3),
     "&:hover .MuiDivider-root": {
         borderColor: "rgba(0, 0, 0, 0.25)",
@@ -46,7 +46,7 @@ const NewLine: React.FC<NewLineProps> = (props: NewLineProps): JSX.Element => {
 
     return (
         <LineWithHoverMenu menuItems={[menuItem]}>
-            <HighlightableGrid
+            <ColourOnHoverGrid
                 container
                 direction="column"
                 justifyContent="center"
@@ -54,7 +54,7 @@ const NewLine: React.FC<NewLineProps> = (props: NewLineProps): JSX.Element => {
                 data-testid={props["data-testid"]}
             >
                 <Divider />
-            </HighlightableGrid>
+            </ColourOnHoverGrid>
         </LineWithHoverMenu>
     );
 };

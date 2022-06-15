@@ -24,7 +24,7 @@ const BackspaceIcon = styled(UnstyledBackspaceIcon)({
     color: red[300],
 });
 
-const HighlightableBox = styled(Box)({
+const DimmedOnHoverBox = styled(Box)({
     "&:hover": {
         backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.05) 0 0)",
     },
@@ -100,9 +100,9 @@ const Line: React.FC<LineProps> = (props: LineProps): JSX.Element => {
     );
 
     const basicLine = (startEdit: PlainFn) => (
-        <HighlightableBox data-testid="NoneditableLine" onClick={startEdit}>
+        <DimmedOnHoverBox data-testid="NoneditableLine" onClick={startEdit}>
             {blocks}
-        </HighlightableBox>
+        </DimmedOnHoverBox>
     );
 
     const withHoverMenu = (startEdit: PlainFn, menuItems: MenuItem[]) => (

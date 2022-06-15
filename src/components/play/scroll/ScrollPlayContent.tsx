@@ -6,9 +6,9 @@ import { noopFn, PlainFn } from "common/PlainFn";
 import { makeSection } from "components/display/SectionHighlight";
 import { useNavigationKeys } from "components/play/common/useNavigateKeys";
 import {
-    HighlightBorderContext,
-    HighlightBorderProvider,
-} from "components/play/scroll/highlightBorderContext";
+    ColourBorderContext,
+    ColourBorderProvider,
+} from "components/play/scroll/colourBorderContext";
 import ScrollablePlayLine from "components/play/scroll/ScrollablePlayLine";
 import { List } from "immutable";
 import React, { useCallback, useRef, useState } from "react";
@@ -34,12 +34,12 @@ interface ScrollPlayContentProps {
     song: ChordSong;
 }
 
-const ScrollPlayContentWithHighlightProvider: React.FC<ScrollPlayContentProps> =
+const ScrollPlayContentWithColourProvider: React.FC<ScrollPlayContentProps> =
     (props: ScrollPlayContentProps): JSX.Element => {
         return (
-            <HighlightBorderProvider>
+            <ColourBorderProvider>
                 <ScrollPlayContent song={props.song} />
-            </HighlightBorderProvider>
+            </ColourBorderProvider>
         );
     };
 
@@ -109,7 +109,7 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
     );
 
     const { rotateBorderColour: rotateColour } = React.useContext(
-        HighlightBorderContext
+        ColourBorderContext
     );
 
     const [previousScrollLine, setPreviousScrollLine] =
@@ -186,7 +186,7 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
             type: "ViewportLine",
         });
 
-        const highlight =
+        const colourBorder =
             chordLine.id === nextScrollLine?.id ||
             chordLine.id === previousScrollLine?.id;
 
@@ -194,7 +194,7 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
             <ScrollablePlayLine
                 key={chordLine.id}
                 chordLine={chordLine}
-                highlight={highlight}
+                colourBorder={colourBorder}
                 isInCurrentViewFnCallback={lineRef.setIsInCurrentView}
                 isInPreviousViewFnCallback={lineRef.setIsInPreviousView}
                 scrollFnCallback={lineRef.setScrollInView}
@@ -238,4 +238,4 @@ const ScrollPlayContent: React.FC<ScrollPlayContentProps> = (
     );
 };
 
-export default ScrollPlayContentWithHighlightProvider;
+export default ScrollPlayContentWithColourProvider;

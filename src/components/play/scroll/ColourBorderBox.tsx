@@ -1,24 +1,24 @@
 import { Box, Theme } from "@mui/material";
-import { useHighlightBorders } from "components/play/scroll/highlightBorderContext";
+import { useColourBorders } from "components/play/scroll/colourBorderContext";
 import React from "react";
 
 const transitionFunction = "cubic-bezier(.19,1,.22,1)";
 
-interface HighlightableBorderBoxProps {
+interface ColourBorderBoxProps {
     highlight?: boolean;
     children: React.ReactElement;
 }
 
-const HighlightBorderBox = React.forwardRef(
+const ColourBorderBox = React.forwardRef(
     (
-        props: HighlightableBorderBoxProps,
+        props: ColourBorderBoxProps,
         ref: React.ForwardedRef<Element>
     ): JSX.Element => {
-        const highlightStyle = useHighlightBorders();
+        const colourBorderStyle = useColourBorders();
 
         const containerStyle = (() => {
             if (props.highlight === true) {
-                return highlightStyle;
+                return colourBorderStyle;
             }
 
             // do nothing, but make it a function so it's easier to spread
@@ -44,4 +44,4 @@ const HighlightBorderBox = React.forwardRef(
     }
 );
 
-export default HighlightBorderBox;
+export default ColourBorderBox;
