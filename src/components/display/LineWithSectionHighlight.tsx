@@ -1,4 +1,4 @@
-import { Box, Theme } from "@mui/material";
+import { Box, styled, Theme } from "@mui/material";
 import { alpha } from "@mui/system";
 import { PlayerSectionContext } from "components/PlayerSectionContext";
 import React, { useContext } from "react";
@@ -9,6 +9,12 @@ export interface LineWithSectionHighlightProps {
     top?: boolean;
     bottom?: boolean;
 }
+
+const transitionFunction = "cubic-bezier(.19,1,.22,1)";
+
+const SmoothTransitionBox = styled(Box)({
+    transition: `background-color ${transitionFunction} 0.5s`,
+});
 
 const backgroundColorStyle = (theme: Theme) => ({
     backgroundColor: alpha(theme.palette.primary.dark, 0.1),
@@ -30,7 +36,7 @@ const LineWithSectionHighlight: React.FC<LineWithSectionHighlightProps> = (
     const currentSectionID = useContext(PlayerSectionContext);
 
     if (currentSectionID !== props.sectionID) {
-        return <Box>{props.children}</Box>;
+        return <SmoothTransitionBox>{props.children}</SmoothTransitionBox>;
     }
 
     const sxFn = (theme: Theme) => {
@@ -52,7 +58,9 @@ const LineWithSectionHighlight: React.FC<LineWithSectionHighlightProps> = (
         return style;
     };
 
-    return <Box sx={sxFn}>{props.children}</Box>;
+    return (
+        <SmoothTransitionBox sx={sxFn}>{props.children}</SmoothTransitionBox>
+    );
 };
 
 export default LineWithSectionHighlight;

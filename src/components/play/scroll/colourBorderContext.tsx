@@ -3,11 +3,11 @@ import { noopFn, PlainFn } from "common/PlainFn";
 import React, { useCallback, useMemo, useRef } from "react";
 import { useDebouncedCallback } from "use-debounce/lib";
 
-export type HighlightBorder = {
-    getBorderColour: () => HighlightColour;
+export type BorderFns = {
+    getBorderColour: () => BorderColour;
     rotateBorderColour: PlainFn;
 };
-export type HighlightColour = "blue" | "purple" | "red";
+export type BorderColour = "blue" | "purple" | "red";
 
 // adding a debounce interval - when scrolling multiple highlights could activate that
 // rotates the colours a lot. this debounce keeps some stability in the colour rotation
@@ -20,13 +20,13 @@ const rotateColourDebounceTime = 300;
 // that still contrasts with blue and purple
 const redColor = "#ff9679";
 
-export const HighlightBorderContext =
-    React.createContext<HighlightBorder>({
+export const ColourBorderContext =
+    React.createContext<BorderFns>({
         getBorderColour: () => "red",
         rotateBorderColour: noopFn,
     });
 
-interface HighlightBorderProviderProps {
+interface ColourBorderProviderProps {
     children: React.ReactNode | React.ReactNode[];
 }
 
@@ -36,17 +36,17 @@ const colourStyleMap = {
     red: (theme: Theme) => ({ borderColor: redColor }),
 };
 
-export const useHighlightBorders = () => {
-    const { getBorderColour: getColour } = React.useContext(HighlightBorderContext);
+export const useColourBorders = () => {
+    const { getBorderColour: getColour } = React.useContext(ColourBorderContext);
 
     const currentColour = getColour();
     return colourStyleMap[currentColour];
 };
 
-export const HighlightBorderProvider: React.FC<HighlightBorderProviderProps> = (
-    props: HighlightBorderProviderProps
+export const ColourBorderProvider: React.FC<ColourBorderProviderProps> = (
+    props: ColourBorderProviderProps
 ): JSX.Element => {
-    const currentColourRef = useRef<HighlightColour>("red");
+    const currentColourRef = useRef<BorderColour>("red");
 
     const rotateColour = useDebouncedCallback(
         () => {
@@ -71,12 +71,12 @@ export const HighlightBorderProvider: React.FC<HighlightBorderProviderProps> = (
         { leading: false, trailing: true }
     );
 
-    const getColour = useCallback((): HighlightColour => {
+    const getColour = useCallback((): BorderColour => {
         return currentColourRef.current;
     }, []);
 
     const colourContext = useMemo(
-        (): HighlightBorder => ({
+        (): BorderFns => ({
             getBorderColour: getColour,
             rotateBorderColour: rotateColour,
         }),
@@ -84,8 +84,8 @@ export const HighlightBorderProvider: React.FC<HighlightBorderProviderProps> = (
     );
 
     return (
-        <HighlightBorderContext.Provider value={colourContext}>
+        <ColourBorderContext.Provider value={colourContext}>
             {props.children}
-        </HighlightBorderContext.Provider>
+        </ColourBorderContext.Provider>
     );
 };

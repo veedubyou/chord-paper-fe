@@ -1,7 +1,7 @@
 import { ChordLine } from "common/ChordModel/ChordLine";
 import { PlainFn } from "common/PlainFn";
 import PlayLine from "components/play/common/PlayLine";
-import HighlightBorderBox from "components/play/scroll/HighlightBorderBox";
+import ColourBorderBox from "components/play/scroll/ColourBorderBox";
 import { useInPageView } from "components/play/scroll/useInPageView";
 import { useScrollable } from "components/play/scroll/useScrollable";
 import React, { useCallback } from "react";
@@ -26,7 +26,7 @@ const bottomPreviousViewportMarginPercent = -100;
 
 interface ScrollablePlayLineProps {
     chordLine: ChordLine;
-    highlight: boolean;
+    colourBorder: boolean;
     isInCurrentViewFnCallback: (isInView: () => boolean) => void;
     isInPreviousViewFnCallback: (isInView: () => boolean) => void;
     scrollFnCallback: (scrollFn: PlainFn) => void;
@@ -66,9 +66,9 @@ const ScrollablePlayLine = React.memo(
         );
 
         return (
-            <HighlightBorderBox ref={captureRef} highlight={props.highlight}>
+            <ColourBorderBox ref={captureRef} highlight={props.colourBorder}>
                 <PlayLine chordLine={props.chordLine} />
-            </HighlightBorderBox>
+            </ColourBorderBox>
         );
     }
 );
