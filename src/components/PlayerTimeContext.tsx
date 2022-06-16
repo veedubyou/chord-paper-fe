@@ -1,11 +1,14 @@
-import React, { createRef, useRef } from "react";
+import React, { useRef } from "react";
 
-export type GetPlayerTimeFn = () => number;
-type GetPlayerTimeFnRef = React.MutableRefObject<GetPlayerTimeFn | null>;
+export type GetPlayerTimeFn = () => number | null;
+type GetPlayerTimeFnRef = React.MutableRefObject<GetPlayerTimeFn>;
 
-export const PlayerTimeContext = React.createContext<GetPlayerTimeFnRef>(
-    createRef()
-);
+const nullContextRef = {
+    current: () => null,
+};
+
+export const PlayerTimeContext =
+    React.createContext<GetPlayerTimeFnRef>(nullContextRef);
 
 interface PlayerTimeProviderProps {
     children: React.ReactNode;
@@ -14,8 +17,8 @@ interface PlayerTimeProviderProps {
 const PlayerTimeProvider: React.FC<PlayerTimeProviderProps> = (
     props: PlayerTimeProviderProps
 ) => {
-    const getPlayerTimeRef: GetPlayerTimeFnRef = useRef<GetPlayerTimeFn | null>(
-        null
+    const getPlayerTimeRef: GetPlayerTimeFnRef = useRef<GetPlayerTimeFn>(
+        () => null
     );
 
     return (

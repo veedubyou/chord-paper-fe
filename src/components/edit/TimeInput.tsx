@@ -108,11 +108,11 @@ const TimeInput: React.FC<TimeInputProps> = (
 
     const handleCurrentTimeButton = () => {
         const currentGetPlayerTime = getPlayerTimeRef.current;
-        if (currentGetPlayerTime === null) {
+        const playerTimeSeconds: number | null = currentGetPlayerTime();
+        if (playerTimeSeconds === null) {
             return;
         }
 
-        const playerTimeSeconds: number = currentGetPlayerTime();
         const newValue = secondsToString(playerTimeSeconds);
         setValue(newValue);
         finish(newValue);

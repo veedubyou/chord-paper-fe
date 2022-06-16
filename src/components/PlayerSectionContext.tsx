@@ -19,11 +19,21 @@ const PlayerSectionProvider: React.FC<PlayerSectionProviderProps> = (
     useEffect(() => {
         const maybeSetNewSectionID = () => {
             const getPlayerTime = getPlayerTimeRef.current;
-            if (getPlayerTime === null) {
+
+            const currentTime = getPlayerTime();
+            const isBeginningOfSong = currentTime === 0;
+
+            // also avoiding setting an active section for the beginning of the song
+            // because it will cause sections to highlight or get labelled when in fact
+            // nothing started to play yet
+            if (currentTime === null || isBeginningOfSong) {
+                if (currentSectionID !== "") {
+                    setCurrentSectionID("");
+                }
+
                 return;
             }
 
-            const currentTime = getPlayerTime();
             const timestampedSections = props.song.timestampedSections;
 
             const nowTimestampedSection = findSectionAtTime(
@@ -42,7 +52,7 @@ const PlayerSectionProvider: React.FC<PlayerSectionProviderProps> = (
             setCurrentSectionID(nowSectionID);
         };
 
-        const intervalID = setInterval(maybeSetNewSectionID, 1000);
+        const intervalID = setInterval(maybeSetNewSectionID, 500);
 
         return () => clearInterval(intervalID);
     }, [props.song, currentSectionID, getPlayerTimeRef]);
@@ -55,4 +65,3 @@ const PlayerSectionProvider: React.FC<PlayerSectionProviderProps> = (
 };
 
 export default PlayerSectionProvider;
-
