@@ -42,13 +42,7 @@ const ABLoopControl: React.FC<ABLoopControlProps> = (
     const showBButton = !isDefaultLoopSet;
 
     const getTime = (): number | null => {
-        const playerTimeFn = getPlayerTimeRef.current;
-
-        if (playerTimeFn === null) {
-            return null;
-        }
-
-        return playerTimeFn();
+        return getPlayerTimeRef.current();
     };
 
     const ensureMode = (abLoop: ABLoop): ABLoopMode => {
