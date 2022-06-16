@@ -148,7 +148,7 @@ const ChordPaperMenu: React.FC<ChordPaperMenuProps> = (
                 />
             )}
 
-            {!props.song.isUnsaved() && user !== null && (
+            {!props.song.isUnsaved() && props.song.isOwner(user) (
                 <SpeedDialAction
                     icon={<DeleteIcon />}
                     tooltipTitle="Delete Song"
