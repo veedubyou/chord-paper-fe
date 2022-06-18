@@ -475,6 +475,10 @@ const chordSongReducerWithoutUndo = (
                     );
 
                     hooks.cloudSaveAction(newSong, hooks.user);
+                    hooks.enqueueSnackbar(
+                        "Saving into a new song, please wait...",
+                        { variant: "info" }
+                    );
                     return false;
                 }
             }
