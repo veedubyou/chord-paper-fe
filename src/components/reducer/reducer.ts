@@ -6,7 +6,9 @@ import { Lyric } from "common/ChordModel/Lyric";
 import { Note } from "common/music/foundation/Note";
 import { List, Record } from "immutable";
 import { ProviderContext, useSnackbar } from "notistack";
-import { useCallback, useReducer } from "react";
+import { useCallback, useMemo, useReducer, useContext } from "react";
+import { useCloudCreateSong } from "components/edit/menu/cloudSave";
+import { User, UserContext } from "components/user/userContext";
 
 type ReplaceSong = {
     type: "replace-song";
@@ -37,6 +39,7 @@ type Transpose = {
     type: "transpose";
     originalKey: Note;
     transposeKey: Note;
+    modifyMode: "in-place" | "new-song";
 };
 
 type AddLine = {
@@ -153,6 +156,12 @@ const ChordPaperStateConstructor = Record<ChordPaperStateType>({
 
 type ChordPaperState = ReturnType<typeof ChordPaperStateConstructor>;
 
+interface Hooks {
+    user: User | null;
+    enqueueSnackbar: ProviderContext["enqueueSnackbar"];
+    cloudSaveAction: ReturnType<typeof useCloudCreateSong>;
+}
+
 const getCurrentSong = (state: ChordPaperState): ChordSong => {
     const currentSong: ChordSong | undefined = state.undoStack.get(
         state.currentSongIndex
@@ -174,7 +183,7 @@ const getCurrentSong = (state: ChordPaperState): ChordSong => {
 const chordSongReducer = (
     state: ChordPaperState,
     action: ChordSongAction,
-    enqueueSnackbar: ProviderContext["enqueueSnackbar"]
+    hooks: Hooks
 ): ChordPaperState => {
     switch (action.type) {
         case "undo": {
@@ -206,7 +215,7 @@ const chordSongReducer = (
             const newSong = chordSongReducerWithoutUndo(
                 currentSong,
                 action,
-                enqueueSnackbar
+                hooks
             );
 
             if (newSong === false) {
@@ -237,7 +246,7 @@ const chordSongReducer = (
 const chordSongReducerWithoutUndo = (
     song: ChordSong,
     action: ChordSongActionWithoutUndo,
-    enqueueSnackbar: ProviderContext["enqueueSnackbar"]
+    hooks: Hooks
 ): ChordSong | false => {
     switch (action.type) {
         case "replace-song": {
@@ -434,7 +443,9 @@ const chordSongReducerWithoutUndo = (
 
             const validation = song.validateTimestampedSections();
             if (validation !== null) {
-                enqueueSnackbar(validation.message, { variant: "warning" });
+                hooks.enqueueSnackbar(validation.message, {
+                    variant: "warning",
+                });
                 return false;
             }
 
@@ -442,7 +453,31 @@ const chordSongReducerWithoutUndo = (
         }
 
         case "transpose": {
-            return song.transpose(action.originalKey, action.transposeKey);
+            switch (action.modifyMode) {
+                case "in-place":
+                    return song.transpose(
+                        action.originalKey,
+                        action.transposeKey
+                    );
+                case "new-song": {
+                    if (hooks.user === null) {
+                        hooks.enqueueSnackbar(
+                            "Cannot create a new song without a logged in user",
+                            { variant: "error" }
+                        );
+                        return false;
+                    }
+
+                    let newSong = song.fork();
+                    newSong = newSong.transpose(
+                        action.originalKey,
+                        action.transposeKey
+                    );
+
+                    hooks.cloudSaveAction(newSong, hooks.user);
+                    return false;
+                }
+            }
         }
     }
 };
@@ -452,16 +487,32 @@ export const useChordSongReducer = (
     onChange?: (newSong: ChordSong, action: ChordSongAction) => void
 ): [ChordSong, React.Dispatch<ChordSongAction>] => {
     const { enqueueSnackbar } = useSnackbar();
+    const cloudSaveAction = useCloudCreateSong();
+    const user = useContext(UserContext);
+
+    const hooks: Hooks = useMemo(
+        () => ({
+            user: user,
+            enqueueSnackbar: enqueueSnackbar,
+            cloudSaveAction: cloudSaveAction,
+        }),
+        [user, enqueueSnackbar, cloudSaveAction]
+    );
+
     const reducerWithChangeCallback = useCallback(
         (state: ChordPaperState, action: ChordSongAction): ChordPaperState => {
-            const newState = chordSongReducer(state, action, enqueueSnackbar);
-            const newSong = getCurrentSong(state);
+            const newState = chordSongReducer(state, action, hooks);
+            const skipChangeHandler = state === newState;
+            if (skipChangeHandler) {
+                return state;
+            }
 
+            const newSong = getCurrentSong(state);
             onChange?.(newSong, action);
 
             return newState;
         },
-        [onChange, enqueueSnackbar]
+        [onChange, hooks]
     );
 
     const initialState = ChordPaperStateConstructor({

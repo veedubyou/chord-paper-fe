@@ -4,7 +4,7 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Typography
+    Typography,
 } from "@mui/material";
 import { useErrorSnackbar } from "common/backend/errors";
 import { createSong, deleteSong } from "common/backend/requests";
@@ -14,7 +14,7 @@ import { noopFn, PlainFn } from "common/PlainFn";
 import { User } from "components/user/userContext";
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 export const useCloudCreateSong = () => {
@@ -22,40 +22,50 @@ export const useCloudCreateSong = () => {
     const showError = useErrorSnackbar();
     const history = useHistory();
 
-    const createNewSong = async (song: ChordSong, user: User) => {
-        const ownedSong = song.set("owner", user.userID);
+    const createNewSong = useCallback(
+        async (song: ChordSong, user: User) => {
+            const ownedSong = song.set("owner", user.userID);
 
-        const createResult = await createSong(ownedSong, user.authToken);
+            const createResult = await createSong(ownedSong, user.authToken);
 
-        if (isLeft(createResult)) {
-            await showError(createResult.left);
-            return;
-        }
+            if (isLeft(createResult)) {
+                await showError(createResult.left);
+                return;
+            }
 
-        let deserializeResult = ChordSong.fromJSONObject(createResult.right);
-
-        if (isLeft(deserializeResult)) {
-            console.error("Backend response does not match song format");
-            console.log(createResult.right);
-            enqueueSnackbar(
-                "A failure happened. Check console for more error details",
-                { variant: "error" }
+            let deserializeResult = ChordSong.fromJSONObject(
+                createResult.right
             );
-            return;
-        }
 
-        const deserializedSong = deserializeResult.right;
-        const pathWithID = SongPath.root.withID(deserializedSong.id);
-        const editPath = pathWithID.withEditMode();
+            if (isLeft(deserializeResult)) {
+                console.error("Backend response does not match song format");
+                console.log(createResult.right);
+                enqueueSnackbar(
+                    "A failure happened. Check console for more error details",
+                    { variant: "error" }
+                );
+                return;
+            }
 
-        history.push(editPath.URL());
-    };
+            const deserializedSong = deserializeResult.right;
+            const pathWithID = SongPath.root.withID(deserializedSong.id);
+            const editPath = pathWithID.withEditMode();
 
-    return async (song: ChordSong, user: User) => {
-        if (song.isUnsaved()) {
-            await createNewSong(song, user);
-        }
-    };
+            history.push(editPath.URL());
+        },
+        [enqueueSnackbar, showError, history]
+    );
+
+    const createNewSongIfUnsaved = useCallback(
+        async (song: ChordSong, user: User) => {
+            if (song.isUnsaved()) {
+                await createNewSong(song, user);
+            }
+        },
+        [createNewSong]
+    );
+
+    return createNewSongIfUnsaved;
 };
 
 export const useCloudDeleteSongDialog = (
