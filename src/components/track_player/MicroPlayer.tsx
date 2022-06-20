@@ -5,10 +5,13 @@ import PlayIcon from "@mui/icons-material/PlayArrow";
 import RadioIcon from "@mui/icons-material/Radio";
 import { Button, Slide, Theme, Tooltip } from "@mui/material";
 import { SystemStyleObject } from "@mui/system";
+import { PlainFn } from "common/PlainFn";
 import { MUIStyledProps } from "common/styledProps";
 import { useRegisterTopKeyListener } from "components/GlobalKeyListener";
-import { roundedTopCornersStyle, withBottomRightBox } from "components/track_player/common";
-import { PlayerControls } from "components/track_player/internal_player/usePlayerControls";
+import {
+    roundedTopCornersStyle,
+    withBottomRightBox,
+} from "components/track_player/common";
 import React, { useEffect, useState } from "react";
 
 interface MicroPlayerProps extends MUIStyledProps {
@@ -16,7 +19,10 @@ interface MicroPlayerProps extends MUIStyledProps {
     playersLoaded: boolean;
     disabled?: boolean;
     tooltipMessage: string;
-    playerControls: PlayerControls;
+    playing: boolean;
+    togglePlay: PlainFn;
+    jumpBack: PlainFn;
+    jumpForward: PlainFn;
     onClick: () => void;
     sx?: SystemStyleObject<Theme>;
 }
@@ -30,11 +36,7 @@ const MicroPlayer: React.FC<MicroPlayerProps> = (
     );
 
     {
-        const togglePlay = props.playerControls.togglePlay;
-        const jumpBack = props.playerControls.jumpBack;
-        const jumpForward = props.playerControls.jumpForward;
-        const onClick = props.onClick;
-        const show = props.show;
+        const { show, onClick, togglePlay, jumpBack, jumpForward } = props;
 
         useEffect(() => {
             if (!show) {
@@ -114,7 +116,7 @@ const MicroPlayer: React.FC<MicroPlayerProps> = (
             return <JumpForwardIcon />;
         }
 
-        if (!props.playerControls.playing) {
+        if (!props.playing) {
             return <PauseIcon sx={{ color: "secondary.main" }} />;
         }
 
@@ -146,4 +148,4 @@ const MicroPlayer: React.FC<MicroPlayerProps> = (
     );
 };
 
-export default MicroPlayer;
+export default React.memo(MicroPlayer);

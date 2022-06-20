@@ -146,4 +146,4 @@ const AdvancedControls: React.FC<AdvancedControlsProps> = (
     return <>{menuElements}</>;
 };
 
-export default AdvancedControls;
+export default React.memo(AdvancedControls);
