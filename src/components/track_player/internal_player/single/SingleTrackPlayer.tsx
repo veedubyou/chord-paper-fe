@@ -41,12 +41,7 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
             <ControlPane
                 show={props.focused}
                 playing={props.playerControls.playing}
-                onTogglePlay={props.playerControls.togglePlay}
-                onJumpBack={props.playerControls.jumpBack}
-                onJumpForward={props.playerControls.jumpForward}
-                onSkipBack={props.playerControls.skipBack}
-                onSkipForward={props.playerControls.skipForward}
-                onGoToBeginning={props.playerControls.goToBeginning}
+                transport={props.playerControls.transport}
                 tempo={props.playerControls.tempo}
                 abLoop={props.playerControls.abLoop}
             />

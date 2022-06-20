@@ -216,4 +216,4 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
     );
 };
 
-export default MultiTrackPlayer;
+export default React.memo(MultiTrackPlayer);

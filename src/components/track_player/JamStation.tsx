@@ -57,7 +57,10 @@ const JamStation: React.FC<JamStationProps> = (
             sx={props.collapsedButtonSx}
             show={playerVisibilityState === "minimized"}
             playersLoaded={loadPlayers}
-            playerControls={playerControls}
+            playing={playerControls.playing}
+            togglePlay={playerControls.transport.togglePlay}
+            jumpBack={playerControls.transport.jumpBack}
+            jumpForward={playerControls.transport.jumpForward}
             tooltipMessage={tooltipMessage}
             disabled={disabled}
             onClick={expandFn}
@@ -69,9 +72,9 @@ const JamStation: React.FC<JamStationProps> = (
         props.onTrackListChanged?.(tracklist);
     };
 
-    const openTrackEditDialog = () => {
+    const openTrackEditDialog = useCallback(() => {
         setTrackEditDialogState({ open: true, randomID: shortid.generate() });
-    };
+    }, [setTrackEditDialogState]);
 
     const closeTrackEditDialog = () => {
         setTrackEditDialogState({ open: false, randomID: "" });

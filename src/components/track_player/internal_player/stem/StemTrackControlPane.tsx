@@ -130,4 +130,4 @@ const StemTrackControlPane = <StemKey extends string>(
     return <Grid container>{buttons}</Grid>;
 };
 
-export default StemTrackControlPane;
+export default React.memo(StemTrackControlPane);

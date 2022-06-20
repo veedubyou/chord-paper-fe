@@ -188,4 +188,4 @@ const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
     return <Collapse in={props.focused}>{innerPlayer}</Collapse>;
 };
 
-export default TrackPlayer;
+export default React.memo(TrackPlayer);

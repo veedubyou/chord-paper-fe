@@ -1,9 +1,15 @@
 import { ChordSong } from "common/ChordModel/ChordSong";
-import { findSectionAtTime } from "common/ChordModel/Section";
+import {
+    findSectionAtTime,
+    TimestampedSectionItem,
+} from "common/ChordModel/Section";
 import { PlayerTimeContext } from "components/PlayerTimeContext";
 import React, { useContext, useEffect, useState } from "react";
 
-export const PlayerSectionContext = React.createContext<string>("");
+const sectionCheckInterval = 250;
+
+export const PlayerSectionContext =
+    React.createContext<TimestampedSectionItem | null>(null);
 
 interface PlayerSectionProviderProps {
     song: ChordSong;
@@ -14,10 +20,11 @@ const PlayerSectionProvider: React.FC<PlayerSectionProviderProps> = (
     props: PlayerSectionProviderProps
 ) => {
     const getPlayerTimeRef = useContext(PlayerTimeContext);
-    const [currentSectionID, setCurrentSectionID] = useState("");
+    const [currentSection, setCurrentSection] =
+        useState<TimestampedSectionItem | null>(null);
 
     useEffect(() => {
-        const maybeSetNewSectionID = () => {
+        const maybeSetNewSection = () => {
             const getPlayerTime = getPlayerTimeRef.current;
 
             const currentTime = getPlayerTime();
@@ -27,8 +34,8 @@ const PlayerSectionProvider: React.FC<PlayerSectionProviderProps> = (
             // because it will cause sections to highlight or get labelled when in fact
             // nothing started to play yet
             if (currentTime === null || isBeginningOfSong) {
-                if (currentSectionID !== "") {
-                    setCurrentSectionID("");
+                if (currentSection !== null) {
+                    setCurrentSection(null);
                 }
 
                 return;
@@ -41,24 +48,27 @@ const PlayerSectionProvider: React.FC<PlayerSectionProviderProps> = (
                 currentTime
             );
 
-            const nowSectionID =
-                nowTimestampedSection?.timestampedSection.lineID ?? "";
+            const sectionChanged =
+                currentSection?.timestampedSection.lineID !==
+                nowTimestampedSection?.timestampedSection.lineID;
 
-            const sectionChanged = nowSectionID !== currentSectionID;
             if (!sectionChanged) {
                 return;
             }
 
-            setCurrentSectionID(nowSectionID);
+            setCurrentSection(nowTimestampedSection);
         };
 
-        const intervalID = setInterval(maybeSetNewSectionID, 500);
+        const intervalID = setInterval(
+            maybeSetNewSection,
+            sectionCheckInterval
+        );
 
         return () => clearInterval(intervalID);
-    }, [props.song, currentSectionID, getPlayerTimeRef]);
+    }, [props.song, currentSection, getPlayerTimeRef]);
 
     return (
-        <PlayerSectionContext.Provider value={currentSectionID}>
+        <PlayerSectionContext.Provider value={currentSection}>
             {props.children}
         </PlayerSectionContext.Provider>
     );

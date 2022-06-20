@@ -54,4 +54,4 @@ const TempoControl: React.FC<TempoControlProps> = (
     );
 };
 
-export default TempoControl;
+export default React.memo(TempoControl);

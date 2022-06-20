@@ -14,6 +14,7 @@ import { useSnackbar } from "notistack";
 import React, {
     ReactEventHandler,
     SyntheticEvent,
+    useCallback,
     useEffect,
     useMemo,
     useRef,
@@ -178,9 +179,8 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         }
     }, [enqueueSnackbar, props.stems, refreshTrackFn]);
 
-    // synchronize the time control and tone transport
+    // synchronize the playing state
     useEffect(() => {
-        // sync the play state
         if (
             props.playerControls.playing &&
             Tone.Transport.state !== "started"
@@ -193,23 +193,29 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         ) {
             Tone.Transport.pause();
         }
+    }, [props.playerControls.playing]);
 
-        const tempo = props.playerControls.tempo.percentage / 100;
+    const { tempo, getCurrentTime } = props.playerControls;
+    // synchronize time
+    useEffect(() => {
+        const synchronizeTime = () => {
+            const tempoValue = tempo.percentage / 100;
 
-        // Tone transport doesn't observe slowed down time, only each individual node plays the sound back slower
-        // e.g. if a 10s clip is played at 50% speed, then Tone transport will finish playing it from 0s to 20s
-        // so to compare player time and Tone transport time, it needs to be scaled against the tempo
-        const adjustedToneTime = Tone.Transport.seconds * tempo;
+            // Tone transport doesn't observe slowed down time, only each individual node plays the sound back slower
+            // e.g. if a 10s clip is played at 50% speed, then Tone transport will finish playing it from 0s to 20s
+            // so to compare player time and Tone transport time, it needs to be scaled against the tempo
+            const adjustedToneTime = Tone.Transport.seconds * tempoValue;
 
-        // sync the time
-        if (Math.abs(props.playerControls.currentTime - adjustedToneTime) > 1) {
-            Tone.Transport.seconds = props.playerControls.currentTime / tempo;
-        }
-    }, [
-        props.playerControls.playing,
-        props.playerControls.currentTime,
-        props.playerControls.tempo.percentage,
-    ]);
+            const currentTime = getCurrentTime();
+
+            if (Math.abs(currentTime - adjustedToneTime) > 1) {
+                Tone.Transport.seconds = currentTime / tempoValue;
+            }
+        };
+
+        const intervalID = setInterval(synchronizeTime, 250);
+        return () => clearInterval(intervalID);
+    }, [getCurrentTime, tempo.percentage]);
 
     // synchronize player state and track volumes/mutedness
     useEffect(() => {
@@ -288,52 +294,65 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         };
     }, [toneNodes]);
 
-    const stemControlPane = (() => {
-        const makeStemControl = (
-            stemState: StemState<StemKey>,
-            stemIndex: number
-        ): StemControl<StemKey> => {
-            const buttonColour: ControlPaneButtonColour = (() => {
-                const stemInput = props.stems.find(
-                    (value: StemInput<StemKey>) => value.label === stemState.key
-                );
-                if (stemInput === undefined) {
-                    return "white";
-                }
+    const makeStemControl = useCallback((
+        stemState: StemState<StemKey>,
+        stemIndex: number
+    ): StemControl<StemKey> => {
+        const buttonColour: ControlPaneButtonColour = (() => {
+            const stemInput = props.stems.find(
+                (value: StemInput<StemKey>) => value.label === stemState.key
+            );
+            if (stemInput === undefined) {
+                return "white";
+            }
 
-                return stemInput.buttonColour;
-            })();
+            return stemInput.buttonColour;
+        })();
 
-            return {
-                label: stemState.key,
-                buttonColour: buttonColour,
-                enabled: !stemState.muted,
-                onEnabledChanged: (enabled: boolean) => {
-                    const newPlayerState = lodash.cloneDeep(playerState);
-                    newPlayerState.stems[stemIndex].muted = !enabled;
-                    setPlayerState(newPlayerState);
-                },
-                volume: stemState.volumePercentage,
-                onVolumeChanged: (newVolume: number) => {
-                    const newPlayerState = lodash.cloneDeep(playerState);
-                    newPlayerState.stems[stemIndex].volumePercentage =
-                        newVolume;
-                    setPlayerState(newPlayerState);
-                },
-            };
+        return {
+            label: stemState.key,
+            buttonColour: buttonColour,
+            enabled: !stemState.muted,
+            onEnabledChanged: (enabled: boolean) => {
+                const newPlayerState = lodash.cloneDeep(playerState);
+                newPlayerState.stems[stemIndex].muted = !enabled;
+                setPlayerState(newPlayerState);
+            },
+            volume: stemState.volumePercentage,
+            onVolumeChanged: (newVolume: number) => {
+                const newPlayerState = lodash.cloneDeep(playerState);
+                newPlayerState.stems[stemIndex].volumePercentage = newVolume;
+                setPlayerState(newPlayerState);
+            },
         };
+    }, [playerState, props.stems]);
 
-        const stemControls = playerState.stems.map(makeStemControl);
+    const stemControls = useMemo(
+        () => playerState.stems.map(makeStemControl),
+        [playerState.stems, makeStemControl]
+    );
 
-        return <StemTrackControlPane<StemKey> stemControls={stemControls} />;
-    })();
+    const stemControlPane = (
+        <StemTrackControlPane stemControls={stemControls} />
+    );
 
-    const handlePitchShift = (newPitchShift: number) => {
-        setPlayerState({
-            ...playerState,
-            masterPitchShift: newPitchShift,
-        });
-    };
+    const handlePitchShift = useCallback(
+        (newPitchShift: number) => {
+            setPlayerState({
+                ...playerState,
+                masterPitchShift: newPitchShift,
+            });
+        },
+        [playerState, setPlayerState]
+    );
+
+    const transposeControl = useMemo(
+        () => ({
+            level: playerState.masterPitchShift,
+            onChange: handlePitchShift,
+        }),
+        [playerState, handlePitchShift]
+    );
 
     return (
         <Box>
@@ -344,21 +363,13 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
             <ControlPane
                 show={props.focused}
                 playing={props.playerControls.playing}
-                onTogglePlay={props.playerControls.togglePlay}
-                onJumpBack={props.playerControls.jumpBack}
-                onJumpForward={props.playerControls.jumpForward}
-                onSkipBack={props.playerControls.skipBack}
-                onSkipForward={props.playerControls.skipForward}
-                onGoToBeginning={props.playerControls.goToBeginning}
+                transport={props.playerControls.transport}
                 tempo={props.playerControls.tempo}
                 abLoop={props.playerControls.abLoop}
-                transpose={{
-                    level: playerState.masterPitchShift,
-                    onChange: handlePitchShift,
-                }}
+                transpose={transposeControl}
             />
         </Box>
     );
 };
 
-export default LoadedStemTrackPlayer;
+export default React.memo(LoadedStemTrackPlayer);

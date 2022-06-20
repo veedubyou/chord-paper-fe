@@ -64,4 +64,4 @@ const TransposeControl: React.FC<TransposeControlProps> = (
     );
 };
 
-export default TransposeControl;
+export default React.memo(TransposeControl);

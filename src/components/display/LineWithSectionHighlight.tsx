@@ -33,9 +33,12 @@ const bottomLineStyle = (theme: Theme) => ({
 const LineWithSectionHighlight: React.FC<LineWithSectionHighlightProps> = (
     props: LineWithSectionHighlightProps
 ): JSX.Element => {
-    const currentSectionID = useContext(PlayerSectionContext);
+    const currentSectionItem = useContext(PlayerSectionContext);
 
-    if (currentSectionID !== props.sectionID) {
+    if (
+        currentSectionItem === null ||
+        currentSectionItem.timestampedSection.lineID !== props.sectionID
+    ) {
         return <SmoothTransitionBox>{props.children}</SmoothTransitionBox>;
     }
 

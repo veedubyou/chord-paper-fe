@@ -3,20 +3,20 @@ import {
     Collapse,
     styled,
     ToggleButton as UnstyledToggleButton,
-    ToggleButtonGroup
+    ToggleButtonGroup,
 } from "@mui/material";
 import { PlayerTimeContext } from "components/PlayerTimeContext";
 import {
     ABLoop,
-    ABLoopMode
+    ABLoopMode,
 } from "components/track_player/internal_player/ABLoop";
 import { ControlButton } from "components/track_player/internal_player/ControlButton";
 import ControlGroup, {
-    ControlGroupBox
+    ControlGroupBox,
 } from "components/track_player/internal_player/ControlGroup";
 import { Either, isLeft } from "fp-ts/lib/Either";
 import { useSnackbar } from "notistack";
-import { useContext } from "react";
+import React, { useContext } from "react";
 
 const ToggleButton = styled(UnstyledToggleButton)(({ theme }) => ({
     border: "none",
@@ -156,4 +156,4 @@ const ABLoopControl: React.FC<ABLoopControlProps> = (
     );
 };
 
-export default ABLoopControl;
+export default React.memo(ABLoopControl);
