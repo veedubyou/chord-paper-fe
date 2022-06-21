@@ -21,11 +21,51 @@ import * as iots from "io-ts";
 import { DateFromISOString } from "io-ts-types";
 import lodash from "lodash";
 
-const MetadataValidator = iots.type({
+const RequiredMetadataValidator = iots.type({
     title: iots.string,
     composedBy: iots.string,
     performedBy: iots.string,
 });
+
+// not great to duplicate, but at least it's easily readable and hard to get wrong
+const NoteValidator = iots.union([
+    iots.literal("C"),
+    iots.literal("C#"),
+    iots.literal("Cb"),
+    iots.literal("D"),
+    iots.literal("D#"),
+    iots.literal("Db"),
+    iots.literal("E"),
+    iots.literal("E#"),
+    iots.literal("Eb"),
+    iots.literal("F"),
+    iots.literal("F#"),
+    iots.literal("Fb"),
+    iots.literal("G"),
+    iots.literal("G#"),
+    iots.literal("Gb"),
+    iots.literal("A"),
+    iots.literal("A#"),
+    iots.literal("Ab"),
+    iots.literal("B"),
+    iots.literal("B#"),
+    iots.literal("Bb"),
+]);
+
+// this is meant to be nested one more level in inside a transpose object
+// but the serde library vomits when it's nested.
+// working to migrate the backend to an ecosystem that doesn't suck
+// then these can be migrated inside another object
+// but until then, they are top level in metadata
+const OptionalMetadataValidator = iots.partial({
+    originalKey: NoteValidator,
+    currentKey: NoteValidator,
+});
+
+const MetadataValidator = iots.intersection([
+    RequiredMetadataValidator,
+    OptionalMetadataValidator,
+]);
 
 type Metadata = iots.TypeOf<typeof MetadataValidator>;
 
@@ -56,6 +96,8 @@ export class SongSummary implements SongSummaryValidatedFields {
                 title: "",
                 composedBy: "",
                 performedBy: "",
+                originalKey: undefined,
+                currentKey: undefined,
             };
             this.lastSavedAt = null;
             return;
@@ -117,6 +159,8 @@ const DefaultRecord: RecordType = {
         title: "",
         composedBy: "",
         performedBy: "",
+        originalKey: undefined,
+        currentKey: undefined,
     },
     elements: new Collection<ChordLine>(),
 };
@@ -200,6 +244,14 @@ export class ChordSong
 
     get lastSavedAt(): Date | null {
         return this.record.lastSavedAt;
+    }
+
+    get originalKey(): Note | null {
+        return this.record.metadata.originalKey ?? null;
+    }
+
+    get currentKey(): Note | null {
+        return this.record.metadata.currentKey ?? null;
     }
 
     protected get elements(): Collection<ChordLine> {
@@ -490,7 +542,30 @@ export class ChordSong
     }
 
     transpose(fromKey: Note, toKey: Note): ChordSong {
-        return transposeSong(this, fromKey, toKey);
+        const originalKey = this.originalKey;
+
+        const isFirstTransposition = originalKey === null;
+        const keyMismatch = this.currentKey !== fromKey;
+        const doLossyTranposition = isFirstTransposition || keyMismatch;
+
+        let newSong: ChordSong;
+        
+        if (doLossyTranposition) {
+            newSong = transposeSong(this, fromKey, toKey);
+        } else {
+            newSong = transposeSong(this, fromKey, originalKey);
+            newSong = transposeSong(newSong, originalKey, toKey);
+        }
+
+        const newOriginalKey = originalKey ?? fromKey;
+
+        newSong = newSong.update("metadata", (metadata) => ({
+            ...metadata,
+            originalKey: newOriginalKey,
+            currentKey: toKey,
+        }));
+
+        return newSong;
     }
 
     validateTimestampedSections(): Error | null {

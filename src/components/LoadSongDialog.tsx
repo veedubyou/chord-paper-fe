@@ -96,10 +96,10 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
         };
 
         const detailElement = (
-            detail: string,
+            detail: string | undefined,
             label: string
         ): React.ReactNode => {
-            if (detail === "") {
+            if (detail === "" || detail === undefined) {
                 return null;
             }
 
@@ -116,6 +116,7 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
 
         const details = (
             <>
+                {detailElement(summary.metadata.currentKey, "In the key of")}
                 {detailElement(summary.metadata.performedBy, "Performed by")}
                 {detailElement(summary.metadata.composedBy, "Composed by")}
                 {summary.lastSavedAt !== null && (

@@ -1,5 +1,6 @@
 import { Box, Grid, styled, Typography } from "@mui/material";
 import { ChordSong } from "common/ChordModel/ChordSong";
+import UnstyledKeyInfo from "components/display/KeyInfo";
 import UnstyledLastSavedAt from "components/display/LastSavedAt";
 import EditableTypography from "components/edit/EditableTypography";
 import { ChordSongAction } from "components/reducer/reducer";
@@ -9,6 +10,12 @@ const LastSavedAt = styled(UnstyledLastSavedAt)(({ theme }) => ({
     position: "absolute",
     top: theme.spacing(2),
     right: theme.spacing(2),
+}));
+
+const KeyInfo = styled(UnstyledKeyInfo)(({ theme }) => ({
+    position: "absolute",
+    top: theme.spacing(2),
+    left: theme.spacing(4),
 }));
 
 const TitleBox = styled(Box)(({ theme }) => ({
@@ -57,6 +64,19 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
             <LastSavedAt lastSaved={props.song.lastSavedAt} />
         );
 
+    const keyInfo: React.ReactNode = (() => {
+        if (props.song.originalKey === null || props.song.currentKey === null) {
+            return null;
+        }
+
+        return (
+            <KeyInfo
+                originalKey={props.song.originalKey}
+                currentKey={props.song.currentKey}
+            />
+        );
+    })();
+
     const details = (
         <Grid container justifyContent="center">
             <Grid container item xs={6} justifyContent="center">
@@ -95,6 +115,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps): JSX.Element => {
 
     return (
         <HeaderBox data-testid="Header">
+            {keyInfo}
             {lastSavedAt}
             {title}
             {details}
