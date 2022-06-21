@@ -544,7 +544,19 @@ export class ChordSong
     transpose(fromKey: Note, toKey: Note): ChordSong {
         const originalKey = this.originalKey;
 
-        let newSong = transposeSong(this, fromKey, toKey);
+        const isFirstTransposition = originalKey === null;
+        const keyMismatch = this.currentKey !== fromKey;
+        const doLossyTranposition = isFirstTransposition || keyMismatch;
+
+        let newSong: ChordSong;
+        
+        if (doLossyTranposition) {
+            newSong = transposeSong(this, fromKey, toKey);
+        } else {
+            newSong = transposeSong(this, fromKey, originalKey);
+            newSong = transposeSong(newSong, originalKey, toKey);
+        }
+
         const newOriginalKey = originalKey ?? fromKey;
 
         newSong = newSong.update("metadata", (metadata) => ({
