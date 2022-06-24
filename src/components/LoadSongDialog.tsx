@@ -9,14 +9,15 @@ import {
     ListItemText,
     Typography
 } from "@mui/material";
+import { RequestError } from "common/backend/errors";
 import { getSongsForUser } from "common/backend/requests";
 import { SongSummary } from "common/ChordModel/ChordSong";
 import { FetchState } from "common/fetch";
 import { SongPath } from "common/paths";
 import { PlainFn } from "common/PlainFn";
-import ErrorImage from "components/display/ErrorImage";
+import OneTimeErrorNotification from "components/display/OneTimeErrorNotification";
 import { UserContext } from "components/user/userContext";
-import { isLeft } from "fp-ts/lib/Either";
+import { isLeft, left } from "fp-ts/lib/Either";
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -28,7 +29,9 @@ interface LoadSongsDialogProps {
 const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
     props: LoadSongsDialogProps
 ): JSX.Element => {
-    const [fetchState, setFetchState] = useState<FetchState<SongSummary[]>>({
+    const [fetchState, setFetchState] = useState<
+        FetchState<SongSummary[], RequestError>
+    >({
         state: "not-started",
     });
     const user = React.useContext(UserContext);
@@ -77,7 +80,10 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
 
         const summariesResult = SongSummary.fromJSONList(result.right);
         if (isLeft(summariesResult)) {
-            setFetchState({ state: "error", error: summariesResult.left });
+            setFetchState({
+                state: "error",
+                error: left(summariesResult.left.message),
+            });
             return;
         }
 
@@ -174,7 +180,14 @@ const LoadSongDialog: React.FC<LoadSongsDialogProps> = (
             return <></>;
         }
         case "error": {
-            return wrapInDialog(<ErrorImage error={fetchState.error} />);
+            const resetState = () => setFetchState({ state: "not-started" });
+            return (
+                <OneTimeErrorNotification
+                    componentDescription="Load Song Dialog"
+                    error={fetchState.error}
+                    onClose={resetState}
+                />
+            );
         }
         case "loading": {
             return wrapInDialog(<LinearProgress />);

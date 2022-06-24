@@ -1,8 +1,11 @@
+import { RequestError } from "common/backend/errors";
 import { getSong } from "common/backend/requests";
 import { ChordSong } from "common/ChordModel/ChordSong";
 import { FetchState } from "common/fetch";
 import ErrorImage from "components/display/ErrorImage";
+import OneTimeErrorNotification from "components/display/OneTimeErrorNotification";
 import FullScreenLoading from "components/loading/FullScreenLoading";
+import { left } from "fp-ts/lib/Either";
 import { isLeft } from "fp-ts/lib/These";
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -19,7 +22,9 @@ interface InternalFetcherProps {
 const InternalFetcher: React.FC<InternalFetcherProps> = (
     props: InternalFetcherProps
 ): JSX.Element => {
-    const [fetchState, setFetchState] = useState<FetchState<ChordSong>>({
+    const [fetchState, setFetchState] = useState<
+        FetchState<ChordSong, RequestError>
+    >({
         state: "not-started",
     });
 
@@ -35,7 +40,7 @@ const InternalFetcher: React.FC<InternalFetcherProps> = (
         if (isLeft(result)) {
             setFetchState({
                 state: "error",
-                error: "Failed to deserialize payload to song",
+                error: left("Failed to deserialize payload to song"),
             });
             return;
         }
@@ -50,7 +55,15 @@ const InternalFetcher: React.FC<InternalFetcherProps> = (
             return <></>;
         }
         case "error": {
-            return <ErrorImage error={fetchState.error} />;
+            return (
+                <>
+                    <ErrorImage />
+                    <OneTimeErrorNotification
+                        componentDescription="Chord Paper"
+                        error={fetchState.error}
+                    />
+                </>
+            );
         }
 
         case "loading": {

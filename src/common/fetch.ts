@@ -2,9 +2,9 @@ interface NotStartedState {
     state: "not-started";
 }
 
-interface ErrorState {
+interface ErrorState<E> {
     state: "error";
-    error: unknown;
+    error: E;
 }
 
 interface LoadingState {
@@ -20,18 +20,18 @@ interface LoadedState<T> {
     item: T;
 }
 
-export type BasicFetchState<T> =
+export type BasicFetchState<T, E> =
     | NotStartedState
-    | ErrorState
+    | ErrorState<E>
     | LoadingState
     | LoadedState<T>;
 
-export type DetailedLoadingFetchState<T, U> =
+export type DetailedLoadingFetchState<T, E, U> =
     | NotStartedState
-    | ErrorState
+    | ErrorState<E>
     | DetailedLoadingState<U>
     | LoadedState<T>;
 
-export type FetchState<T, U = undefined> = U extends undefined
-    ? BasicFetchState<T>
-    : DetailedLoadingFetchState<T, U>;
+export type FetchState<T, E, U = undefined> = U extends undefined
+    ? BasicFetchState<T, E>
+    : DetailedLoadingFetchState<T, E, U>;

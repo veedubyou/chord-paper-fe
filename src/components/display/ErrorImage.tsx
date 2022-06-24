@@ -1,26 +1,13 @@
 import ErrorImg from "assets/img/error.jpeg";
-import { useErrorSnackbar } from "common/backend/errors";
-import React, { useEffect } from "react";
+import React from "react";
 
-interface ErrorImageProps {
-    error: unknown;
-}
-
-const ErrorImage: React.FC<ErrorImageProps> = (
-    props: ErrorImageProps
-): JSX.Element => {
-    const showError = useErrorSnackbar();
-
-    useEffect(() => {
-        showError(props.error);
-    }, [props, showError]);
-
+const ErrorImage: React.FC<{}> = (): JSX.Element => {
     return (
         <img
             src={ErrorImg}
             alt="Song Loading Error"
             style={{
-                objectFit: "contain",
+                objectFit: "scale-down",
             }}
         />
     );
