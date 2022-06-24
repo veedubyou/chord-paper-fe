@@ -1,12 +1,13 @@
+import { RequestError } from "common/backend/errors";
 import {
     BackendResult,
     getTrackList,
-    updateTrackList
+    updateTrackList,
 } from "common/backend/requests";
 import { TrackList } from "common/ChordModel/tracks/TrackList";
 import { FetchState } from "common/fetch";
 import { PlainFn } from "common/PlainFn";
-import { isLeft } from "fp-ts/lib/Either";
+import { isLeft, left } from "fp-ts/lib/Either";
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -16,7 +17,7 @@ interface LoadingTrackListState {
 
 interface ErrorTrackListState {
     state: "error";
-    error: unknown;
+    error: RequestError;
 }
 
 interface LoadedTrackListState {
@@ -39,7 +40,9 @@ const refreshDebounceThreshold = 500;
 export const useTracklistFetch = (
     tracklistID: string
 ): [TrackListLoad, PlainFn, TrackListUpdateFn] => {
-    const [fetchState, setFetchState] = useState<FetchState<TrackList>>({
+    const [fetchState, setFetchState] = useState<
+        FetchState<TrackList, RequestError>
+    >({
         state: "not-started",
     });
 
@@ -58,7 +61,7 @@ export const useTracklistFetch = (
         if (isLeft(result)) {
             setFetchState({
                 state: "error",
-                error: "Failed to deserialize payload to tracklist",
+                error: left("Failed to deserialize payload to tracklist"),
             });
             return;
         }

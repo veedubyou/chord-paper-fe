@@ -6,7 +6,7 @@ import {
 } from "common/ChordModel/tracks/StemTrack";
 import { Track } from "common/ChordModel/tracks/Track";
 import { PlainFn } from "common/PlainFn";
-import ErrorImage from "components/display/ErrorImage";
+import OneTimeErrorNotification from "components/display/OneTimeErrorNotification";
 import LoadingSpinner from "components/loading/LoadingSpinner";
 import SingleTrackPlayer from "components/track_player/internal_player/single/SingleTrackPlayer";
 import StemTrackPlayer, {
@@ -39,7 +39,12 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
         }
 
         case "error": {
-            return <ErrorImage error={trackLoad.error} />;
+            return (
+                <OneTimeErrorNotification
+                    componentDescription="Track Player"
+                    error={trackLoad.error}
+                />
+            );
         }
 
         case "loaded": {

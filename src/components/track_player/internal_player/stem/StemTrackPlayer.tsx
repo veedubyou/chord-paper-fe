@@ -5,17 +5,21 @@ import {
     Button,
     LinearProgress,
     styled,
-    Typography
+    Typography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { parseRequestError, RequestError } from "common/backend/errors";
 import { StemTrack } from "common/ChordModel/tracks/StemTrack";
 import { DetailedLoadingFetchState } from "common/fetch";
 import { mapObject } from "common/mapObject";
 import { PlainFn } from "common/PlainFn";
 import { getAudioCtx } from "components/track_player/internal_player/stem/audioCtx";
-import LoadedStemTrackPlayer, { StemInput } from "components/track_player/internal_player/stem/LoadedStemTrackPlayer";
+import LoadedStemTrackPlayer, {
+    StemInput,
+} from "components/track_player/internal_player/stem/LoadedStemTrackPlayer";
 import { ControlPaneButtonColour } from "components/track_player/internal_player/stem/StemTrackControlPane";
 import { PlayerControls } from "components/track_player/internal_player/usePlayerControls";
+import { left } from "fp-ts/lib/Either";
 import ky, { DownloadProgress } from "ky";
 import lodash from "lodash";
 import prettyBytes from "pretty-bytes";
@@ -59,6 +63,7 @@ const StemTrackPlayer = <StemKey extends string>(
     const [fetchState, setFetchState] = useState<
         DetailedLoadingFetchState<
             FetchResult<StemKey>,
+            RequestError,
             LoadingProgress<StemKey>
         >
     >({
@@ -163,7 +168,7 @@ const StemTrackPlayer = <StemKey extends string>(
                 if (encounteredError) {
                     setFetchState({
                         state: "error",
-                        error: new Error(
+                        error: left(
                             "Could not find stem key in audio buffer array to object mapping"
                         ),
                     });
@@ -177,7 +182,7 @@ const StemTrackPlayer = <StemKey extends string>(
             } catch (e) {
                 setFetchState({
                     state: "error",
-                    error: e,
+                    error: await parseRequestError(e),
                 });
                 return;
             }

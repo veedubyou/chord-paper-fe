@@ -119,9 +119,7 @@ export const updateSong = async (
     authToken: string
 ): Promise<BackendResult> => {
     if (song.isUnsaved()) {
-        return left(
-            left(new Error("A song that hasn't been created can't be updated"))
-        );
+        return left(left("A song that hasn't been created can't be updated"));
     }
 
     let parsed: ResponseJSON;
@@ -146,9 +144,7 @@ export const deleteSong = async (
     authToken: string
 ): Promise<Either<RequestError, true>> => {
     if (song.isUnsaved()) {
-        return left(
-            left(new Error("A song that hasn't been created can't be deleted"))
-        );
+        return left(left("A song that hasn't been created can't be deleted"));
     }
 
     try {
@@ -169,7 +165,7 @@ export const updateTrackList = async (
     authToken: string
 ): Promise<BackendResult> => {
     if (tracklist.song_id === "") {
-        return left(left(new Error("No song ID on the tracklist")));
+        return left(left("No song ID on the tracklist"));
     }
 
     let parsed: ResponseJSON;

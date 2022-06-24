@@ -1,7 +1,9 @@
+import { RequestError } from "common/backend/errors";
 import { Track } from "common/ChordModel/tracks/Track";
 import { TrackList } from "common/ChordModel/tracks/TrackList";
 import { PlainFn } from "common/PlainFn";
 import { useTracklistFetch } from "components/track_player/providers/useTracklistFetch";
+import { left } from "fp-ts/lib/Either";
 
 interface LoadingTrackState {
     state: "loading";
@@ -9,7 +11,7 @@ interface LoadingTrackState {
 
 interface ErrorTrackState {
     state: "error";
-    error: unknown;
+    error: RequestError;
 }
 
 interface LoadedTrackState {
@@ -42,9 +44,10 @@ export const useTrackFetch = (
         case "loaded": {
             const track = findTrack(tracklistLoad.tracklist);
             if (track === undefined) {
-                const notFoundError = new Error("Track is not found");
-
-                return [{ state: "error", error: notFoundError }, refresh];
+                return [
+                    { state: "error", error: left("Track is not found") },
+                    refresh,
+                ];
             }
 
             return [{ state: "loaded", track: track }, refresh];

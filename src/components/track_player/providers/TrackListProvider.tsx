@@ -1,7 +1,7 @@
 import { ChordSong } from "common/ChordModel/ChordSong";
 import { TrackList } from "common/ChordModel/tracks/TrackList";
 import { PlainFn } from "common/PlainFn";
-import ErrorImage from "components/display/ErrorImage";
+import OneTimeErrorNotification from "components/display/OneTimeErrorNotification";
 import { useTracklistFetch } from "components/track_player/providers/useTracklistFetch";
 import { User, UserContext } from "components/user/userContext";
 import React from "react";
@@ -47,7 +47,12 @@ const TrackListProvider: React.FC<TrackListProviderProps> = (
 
     switch (tracklistLoad.state) {
         case "error": {
-            return <ErrorImage error={tracklistLoad.error} />;
+            return (
+                <OneTimeErrorNotification
+                    componentDescription="Track List"
+                    error={tracklistLoad.error}
+                />
+            );
         }
         case "loading": {
             return props.children(
