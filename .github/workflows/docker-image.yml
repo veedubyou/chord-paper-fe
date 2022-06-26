@@ -29,12 +29,8 @@ jobs:
               run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             - name: Build image w/version
               run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/chord:${{ env.gitver }}
-            - name: Build image latest
-              run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/chord:latest
             - name: Push image w/version
               run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:${{ env.gitver }}
-            - name: Push image latest
-              run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:latest
             - name: Get Current Timestamp
               run: echo "date=$(date +%s)" >> $GITHUB_ENV
 
@@ -44,3 +40,6 @@ jobs:
                   config: ${{ secrets.KUBE_CONFIG_DATA }}
                   version: v1.19.3
                   command: set image --record deploy/chord-fe chord-fe=${{ secrets.DOCKERHUB_USERNAME }}/chord:${{ env.gitver }}
+            
+            - name: Cleanup Images
+              run: docker image prune -af
