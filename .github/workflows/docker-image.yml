@@ -5,15 +5,15 @@ on:
         branches:
             - master
 
-env:
-    GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
-    GKE_ZONE: us-west1-a
-    GKE_CLUSTER: cluster-1
+#env:
+#    GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
+#    GKE_ZONE: us-west1-a
+#    GKE_CLUSTER: cluster-1
 
 jobs:
     push:
         # runs-on: ubuntu-latest
-        runs-on: chord-paper-fe-runner
+        runs-on: cluster-runner
         steps:
             # Checkout with history (to get git describe output properly)
             - name: Checkout
@@ -27,19 +27,23 @@ jobs:
               run: echo "gitver=$(cat GIT-VERSION-FILE)" >> $GITHUB_ENV
             - name: Login to DockerHub
               run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+            - name: Install Dependencies (lib-ssl, yarn, nodejs v15.x)
+              run: >
+                sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config 
+                && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - 
+                && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list 
+                && sudo apt-get update 
+                && sudo apt-get install -y yarn 
+                && curl -fsSL https://deb.nodesource.com/setup_15.x | sudo -E bash - 
+                && sudo apt-get install -y nodejs
             - name: Build image w/version
               run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/chord:${{ env.gitver }}
             - name: Push image w/version
               run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/chord:${{ env.gitver }}
-            - name: Get Current Timestamp
-              run: echo "date=$(date +%s)" >> $GITHUB_ENV
-
             - name: Deploy Project to K8S Cluster
               uses: steebchen/kubectl@master
               with:
                   config: ${{ secrets.KUBE_CONFIG_DATA }}
-                  version: v1.19.3
+                  version: v1.24.3
                   command: set image --record deploy/chord-fe chord-fe=${{ secrets.DOCKERHUB_USERNAME }}/chord:${{ env.gitver }}
-            
-            - name: Cleanup Images
-              run: docker image prune -af
+
