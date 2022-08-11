@@ -28,7 +28,7 @@ jobs:
             - name: Login to DockerHub
               run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             - name: Install Dependencies (lib-ssl, yarn, nodejs v15.x)
-              uses: ./.github/actions/install-deps.yml
+              run: bash ./.github/scripts/install-deps.sh
             - name: Build image w/version
               run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/chord:${{ env.gitver }}
             - name: Push image w/version
