@@ -17,7 +17,7 @@ jobs:
         steps:
             # Checkout with history (to get git describe output properly)
             - name: Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
               with:
                   fetch-depth: 0
             # Run script, updates the GIT-VERSION-FILE with version number
