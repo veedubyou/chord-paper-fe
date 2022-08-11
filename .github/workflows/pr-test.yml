@@ -6,9 +6,12 @@ jobs:
     build:
         name: Verify Build
         # runs-on: ubuntu-latest
-        runs-on: chord-paper-fe-runner
+        runs-on: cluster-runner
         steps:
             - uses: actions/checkout@v2
+
+            - name: Install Dependencies (lib-ssl, yarn, nodejs v15.x)
+              run: bash ./.github/scripts/install-deps.sh
 
             - name: Install Dependencies
               run: yarn
@@ -18,9 +21,12 @@ jobs:
     test:
         name: Test
         # runs-on: ubuntu-latest
-        runs-on: chord-paper-fe-runner
+        runs-on: cluster-runner
         steps:
             - uses: actions/checkout@v2
+
+            - name: Install Dependencies (lib-ssl, yarn, nodejs v15.x)
+              run: bash ./.github/scripts/install-deps.sh
 
             - name: Install Dependencies
               run: yarn
@@ -30,9 +36,12 @@ jobs:
     compile:
         name: Compile all sources
         # runs-on: ubuntu-latest
-        runs-on: chord-paper-fe-runner
+        runs-on: cluster-runner
         steps:
             - uses: actions/checkout@v2
+
+            - name: Install Dependencies (lib-ssl, yarn, nodejs v15.x)
+              run: bash ./.github/scripts/install-deps.sh
 
             - name: Install Dependencies
               run: yarn
