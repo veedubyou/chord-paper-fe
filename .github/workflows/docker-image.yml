@@ -1,4 +1,3 @@
-ls -al
 name: Deploy Production to thatmight.work
 
 on:
