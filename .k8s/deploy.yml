@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: chord-fe
-        image: pw1124/chord:latest
+        image: pw1124/chord-fe:latest
         ports:
         - containerPort: 80
       imagePullSecrets:
