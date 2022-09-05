@@ -102,14 +102,17 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
 
         if (isLeft(snackbarError)) {
             console.error(snackbarError.left);
-        } else {
-            console.error(snackbarError.right);
-        }
 
-        enqueueSnackbar(
-            "Login failed for an unknown reason, please check console for more details",
-            { variant: "error" }
-        );
+            enqueueSnackbar(
+                "Login failed for an unknown reason, please check console for more details",
+                { variant: "error" }
+            );
+        } else {
+            enqueueSnackbar(
+                `Login failed: ${snackbarError.right.msg}`,
+                { variant: "error" }
+            );
+        }
 
         setSnackbarError(null);
     }, [enqueueSnackbar, snackbarError, setSnackbarError]);
