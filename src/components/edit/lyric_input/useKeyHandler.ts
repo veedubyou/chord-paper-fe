@@ -51,6 +51,40 @@ const specialBackspaceHandler = (
     };
 };
 
+// returns the start offset of the current selection relative to the span element
+// this mostly concerns the various tabs and large spaces inside the input
+// that get inserted as content uneditable spans
+//
+// e.g. content inside the lyric input, | is the current selection
+// <span contenteditable=false /><span contenteditable=false />1|2
+// expected offset should be 3, as if each child span is counted as a character
+// this matches up with the lyrics where these tabs get serialized as a single character
+const getSelectionStartOffset = (ref: React.RefObject<HTMLSpanElement>): number | null => {
+    if (ref.current === null) {
+        return null;
+    }
+
+    const range = selectionRange(ref);
+    if (range === null) {
+        return null;
+    }
+
+    if (range.startContainer === ref.current) {
+        return range.startOffset;
+    }
+
+    let childIndex = 0;
+    for (const childNode of ref.current.childNodes) {
+        if (range.startContainer === childNode) {
+            return childIndex + range.startOffset;
+        }
+
+        childIndex += 1;
+    }
+
+    throw new Error("Unexpected - a child node should match range's start container");
+}
+
 const specialEnterHandler = (
     ref: React.RefObject<ContentEditableElement>,
     callback: (splitIndex: number) => void
@@ -62,12 +96,12 @@ const specialEnterHandler = (
             return false;
         }
 
-        const range = selectionRange(ref);
-        if (range === null) {
+        const startOffset = getSelectionStartOffset(ref);
+        if (startOffset === null) {
             return false;
         }
 
-        callback(range.startOffset);
+        callback(startOffset);
 
         return true;
     };
