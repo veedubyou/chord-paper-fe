@@ -4,6 +4,7 @@ import {
     Box,
     Dialog,
     Grid,
+    Link as MaterialLink,
     Paper as UnstyledPaper,
     styled,
     Typography as UnstyledTypography,
@@ -242,6 +243,16 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                     const loginTutorialRoute =
                         getRouteForTutorialComponent(LoginTutorial);
 
+                    const signupLink = (
+                        <MaterialLink
+                            href="https://forms.gle/4kgLF6oXPfFYDTm86"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            here
+                        </MaterialLink>
+                    );
+
                     return (
                         <Alert severity="info">
                             <AlertTitle>No account found</AlertTitle>
@@ -264,10 +275,8 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                             </Paragraph>
                             <Paragraph>
                                 To request an account, please fill out the form{" "}
-                                <a href="https://forms.gle/4kgLF6oXPfFYDTm86">
-                                    here
-                                </a>
-                                . I will try to get back to you soon!
+                                {signupLink}. I will try to get back to you
+                                soon!
                             </Paragraph>
                         </Alert>
                     );
