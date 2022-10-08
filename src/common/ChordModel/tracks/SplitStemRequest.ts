@@ -66,10 +66,21 @@ export class SplitStemTrack
         });
     }
 
+    static defaultLabel(splitType: SplitStemTypes): string {
+        switch (splitType) {
+            case "split_2stems":
+                return "2 stems";
+            case "split_4stems":
+                return "4 stems";
+            case "split_5stems":
+                return "5 stems";
+        }
+    }
+
     static newTrackRequest(splitType: SplitStemTypes): SplitStemTrack {
         return new SplitStemTrack(
             "",
-            "",
+            this.defaultLabel(splitType),
             splitType,
             "",
             "requested",
