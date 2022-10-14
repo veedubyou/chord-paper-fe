@@ -114,8 +114,6 @@ const TimeInput: React.FC<TimeInputProps> = (
         }
 
         const newValue = secondsToString(playerTimeSeconds);
-        setValue(newValue);
-        finish(newValue);
 
         // put the focus back into the input box
         if (
@@ -125,13 +123,16 @@ const TimeInput: React.FC<TimeInputProps> = (
         ) {
             inputBoxRef.current.focus();
         }
+
+        setValue(newValue);
+        finish(newValue);
     };
 
     const buttonAdornment = (
         <InputAdornment position="end">
             <IconButton
                 edge="end"
-                onClick={handleCurrentTimeButton}
+                onMouseDown={handleCurrentTimeButton}
                 size="large"
                 sx={{ padding: 0.5 }}
             >
