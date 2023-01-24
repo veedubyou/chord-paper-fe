@@ -57,11 +57,15 @@ export class Lyric {
         return this.serializedLyric === "";
     }
 
-    isEntirelySpace(): boolean {
+    isEntirelySpaceOrTab(): boolean {
         return (
-            isWhitespace(this.serializedLyric) ||
+            this.isEntirelySpace() ||
             isValidTabValue("serializedStr", this.serializedLyric)
         );
+    }
+
+    isEntirelySpace(): boolean {
+        return isWhitespace(this.serializedLyric);
     }
 
     isEqual(other: Lyric): boolean {

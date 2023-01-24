@@ -35,8 +35,8 @@ const LyricDisplay: React.FC<LyricTypographyProps> = (
     const customClassName = props.className ?? "";
 
     const className = cx({
-        [spaceClassName]: props.children.isEntirelySpace(),
-        [wordClassName]: !props.children.isEntirelySpace(),
+        [spaceClassName]: props.children.isEntirelySpaceOrTab(),
+        [wordClassName]: !props.children.isEntirelySpaceOrTab(),
         [customClassName]: props.className !== undefined,
     });
 
