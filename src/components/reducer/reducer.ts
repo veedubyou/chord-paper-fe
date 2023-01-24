@@ -340,7 +340,11 @@ const chordSongReducerWithoutUndo = (
         }
 
         case "insert-overflow-lyrics": {
-            const newChordLines: ChordLine[] = action.overflowLyrics.map(
+            const newLyrics = action.overflowLyrics.filter(
+                (lyric: Lyric) => !lyric.isEntirelySpace() && !lyric.isEmpty()
+            );
+
+            const newChordLines: ChordLine[] = newLyrics.map(
                 (newLyricLine: Lyric) => ChordLine.fromLyrics(newLyricLine)
             );
             return song.addAfter(action.insertionLineID, ...newChordLines);
