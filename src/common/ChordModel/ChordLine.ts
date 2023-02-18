@@ -494,7 +494,7 @@ export class ChordLine
         return this.chordBlocks.getAtIndex(0).isEmpty();
     }
 
-    hasSection(): boolean {
+    isSectionHead(): boolean {
         return this.section !== undefined;
     }
 }
