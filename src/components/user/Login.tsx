@@ -4,9 +4,10 @@ import {
     Box,
     Dialog,
     Grid,
+    Link as MaterialLink,
     Paper as UnstyledPaper,
     styled,
-    Typography as UnstyledTypography
+    Typography as UnstyledTypography,
 } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import SigninIcon from "assets/img/google_signin.svg";
@@ -14,7 +15,11 @@ import { BackendError, RequestError } from "common/backend/errors";
 import { login } from "common/backend/requests";
 import { getRouteForTutorialComponent } from "components/Tutorial";
 import LoginTutorial from "components/tutorial/Login";
-import { deserializeUser, User, UserContext } from "components/user/userContext";
+import {
+    deserializeUser,
+    User,
+    UserContext,
+} from "components/user/userContext";
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
@@ -102,14 +107,16 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
 
         if (isLeft(snackbarError)) {
             console.error(snackbarError.left);
-        } else {
-            console.error(snackbarError.right);
-        }
 
-        enqueueSnackbar(
-            "Login failed for an unknown reason, please check console for more details",
-            { variant: "error" }
-        );
+            enqueueSnackbar(
+                "Login failed for an unknown reason, please check console for more details",
+                { variant: "error" }
+            );
+        } else {
+            enqueueSnackbar(`Login failed: ${snackbarError.right.msg}`, {
+                variant: "error",
+            });
+        }
 
         setSnackbarError(null);
     }, [enqueueSnackbar, snackbarError, setSnackbarError]);
@@ -236,12 +243,23 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                     const loginTutorialRoute =
                         getRouteForTutorialComponent(LoginTutorial);
 
+                    const signupLink = (
+                        <MaterialLink
+                            href="https://forms.gle/4kgLF6oXPfFYDTm86"
+                            target="_blank"
+                            rel="noopener"
+                        >
+                            here
+                        </MaterialLink>
+                    );
+
                     return (
                         <Alert severity="info">
                             <AlertTitle>No account found</AlertTitle>
                             <Paragraph>
-                                Looks like there is no Chord Paper account
-                                associated with your Google account.
+                                Thanks for stopping by! Looks like there is no
+                                Chord Paper account associated with your Google
+                                account.
                             </Paragraph>
                             <Paragraph>
                                 You can still use the offline functionalities
@@ -249,7 +267,17 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                                 that you write right now. See more details{" "}
                                 <Link to={loginTutorialRoute}>here</Link>.
                             </Paragraph>
-                            <Paragraph>Invite requests coming soon.</Paragraph>
+                            <Paragraph>
+                                In addition to being able to save your song, you
+                                will also be able to use the audio player with
+                                an account (check out how that works in the
+                                Demo, accessible on the left hand menu)
+                            </Paragraph>
+                            <Paragraph>
+                                To request an account, please fill out the form{" "}
+                                {signupLink}. I will try to get back to you
+                                soon!
+                            </Paragraph>
                         </Alert>
                     );
                 case "failed_google_verification":

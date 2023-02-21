@@ -56,34 +56,52 @@ describe("lyric tokenizer", () => {
             expect(new Lyric("  ").isEntirelySpace()).toEqual(true);
         });
 
+        test("tabs", () => {
+            expect(new Lyric("\ue100").isEntirelySpace()).toEqual(false);
+        }); 
+        
+        test("space mixed with letters", () => {
+            expect(new Lyric(" a").isEntirelySpace()).toEqual(false);
+        });
+    })
+
+    describe("isEntirelySpaceOrTab", () => {
+        test("single whitespace", () => {
+            expect(new Lyric(" ").isEntirelySpaceOrTab()).toEqual(true);
+        });
+
+        test("multiple whitespace", () => {
+            expect(new Lyric("  ").isEntirelySpaceOrTab()).toEqual(true);
+        });
+
         describe("serialized tab", () => {
             test("small size", () => {
-                expect(new Lyric("\ue100").isEntirelySpace()).toEqual(true);
+                expect(new Lyric("\ue100").isEntirelySpaceOrTab()).toEqual(true);
             });
 
             test("medium size", () => {
-                expect(new Lyric("\ue200").isEntirelySpace()).toEqual(true);
+                expect(new Lyric("\ue200").isEntirelySpaceOrTab()).toEqual(true);
             });
 
             test("large size", () => {
-                expect(new Lyric("\ue400").isEntirelySpace()).toEqual(true);
+                expect(new Lyric("\ue400").isEntirelySpaceOrTab()).toEqual(true);
             });
         });
 
         test("mixed space and serialized tab", () => {
-            expect(new Lyric(" \ue100").isEntirelySpace()).toEqual(false);
+            expect(new Lyric(" \ue100").isEntirelySpaceOrTab()).toEqual(false);
         });
 
         test("multiple serialized tab", () => {
-            expect(new Lyric("\ue200\ue200").isEntirelySpace()).toEqual(false);
+            expect(new Lyric("\ue200\ue200").isEntirelySpaceOrTab()).toEqual(false);
         });
 
         test("space mixed with letters", () => {
-            expect(new Lyric(" a").isEntirelySpace()).toEqual(false);
+            expect(new Lyric(" a").isEntirelySpaceOrTab()).toEqual(false);
         });
 
         test("serialized tab mixed with letters", () => {
-            expect(new Lyric("a\ue400").isEntirelySpace()).toEqual(false);
+            expect(new Lyric("a\ue400").isEntirelySpaceOrTab()).toEqual(false);
         });
     });
 
