@@ -24,3 +24,6 @@ yarn-error.log*
 nativefier.sh
 .eslintcache
 *.mp3
+
+# k8s processed-yamls
+/.k8s/processed-yamls/
