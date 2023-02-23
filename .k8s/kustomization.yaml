@@ -1,0 +1,4 @@
+namespace: chord
+resources:
+- ./processed-yamls/deploy.yml
+- service.yml
