@@ -3,24 +3,11 @@ import * as iots from "io-ts";
 import ky from "ky";
 import { useSnackbar } from "notistack";
 
-// list of all known error codes
-const BackendErrorCodeValidator = iots.union([
-    iots.literal("no_account"),
-    iots.literal("failed_google_verification"),
-    iots.literal("create_song_exists"),
-    iots.literal("update_song_overwrite"),
-    iots.literal("song_not_found"),
-    iots.literal("get_songs_for_user_not_allowed"),
-    iots.literal("update_song_owner_not_allowed"),
-    iots.literal("update_song_wrong_id"),
-    iots.literal("datastore_error"),
-    // special custom shoe in for timing out instead of creating its own type
-    iots.literal("timeout"),
-]);
 
 const BackendErrorValidator = iots.type({
     msg: iots.string,
-    code: BackendErrorCodeValidator,
+    code: iots.string,
+    error_details: iots.string,
 });
 
 export type BackendError = iots.TypeOf<typeof BackendErrorValidator>;
@@ -42,6 +29,8 @@ export const parseRequestError = async (
                 `Failed to decode the backend error type: ${decodeErrorMsg}`
             );
         }
+
+        console.error(decodeResult.right.error_details);
         return decodeResult;
     }
 
@@ -49,6 +38,7 @@ export const parseRequestError = async (
         return right({
             code: "timeout",
             msg: "A backend request timed out",
+            error_details: "",
         });
     }
 
@@ -66,47 +56,7 @@ export const parseRequestError = async (
 };
 
 export const getErrorMessageForUser = (backendError: BackendError): string => {
-    switch (backendError.code) {
-        case "create_song_exists": {
-            return "Save failed: The song already exists and can't be created again!";
-        }
-
-        case "datastore_error": {
-            return "The data operation was not successful - please check the console for more details";
-        }
-
-        case "failed_google_verification": {
-            return "Google verification failed: Please try to refresh and login again";
-        }
-
-        case "get_songs_for_user_not_allowed": {
-            return "Loading songs failed: You don't have permission to see this user's songs";
-        }
-
-        case "no_account": {
-            return "Sorry, it appears you don't have an account with Chord Paper and can't perform this operation";
-        }
-
-        case "song_not_found": {
-            return "Not found: A song of this ID cannot be found";
-        }
-
-        case "timeout": {
-            return "The server timed out. It may be unavailable right now.";
-        }
-
-        case "update_song_overwrite": {
-            return "Autosave failed: This song has been updated recently and saving now will clobber previously saved results. Please try to load the song in another tab and copy your work over to save it";
-        }
-
-        case "update_song_owner_not_allowed": {
-            return "Autosave failed: You don't have permission to update this user's songs";
-        }
-
-        case "update_song_wrong_id": {
-            return "Autosave failed: There is a mismatch of song IDs. Please refresh and try again";
-        }
-    }
+    return backendError.msg;
 };
 
 export const useErrorSnackbar = () => {

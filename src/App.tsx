@@ -14,6 +14,7 @@ import {
     TutorialPath
 } from "common/paths";
 import AboutScreen from "components/about/About";
+import OneTimeMobileNotification from "components/display/OneTimeMobileNotification";
 import DragAndDrop from "components/edit/DragAndDrop";
 import GlobalKeyListenerProvider from "components/GlobalKeyListener";
 import GuitarDemo from "components/guitar/GuitarDemo";
@@ -158,6 +159,7 @@ const App: React.FC<{}> = (): JSX.Element => {
                         <DragAndDrop>
                             <GlobalKeyListenerProvider>
                                 <AppContent />
+                                <OneTimeMobileNotification />
                             </GlobalKeyListenerProvider>
                         </DragAndDrop>
                     </HashRouter>
