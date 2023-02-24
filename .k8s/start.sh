@@ -13,7 +13,6 @@ printenv LATEST_IMAGE
 
 mkdir -p ./processed-yamls/ && cat ./deploy.yml | envsubst > ./processed-yamls/deploy.yml
 
-kubectl apply -f "./processed-yamls/deploy.yml"
-kubectl apply -f service.yml
+kubectl apply -k ./
 
 watch kubectl get all
