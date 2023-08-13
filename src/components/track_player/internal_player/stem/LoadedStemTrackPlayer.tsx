@@ -195,6 +195,15 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         }
     }, [props.playerControls.playing]);
 
+    // TODO: remove completely after understanding player out of sync bug
+    useEffect(() => {
+        const intervalID = setInterval(() => {
+            console.log("Tone control current state", Tone.Transport.state);
+        }, 5000);
+
+        return () => clearInterval(intervalID);
+    }, [])
+
     const { tempo, getCurrentTime } = props.playerControls;
     // synchronize time
     useEffect(() => {
