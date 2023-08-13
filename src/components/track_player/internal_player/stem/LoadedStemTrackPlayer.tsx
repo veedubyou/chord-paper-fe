@@ -199,6 +199,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
     useEffect(() => {
         const intervalID = setInterval(() => {
             console.log("Tone control current state", Tone.Transport.state);
+            console.log("Tone control current time", Tone.Transport.seconds);
         }, 5000);
 
         return () => clearInterval(intervalID);
