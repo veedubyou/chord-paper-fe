@@ -27,7 +27,7 @@ jobs:
               run: echo "gitver=$(cat GIT-VERSION-FILE)" >> $GITHUB_ENV
             - name: Login to DockerHub
               run: echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-            - name: Install Dependencies (lib-ssl, yarn, nodejs v15.x)
+            - name: Install Dependencies (lib-ssl, yarn, nodejs v16.x)
               run: bash ./.github/scripts/install-deps.sh
             - name: Build image w/version
               run: docker build . --file Dockerfile --tag ${{ secrets.DOCKERHUB_USERNAME }}/chord-fe:${{ env.gitver }}
