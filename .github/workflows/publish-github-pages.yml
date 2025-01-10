@@ -8,7 +8,7 @@ on:
 jobs:
     publish:
         name: Publish master to Github Pages
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-latest
         # runs-on: cluster-runner
         steps:
             # Checkout with history (to get git describe output properly)
@@ -23,7 +23,7 @@ jobs:
             - name: Get version tag from GIT-VERSION-FILE
               run: echo "gitver=$(cat GIT-VERSION-FILE)" >> $GITHUB_ENV
 
-            - name: Install Dependencies (lib-ssl, yarn, nodejs v16.x)
+            - name: Install Dependencies (lib-ssl, yarn, nodejs 20.x)
               run: bash ./.github/scripts/install-deps.sh
 
             - name: Install Dependencies
