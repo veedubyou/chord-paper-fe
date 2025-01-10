@@ -20,7 +20,7 @@ import React, {
     useRef,
     useState,
 } from "react";
-import { useDebouncedCallback } from "use-debounce/lib";
+import { useDebouncedCallback } from "use-debounce";
 
 const FullHeightBox = styled(Box)({
     height: "100vh",
