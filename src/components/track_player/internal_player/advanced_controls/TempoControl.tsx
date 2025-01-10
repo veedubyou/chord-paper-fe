@@ -25,19 +25,31 @@ const TempoControl: React.FC<TempoControlProps> = (
     props: TempoControlProps
 ): JSX.Element => {
     const tempoPercentage = Math.round(props.tempoPercentage);
-    const interval = 5;
+
+    const smallInterval = 1;
+    const mediumInterval = 5;
     const percentageDisplay: string = `${tempoPercentage}%`;
 
-    const onDecrease = () => props.onTempoChange(tempoPercentage - interval);
-    const onIncrease = () => props.onTempoChange(tempoPercentage + interval);
+    const onSmallDecrease = (event: React.MouseEvent) => {
+        props.onTempoChange(tempoPercentage - smallInterval);
+        event.preventDefault();
+    }
+    const onSmallIncrease = (event: React.MouseEvent) => {
+        props.onTempoChange(tempoPercentage + smallInterval);
+        event.preventDefault();
+    }
 
-    const decreaseDisabled = tempoPercentage - interval < 50;
-    const increaseDisabled = tempoPercentage + interval > 100;
+    const onMediumDecrease = () => props.onTempoChange(tempoPercentage - mediumInterval);
+    const onMediumIncrease = () => props.onTempoChange(tempoPercentage + mediumInterval);
+
+    const decreaseDisabled = tempoPercentage - mediumInterval < 50;
+    const increaseDisabled = tempoPercentage + mediumInterval > 150;
 
     return (
         <TempoBox>
             <ControlButton.DecreaseTempo
-                onClick={onDecrease}
+                onClick={onMediumDecrease}
+                onContextMenu={onSmallDecrease}
                 disabled={decreaseDisabled}
             />
             <Tooltip title="Playback speed">
@@ -47,7 +59,8 @@ const TempoControl: React.FC<TempoControlProps> = (
             </Tooltip>
 
             <ControlButton.IncreaseTempo
-                onClick={onIncrease}
+                onClick={onMediumIncrease}
+                onContextMenu={onSmallIncrease}
                 disabled={increaseDisabled}
             />
         </TempoBox>
