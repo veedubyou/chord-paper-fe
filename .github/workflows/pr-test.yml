@@ -5,8 +5,8 @@ on: [pull_request]
 jobs:
     build:
         name: Verify Build
-        # runs-on: ubuntu-latest
-        runs-on: cluster-runner
+        runs-on: ubuntu-latest
+        # runs-on: cluster-runner
         steps:
             - uses: actions/checkout@v2
 
