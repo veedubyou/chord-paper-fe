@@ -5,12 +5,12 @@ on: [pull_request]
 jobs:
     build:
         name: Verify Build
-        # runs-on: ubuntu-latest
-        runs-on: cluster-runner
+        runs-on: ubuntu-latest
+        # runs-on: cluster-runner
         steps:
             - uses: actions/checkout@v2
 
-            - name: Install Dependencies (lib-ssl, yarn, nodejs v15.x)
+            - name: Install Dependencies (lib-ssl, yarn, nodejs v20.x)
               run: bash ./.github/scripts/install-deps.sh
 
             - name: Install Dependencies
@@ -20,12 +20,12 @@ jobs:
               run: yarn build
     test:
         name: Test
-        # runs-on: ubuntu-latest
-        runs-on: cluster-runner
+        runs-on: ubuntu-latest
+        # runs-on: cluster-runner
         steps:
             - uses: actions/checkout@v2
 
-            - name: Install Dependencies (lib-ssl, yarn, nodejs v15.x)
+            - name: Install Dependencies (lib-ssl, yarn, nodejs v20.x)
               run: bash ./.github/scripts/install-deps.sh
 
             - name: Install Dependencies
@@ -35,12 +35,12 @@ jobs:
               run: yarn test --watchAll=false
     compile:
         name: Compile all sources
-        # runs-on: ubuntu-latest
-        runs-on: cluster-runner
+        runs-on: ubuntu-latest
+        # runs-on: cluster-runner
         steps:
             - uses: actions/checkout@v2
 
-            - name: Install Dependencies (lib-ssl, yarn, nodejs v15.x)
+            - name: Install Dependencies (lib-ssl, yarn, nodejs v20.x)
               run: bash ./.github/scripts/install-deps.sh
 
             - name: Install Dependencies

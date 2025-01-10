@@ -55,14 +55,13 @@
         "svguitar": "^1.12.3",
         "swiper": "^6.7.1",
         "tone": "^14.7.77",
-        "typescript": "4.7.3",
         "use-debounce": "^7.0.0"
     },
     "scripts": {
         "start": "BROWSER=firefox react-scripts start",
         "start-slow": "FAST_REFRESH=false yarn start",
         "build": "REACT_APP_BACKEND_URL=https://chord-be.philipwong.pw react-scripts build",
-        "test": "react-scripts test --env=jest-environment-jsdom-sixteen",
+        "test": "react-scripts test --env=jsdom",
         "eject": "react-scripts eject",
         "build-github-pages": "REACT_APP_BACKEND_URL=https://chord-be.philipwong.pw PUBLIC_URL=/chord-paper-fe yarn build",
         "postinstall": "patch-package"
@@ -74,7 +73,8 @@
         "production": [
             ">0.2%",
             "not dead",
-            "not op_mini all"
+            "not op_mini all",
+            "not op_mob >= 1" 
         ],
         "development": [
             "last 1 chrome version",
@@ -83,15 +83,18 @@
         ]
     },
     "devDependencies": {
-        "jest-environment-jsdom-sixteen": "^1.0.3",
+        "@typescript-eslint/eslint-plugin": "^5.6.0",
+        "@typescript-eslint/parser": "^5.6.0",
+        "eslint": "^7.32.0",
+        "eslint-config-react-app": "^7.0.1",
+        "jest-environment-jsdom": "^27.0.6",
         "prettier": "2.3.1",
         "react-error-overlay": "6.0.9",
-        "react-scripts": "4.0.1",
-        "ts-jest": "^26.0.0"
+        "react-scripts": "5.0.0",
+        "ts-jest": "^26.0.0",
+        "typescript": "^5.7.3"
     },
     "resolutions": {
-        "**/@typescript-eslint/eslint-plugin": "^4.25.0",
-        "**/@typescript-eslint/parser": "^4.25.0",
         "@babel/core": "^7.12.3",
         "eslint-plugin-react-hooks": "^4.2.0",
         "react-error-overlay": "6.0.9"

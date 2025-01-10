@@ -1,7 +1,7 @@
 import { Theme } from "@mui/material";
 import { noopFn, PlainFn } from "common/PlainFn";
 import React, { useCallback, useMemo, useRef } from "react";
-import { useDebouncedCallback } from "use-debounce/lib";
+import { useDebouncedCallback } from "use-debounce";
 
 export type BorderFns = {
     getBorderColour: () => BorderColour;
