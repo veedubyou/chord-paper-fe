@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# script used by action workflows to install libssl, yarn, and nodejs 16
+# script used by action workflows to install libssl, yarn, and nodejs 20
 
 sudo apt-get update && sudo apt-get install -y libssl-dev pkg-config \
         && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
