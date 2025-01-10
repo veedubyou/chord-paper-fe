@@ -23,7 +23,7 @@ jobs:
             - name: Get version tag from GIT-VERSION-FILE
               run: echo "gitver=$(cat GIT-VERSION-FILE)" >> $GITHUB_ENV
 
-            - name: Install Dependencies (lib-ssl, yarn, nodejs v15.x)
+            - name: Install Dependencies (lib-ssl, yarn, nodejs v16.x)
               run: bash ./.github/scripts/install-deps.sh
 
             - name: Install Dependencies

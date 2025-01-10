@@ -10,7 +10,7 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
-            - name: Install Dependencies (lib-ssl, yarn, nodejs v15.x)
+            - name: Install Dependencies (lib-ssl, yarn, nodejs v16.x)
               run: bash ./.github/scripts/install-deps.sh
 
             - name: Install Dependencies
@@ -25,7 +25,7 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
-            - name: Install Dependencies (lib-ssl, yarn, nodejs v15.x)
+            - name: Install Dependencies (lib-ssl, yarn, nodejs v16.x)
               run: bash ./.github/scripts/install-deps.sh
 
             - name: Install Dependencies
@@ -40,7 +40,7 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
-            - name: Install Dependencies (lib-ssl, yarn, nodejs v15.x)
+            - name: Install Dependencies (lib-ssl, yarn, nodejs v16.x)
               run: bash ./.github/scripts/install-deps.sh
 
             - name: Install Dependencies
