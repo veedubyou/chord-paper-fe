@@ -60,7 +60,7 @@
     "scripts": {
         "start": "BROWSER=firefox react-scripts start",
         "start-slow": "FAST_REFRESH=false yarn start",
-        "build": "REACT_APP_BACKEND_URL=https://b495-71-145-210-179.ngrok-free.app react-scripts build",
+        "build": "REACT_APP_BACKEND_URL=https://chord-be.philipwong.pw react-scripts build",
         "test": "react-scripts test --env=jsdom",
         "eject": "react-scripts eject",
         "build-github-pages": "REACT_APP_BACKEND_URL=https://chord-be.philipwong.pw PUBLIC_URL=/chord-paper-fe yarn build",
