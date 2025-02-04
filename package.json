@@ -60,10 +60,10 @@
     "scripts": {
         "start": "BROWSER=firefox react-scripts start",
         "start-slow": "FAST_REFRESH=false yarn start",
-        "build": "REACT_APP_BACKEND_URL=https://chord-be.philipwong.pw react-scripts build",
+        "build": "REACT_APP_BACKEND_URL=https://chord-be.thatmight.work react-scripts build",
         "test": "react-scripts test --env=jsdom",
         "eject": "react-scripts eject",
-        "build-github-pages": "REACT_APP_BACKEND_URL=https://chord-be.philipwong.pw PUBLIC_URL=/chord-paper-fe yarn build",
+        "build-github-pages": "REACT_APP_BACKEND_URL=https://chord-be.thatmight.work PUBLIC_URL=/chord-paper-fe yarn build",
         "postinstall": "patch-package"
     },
     "eslintConfig": {
