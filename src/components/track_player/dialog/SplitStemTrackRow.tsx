@@ -1,7 +1,20 @@
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Button, Divider, Grid, styled } from "@mui/material";
-import { SplitStemTrack } from "common/ChordModel/tracks/SplitStemRequest";
-import LabelField from "components/track_player/dialog/LabelField";
+import {
+    Button,
+    Divider,
+    FormControl,
+    Grid,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    styled,
+} from "@mui/material";
+import {
+    SplitEngineTypes,
+    SplitStemTrack,
+    SplitStemTypes,
+} from "common/ChordModel/tracks/SplitStemRequest";
 import URLField from "components/track_player/dialog/URLField";
 import React from "react";
 
@@ -18,8 +31,19 @@ const RowContainer = styled(Grid)(({ theme }) => ({
 const SplitStemTrackRow: React.FC<SplitStemTrackRowProps> = (
     props: SplitStemTrackRowProps
 ): JSX.Element => {
-    const handleLabelChange = (newLabel: string) => {
-        const updatedTrack = props.track.set("label", newLabel);
+    const handleEngineChange = (changeEvent: SelectChangeEvent<unknown>) => {
+        const updatedTrack = props.track.set(
+            "engine_type",
+            changeEvent.target.value as SplitEngineTypes
+        );
+        props.onChange(updatedTrack);
+    };
+
+    const handleStemCountChange = (changeEvent: SelectChangeEvent<unknown>) => {
+        const updatedTrack = props.track.set(
+            "track_type",
+            changeEvent.target.value as SplitStemTypes
+        );
         props.onChange(updatedTrack);
     };
 
@@ -53,11 +77,38 @@ const SplitStemTrackRow: React.FC<SplitStemTrackRowProps> = (
     return (
         <>
             <RowContainer container alignItems="center">
-                <Grid xs={5} item>
-                    <LabelField
-                        value={props.track.label}
-                        onChange={handleLabelChange}
-                    />
+                <Grid xs={3} item>
+                    <FormControl>
+                        <InputLabel id="splitting-engine-label">
+                            Engine
+                        </InputLabel>
+                        <Select
+                            labelId="splitting-engine-label"
+                            label="Engine"
+                            value={props.track.engine_type}
+                            onChange={handleEngineChange}
+                        >
+                            <MenuItem value={"spleeter"}>Spleeter</MenuItem>
+                            <MenuItem value={"demucs"}>Demucs</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid xs={2} item>
+                    <FormControl>
+                        <InputLabel id="stem-count-label">
+                            Stem Count
+                        </InputLabel>
+                        <Select
+                            labelId="stem-count-label"
+                            label="Stem Count"
+                            value={props.track.track_type}
+                            onChange={handleStemCountChange}
+                        >
+                            <MenuItem value={"split_2stems"}>2</MenuItem>
+                            <MenuItem value={"split_4stems"}>4</MenuItem>
+                            <MenuItem value={"split_5stems"}>5</MenuItem>
+                        </Select>
+                    </FormControl>
                 </Grid>
                 <Grid xs={5} item>
                     <URLField

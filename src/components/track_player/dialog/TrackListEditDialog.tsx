@@ -13,27 +13,26 @@ import {
     Menu,
     MenuItem,
     styled,
-    Typography as UnstyledTypography
+    Typography as UnstyledTypography,
 } from "@mui/material";
 import { SingleTrack } from "common/ChordModel/tracks/SingleTrack";
-import {
-    SplitStemTrack,
-    SplitStemTypes
-} from "common/ChordModel/tracks/SplitStemRequest";
+import { SplitStemTrack } from "common/ChordModel/tracks/SplitStemRequest";
 import {
     FiveStemKeys,
     FiveStemTrack,
     FourStemKeys,
     FourStemTrack,
     TwoStemKeys,
-    TwoStemTrack
+    TwoStemTrack,
 } from "common/ChordModel/tracks/StemTrack";
 import { Track } from "common/ChordModel/tracks/Track";
 import { TrackList } from "common/ChordModel/tracks/TrackList";
 import { PlainFn } from "common/PlainFn";
 import SingleTrackRow from "components/track_player/dialog/SingleTrackRow";
 import SplitStemTrackRow from "components/track_player/dialog/SplitStemTrackRow";
-import StemTrackRow, { URLFieldLabel } from "components/track_player/dialog/StemTrackRow";
+import StemTrackRow, {
+    URLFieldLabel,
+} from "components/track_player/dialog/StemTrackRow";
 import { TrackListLoad } from "components/track_player/providers/TrackListProvider";
 import lodash from "lodash";
 import React, { useState } from "react";
@@ -175,8 +174,8 @@ const LoadedTrackListEditDialog: React.FC<LoadedTrackListEditDialogProps> = (
         );
     };
 
-    const handleAddSplitStemTrack = (splitType: SplitStemTypes) => {
-        handleAddTrack(SplitStemTrack.newTrackRequest(splitType));
+    const handleAddSplitStemTrack = () => {
+        handleAddTrack(SplitStemTrack.newTrackRequest());
     };
 
     const handleAddTrack = (newTrack: Track) => {
@@ -376,20 +375,8 @@ const LoadedTrackListEditDialog: React.FC<LoadedTrackListEditDialogProps> = (
                     <MenuItem onClick={handleAddSingleTrack}>
                         Single Track
                     </MenuItem>
-                    <MenuItem
-                        onClick={() => handleAddSplitStemTrack("split_2stems")}
-                    >
-                        Split Track into 2 Stems
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => handleAddSplitStemTrack("split_4stems")}
-                    >
-                        Split Track into 4 Stems
-                    </MenuItem>
-                    <MenuItem
-                        onClick={() => handleAddSplitStemTrack("split_5stems")}
-                    >
-                        Split Track into 5 Stems
+                    <MenuItem onClick={() => handleAddSplitStemTrack()}>
+                        Split Track into Stems
                     </MenuItem>
                     <MenuItem onClick={handleAddTwoStemTrack}>
                         2 Stem Track

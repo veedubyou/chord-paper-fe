@@ -39,7 +39,7 @@ export type SplitStemJobStatus = "requested" | "processing" | "error";
 
 const DefaultSplitStemTrackRecord = {
     id: "",
-    track_type: "split_2stems" as SplitStemTypes,
+    track_type: "split_4stems" as SplitStemTypes,
     engine_type: "spleeter" as SplitEngineTypes,
     label: "",
     original_url: "",
@@ -77,22 +77,11 @@ export class SplitStemTrack
         });
     }
 
-    static defaultLabel(splitType: SplitStemTypes): string {
-        switch (splitType) {
-            case "split_2stems":
-                return "2 stems";
-            case "split_4stems":
-                return "4 stems";
-            case "split_5stems":
-                return "5 stems";
-        }
-    }
-
-    static newTrackRequest(splitType: SplitStemTypes): SplitStemTrack {
+    static newTrackRequest(): SplitStemTrack {
         return new SplitStemTrack(
             "",
-            this.defaultLabel(splitType),
-            splitType,
+            "",
+            "split_4stems",
             "spleeter",
             "",
             "requested",
@@ -122,3 +111,4 @@ export class SplitStemTrack
         return validateValue(this.label) && validateValue(this.original_url);
     }
 }
+
