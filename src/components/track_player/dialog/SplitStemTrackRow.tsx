@@ -32,16 +32,14 @@ const SplitStemTrackRow: React.FC<SplitStemTrackRowProps> = (
     props: SplitStemTrackRowProps
 ): JSX.Element => {
     const handleEngineChange = (changeEvent: SelectChangeEvent<unknown>) => {
-        const updatedTrack = props.track.set(
-            "engine_type",
+        const updatedTrack = props.track.setEngineType(
             changeEvent.target.value as SplitEngineTypes
         );
         props.onChange(updatedTrack);
     };
 
     const handleStemCountChange = (changeEvent: SelectChangeEvent<unknown>) => {
-        const updatedTrack = props.track.set(
-            "track_type",
+        const updatedTrack = props.track.setTrackType(
             changeEvent.target.value as SplitStemTypes
         );
         props.onChange(updatedTrack);
@@ -70,6 +68,25 @@ const SplitStemTrackRow: React.FC<SplitStemTrackRowProps> = (
 
             case "split_5stems": {
                 return "Track URL to be split into 5 stems";
+            }
+        }
+    })();
+
+    const stemCountMenuItems = (() => {
+        switch (props.track.engine_type) {
+            case "spleeter": {
+                return [
+                    <MenuItem value={"split_2stems"}>2</MenuItem>,
+                    <MenuItem value={"split_4stems"}>4</MenuItem>,
+                    <MenuItem value={"split_5stems"}>5</MenuItem>,
+                ];
+            }
+
+            case "demucs": {
+                return [
+                    <MenuItem value={"split_2stems"}>2</MenuItem>,
+                    <MenuItem value={"split_4stems"}>4</MenuItem>,
+                ];
             }
         }
     })();
@@ -104,9 +121,7 @@ const SplitStemTrackRow: React.FC<SplitStemTrackRowProps> = (
                             value={props.track.track_type}
                             onChange={handleStemCountChange}
                         >
-                            <MenuItem value={"split_2stems"}>2</MenuItem>
-                            <MenuItem value={"split_4stems"}>4</MenuItem>
-                            <MenuItem value={"split_5stems"}>5</MenuItem>
+                            {stemCountMenuItems}
                         </Select>
                     </FormControl>
                 </Grid>
