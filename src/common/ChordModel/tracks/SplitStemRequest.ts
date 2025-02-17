@@ -108,7 +108,62 @@ export class SplitStemTrack
     }
 
     validate(): boolean {
-        return validateValue(this.label) && validateValue(this.original_url);
+        return (
+            validateValue(this.label) &&
+            validateValue(this.original_url) &&
+            validateValue(this.track_type) &&
+            validateValue(this.engine_type)
+        );
+    }
+
+    setTrackType(trackType: SplitStemTypes): SplitStemTrack {
+        const modified = this.set("track_type", trackType);
+        return modified.set("label", modified.derivedLabel());
+    }
+
+    setEngineType(engineType: SplitEngineTypes) {
+        let modified = this.set("engine_type", engineType);
+
+        const stemCountUnavailable =
+            engineType === "demucs" && modified.track_type === "split_5stems";
+        if (stemCountUnavailable) {
+            modified = modified.set("track_type", "split_4stems");
+        }
+
+        return modified.set("label", modified.derivedLabel());
+    }
+
+    private derivedLabel(): string {
+        let stemCount: string;
+        switch (this.track_type) {
+            case "split_2stems": {
+                stemCount = "2 stems";
+                break;
+            }
+            case "split_4stems": {
+                stemCount = "4 stems";
+                break;
+            }
+            case "split_5stems": {
+                stemCount = "5 stems";
+                break;
+            }
+        }
+
+        let engine: string;
+        switch (this.engine_type) {
+            case "spleeter": {
+                engine = "spleeter";
+                break;
+            }
+
+            case "demucs": {
+                engine = "demucs";
+                break;
+            }
+        }
+
+        return `${stemCount} (${engine})`;
     }
 }
 
