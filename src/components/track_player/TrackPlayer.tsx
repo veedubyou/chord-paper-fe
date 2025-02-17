@@ -2,7 +2,7 @@ import { Collapse } from "@mui/material";
 import {
     FiveStemKeys,
     FourStemKeys,
-    TwoStemKeys
+    TwoStemKeys,
 } from "common/ChordModel/tracks/StemTrack";
 import { Track } from "common/ChordModel/tracks/Track";
 import { PlainFn } from "common/PlainFn";
@@ -10,7 +10,7 @@ import OneTimeErrorNotification from "components/display/OneTimeErrorNotificatio
 import LoadingSpinner from "components/loading/LoadingSpinner";
 import SingleTrackPlayer from "components/track_player/internal_player/single/SingleTrackPlayer";
 import StemTrackPlayer, {
-    StemButtonSpec
+    StemButtonSpec,
 } from "components/track_player/internal_player/stem/StemTrackPlayer";
 import { PlayerControls } from "components/track_player/internal_player/usePlayerControls";
 import LoadingSplitStemTrackView from "components/track_player/LoadingSplitStemTrackView";
@@ -177,7 +177,6 @@ const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
                 );
             }
 
-            case "split_2stems":
             case "split_4stems":
             case "split_5stems": {
                 return (

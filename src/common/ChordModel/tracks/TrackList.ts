@@ -1,6 +1,10 @@
 import { SingleTrack } from "common/ChordModel/tracks/SingleTrack";
 import { SplitStemTrack } from "common/ChordModel/tracks/SplitStemRequest";
-import { FiveStemTrack, FourStemTrack, TwoStemTrack } from "common/ChordModel/tracks/StemTrack";
+import {
+    FiveStemTrack,
+    FourStemTrack,
+    TwoStemTrack,
+} from "common/ChordModel/tracks/StemTrack";
 import { Track, TrackValidator } from "common/ChordModel/tracks/Track";
 import { Either, isLeft, left, right } from "fp-ts/lib/Either";
 import * as iots from "io-ts";
@@ -43,7 +47,6 @@ export class TrackList implements TrackListValidatedFields {
                     return FiveStemTrack.fromValidatedFields(validatedFields);
                 }
 
-                case "split_2stems":
                 case "split_4stems":
                 case "split_5stems": {
                     return SplitStemTrack.fromValidatedFields(validatedFields);

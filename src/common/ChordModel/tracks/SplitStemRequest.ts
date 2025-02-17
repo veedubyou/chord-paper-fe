@@ -13,7 +13,6 @@ export const SplitStemTrackValidator = iots.intersection([
             iots.literal("demucs"),
         ]),
         track_type: iots.union([
-            iots.literal("split_2stems"),
             iots.literal("split_4stems"),
             iots.literal("split_5stems"),
         ]),
@@ -34,7 +33,7 @@ type SplitStemTrackValidatedFields = iots.TypeOf<
 >;
 
 export type SplitEngineTypes = "spleeter" | "demucs";
-export type SplitStemTypes = "split_2stems" | "split_4stems" | "split_5stems";
+export type SplitStemTypes = "split_4stems" | "split_5stems";
 export type SplitStemJobStatus = "requested" | "processing" | "error";
 
 const DefaultSplitStemTrackRecord = {
@@ -136,10 +135,6 @@ export class SplitStemTrack
     private derivedLabel(): string {
         let stemCount: string;
         switch (this.track_type) {
-            case "split_2stems": {
-                stemCount = "2 stems";
-                break;
-            }
             case "split_4stems": {
                 stemCount = "4 stems";
                 break;
@@ -166,4 +161,3 @@ export class SplitStemTrack
         return `${stemCount} (${engine})`;
     }
 }
-

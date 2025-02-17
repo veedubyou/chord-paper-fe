@@ -58,10 +58,6 @@ const SplitStemTrackRow: React.FC<SplitStemTrackRowProps> = (
         }
 
         switch (props.track.track_type) {
-            case "split_2stems": {
-                return "Track URL to be split into 2 stems";
-            }
-
             case "split_4stems": {
                 return "Track URL to be split into 4 stems";
             }
@@ -76,17 +72,13 @@ const SplitStemTrackRow: React.FC<SplitStemTrackRowProps> = (
         switch (props.track.engine_type) {
             case "spleeter": {
                 return [
-                    <MenuItem value={"split_2stems"}>2</MenuItem>,
                     <MenuItem value={"split_4stems"}>4</MenuItem>,
                     <MenuItem value={"split_5stems"}>5</MenuItem>,
                 ];
             }
 
             case "demucs": {
-                return [
-                    <MenuItem value={"split_2stems"}>2</MenuItem>,
-                    <MenuItem value={"split_4stems"}>4</MenuItem>,
-                ];
+                return [<MenuItem value={"split_4stems"}>4</MenuItem>];
             }
         }
     })();

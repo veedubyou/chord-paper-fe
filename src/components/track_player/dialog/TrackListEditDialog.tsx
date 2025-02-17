@@ -338,7 +338,6 @@ const LoadedTrackListEditDialog: React.FC<LoadedTrackListEditDialogProps> = (
                         );
                     }
 
-                    case "split_2stems":
                     case "split_4stems":
                     case "split_5stems": {
                         return (
