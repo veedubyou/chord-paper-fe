@@ -51,8 +51,7 @@ export interface StemInput<StemKey extends string> {
 }
 
 interface LoadedStemTrackPlayerProps<StemKey extends string> {
-    focused: boolean;
-    currentTrack: boolean;
+    showing: boolean;
     stems: StemInput<StemKey>[];
     playerControls: PlayerControls;
     refreshTrackFn: PlainFn;
@@ -203,7 +202,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         }, 5000);
 
         return () => clearInterval(intervalID);
-    }, [])
+    }, []);
 
     const { tempo, getCurrentTime } = props.playerControls;
     // synchronize time
@@ -272,27 +271,18 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
     // connect and disconnect nodes from the transport when not in focus
     // so that other tracks can use the transport
     useEffect(() => {
-        if (props.currentTrack) {
+        toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
+            toneNode.playerNode.sync().start(0);
+            toneNode.endNode.toDestination();
+        });
+
+        return () => {
             toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
-                toneNode.playerNode.sync().start(0);
-                toneNode.endNode.toDestination();
+                toneNode.playerNode.unsync();
+                toneNode.endNode.disconnect();
             });
-
-            return () => {
-                toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
-                    toneNode.playerNode.unsync();
-                    toneNode.endNode.disconnect();
-                });
-            };
-        }
-    }, [props.currentTrack, toneNodes]);
-
-    // pause the track when user switches to a different track
-    useEffect(() => {
-        if (!props.currentTrack && props.playerControls.playing) {
-            props.playerControls.onPause();
-        }
-    }, [props.currentTrack, props.playerControls]);
+        };
+    }, [toneNodes]);
 
     // cleanup buffer resources when this component goes out of scope
     useEffect(() => {
@@ -300,42 +290,47 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
             toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
                 toneNode.volumeNode.dispose();
                 toneNode.playerNode.dispose();
+                console.log("Disposing...", toneNode.label);
             });
         };
     }, [toneNodes]);
 
-    const makeStemControl = useCallback((
-        stemState: StemState<StemKey>,
-        stemIndex: number
-    ): StemControl<StemKey> => {
-        const buttonColour: ControlPaneButtonColour = (() => {
-            const stemInput = props.stems.find(
-                (value: StemInput<StemKey>) => value.label === stemState.key
-            );
-            if (stemInput === undefined) {
-                return "white";
-            }
+    const makeStemControl = useCallback(
+        (
+            stemState: StemState<StemKey>,
+            stemIndex: number
+        ): StemControl<StemKey> => {
+            const buttonColour: ControlPaneButtonColour = (() => {
+                const stemInput = props.stems.find(
+                    (value: StemInput<StemKey>) => value.label === stemState.key
+                );
+                if (stemInput === undefined) {
+                    return "white";
+                }
 
-            return stemInput.buttonColour;
-        })();
+                return stemInput.buttonColour;
+            })();
 
-        return {
-            label: stemState.key,
-            buttonColour: buttonColour,
-            enabled: !stemState.muted,
-            onEnabledChanged: (enabled: boolean) => {
-                const newPlayerState = lodash.cloneDeep(playerState);
-                newPlayerState.stems[stemIndex].muted = !enabled;
-                setPlayerState(newPlayerState);
-            },
-            volume: stemState.volumePercentage,
-            onVolumeChanged: (newVolume: number) => {
-                const newPlayerState = lodash.cloneDeep(playerState);
-                newPlayerState.stems[stemIndex].volumePercentage = newVolume;
-                setPlayerState(newPlayerState);
-            },
-        };
-    }, [playerState, props.stems]);
+            return {
+                label: stemState.key,
+                buttonColour: buttonColour,
+                enabled: !stemState.muted,
+                onEnabledChanged: (enabled: boolean) => {
+                    const newPlayerState = lodash.cloneDeep(playerState);
+                    newPlayerState.stems[stemIndex].muted = !enabled;
+                    setPlayerState(newPlayerState);
+                },
+                volume: stemState.volumePercentage,
+                onVolumeChanged: (newVolume: number) => {
+                    const newPlayerState = lodash.cloneDeep(playerState);
+                    newPlayerState.stems[stemIndex].volumePercentage =
+                        newVolume;
+                    setPlayerState(newPlayerState);
+                },
+            };
+        },
+        [playerState, props.stems]
+    );
 
     const stemControls = useMemo(
         () => playerState.stems.map(makeStemControl),
@@ -371,7 +366,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
             </Box>
             {stemControlPane}
             <ControlPane
-                show={props.focused}
+                showing={props.showing}
                 playing={props.playerControls.playing}
                 transport={props.playerControls.transport}
                 tempo={props.playerControls.tempo}

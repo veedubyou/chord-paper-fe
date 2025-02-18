@@ -1,13 +1,11 @@
 import { useRegisterTopKeyListener } from "components/GlobalKeyListener";
 import { ControlButton } from "components/track_player/internal_player/ControlButton";
 import ControlGroup from "components/track_player/internal_player/ControlGroup";
-import {
-    TransportActions
-} from "components/track_player/internal_player/usePlayerControls";
+import { TransportActions } from "components/track_player/internal_player/usePlayerControls";
 import React, { useEffect } from "react";
 
 interface TransportControlProps {
-    show: boolean;
+    showing: boolean;
     playing: boolean;
     transport: TransportActions;
 }
@@ -18,7 +16,7 @@ const TransportControl: React.FC<TransportControlProps> = (
     const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
 
     useEffect(() => {
-        if (!props.show) {
+        if (!props.showing) {
             return;
         }
 

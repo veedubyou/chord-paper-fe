@@ -1,8 +1,7 @@
-import { Collapse } from "@mui/material";
 import {
     FiveStemKeys,
     FourStemKeys,
-    TwoStemKeys
+    TwoStemKeys,
 } from "common/ChordModel/tracks/StemTrack";
 import { Track } from "common/ChordModel/tracks/Track";
 import { PlainFn } from "common/PlainFn";
@@ -10,7 +9,7 @@ import OneTimeErrorNotification from "components/display/OneTimeErrorNotificatio
 import LoadingSpinner from "components/loading/LoadingSpinner";
 import SingleTrackPlayer from "components/track_player/internal_player/single/SingleTrackPlayer";
 import StemTrackPlayer, {
-    StemButtonSpec
+    StemButtonSpec,
 } from "components/track_player/internal_player/stem/StemTrackPlayer";
 import { PlayerControls } from "components/track_player/internal_player/usePlayerControls";
 import LoadingSplitStemTrackView from "components/track_player/LoadingSplitStemTrackView";
@@ -18,8 +17,7 @@ import { useTrackFetch } from "components/track_player/providers/useTrackFetch";
 import React from "react";
 
 interface TrackPlayerProps {
-    focused: boolean;
-    isCurrentTrack: boolean;
+    showing: boolean;
     tracklistID: string;
     trackID: string;
     playerControls: PlayerControls;
@@ -50,9 +48,8 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
         case "loaded": {
             return (
                 <LoadedTrackPlayer
+                    showing={props.showing}
                     track={trackLoad.track}
-                    focused={props.focused}
-                    isCurrentTrack={props.isCurrentTrack}
                     playerControls={props.playerControls}
                     refreshTrackFn={refreshTrackFn}
                 />
@@ -62,8 +59,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
 };
 
 interface LoadedTrackPlayerProps {
-    focused: boolean;
-    isCurrentTrack: boolean;
+    showing: boolean;
     track: Track;
     playerControls: PlayerControls;
     refreshTrackFn: PlainFn;
@@ -77,8 +73,7 @@ const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
             case "single": {
                 return (
                     <SingleTrackPlayer
-                        focused={props.focused}
-                        isCurrentTrack={props.isCurrentTrack}
+                        showing={props.showing}
                         track={props.track}
                         playerControls={props.playerControls}
                     />
@@ -99,8 +94,7 @@ const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
 
                 return (
                     <StemTrackPlayer
-                        focused={props.focused}
-                        isCurrentTrack={props.isCurrentTrack}
+                        showing={props.showing}
                         track={props.track}
                         buttonSpecs={buttonSpecs}
                         playerControls={props.playerControls}
@@ -131,8 +125,7 @@ const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
 
                 return (
                     <StemTrackPlayer
-                        focused={props.focused}
-                        isCurrentTrack={props.isCurrentTrack}
+                        showing={props.showing}
                         track={props.track}
                         buttonSpecs={buttonSpecs}
                         playerControls={props.playerControls}
@@ -167,8 +160,7 @@ const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
 
                 return (
                     <StemTrackPlayer
-                        focused={props.focused}
-                        isCurrentTrack={props.isCurrentTrack}
+                        showing={props.showing}
                         track={props.track}
                         buttonSpecs={buttonSpecs}
                         playerControls={props.playerControls}
@@ -190,7 +182,7 @@ const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
         }
     })();
 
-    return <Collapse in={props.focused}>{innerPlayer}</Collapse>;
+    return innerPlayer;
 };
 
 export default React.memo(TrackPlayer);

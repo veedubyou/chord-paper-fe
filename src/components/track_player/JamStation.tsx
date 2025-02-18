@@ -40,8 +40,6 @@ const JamStation: React.FC<JamStationProps> = (
     // cause heavy network traffic, don't do it without prompt
     const [loadPlayers, setLoadPlayers] = useState(false);
 
-    const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-
     const playerControls = usePlayerControls(props.timestampedSections);
 
     const trackListIsEmpty =
@@ -122,8 +120,6 @@ const JamStation: React.FC<JamStationProps> = (
             show={playerVisibilityState === "full"}
             tracklistLoad={props.tracklistLoad}
             playerControls={playerControls}
-            currentTrackIndex={currentTrackIndex}
-            onSelectCurrentTrack={setCurrentTrackIndex}
             onMinimize={minimizePlayer}
             onRefresh={props.onRefresh}
             onOpenTrackEditDialog={openTrackEditDialog}
