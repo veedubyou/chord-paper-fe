@@ -36,9 +36,6 @@ export interface StemButtonSpec<StemKey extends string> {
 }
 
 interface StemTrackPlayerProps<StemKey extends string> {
-    focused: boolean;
-    isCurrentTrack: boolean;
-
     track: StemTrack<StemKey>;
     buttonSpecs: StemButtonSpec<StemKey>[];
 
@@ -307,8 +304,6 @@ const StemTrackPlayer = <StemKey extends string>(
 
     return (
         <LoadedStemTrackPlayer
-            focused={props.focused}
-            currentTrack={props.isCurrentTrack}
             stems={fetchState.item}
             playerControls={props.playerControls}
             refreshTrackFn={props.refreshTrackFn}

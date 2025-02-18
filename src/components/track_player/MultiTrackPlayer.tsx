@@ -11,7 +11,7 @@ import {
     SelectChangeEvent,
     Slide,
     styled,
-    Theme
+    Theme,
 } from "@mui/material";
 import { SystemStyleObject } from "@mui/system";
 import { Track } from "common/ChordModel/tracks/Track";
@@ -22,15 +22,12 @@ import {
     roundedCornersStyle,
     roundedTopCornersStyle,
     TitleBar,
-    withBottomRightBox
+    withBottomRightBox,
 } from "components/track_player/common";
-import {
-    PlayerControls,
-    unfocusedControls
-} from "components/track_player/internal_player/usePlayerControls";
+import { PlayerControls } from "components/track_player/internal_player/usePlayerControls";
 import { TrackListLoad } from "components/track_player/providers/TrackListProvider";
 import TrackPlayer from "components/track_player/TrackPlayer";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const FlexBox = styled(Box)(({ theme }) => ({
     display: "flex",
@@ -70,9 +67,6 @@ interface MultiTrackPlayerProps {
     tracklistLoad: TrackListLoad;
     playerControls: PlayerControls;
 
-    currentTrackIndex: number;
-    onSelectCurrentTrack: (index: number) => void;
-
     onOpenTrackEditDialog?: PlainFn;
     onMinimize: PlainFn;
     onRefresh: PlainFn;
@@ -82,6 +76,7 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
     props: MultiTrackPlayerProps
 ): JSX.Element => {
     const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
+    const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
 
     {
         const show = props.show;
@@ -126,7 +121,7 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
             return;
         }
 
-        props.onSelectCurrentTrack(value);
+        setCurrentTrackIndex(value);
     };
 
     const trackListPicker = (() => {
@@ -148,7 +143,7 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
             <FormControl size="small">
                 <Select
                     sx={paddingLeftStyle}
-                    value={props.currentTrackIndex}
+                    value={currentTrackIndex}
                     onChange={trackChangeHandler}
                     MenuProps={{ disableScrollLock: true }}
                 >
@@ -180,27 +175,16 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
         }
 
         const tracklistID = props.tracklistLoad.tracklist.song_id;
+        const track = props.tracklistLoad.tracklist.tracks[currentTrackIndex]!;
 
-        const makePlayer = (track: Track, index: number) => {
-            const isCurrentTrack = index === props.currentTrackIndex;
-            const focused = isCurrentTrack && props.show;
-            const playerControls = isCurrentTrack
-                ? props.playerControls
-                : unfocusedControls;
-
-            return (
-                <TrackPlayer
-                    key={`${index}-${track.id}`}
-                    focused={focused}
-                    isCurrentTrack={isCurrentTrack}
-                    tracklistID={tracklistID}
-                    trackID={track.id}
-                    playerControls={playerControls}
-                />
-            );
-        };
-
-        return props.tracklistLoad.tracklist.tracks.map(makePlayer);
+        return (
+            <TrackPlayer
+                key={`${currentTrackIndex}-${track.id}`}
+                tracklistID={tracklistID}
+                trackID={track.id}
+                playerControls={props.playerControls}
+            />
+        );
     })();
 
     return (
