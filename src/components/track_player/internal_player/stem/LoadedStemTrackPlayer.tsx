@@ -51,6 +51,7 @@ export interface StemInput<StemKey extends string> {
 }
 
 interface LoadedStemTrackPlayerProps<StemKey extends string> {
+    showing: boolean;
     stems: StemInput<StemKey>[];
     playerControls: PlayerControls;
     refreshTrackFn: PlainFn;
@@ -365,6 +366,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
             </Box>
             {stemControlPane}
             <ControlPane
+                showing={props.showing}
                 playing={props.playerControls.playing}
                 transport={props.playerControls.transport}
                 tempo={props.playerControls.tempo}

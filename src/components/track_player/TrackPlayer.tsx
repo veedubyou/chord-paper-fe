@@ -1,4 +1,3 @@
-import { Collapse } from "@mui/material";
 import {
     FiveStemKeys,
     FourStemKeys,
@@ -18,6 +17,7 @@ import { useTrackFetch } from "components/track_player/providers/useTrackFetch";
 import React from "react";
 
 interface TrackPlayerProps {
+    showing: boolean;
     tracklistID: string;
     trackID: string;
     playerControls: PlayerControls;
@@ -48,6 +48,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
         case "loaded": {
             return (
                 <LoadedTrackPlayer
+                    showing={props.showing}
                     track={trackLoad.track}
                     playerControls={props.playerControls}
                     refreshTrackFn={refreshTrackFn}
@@ -58,6 +59,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = (
 };
 
 interface LoadedTrackPlayerProps {
+    showing: boolean;
     track: Track;
     playerControls: PlayerControls;
     refreshTrackFn: PlainFn;
@@ -71,6 +73,7 @@ const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
             case "single": {
                 return (
                     <SingleTrackPlayer
+                        showing={props.showing}
                         track={props.track}
                         playerControls={props.playerControls}
                     />
@@ -91,6 +94,7 @@ const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
 
                 return (
                     <StemTrackPlayer
+                        showing={props.showing}
                         track={props.track}
                         buttonSpecs={buttonSpecs}
                         playerControls={props.playerControls}
@@ -121,6 +125,7 @@ const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
 
                 return (
                     <StemTrackPlayer
+                        showing={props.showing}
                         track={props.track}
                         buttonSpecs={buttonSpecs}
                         playerControls={props.playerControls}
@@ -155,6 +160,7 @@ const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
 
                 return (
                     <StemTrackPlayer
+                        showing={props.showing}
                         track={props.track}
                         buttonSpecs={buttonSpecs}
                         playerControls={props.playerControls}
@@ -176,7 +182,7 @@ const LoadedTrackPlayer: React.FC<LoadedTrackPlayerProps> = (
         }
     })();
 
-    return <Collapse in={true}>{innerPlayer}</Collapse>;
+    return innerPlayer;
 };
 
 export default React.memo(TrackPlayer);

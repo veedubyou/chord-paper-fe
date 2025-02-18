@@ -5,6 +5,7 @@ import { TransportActions } from "components/track_player/internal_player/usePla
 import React, { useEffect } from "react";
 
 interface TransportControlProps {
+    showing: boolean;
     playing: boolean;
     transport: TransportActions;
 }
@@ -15,6 +16,10 @@ const TransportControl: React.FC<TransportControlProps> = (
     const [addTopKeyListener, removeKeyListener] = useRegisterTopKeyListener();
 
     useEffect(() => {
+        if (!props.showing) {
+            return;
+        }
+
         const handleKey = (event: KeyboardEvent) => {
             switch (event.code) {
                 case "Space": {

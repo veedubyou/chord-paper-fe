@@ -11,6 +11,7 @@ import {
 import React from "react";
 
 interface ControlPaneProps {
+    showing: boolean;
     playing: boolean;
     transport: TransportActions;
     tempo: TempoControl;
@@ -44,6 +45,7 @@ const ControlPane: React.FC<ControlPaneProps> = (
     return (
         <ControlPaneBox>
             <TransportControl
+                showing={props.showing}
                 playing={props.playing}
                 transport={props.transport}
             />

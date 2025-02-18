@@ -179,6 +179,7 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
 
         return (
             <TrackPlayer
+                showing={props.show}
                 key={`${currentTrackIndex}-${track.id}`}
                 tracklistID={tracklistID}
                 trackID={track.id}

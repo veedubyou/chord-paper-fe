@@ -9,6 +9,7 @@ import ReactPlayer, { ReactPlayerProps } from "react-player";
 import shortid from "shortid";
 
 interface SingleTrackPlayerProps {
+    showing: boolean;
     playerControls: PlayerControls;
     track: SingleTrack;
 }
@@ -31,6 +32,7 @@ const SingleTrackPlayer: React.FC<SingleTrackPlayerProps> = (
                 <ReactPlayer {...reactPlayerProps} url={trackURL} />
             </Box>
             <ControlPane
+                showing={props.showing}
                 playing={props.playerControls.playing}
                 transport={props.playerControls.transport}
                 tempo={props.playerControls.tempo}
