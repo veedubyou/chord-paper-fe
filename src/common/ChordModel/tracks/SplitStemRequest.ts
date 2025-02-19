@@ -11,6 +11,8 @@ export const SplitStemTrackValidator = iots.intersection([
         engine_type: iots.union([
             iots.literal("spleeter"),
             iots.literal("demucs"),
+            iots.literal("demucs-ft"),
+            iots.literal("demucs-v3"),
         ]),
         track_type: iots.union([
             iots.literal("split_2stems"),
@@ -33,7 +35,11 @@ type SplitStemTrackValidatedFields = iots.TypeOf<
     typeof SplitStemTrackValidator
 >;
 
-export type SplitEngineTypes = "spleeter" | "demucs";
+export type SplitEngineTypes =
+    | "spleeter"
+    | "demucs"
+    | "demucs-ft"
+    | "demucs-v3";
 export type SplitStemTypes = "split_2stems" | "split_4stems" | "split_5stems";
 export type SplitStemJobStatus = "requested" | "processing" | "error";
 
@@ -125,7 +131,7 @@ export class SplitStemTrack
         let modified = this.set("engine_type", engineType);
 
         const stemCountUnavailable =
-            engineType === "demucs" && modified.track_type === "split_5stems";
+            engineType !== "spleeter" && modified.track_type === "split_5stems";
         if (stemCountUnavailable) {
             modified = modified.set("track_type", "split_4stems");
         }
@@ -161,9 +167,18 @@ export class SplitStemTrack
                 engine = "demucs";
                 break;
             }
+
+            case "demucs-ft": {
+                engine = "demucs fine tuned";
+                break;
+            }
+
+            case "demucs-v3": {
+                engine = "demucs v3";
+                break;
+            }
         }
 
         return `${stemCount} (${engine})`;
     }
 }
-
