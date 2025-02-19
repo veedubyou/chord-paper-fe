@@ -82,7 +82,9 @@ const SplitStemTrackRow: React.FC<SplitStemTrackRowProps> = (
                 ];
             }
 
-            case "demucs": {
+            case "demucs":
+            case "demucs-ft":
+            case "demucs-v3": {
                 return [
                     <MenuItem value={"split_2stems"}>2</MenuItem>,
                     <MenuItem value={"split_4stems"}>4</MenuItem>,
@@ -107,6 +109,10 @@ const SplitStemTrackRow: React.FC<SplitStemTrackRowProps> = (
                         >
                             <MenuItem value={"spleeter"}>Spleeter</MenuItem>
                             <MenuItem value={"demucs"}>Demucs</MenuItem>
+                            <MenuItem value={"demucs"}>
+                                Demucs Fine Tuned
+                            </MenuItem>
+                            <MenuItem value={"demucs"}>Demucs V3</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
