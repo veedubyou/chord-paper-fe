@@ -109,10 +109,10 @@ const SplitStemTrackRow: React.FC<SplitStemTrackRowProps> = (
                         >
                             <MenuItem value={"spleeter"}>Spleeter</MenuItem>
                             <MenuItem value={"demucs"}>Demucs</MenuItem>
-                            <MenuItem value={"demucs"}>
+                            <MenuItem value={"demucs-ft"}>
                                 Demucs Fine Tuned
                             </MenuItem>
-                            <MenuItem value={"demucs"}>Demucs V3</MenuItem>
+                            <MenuItem value={"demucs-v3"}>Demucs V3</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>

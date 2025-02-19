@@ -10,7 +10,7 @@
 
 # production: yarn build, move build to nginx static html folder, start nginx
 
-FROM node:12 as build-deps
+FROM node:20 as build-deps
 WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 RUN yarn
