@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/chord-paper-fe/static/css/main.b3dd6113.css",
-    "main.js": "/chord-paper-fe/static/js/main.2d5945d9.js",
+    "main.js": "/chord-paper-fe/static/js/main.39b4226c.js",
     "static/media/error.jpeg": "/chord-paper-fe/static/media/error.91c3c13ed4cc5a97b6ea.jpeg",
     "static/media/PressStart2P-Regular.ttf": "/chord-paper-fe/static/media/PressStart2P-Regular.21503c6a5385ab41dde9.ttf",
     "static/media/Merriweather-Regular.woff2": "/chord-paper-fe/static/media/Merriweather-Regular.db17165415a3dc6194ed.woff2",
@@ -10,10 +10,10 @@
     "static/media/google_signin.svg": "/chord-paper-fe/static/media/google_signin.ab6e56e0587b530c5939f429776ece75.svg",
     "index.html": "/chord-paper-fe/index.html",
     "main.b3dd6113.css.map": "/chord-paper-fe/static/css/main.b3dd6113.css.map",
-    "main.2d5945d9.js.map": "/chord-paper-fe/static/js/main.2d5945d9.js.map"
+    "main.39b4226c.js.map": "/chord-paper-fe/static/js/main.39b4226c.js.map"
   },
   "entrypoints": [
     "static/css/main.b3dd6113.css",
-    "static/js/main.2d5945d9.js"
+    "static/js/main.39b4226c.js"
   ]
 }
