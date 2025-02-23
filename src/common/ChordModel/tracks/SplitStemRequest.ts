@@ -11,7 +11,6 @@ export const SplitStemTrackValidator = iots.intersection([
         engine_type: iots.union([
             iots.literal("spleeter"),
             iots.literal("demucs"),
-            iots.literal("demucs-ft"),
             iots.literal("demucs-v3"),
         ]),
         track_type: iots.union([
@@ -35,11 +34,7 @@ type SplitStemTrackValidatedFields = iots.TypeOf<
     typeof SplitStemTrackValidator
 >;
 
-export type SplitEngineTypes =
-    | "spleeter"
-    | "demucs"
-    | "demucs-ft"
-    | "demucs-v3";
+export type SplitEngineTypes = "spleeter" | "demucs" | "demucs-v3";
 export type SplitStemTypes = "split_2stems" | "split_4stems" | "split_5stems";
 export type SplitStemJobStatus = "requested" | "processing" | "error";
 
@@ -165,11 +160,6 @@ export class SplitStemTrack
 
             case "demucs": {
                 engine = "demucs";
-                break;
-            }
-
-            case "demucs-ft": {
-                engine = "demucs fine tuned";
                 break;
             }
 
