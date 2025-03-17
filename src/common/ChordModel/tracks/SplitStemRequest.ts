@@ -83,7 +83,7 @@ export class SplitStemTrack
             "",
             "",
             "split_4stems",
-            "spleeter",
+            "demucs",
             "",
             "requested",
             "",

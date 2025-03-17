@@ -112,14 +112,10 @@ interface LoadedTrackListEditDialogProps {
 const LoadedTrackListEditDialog: React.FC<LoadedTrackListEditDialogProps> = (
     props: LoadedTrackListEditDialogProps
 ): JSX.Element => {
-    const emptySingleTrack = (): Track => {
-        return new SingleTrack("", "", "");
-    };
-
     const initialTrackList: TrackList = (() => {
         const clone = lodash.cloneDeep(props.trackList);
         if (clone.tracks.length === 0) {
-            clone.tracks.push(emptySingleTrack());
+            clone.tracks.push(SplitStemTrack.newTrackRequest());
         }
 
         return clone;
@@ -372,11 +368,11 @@ const LoadedTrackListEditDialog: React.FC<LoadedTrackListEditDialogProps> = (
                     anchorEl={addTrackMenuElement}
                     onClose={handleCloseAddTrackMenu}
                 >
-                    <MenuItem onClick={handleAddSingleTrack}>
-                        Single Track
-                    </MenuItem>
                     <MenuItem onClick={() => handleAddSplitStemTrack()}>
                         Split Track into Stems
+                    </MenuItem>
+                    <MenuItem onClick={handleAddSingleTrack}>
+                        Single Track
                     </MenuItem>
                     <MenuItem onClick={handleAddTwoStemTrack}>
                         2 Stem Track
