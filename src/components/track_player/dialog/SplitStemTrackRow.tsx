@@ -106,8 +106,8 @@ const SplitStemTrackRow: React.FC<SplitStemTrackRowProps> = (
                             value={props.track.engine_type}
                             onChange={handleEngineChange}
                         >
-                            <MenuItem value={"spleeter"}>Spleeter</MenuItem>
                             <MenuItem value={"demucs"}>Demucs</MenuItem>
+                            <MenuItem value={"spleeter"}>Spleeter</MenuItem>
                             <MenuItem value={"demucs-v3"}>Demucs V3</MenuItem>
                         </Select>
                     </FormControl>
