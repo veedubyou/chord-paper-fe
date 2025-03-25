@@ -11,8 +11,8 @@ export LATEST_IMAGE=$(curl -L --fail "https://hub.docker.com/v2/repositories/pw1
 
 printenv LATEST_IMAGE
 
-mkdir -p ./processed-yamls/ && cat ./deploy.yml | envsubst > ./processed-yamls/deploy.yml
+mkdir -p ./processed-yamls/ && cat ./deploy.yaml | envsubst > ./processed-yamls/deploy.yaml
 
 kubectl apply -k ./
 
-watch kubectl get all
+watch kubectl get all -n chord

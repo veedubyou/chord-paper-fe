@@ -4,4 +4,4 @@
 
 kubectl delete svc/chord-fe
 kubectl delete deploy/chord-fe
-watch kubectl get all
+watch kubectl get all -n chord
