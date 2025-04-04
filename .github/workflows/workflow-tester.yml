@@ -17,6 +17,6 @@ jobs:
     - name: kubectl test
       uses: actions-hub/kubectl@master
       env:
-        KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
       with:
         args: version
