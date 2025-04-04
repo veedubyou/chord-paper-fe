@@ -8,8 +8,8 @@ on:
 jobs:
     publish:
         name: Publish master to Github Pages
-        runs-on: ubuntu-latest
-        # runs-on: cluster-runner
+        # runs-on: ubuntu-latest
+        runs-on: arc-chord-fe-runner-set
         steps:
             # Checkout with history (to get git describe output properly)
             - name: Checkout
