@@ -8,15 +8,15 @@ jobs:
     steps:
     - name: "🎉 It's running! 💦💦"
       run: echo "🎉 It's running! 💦💦"
-    #- name: kubectl test
-    #  uses: steebchen/kubectl@master
-    #  with:
-    #    config: ${{ secrets.KUBE_CONFIG_DATA }}
-    #    version: v1.32.2
-    #    command: version
     - name: kubectl test
-      uses: actions-hub/kubectl@master
-      env:
-        KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
+      uses: steebchen/kubectl@master
       with:
-        args: version
+        config: ${{ secrets.KUBE_CONFIG_DATA }}
+        version: v1.32.2
+        command: version
+#    - name: kubectl test
+#      uses: actions-hub/kubectl@master
+#      env:
+#        KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
+#      with:
+#        args: version
