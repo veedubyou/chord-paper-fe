@@ -5,8 +5,8 @@ on: [pull_request]
 jobs:
     build:
         name: Verify Build
-        #runs-on: ubuntu-latest
-        runs-on: arc-chord-fe-runner-set
+        runs-on: ubuntu-latest
+        #runs-on: arc-chord-fe-runner-set
         steps:
             - uses: actions/checkout@v2
 
@@ -20,8 +20,8 @@ jobs:
               run: yarn build
     test:
         name: Test
-        #runs-on: ubuntu-latest
-        runs-on: arc-chord-fe-runner-set
+        runs-on: ubuntu-latest
+        #runs-on: arc-chord-fe-runner-set
         steps:
             - uses: actions/checkout@v2
 
@@ -35,8 +35,8 @@ jobs:
               run: yarn test --watchAll=false
     compile:
         name: Compile all sources
-        #runs-on: ubuntu-latest
-        runs-on: arc-chord-fe-runner-set
+        runs-on: ubuntu-latest
+        #runs-on: arc-chord-fe-runner-set
         steps:
             - uses: actions/checkout@v2
 
