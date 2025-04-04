@@ -12,8 +12,8 @@ on:
 
 jobs:
     push:
-        runs-on: ubuntu-latest
-        # runs-on: cluster-runner
+        #runs-on: ubuntu-latest
+        runs-on: arc-chord-fe-runner-set
         steps:
             # Checkout with history (to get git describe output properly)
             - name: Checkout
@@ -37,6 +37,6 @@ jobs:
               uses: steebchen/kubectl@master
               with:
                   config: ${{ secrets.KUBE_CONFIG_DATA }}
-                  version: v1.24.3
+                  version: v1.32.2
                   command: set image --record deploy/chord-fe chord-fe=${{ secrets.DOCKERHUB_USERNAME }}/chord-fe:${{ env.gitver }}
 
