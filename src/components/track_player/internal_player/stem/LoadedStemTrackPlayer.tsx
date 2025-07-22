@@ -284,7 +284,6 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         return () => {
             toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
                 toneNode.playerNode.unsync();
-                toneNode.endNode.disconnect();
             });
 
             pitchNode.disconnect();
