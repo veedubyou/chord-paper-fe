@@ -64,7 +64,7 @@ const createToneNodes = <StemKey extends string>(
 
     const playerNode = new Tone.GrainPlayer({
         url: stem.audioBuffer,
-        grainSize: 0.1,
+        grainSize: 0.2,
         overlap: 0.1,
     });
 
