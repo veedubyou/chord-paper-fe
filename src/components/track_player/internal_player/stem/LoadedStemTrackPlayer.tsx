@@ -123,7 +123,7 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
             props.stems.map((stemKey) =>
                 createToneNodes(stemKey, grainSize, overlap)
             ),
-        [props.stems]
+        [props.stems, grainSize, overlap]
     );
 
     const initialPlayerState: PlayerState<StemKey> = (() => {
