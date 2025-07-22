@@ -109,9 +109,9 @@ export class EditSongPath {
 
 export class PlaySongPath {
     private readonly id: string;
-    private readonly mode: "page" | "scroll" | "root";
+    private readonly mode: "page" | "scroll" | "root" | "player";
 
-    constructor(id: string, mode: "page" | "scroll" | "root") {
+    constructor(id: string, mode: "page" | "scroll" | "root" | "player") {
         this.id = id;
         this.mode = mode;
     }
@@ -132,6 +132,10 @@ export class PlaySongPath {
 
     withScrollView(): PlaySongPath {
         return new PlaySongPath(this.id, "scroll");
+    }
+
+    withPlayerView(): PlaySongPath {
+        return new PlaySongPath(this.id, "player");
     }
 
     parent(): SongIDPath {

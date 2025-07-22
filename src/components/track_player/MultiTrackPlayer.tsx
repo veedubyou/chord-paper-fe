@@ -66,6 +66,7 @@ interface MultiTrackPlayerProps {
 
     tracklistLoad: TrackListLoad;
     playerControls: PlayerControls;
+    fullScreen?: boolean;
 
     onOpenTrackEditDialog?: PlainFn;
     onMinimize: PlainFn;
@@ -188,15 +189,31 @@ const MultiTrackPlayer: React.FC<MultiTrackPlayerProps> = (
         );
     })();
 
+    const renderedPlayer = (() => {
+        const contents = (
+            <>
+                {titleBar}
+                <Divider />
+                {internalContent}
+            </>
+        );
+
+        if (props.fullScreen === true) {
+            return (
+                <FullPlayerContainer sx={{ maxWidth: 2000 }}>
+                    {contents}
+                </FullPlayerContainer>
+            );
+        }
+
+        return withBottomRightBox(
+            <FullPlayerContainer>{contents}</FullPlayerContainer>
+        );
+    })();
+
     return (
         <Slide in={props.show} direction="up">
-            {withBottomRightBox(
-                <FullPlayerContainer>
-                    {titleBar}
-                    <Divider />
-                    {internalContent}
-                </FullPlayerContainer>
-            )}
+            {renderedPlayer}
         </Slide>
     );
 };

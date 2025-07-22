@@ -20,6 +20,7 @@ interface JamStationProps {
     onTrackListChanged: (trackList: TrackList) => void;
     onRefresh: PlainFn;
     collapsedButtonSx?: SystemStyleObject<Theme>;
+    fullScreen?: boolean;
 }
 
 interface TrackEditDialogState {
@@ -118,6 +119,7 @@ const JamStation: React.FC<JamStationProps> = (
     const fullPlayer: false | JSX.Element = loadPlayers && (
         <MultiTrackPlayer
             show={playerVisibilityState === "full"}
+            fullScreen={props.fullScreen}
             tracklistLoad={props.tracklistLoad}
             playerControls={playerControls}
             onMinimize={minimizePlayer}
