@@ -25,7 +25,7 @@ import * as Tone from "tone";
 
 interface StemToneNodes<StemKey extends string> {
     label: StemKey;
-    playerNode: Tone.GrainPlayer;
+    playerNode: Tone.Player;
     volumeNode: Tone.Volume;
     endNode: Tone.Volume;
 }
@@ -62,10 +62,8 @@ const createToneNodes = <StemKey extends string>(
 ): StemToneNodes<StemKey> => {
     const volumeNode = new Tone.Volume();
 
-    const playerNode = new Tone.GrainPlayer({
+    const playerNode = new Tone.Player({
         url: stem.audioBuffer,
-        grainSize: 0.1,
-        overlap: 0.1,
     });
 
     playerNode.chain(volumeNode);
@@ -101,6 +99,15 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
         () => props.stems.map(createToneNodes),
         [props.stems]
     );
+
+    const pitchNode: Tone.PitchShift = useMemo(() => {
+        const pitchShiftNode = new Tone.PitchShift();
+        toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
+            toneNode.endNode.chain(pitchShiftNode);
+        });
+
+        return pitchShiftNode;
+    }, [toneNodes]);
 
     const initialPlayerState: PlayerState<StemKey> = (() => {
         const stemStates: StemState<StemKey>[] = props.stems.map(
@@ -205,26 +212,28 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
     }, []);
 
     const { tempo, getCurrentTime } = props.playerControls;
+
+    const playbackRate = tempo.percentage / 100;
+    const compensatingPitchShift = 12 * Math.log2(1 / playbackRate);
+
     // synchronize time
     useEffect(() => {
         const synchronizeTime = () => {
-            const tempoValue = tempo.percentage / 100;
-
             // Tone transport doesn't observe slowed down time, only each individual node plays the sound back slower
             // e.g. if a 10s clip is played at 50% speed, then Tone transport will finish playing it from 0s to 20s
             // so to compare player time and Tone transport time, it needs to be scaled against the tempo
-            const adjustedToneTime = Tone.Transport.seconds * tempoValue;
+            const adjustedToneTime = Tone.Transport.seconds * playbackRate;
 
             const currentTime = getCurrentTime();
 
             if (Math.abs(currentTime - adjustedToneTime) > 1) {
-                Tone.Transport.seconds = currentTime / tempoValue;
+                Tone.Transport.seconds = currentTime / playbackRate;
             }
         };
 
         const intervalID = setInterval(synchronizeTime, 250);
         return () => clearInterval(intervalID);
-    }, [getCurrentTime, tempo.percentage]);
+    }, [getCurrentTime, playbackRate]);
 
     // synchronize player state and track volumes/mutedness
     useEffect(() => {
@@ -245,44 +254,41 @@ const LoadedStemTrackPlayer = <StemKey extends string>(
                 // mute needs to be set last because it can be overrided by volume
                 node.endNode.mute = stemState.muted || stemVolume === 0;
 
-                node.playerNode.playbackRate =
-                    props.playerControls.tempo.percentage / 100;
+                node.playerNode.playbackRate = playbackRate;
             }
         );
-    }, [toneNodes, playerState, props.playerControls.tempo.percentage]);
+
+        pitchNode.pitch = compensatingPitchShift;
+    }, [
+        toneNodes,
+        pitchNode,
+        playerState,
+        playbackRate,
+        compensatingPitchShift,
+    ]);
 
     // synchronize player state and pitch shift
     useEffect(() => {
-        playerState.stems.forEach(
-            (_stemState: StemState<StemKey>, stemIndex: number) => {
-                const node = toneNodes[stemIndex];
-
-                // a hard coded hack - drums don't sound good pitch shifted
-                // and also don't need to be harmonically in step with all the
-                // other tracks
-                const pitchShift = node.label !== "drums";
-                if (pitchShift) {
-                    node.playerNode.detune = playerState.masterPitchShift * 100;
-                }
-            }
-        );
-    }, [toneNodes, playerState]);
+        pitchNode.pitch = compensatingPitchShift + playerState.masterPitchShift;
+    }, [pitchNode, compensatingPitchShift, playerState]);
 
     // connect and disconnect nodes from the transport when not in focus
     // so that other tracks can use the transport
     useEffect(() => {
         toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
             toneNode.playerNode.sync().start(0);
-            toneNode.endNode.toDestination();
         });
+
+        pitchNode.toDestination();
 
         return () => {
             toneNodes.forEach((toneNode: StemToneNodes<StemKey>) => {
                 toneNode.playerNode.unsync();
-                toneNode.endNode.disconnect();
             });
+
+            pitchNode.disconnect();
         };
-    }, [toneNodes]);
+    }, [toneNodes, pitchNode]);
 
     // cleanup buffer resources when this component goes out of scope
     useEffect(() => {
