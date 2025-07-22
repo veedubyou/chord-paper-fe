@@ -83,6 +83,7 @@ const PlayRoutes: MultiFC<PlayProps> = (props: PlayProps): JSX.Element[] => {
 
     const pageViewPath = props.path.withPageView();
     const scrollViewPath = props.path.withScrollView();
+    const playerViewPath = props.path.withPlayerView();
 
     const switchToPageView = () => history.push(pageViewPath.URL());
     const switchToScrollView = () => history.push(scrollViewPath.URL());
@@ -108,6 +109,26 @@ const PlayRoutes: MultiFC<PlayProps> = (props: PlayProps): JSX.Element[] => {
                     onEditMode={props.onEditMode}
                 />
             </PlayScreen>
+        </Route>,
+        <Route key={playerViewPath.URL()} path={playerViewPath.URL()}>
+            <TrackListProvider song={props.song}>
+                {(
+                    tracklistLoad: TrackListLoad,
+                    onRefresh: PlainFn,
+                    onChange: TrackListChangeHandler
+                ) => (
+                    <JamStation
+                        collapsedButtonSx={{
+                            backgroundColor: "transparent",
+                        }}
+                        fullScreen={true}
+                        timestampedSections={props.song.timestampedSections}
+                        tracklistLoad={tracklistLoad}
+                        onTrackListChanged={onChange}
+                        onRefresh={onRefresh}
+                    />
+                )}
+            </TrackListProvider>
         </Route>,
     ];
 };
