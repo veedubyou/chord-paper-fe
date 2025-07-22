@@ -21,6 +21,7 @@ import React, {
     useState,
 } from "react";
 import FilePlayer from "react-player/file";
+import { useLocation } from "react-router-dom";
 import * as Tone from "tone";
 
 interface StemToneNodes<StemKey extends string> {
@@ -58,14 +59,16 @@ interface LoadedStemTrackPlayerProps<StemKey extends string> {
 }
 
 const createToneNodes = <StemKey extends string>(
-    stem: StemInput<StemKey>
+    stem: StemInput<StemKey>,
+    grainSize: number,
+    overlap: number
 ): StemToneNodes<StemKey> => {
     const volumeNode = new Tone.Volume();
 
     const playerNode = new Tone.GrainPlayer({
         url: stem.audioBuffer,
-        grainSize: 0.2,
-        overlap: 0.1,
+        grainSize: grainSize,
+        overlap: overlap,
     });
 
     playerNode.chain(volumeNode);
@@ -92,14 +95,35 @@ const createEmptySongURL = (time: number): string => {
     return songURL;
 };
 
+const parseQueryString = (input: string | null, defaultVal: number): number => {
+    if (input === null) {
+        return defaultVal;
+    }
+
+    const parsed = parseFloat(input);
+    if (Number.isNaN(parsed)) {
+        return defaultVal;
+    }
+
+    return parsed;
+};
+
 const LoadedStemTrackPlayer = <StemKey extends string>(
     props: LoadedStemTrackPlayerProps<StemKey>
 ): JSX.Element => {
     const { enqueueSnackbar } = useSnackbar();
+    const location = useLocation();
+    const query = new URLSearchParams(location.search);
+
+    const grainSize = parseQueryString(query.get("g"), 0.1);
+    const overlap = parseQueryString(query.get("o"), 0.1);
 
     const toneNodes: ToneNodes<StemKey> = useMemo(
-        () => props.stems.map(createToneNodes),
-        [props.stems]
+        () =>
+            props.stems.map((stemKey) =>
+                createToneNodes(stemKey, grainSize, overlap)
+            ),
+        [props.stems, grainSize, overlap]
     );
 
     const initialPlayerState: PlayerState<StemKey> = (() => {
