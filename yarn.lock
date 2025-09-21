@@ -3218,6 +3218,11 @@
   resolved "https://registry.npmjs.org/@types/gapi/-/gapi-0.0.39.tgz"
   integrity sha512-R1TZeZbvvbIC60DBJMhuOEivQHzOQtzl3uMDOOENTYQTSSDB6oEMpJo8HVPOTWivdUTbyEcB5qQOVr/JCKRlCQ==
 
+"@types/google-one-tap@^1.2.6":
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@types/google-one-tap/-/google-one-tap-1.2.6.tgz#854bdf1a51f9bc3d61f3c55d44135b653c523583"
+  integrity sha512-REmJsXVHvKb/sgI8DF+7IesMbDbcsEokHBqxU01ENZ8d98UPWdRLhUCtxEm9bhNFFg6PJGy7PNFdvovp0hK3jA==
+
 "@types/graceful-fs@^4.1.2":
   version "4.1.5"
   resolved "https://registry.npmjs.org/@types/graceful-fs/-/graceful-fs-4.1.5.tgz"

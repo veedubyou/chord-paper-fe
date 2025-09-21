@@ -21,6 +21,7 @@ import {
     UserContext,
 } from "components/user/userContext";
 import { isLeft } from "fp-ts/lib/These";
+import { CredentialResponse } from "google-one-tap";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -40,7 +41,6 @@ const Paragraph = styled(Box)(({ theme }) => ({
     marginBottom: theme.spacing(2),
 }));
 
-const googleSignInID = "google-sign-in";
 const googleClientID =
     "650853277550-ta69qbfcvdl6tb5ogtnh2d07ae9rcdlf.apps.googleusercontent.com";
 
@@ -51,7 +51,6 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     const { enqueueSnackbar } = useSnackbar();
 
-    const [gapiLoaded, setGapiLoaded] = useState<boolean>(false);
     const [dialogError, setDialogError] = useState<BackendError | null>(null);
     const [snackbarError, setSnackbarError] = useState<RequestError | null>(
         null
@@ -86,19 +85,9 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
         return backendError;
     };
 
-    useEffect(() => {
-        if (gapiLoaded) {
-            return;
-        }
-
-        if (window["gapi"] !== undefined) {
-            setGapiLoaded(true);
-        } else {
-            enqueueSnackbar("gapi is not loaded, working offline only", {
-                variant: "error",
-            });
-        }
-    }, [gapiLoaded, enqueueSnackbar]);
+    const signIn = () => {
+        window.google.accounts.id.prompt();
+    };
 
     useEffect(() => {
         if (snackbarError === null) {
@@ -122,103 +111,49 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     }, [enqueueSnackbar, snackbarError, setSnackbarError]);
 
     useEffect(() => {
-        if (!gapiLoaded) {
-            return;
-        }
+        const handleLoginError = (loginError: RequestError): void => {
+            const dialogError = shouldDisplayDialog(loginError);
+            if (dialogError !== null) {
+                setDialogError(dialogError);
+            } else {
+                setSnackbarError(loginError);
+            }
 
-        gapi.load("auth2", () => {
-            const handleLoginError = (
-                loginError: RequestError,
-                authClient: gapi.auth2.GoogleAuth
-            ): void => {
-                const dialogError = shouldDisplayDialog(loginError);
-                if (dialogError !== null) {
-                    setDialogError(dialogError);
-                } else {
-                    setSnackbarError(loginError);
-                }
+            props.onUserChanged(null);
+        };
 
-                props.onUserChanged(null);
-                authClient.signOut();
-            };
+        const handleGoogleLogin = async (response: CredentialResponse) => {
+            const idToken: string = response.credential;
 
-            const handleGoogleLogin = async (
-                currentUser: gapi.auth2.CurrentUser,
-                authClient: gapi.auth2.GoogleAuth
-            ) => {
-                const idToken: string = currentUser
-                    .get()
-                    .getAuthResponse().id_token;
+            let loginResult = await login(idToken);
 
-                let loginResult = await login(idToken);
-
-                if (isLeft(loginResult)) {
-                    handleLoginError(loginResult.left, authClient);
-                    return;
-                }
-
-                const parsedUser = deserializeUser(
-                    loginResult.right,
-                    currentUser
-                );
-
-                if (parsedUser === null) {
-                    console.error(
-                        "JSON payload is not a user",
-                        loginResult.right
-                    );
-                    enqueueSnackbar(
-                        "Failed to login to backend. Check console for more error details",
-                        { variant: "error" }
-                    );
-
-                    return;
-                }
-
-                props.onUserChanged(parsedUser);
-            };
-
-            if (!userNotSignedIn(user)) {
+            if (isLeft(loginResult)) {
+                handleLoginError(loginResult.left);
                 return;
             }
 
-            const handleAuthInit = (authClient: gapi.auth2.GoogleAuth) => {
-                authClient.attachClickHandler(
-                    document.getElementById(googleSignInID),
-                    {},
-                    () => handleGoogleLogin(authClient.currentUser, authClient),
-                    (failureReason: string) => {
-                        console.error(
-                            "Failed to login to Google",
-                            failureReason
-                        );
-                    }
+            const parsedUser = deserializeUser(loginResult.right, idToken);
+
+            if (parsedUser === null) {
+                console.error("JSON payload is not a user", loginResult.right);
+                enqueueSnackbar(
+                    "Failed to login to backend. Check console for more error details",
+                    { variant: "error" }
                 );
 
-                if (authClient.isSignedIn.get()) {
-                    handleGoogleLogin(authClient.currentUser, authClient);
-                }
-            };
+                return;
+            }
 
-            gapi.auth2
-                .init({
-                    client_id: googleClientID,
-                    scope: "profile email",
-                })
-                .then(handleAuthInit);
+            props.onUserChanged(parsedUser);
+        };
+
+        window.google.accounts.id.initialize({
+            client_id: googleClientID,
+            callback: (response) => {
+                handleGoogleLogin(response);
+            },
         });
-    }, [
-        enqueueSnackbar,
-        user,
-        props,
-        gapiLoaded,
-        setDialogError,
-        setSnackbarError,
-    ]);
-
-    if (!gapiLoaded) {
-        return <div></div>;
-    }
+    }, [enqueueSnackbar, user, props, setDialogError, setSnackbarError]);
 
     const userDescription: string = ((): string => {
         if (userNotSignedIn(user)) {
@@ -310,7 +245,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     })();
 
     return (
-        <Paper id={googleSignInID}>
+        <Paper onClick={signIn}>
             <Grid container alignItems="center" justifyContent="center">
                 <Grid item>
                     <img
