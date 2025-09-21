@@ -3218,11 +3218,6 @@
   resolved "https://registry.npmjs.org/@types/gapi/-/gapi-0.0.39.tgz"
   integrity sha512-R1TZeZbvvbIC60DBJMhuOEivQHzOQtzl3uMDOOENTYQTSSDB6oEMpJo8HVPOTWivdUTbyEcB5qQOVr/JCKRlCQ==
 
-"@types/google.accounts@^0.0.18":
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/@types/google.accounts/-/google.accounts-0.0.18.tgz#13dc6a49630c7e54c662539ec5cbe81e64a8227a"
-  integrity sha512-yHaPznll97ZnMJlPABHyeiIlLn3u6gQaUjA5k/O9lrrpgFB9VT10CKPLuKM0qTHMl50uXpW5sIcG+utm8jMOHw==
-
 "@types/graceful-fs@^4.1.2":
   version "4.1.5"
   resolved "https://registry.npmjs.org/@types/graceful-fs/-/graceful-fs-4.1.5.tgz"
