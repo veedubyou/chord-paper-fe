@@ -7,18 +7,12 @@ import {
     Link as MaterialLink,
     Paper as UnstyledPaper,
     styled,
-    Typography as UnstyledTypography,
 } from "@mui/material";
-import { grey } from "@mui/material/colors";
 import { BackendError, RequestError } from "common/backend/errors";
 import { login } from "common/backend/requests";
 import { getRouteForTutorialComponent } from "components/Tutorial";
 import LoginTutorial from "components/tutorial/Login";
-import {
-    deserializeUser,
-    User,
-    UserContext,
-} from "components/user/userContext";
+import { deserializeUser, User } from "components/user/userContext";
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
@@ -28,11 +22,6 @@ const Paper = styled(UnstyledPaper)({
     width: "100%",
     cursor: "pointer",
 });
-
-const Typography = styled(UnstyledTypography)(({ theme }) => ({
-    margin: theme.spacing(2),
-    color: grey[600],
-}));
 
 const Paragraph = styled(Box)(({ theme }) => ({
     marginTop: theme.spacing(2),
@@ -55,11 +44,11 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     const [snackbarError, setSnackbarError] = useState<RequestError | null>(
         null
     );
-    const user: User | null = React.useContext(UserContext);
+    // const user: User | null = React.useContext(UserContext);
 
-    const userNotSignedIn = (user: User | null): user is null => {
-        return user === null;
-    };
+    // const userNotSignedIn = (user: User | null): user is null => {
+    //     return user === null;
+    // };
 
     const shouldDisplayDialog = (
         reqError: RequestError
