@@ -7,15 +7,32 @@ interface LoginResponse {
 }
 
 export class User {
+    private currentGoogleUser: gapi.auth2.CurrentUser;
     name: string;
     userID: string;
     authToken: string;
 
-    constructor(userID: string, name: string, authToken: string) {
+    constructor(currentGoogleUser: gapi.auth2.CurrentUser, userID: string) {
+        this.currentGoogleUser = currentGoogleUser;
         this.userID = userID;
 
-        this.authToken = authToken;
-        this.name = name;
+        const googleUser: gapi.auth2.GoogleUser = currentGoogleUser.get();
+
+        this.authToken = googleUser.getAuthResponse().id_token;
+        this.name = googleUser.getBasicProfile().getName();
+
+        this.currentGoogleUser.listen(() => {
+            this.refreshAuthToken.call(this);
+        });
+    }
+
+    private refreshAuthToken() {
+        this.authToken = this.getNewAuthToken();
+    }
+
+    private getNewAuthToken(): string {
+        const user = this.currentGoogleUser.get();
+        return user.getAuthResponse().id_token;
     }
 }
 
@@ -25,13 +42,13 @@ export const SetUserContext = React.createContext<SetUserFn>(noopFn);
 
 export const deserializeUser = (
     response: unknown,
-    authToken: string
+    googleUser: gapi.auth2.CurrentUser
 ): User | null => {
     if (!validateResponse(response)) {
         return null;
     }
 
-    return new User(response.id, response.name ?? "Unknown Name", authToken);
+    return new User(googleUser, response.id);
 };
 
 const validateResponse = (response: unknown): response is LoginResponse => {
