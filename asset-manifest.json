@@ -1,18 +1,19 @@
 {
   "files": {
     "main.css": "/chord-paper-fe/static/css/main.b3dd6113.css",
-    "main.js": "/chord-paper-fe/static/js/main.0407b906.js",
+    "main.js": "/chord-paper-fe/static/js/main.c195c459.js",
     "static/media/error.jpeg": "/chord-paper-fe/static/media/error.91c3c13ed4cc5a97b6ea.jpeg",
     "static/media/PressStart2P-Regular.ttf": "/chord-paper-fe/static/media/PressStart2P-Regular.21503c6a5385ab41dde9.ttf",
     "static/media/Merriweather-Regular.woff2": "/chord-paper-fe/static/media/Merriweather-Regular.db17165415a3dc6194ed.woff2",
     "static/media/symphony.png": "/chord-paper-fe/static/media/symphony.d46887dc263b928b130a.png",
     "static/media/PoriChord.woff2": "/chord-paper-fe/static/media/PoriChord.a44d411309253d4fe0e9.woff2",
+    "static/media/google_signin.svg": "/chord-paper-fe/static/media/google_signin.ab6e56e0587b530c5939f429776ece75.svg",
     "index.html": "/chord-paper-fe/index.html",
     "main.b3dd6113.css.map": "/chord-paper-fe/static/css/main.b3dd6113.css.map",
-    "main.0407b906.js.map": "/chord-paper-fe/static/js/main.0407b906.js.map"
+    "main.c195c459.js.map": "/chord-paper-fe/static/js/main.c195c459.js.map"
   },
   "entrypoints": [
     "static/css/main.b3dd6113.css",
-    "static/js/main.0407b906.js"
+    "static/js/main.c195c459.js"
   ]
 }
