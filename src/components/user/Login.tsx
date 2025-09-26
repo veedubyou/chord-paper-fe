@@ -7,13 +7,21 @@ import {
     Link as MaterialLink,
     Paper as UnstyledPaper,
     styled,
+    Typography as UnstyledTypography,
 } from "@mui/material";
+import { grey } from "@mui/material/colors";
+import SigninIcon from "assets/img/google_signin.svg";
 import { BackendError, RequestError } from "common/backend/errors";
 import { login } from "common/backend/requests";
 import { getRouteForTutorialComponent } from "components/Tutorial";
 import LoginTutorial from "components/tutorial/Login";
-import { deserializeUser, User } from "components/user/userContext";
+import {
+    deserializeUser,
+    User,
+    UserContext,
+} from "components/user/userContext";
 import { isLeft } from "fp-ts/lib/These";
+import { CredentialResponse } from "google-one-tap";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -23,12 +31,16 @@ const Paper = styled(UnstyledPaper)({
     cursor: "pointer",
 });
 
+const Typography = styled(UnstyledTypography)(({ theme }) => ({
+    margin: theme.spacing(2),
+    color: grey[600],
+}));
+
 const Paragraph = styled(Box)(({ theme }) => ({
     marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
 }));
 
-const googleSignInID = "google-sign-in";
 const googleClientID =
     "650853277550-ta69qbfcvdl6tb5ogtnh2d07ae9rcdlf.apps.googleusercontent.com";
 
@@ -39,16 +51,15 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     const { enqueueSnackbar } = useSnackbar();
 
-    const [gapiLoaded, setGapiLoaded] = useState<boolean>(false);
     const [dialogError, setDialogError] = useState<BackendError | null>(null);
     const [snackbarError, setSnackbarError] = useState<RequestError | null>(
         null
     );
-    // const user: User | null = React.useContext(UserContext);
+    const user: User | null = React.useContext(UserContext);
 
-    // const userNotSignedIn = (user: User | null): user is null => {
-    //     return user === null;
-    // };
+    const userNotSignedIn = (user: User | null): user is null => {
+        return user === null;
+    };
 
     const shouldDisplayDialog = (
         reqError: RequestError
@@ -74,19 +85,9 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
         return backendError;
     };
 
-    useEffect(() => {
-        if (gapiLoaded) {
-            return;
-        }
-
-        if (window["gapi"] !== undefined) {
-            setGapiLoaded(true);
-        } else {
-            enqueueSnackbar("gapi is not loaded, working offline only", {
-                variant: "error",
-            });
-        }
-    }, [gapiLoaded, enqueueSnackbar]);
+    const signIn = () => {
+        window.google.accounts.id.prompt();
+    };
 
     useEffect(() => {
         if (snackbarError === null) {
@@ -110,41 +111,24 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     }, [enqueueSnackbar, snackbarError, setSnackbarError]);
 
     useEffect(() => {
-        if (!window.google) {
-            enqueueSnackbar(
-                "Google Identity Services (gis) not loaded, working offline only",
-                {
-                    variant: "error",
-                }
-            );
-            return;
-        }
-
-        const handleCredentialResponse = async (response: any) => {
-            console.log(response);
-            const idToken: string | undefined = response?.credential;
-            if (!idToken) {
-                console.error("No credential in GIS response", response);
-                enqueueSnackbar("Google login failed (no token received)", {
-                    variant: "error",
-                });
-                return;
+        const handleLoginError = (loginError: RequestError): void => {
+            const dialogError = shouldDisplayDialog(loginError);
+            if (dialogError !== null) {
+                setDialogError(dialogError);
+            } else {
+                setSnackbarError(loginError);
             }
 
-            const loginResult = await login(idToken);
+            props.onUserChanged(null);
+        };
+
+        const handleGoogleLogin = async (response: CredentialResponse) => {
+            const idToken: string = response.credential;
+
+            let loginResult = await login(idToken);
 
             if (isLeft(loginResult)) {
-                const reqErr = loginResult.left;
-                const dialogErr = shouldDisplayDialog(reqErr);
-                if (dialogErr !== null) {
-                    setDialogError(dialogErr);
-                } else {
-                    setSnackbarError(reqErr);
-                }
-
-                // simulate a log out here for failure
-                window.google?.accounts?.id?.disableAutoSelect?.();
-                props.onUserChanged(null);
+                handleLoginError(loginResult.left);
                 return;
             }
 
@@ -154,10 +138,9 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
                 console.error("JSON payload is not a user", loginResult.right);
                 enqueueSnackbar(
                     "Failed to login to backend. Check console for more error details",
-                    {
-                        variant: "error",
-                    }
+                    { variant: "error" }
                 );
+
                 return;
             }
 
@@ -166,21 +149,23 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
 
         window.google.accounts.id.initialize({
             client_id: googleClientID,
-            callback: handleCredentialResponse,
+            callback: (response) => {
+                handleGoogleLogin(response);
+            },
         });
+    }, [enqueueSnackbar, user, props, setDialogError, setSnackbarError]);
 
-        // render the button into an element with id "google-sign-in-button"
-        const container = document.getElementById(googleSignInID);
-        if (container === null) {
-            return;
+    const userDescription: string = ((): string => {
+        if (userNotSignedIn(user)) {
+            return "Sign In";
         }
 
-        window.google.accounts.id.renderButton(container, {
-            theme: "outline",
-            size: "large",
-            type: "standard",
-        });
-    }, [enqueueSnackbar, props]); // add other deps if needed
+        if (user.name === null) {
+            return "You Logged In But Who Are You???";
+        }
+
+        return user.name;
+    })();
 
     const errorDialog: React.ReactElement = (() => {
         const content: React.ReactElement | null = (() => {
@@ -260,20 +245,24 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     })();
 
     return (
-        <Paper>
+        <Paper onClick={signIn}>
             <Grid container alignItems="center" justifyContent="center">
                 <Grid item>
-                    <div
-                        id={googleSignInID}
+                    <img
+                        src={SigninIcon}
+                        alt="Google Signin"
                         style={{
-                            // marginTop: 8,
-                            display: "flex",
-                            justifyContent: "center",
+                            display: "inline-block",
+                            objectFit: "contain",
                         }}
                     />
                 </Grid>
+                <Grid item>
+                    <Typography variant="h6" display="inline">
+                        {userDescription}
+                    </Typography>
+                </Grid>
             </Grid>
-
             {errorDialog}
         </Paper>
     );
