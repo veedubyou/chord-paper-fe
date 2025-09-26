@@ -15,7 +15,7 @@
         "@testing-library/user-event": "^10.4.0",
         "@types/audiobuffer-to-wav": "^1.0.0",
         "@types/gapi.auth2": "^0.0.52",
-        "@types/google.accounts": "^0.0.18",
+        "@types/google-one-tap": "^1.2.6",
         "@types/jest": "^25.2.3",
         "@types/lodash": "^4.14.155",
         "@types/luxon": "^1.25.0",
