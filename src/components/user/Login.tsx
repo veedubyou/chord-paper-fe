@@ -7,19 +7,12 @@ import {
     Link as MaterialLink,
     Paper as UnstyledPaper,
     styled,
-    Typography as UnstyledTypography,
 } from "@mui/material";
-import { grey } from "@mui/material/colors";
-import SigninIcon from "assets/img/google_signin.svg";
 import { BackendError, RequestError } from "common/backend/errors";
 import { login } from "common/backend/requests";
 import { getRouteForTutorialComponent } from "components/Tutorial";
 import LoginTutorial from "components/tutorial/Login";
-import {
-    deserializeUser,
-    User,
-    UserContext,
-} from "components/user/userContext";
+import { deserializeUser, User } from "components/user/userContext";
 import { isLeft } from "fp-ts/lib/These";
 import { useSnackbar } from "notistack";
 import React, { useEffect, useState } from "react";
@@ -29,11 +22,6 @@ const Paper = styled(UnstyledPaper)({
     width: "100%",
     cursor: "pointer",
 });
-
-const Typography = styled(UnstyledTypography)(({ theme }) => ({
-    margin: theme.spacing(2),
-    color: grey[600],
-}));
 
 const Paragraph = styled(Box)(({ theme }) => ({
     marginTop: theme.spacing(2),
@@ -56,11 +44,11 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     const [snackbarError, setSnackbarError] = useState<RequestError | null>(
         null
     );
-    const user: User | null = React.useContext(UserContext);
+    // const user: User | null = React.useContext(UserContext);
 
-    const userNotSignedIn = (user: User | null): user is null => {
-        return user === null;
-    };
+    // const userNotSignedIn = (user: User | null): user is null => {
+    //     return user === null;
+    // };
 
     const shouldDisplayDialog = (
         reqError: RequestError
@@ -122,115 +110,77 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     }, [enqueueSnackbar, snackbarError, setSnackbarError]);
 
     useEffect(() => {
-        if (!gapiLoaded) {
+        if (!window.google) {
+            enqueueSnackbar(
+                "Google Identity Services (gis) not loaded, working offline only",
+                {
+                    variant: "error",
+                }
+            );
             return;
         }
 
-        gapi.load("auth2", () => {
-            const handleLoginError = (
-                loginError: RequestError,
-                authClient: gapi.auth2.GoogleAuth
-            ): void => {
-                const dialogError = shouldDisplayDialog(loginError);
-                if (dialogError !== null) {
-                    setDialogError(dialogError);
-                } else {
-                    setSnackbarError(loginError);
-                }
-
-                props.onUserChanged(null);
-                authClient.signOut();
-            };
-
-            const handleGoogleLogin = async (
-                currentUser: gapi.auth2.CurrentUser,
-                authClient: gapi.auth2.GoogleAuth
-            ) => {
-                const idToken: string = currentUser
-                    .get()
-                    .getAuthResponse().id_token;
-
-                let loginResult = await login(idToken);
-
-                if (isLeft(loginResult)) {
-                    handleLoginError(loginResult.left, authClient);
-                    return;
-                }
-
-                const parsedUser = deserializeUser(
-                    loginResult.right,
-                    currentUser
-                );
-
-                if (parsedUser === null) {
-                    console.error(
-                        "JSON payload is not a user",
-                        loginResult.right
-                    );
-                    enqueueSnackbar(
-                        "Failed to login to backend. Check console for more error details",
-                        { variant: "error" }
-                    );
-
-                    return;
-                }
-
-                props.onUserChanged(parsedUser);
-            };
-
-            if (!userNotSignedIn(user)) {
+        const handleCredentialResponse = async (response: any) => {
+            console.log(response);
+            const idToken: string | undefined = response?.credential;
+            if (!idToken) {
+                console.error("No credential in GIS response", response);
+                enqueueSnackbar("Google login failed (no token received)", {
+                    variant: "error",
+                });
                 return;
             }
 
-            const handleAuthInit = (authClient: gapi.auth2.GoogleAuth) => {
-                authClient.attachClickHandler(
-                    document.getElementById(googleSignInID),
-                    {},
-                    () => handleGoogleLogin(authClient.currentUser, authClient),
-                    (failureReason: string) => {
-                        console.error(
-                            "Failed to login to Google",
-                            failureReason
-                        );
+            const loginResult = await login(idToken);
+
+            if (isLeft(loginResult)) {
+                const reqErr = loginResult.left;
+                const dialogErr = shouldDisplayDialog(reqErr);
+                if (dialogErr !== null) {
+                    setDialogError(dialogErr);
+                } else {
+                    setSnackbarError(reqErr);
+                }
+
+                // simulate a log out here for failure
+                window.google?.accounts?.id?.disableAutoSelect?.();
+                props.onUserChanged(null);
+                return;
+            }
+
+            const parsedUser = deserializeUser(loginResult.right, idToken);
+
+            if (parsedUser === null) {
+                console.error("JSON payload is not a user", loginResult.right);
+                enqueueSnackbar(
+                    "Failed to login to backend. Check console for more error details",
+                    {
+                        variant: "error",
                     }
                 );
+                return;
+            }
 
-                if (authClient.isSignedIn.get()) {
-                    handleGoogleLogin(authClient.currentUser, authClient);
-                }
-            };
+            props.onUserChanged(parsedUser);
+        };
 
-            gapi.auth2
-                .init({
-                    client_id: googleClientID,
-                    scope: "profile email",
-                })
-                .then(handleAuthInit);
+        window.google.accounts.id.initialize({
+            client_id: googleClientID,
+            callback: handleCredentialResponse,
         });
-    }, [
-        enqueueSnackbar,
-        user,
-        props,
-        gapiLoaded,
-        setDialogError,
-        setSnackbarError,
-    ]);
 
-    if (!gapiLoaded) {
-        return <div></div>;
-    }
-
-    const userDescription: string = ((): string => {
-        if (userNotSignedIn(user)) {
-            return "Sign In";
+        // render the button into an element with id "google-sign-in-button"
+        const container = document.getElementById(googleSignInID);
+        if (container === null) {
+            return;
         }
 
-        if (user.name === null) {
-            return "You Logged In But Who Are You???";
-        }
-
-        return user.name;
-    })();
+        window.google.accounts.id.renderButton(container, {
+            theme: "outline",
+            size: "large",
+            type: "standard",
+        });
+    }, [enqueueSnackbar, props]); // add other deps if needed
 
     const errorDialog: React.ReactElement = (() => {
         const content: React.ReactElement | null = (() => {
@@ -310,24 +260,20 @@ const Login: React.FC<LoginProps> = (props: LoginProps): JSX.Element => {
     })();
 
     return (
-        <Paper id={googleSignInID}>
+        <Paper>
             <Grid container alignItems="center" justifyContent="center">
                 <Grid item>
-                    <img
-                        src={SigninIcon}
-                        alt="Google Signin"
+                    <div
+                        id={googleSignInID}
                         style={{
-                            display: "inline-block",
-                            objectFit: "contain",
+                            // marginTop: 8,
+                            display: "flex",
+                            justifyContent: "center",
                         }}
                     />
                 </Grid>
-                <Grid item>
-                    <Typography variant="h6" display="inline">
-                        {userDescription}
-                    </Typography>
-                </Grid>
             </Grid>
+
             {errorDialog}
         </Paper>
     );
