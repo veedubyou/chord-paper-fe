@@ -13,18 +13,25 @@ import {
 import { deserializeLyrics } from "components/lyrics/Serialization";
 import React from "react";
 
-const InvisibleTypography = styled(LyricTypography)({
-    color: "transparent",
+const commonTypography = {
     cursor: "pointer",
     userSelect: "none",
     position: "absolute",
     left: 0,
     top: 0,
     transform: "translate(0%, -110%)",
+} as const;
+
+const VisibleTypography = styled(LyricTypography)(commonTypography);
+
+const InvisibleTypography = styled(LyricTypography)({
+    ...commonTypography,
+    color: "transparent",
 });
 
 interface ChordTargetBoxProps {
     children: React.ReactNode;
+    invisible: boolean;
     className?: string;
     onClick?: (event: React.MouseEvent<HTMLSpanElement>) => void;
 }
@@ -32,15 +39,17 @@ interface ChordTargetBoxProps {
 const ChordTargetBox: React.FC<ChordTargetBoxProps> = (
     props: ChordTargetBoxProps
 ): JSX.Element => {
+    const Typography = props.invisible ? InvisibleTypography : VisibleTypography;
+
     return (
-        <InvisibleTypography
+        <Typography
             {...lyricTypographyProps}
             onClick={props.onClick}
             className={props.className}
             data-testid="ChordEditButton"
         >
             {props.children}
-        </InvisibleTypography>
+        </Typography>
     );
 };
 
@@ -63,10 +72,13 @@ const Token = React.forwardRef(
                 false
             );
 
+            const isSeparator = content.length === 1 && content[0] === '|';
+
             return (
                 <ChordTargetBox
                     className={cx(chordTargetClassName, chordSymbolClassName)}
                     onClick={props.invisibleTarget.onClick}
+                    invisible={!isSeparator}
                 >
                     {content}
                 </ChordTargetBox>
